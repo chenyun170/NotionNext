@@ -551,4 +551,3 @@ const BLOG = {
 }
 
 module.exports = BLOG
-This message is used to verify that this feed (feedId:69257503380338688) belongs to me (userId:67479889059047424). Join me in enjoying the next generation information browser https://follow.is.

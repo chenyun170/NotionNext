@@ -53,7 +53,7 @@ const Logo = props => {
           {/* 1. 圣诞帽 (在图片前方) */}
           {showChristmas && (
             <img 
-              src='https://cloudflare-imgbed-aa9.pages.dev/file/1766201111415_hat.png' 
+              src='https://cloudflare-imgbed-aa9.pages.dev/file/1766208167079_hat.png' 
               className='santa-hat' 
               style={{ top: '-18px', left: '35px', width: '42px', transform: 'rotate(25deg)' }}
               alt='Christmas Hat' 

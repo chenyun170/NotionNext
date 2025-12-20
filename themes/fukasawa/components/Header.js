@@ -3,18 +3,17 @@ import { useRef, useState } from 'react'
 import Logo from './Logo'
 import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
-import Announcement from './Announcement'
-import { siteConfig } from '@/lib/config' // 引入配置
+import { siteConfig } from '@/lib/config'
 
 /**
- * 顶部导航（移动端专用）- 修复内容错乱与颜色问题
+ * 顶部导航（移动端专用）- 彻底修复公告内容漂移
  */
 const Header = props => {
   const [isOpen, changeShow] = useState(false)
   const collapseRef = useRef(null)
   
-  // 强制获取全局配置中的公告内容，防止进入文章页后内容改变
-  const globalNotice = siteConfig('ANNOUNCEMENT') 
+  // 直接从配置中读取公告字符串，不经过 Announcement 组件
+  const noticeText = siteConfig('ANNOUNCEMENT') || ''
 
   const toggleMenuOpen = () => {
     changeShow(!isOpen)
@@ -22,21 +21,23 @@ const Header = props => {
 
   return (
     <div id='top-nav' className='z-50 block lg:hidden relative'>
-      {/* 1. 顶部跑马灯横幅 */}
+      {/* 1. 顶部跑马灯横幅 - 强制 z-index 最前 */}
       <div className='w-full bg-orange-600 py-2 overflow-hidden relative border-b border-orange-700 shadow-lg' style={{ zIndex: 100 }}>
         <div className='flex items-center'>
+            {/* 固定的小喇叭 */}
             <div className='pl-3 pr-2 bg-orange-600 z-[110] relative flex items-center'>
                 <i className='fas fa-bullhorn animate-bounce text-black text-xs'></i>
             </div>
             
+            {/* 跑马灯滚动容器 */}
             <div className='marquee-container whitespace-nowrap flex flex-grow'>
-                {/* 使用 key={globalNotice} 强制内容更新 */}
-                <div className='marquee-content px-4' key={globalNotice}>
-                   {/* 传递全局 notice 属性，不随页面改变 */}
-                   <Announcement {...props} notice={globalNotice} />
-                </div>
                 <div className='marquee-content px-4'>
-                   <Announcement {...props} notice={globalNotice} />
+                   {/* 直接渲染文字，避免组件干扰 */}
+                   <span className='marquee-text'>{noticeText}</span>
+                </div>
+                {/* 循环副本 */}
+                <div className='marquee-content px-4'>
+                   <span className='marquee-text'>{noticeText}</span>
                 </div>
             </div>
         </div>
@@ -58,24 +59,25 @@ const Header = props => {
         </Collapse>
       </div>
 
+      {/* 彻底锁定样式 */}
       <style jsx global>{`
-        .marquee-container { display: flex; overflow: hidden; }
+        .marquee-container { display: flex; overflow: hidden; width: 100%; }
         .marquee-content { display: flex; animation: marquee 25s linear infinite; }
         
-        /* 强制跑马灯文字为黑色且加粗 */
-        .marquee-content * {
-          display: inline !important;
+        .marquee-text {
           color: #000000 !important; 
-          margin: 0 !important;
-          padding: 0 !important;
-          white-space: nowrap !important;
           font-weight: 800 !important;
+          font-size: 13px;
+          margin-right: 100px; /* 增加活动之间的间距，防止首尾相连太挤 */
+          display: inline-block;
         }
-        .marquee-content a {
-          margin-right: 60px;
-          text-decoration: none;
-          border-bottom: 2px solid #000000;
+
+        /* 强制覆盖任何可能从 noticeText 传入的 HTML 样式 */
+        .marquee-text * {
+          color: #000000 !important;
+          display: inline !important;
         }
+
         @keyframes marquee {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }

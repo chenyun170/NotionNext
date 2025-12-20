@@ -3,54 +3,67 @@ import { useRef, useState } from 'react'
 import Logo from './Logo'
 import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
-import { siteConfig } from '@/lib/config'
 
 /**
- * 顶部导航（移动端专用）- 修复 Notion 数据抓取
+ * 顶部导航（移动端专用）- 支持多活动多链接
  */
 const Header = props => {
   const [isOpen, changeShow] = useState(false)
   const collapseRef = useRef(null)
   
-  // 1. 自动适配不同的数据获取路径
-  // 优先级：Props传值 > 全局配置 > 默认提示
-  const noticeText = props?.notice || siteConfig('ANNOUNCEMENT')
+  // --- 活动配置区：在这里修改你的文字和链接 ---
+  const activity1 = {
+    text: "🔥 活动一：图灵搜岁末活动，限时 1600 元！",
+    link: "http://h.topeasysoft.com/20251211tls/index.html?i=BB54F6" // 修改为活动一的链接
+  }
+  
+  const activity2 = {
+    text: "🚀 活动二：顶易云岁末活动，限时赠送社群工具！",
+    link: "http://h.topeasysoft.com/20251211dyy/index.html?i=BB54F6" // 修改为活动二的链接
+  }
 
   const toggleMenuOpen = () => {
     changeShow(!isOpen)
   }
+
+  // 活动内容组件：方便重复调用实现无缝滚动
+  const MarqueeItems = () => (
+    <div className='flex items-center'>
+      {/* 活动一 */}
+      <a href={activity1.link} className='marquee-item no-underline flex items-center'>
+        <span className='marquee-text'>{activity1.text}</span>
+        <span className='detail-badge'>查看详情</span>
+      </a>
+      
+      {/* 间隔 */}
+      <div className='w-[100px]'></div>
+
+      {/* 活动二 */}
+      <a href={activity2.link} className='marquee-item no-underline flex items-center'>
+        <span className='marquee-text'>{activity2.text}</span>
+        <span className='detail-badge'>查看详情</span>
+      </a>
+
+      {/* 尾部大间隔（确保首尾循环时不拥挤） */}
+      <div className='w-[100px]'></div>
+    </div>
+  )
 
   return (
     <div id='top-nav' className='z-50 block lg:hidden relative'>
       {/* 1. 顶部跑马灯横幅 */}
       <div className='w-full bg-orange-600 py-2.5 overflow-hidden relative border-b border-orange-700 shadow-lg' style={{ zIndex: 100 }}>
         <div className='flex items-center'>
-            {/* 固定小喇叭 */}
+            {/* 左侧固定图标 */}
             <div className='pl-3 pr-2 bg-orange-600 z-[110] relative flex items-center'>
                 <i className='fas fa-bullhorn animate-bounce text-black text-xs'></i>
             </div>
             
-            {/* 跑马灯滚动容器 */}
+            {/* 跑马灯滚动区域 */}
             <div className='marquee-container flex-grow overflow-hidden'>
                 <div className='marquee-content whitespace-nowrap flex'>
-                   <div className='marquee-item-wrapper flex items-center'>
-                      {/* 如果有内容则渲染，否则显示默认文字 */}
-                      {noticeText ? (
-                        <span className='marquee-text' dangerouslySetInnerHTML={{ __html: noticeText }} />
-                      ) : (
-                        <span className='marquee-text'>请在后台设置 ANNOUNCEMENT 公告内容</span>
-                      )}
-                      <i className='fas fa-arrow-circle-right ml-2 text-black text-[10px] animate-pulse'></i>
-                   </div>
-                   {/* 循环副本 */}
-                   <div className='marquee-item-wrapper flex items-center'>
-                      {noticeText ? (
-                        <span className='marquee-text' dangerouslySetInnerHTML={{ __html: noticeText }} />
-                      ) : (
-                        <span className='marquee-text'>请在后台设置 ANNOUNCEMENT 公告内容</span>
-                      )}
-                      <i className='fas fa-arrow-circle-right ml-2 text-black text-[10px] animate-pulse'></i>
-                   </div>
+                   <MarqueeItems />
+                   <MarqueeItems />
                 </div>
             </div>
         </div>
@@ -76,24 +89,40 @@ const Header = props => {
         .marquee-container { width: 100%; }
         .marquee-content { 
           display: flex; 
-          animation: marquee 30s linear infinite; 
+          animation: marquee 35s linear infinite; /* 活动多了，建议速度调慢一点点 */
           width: max-content;
         }
-        .marquee-item-wrapper { padding-right: 150px; }
+        
+        .marquee-item {
+          display: inline-flex;
+          align-items: center;
+          cursor: pointer;
+        }
+
         .marquee-text {
           color: #000000 !important; 
           font-weight: 800 !important;
           font-size: 14px !important;
-          display: inline-block !important;
         }
-        /* 确保链接和嵌套文字也是黑色 */
-        .marquee-text * {
-          color: #000000 !important;
-          font-weight: 800 !important;
+
+        .detail-badge {
+          background: rgba(0,0,0,0.8); /* 黑色背景 */
+          color: #FACC15 !important; /* 黄色文字 */
+          padding: 1px 8px;
+          border-radius: 999px;
+          font-size: 10px;
+          margin-left: 8px;
+          font-weight: bold;
         }
+
         @keyframes marquee {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
+        }
+
+        /* 触摸时停止滚动，方便精准点击 */
+        .marquee-container:active .marquee-content {
+          animation-play-state: paused;
         }
       `}</style>
     </div>

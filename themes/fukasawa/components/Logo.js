@@ -2,65 +2,84 @@ import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
 
 const Logo = props => {
-  // --- 自动化时间逻辑开始 ---
+  // 自动化时间逻辑：11月至次年2月开启装饰
   const now = new Date()
-  const month = now.getMonth() + 1 // JavaScript 月份从 0 开始，所以 +1
-  
-  // 设定范围：11月(11) 到 次年2月(2)
-  // 逻辑：如果月份 >= 11 或者 月份 <= 2，则显示装饰
+  const month = now.getMonth() + 1
   const showChristmas = month >= 11 || month <= 2
-  // --- 自动化时间逻辑结束 ---
 
   return (
     <section className='flex justify-center lg:justify-start overflow-visible'>
       <style jsx>{`
-        .christmas-container { position: relative; display: inline-block; }
-        .santa-hat {
-          position: absolute; top: -18px; left: 24px; width: 42px;
-          z-index: 20; transform: rotate(10deg); pointer-events: none;/* 这里的数字要大于图片的 z-index */
-            /* 添加下面这一行，利用正片叠底模式过滤白色背景 */
-          mix-blend-mode: multiply; 
+        .christmas-container { 
+          position: relative; 
+          display: inline-block; 
+          z-index: 10;
         }
-        .snow-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        /* 圣诞帽层级 */
+        .santa-hat {
+          position: absolute; 
+          z-index: 30; 
+          pointer-events: none;
+        }
+        /* 雪花容器：z-index 设为最高，确保在图片最前端 */
+        .snow-wrapper { 
+          position: absolute; 
+          top: 0; 
+          left: 0; 
+          width: 100%; 
+          height: 100%; 
+          pointer-events: none; 
+          z-index: 50; 
+        }
+        /* 雪花样式 */
         .snowflake {
-          position: absolute; color: #fff; font-size: 12px; opacity: 0.8;
-          text-shadow: 0 0 3px rgba(0,0,0,0.2); /* 让雪花在白色背景上也能隐约可见 */
+          position: absolute; 
+          color: #fff; 
+          font-size: 14px; 
+          text-shadow: 0 0 5px rgba(0,0,0,0.2);
           animation: fall linear infinite;
         }
         @keyframes fall {
-          0% { transform: translateY(-10px) translateX(0); opacity: 1; }
-          100% { transform: translateY(50px) translateX(10px); opacity: 0; }
+          0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(60px) rotate(360deg); opacity: 0; }
         }
       `}</style>
 
       <SmartLink href='/' className='flex flex-col items-center lg:items-start group cursor-pointer'>
         <div className='christmas-container'>
           
-          {/* --- 只有在设定时间内才渲染装饰 --- */}
+          {/* 1. 圣诞帽 (在图片前方) */}
           {showChristmas && (
-            <>
-              {/* 圣诞帽 */}
-              <img 
-                src='https://cloudflare-imgbed-aa9.pages.dev/file/1766201111415_hat.png'   
-                className='santa-hat' 
-                alt='Christmas Hat' 
-              />
-              {/* 雪花群 */}
-              <div className='snow-wrapper'>
-                <span className='snowflake' style={{left: '5%', animationDuration: '2s'}}>❄</span>
-                <span className='snowflake' style={{left: '35%', animationDuration: '3s', animationDelay: '1s'}}>❅</span>
-                <span className='snowflake' style={{left: '65%', animationDuration: '2.5s', animationDelay: '0.5s'}}>❆</span>
-                <span className='snowflake' style={{left: '90%', animationDuration: '4s', animationDelay: '2s'}}>❄</span>
-              </div>
-            </>
+            <img 
+              src='https://cloudflare-imgbed-aa9.pages.dev/file/1766201111415_hat.png' 
+              className='santa-hat' 
+              style={{ top: '-18px', left: '24px', width: '42px', transform: 'rotate(5deg)', mix-blend-mode: multiply }}
+              alt='Christmas Hat' 
+            />
           )}
 
-          {/* 核心 Logo 图片 */}
-          <img src='/logo.png' className='w-16 h-16 mb-3 object-contain relative z-0' alt={siteConfig('TITLE')} />
+          {/* 2. Logo 图片 (在底层) */}
+          <img 
+            src='/logo.png' 
+            className='w-16 h-16 mb-3 object-contain relative z-10' 
+            alt={siteConfig('TITLE')} 
+          />
+
+          {/* 3. 雪花层 (在最前端) */}
+          {showChristmas && (
+            <div className='snow-wrapper'>
+              <span className='snowflake' style={{left: '10%', animationDuration: '2.5s'}}>❄</span>
+              <span className='snowflake' style={{left: '40%', animationDuration: '3.5s', animationDelay: '1s'}}>❅</span>
+              <span className='snowflake' style={{left: '70%', animationDuration: '3s', animationDelay: '0.5s'}}>❆</span>
+              <span className='snowflake' style={{left: '90%', animationDuration: '4.5s', animationDelay: '2s'}}>❄</span>
+            </div>
+          )}
         </div>
 
         {/* 文字标题 */}
-        <div className='text-center lg:text-left'>
+        <div className='text-center lg:text-left relative z-20'>
             <div className='text-xl font-black tracking-tighter text-slate-800 dark:text-gray-200 border-b-4 border-orange-500 inline-block pb-1'>
                 外贸获客<span className='text-orange-600'>情报局</span>
             </div>

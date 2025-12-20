@@ -21,7 +21,7 @@ import SiteInfo from './SiteInfo'
 import SocialButton from './SocialButton'
 
 /**
- * 侧边栏 - 顶尖级流光 + 全站图片美化版 (修复圣诞帽显示问题)
+ * 侧边栏 - 顶尖级流光 + 全站图片美化 + 极简星空背景版
  */
 function AsideLeft(props) {
   const {
@@ -139,7 +139,6 @@ function AsideLeft(props) {
       )}
 
       <div className={`h-full ${isCollapsed ? 'hidden' : 'p-8'}`}>
-        {/* 修改点：调整容器以适应帽子 */}
         <div className="shimmer-logo-wrapper">
            <Logo {...props} />
         </div>
@@ -216,12 +215,39 @@ function AsideLeft(props) {
         </section>
       </div>
 
-      {/* --- 顶尖级视觉美化 CSS --- */}
       <style jsx global>{`
-        /* 1. Logo 流光 - 修复圣诞帽裁切 */
+        /* 1. 极简星空粒子背景 */
+        body::before {
+          content: "";
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: 
+            radial-gradient(1px 1px at 25px 35px, #bbb, rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 60px 100px, #ddd, rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 110px 180px, #eee, rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 190px 50px, #fff, rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 150px 130px, #ccc, rgba(0,0,0,0));
+          background-repeat: repeat;
+          background-size: 250px 250px;
+          opacity: 0.12;
+          z-index: -1;
+          pointer-events: none;
+          animation: stars-drift 120s linear infinite;
+        }
+        .dark body::before {
+          opacity: 0.25;
+        }
+        @keyframes stars-drift {
+          from { transform: translateY(0); }
+          to { transform: translateY(-250px); }
+        }
+
+        /* 2. Logo 流光 - 修复圣诞帽裁切 */
         .shimmer-logo-wrapper {
           position: relative;
-          /* 关键修改：通过 padding 为顶部的帽子留出空间，并改 overflow 为 visible */
           padding-top: 20px; 
           margin-top: -20px;
           overflow: visible; 
@@ -234,7 +260,7 @@ function AsideLeft(props) {
           to { mask-position: -50%; }
         }
 
-        /* 2. 全站文章图片美化 */
+        /* 3. 全站文章图片美化 */
         #notion-article img, 
         .notion-asset-wrapper img,
         #article-wrapper img {
@@ -243,20 +269,18 @@ function AsideLeft(props) {
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
           border: 1px solid rgba(0, 0, 0, 0.05) !important;
         }
-        
         #notion-article img:hover, 
         #article-wrapper img:hover {
           transform: translateY(-5px);
           box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.25) !important;
         }
-
         .dark #notion-article img,
         .dark #article-wrapper img {
           box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
           border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
 
-        /* 3. 运行图标旋转 */
+        /* 4. 运行图标旋转 */
         .animate-spin-slow {
           animation: spin 3s linear infinite;
         }
@@ -265,7 +289,7 @@ function AsideLeft(props) {
           to { transform: rotate(360deg); }
         }
 
-        /* 4. 侧边栏菜单精致化 */
+        /* 5. 侧边栏菜单精致化 */
         .sideLeft nav a {
           transition: all 0.3s ease;
           border-radius: 6px;

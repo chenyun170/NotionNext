@@ -26,7 +26,7 @@ const Announcement = ({ post, className }) => {
                   <i className='fas fa-gift mr-2 animate-bounce' /> 活动一：图灵搜岁末活动
               </div>
               <p className='text-xs text-gray-700'>
-                  🔥 <strong>外贸获客工具</strong> 原价 ¥2180，现仅需 <strong>¥1600</strong>！
+                  🔥 <strong>外贸获客工具</strong> 原价 ¥2180，现仅需 <strong>¥1600</strong>！限时：2025.12.31
               </p>
               <a href="http://h.topeasysoft.com/20251211tls/index.html?i=BB54F6" target="_blank" rel="noopener noreferrer" 
                  className='inline-block bg-orange-500 text-white text-[10px] px-2 py-1 rounded mt-2 hover:bg-orange-600 transition-colors'>
@@ -42,7 +42,7 @@ const Announcement = ({ post, className }) => {
                   <i className='fas fa-fire mr-2 animate-pulse' /> 活动二：顶易云岁末活动
               </div>
               <p className='text-xs text-gray-700'>
-                  🚀 <strong>高阶获客工具</strong> 限时赠送社媒搜索工具、138届广交会名录！
+                  🚀 <strong>高阶获客工具</strong> 限时赠送社媒搜索工具、138届广交会名录！限时：2025.12.31
               </p>
               <a href="http://h.topeasysoft.com/20251211dyy/index.html?i=BB54F6" target="_blank" rel="noopener noreferrer" 
                  className='inline-block bg-blue-500 text-white text-[10px] px-2 py-1 rounded mt-2 hover:bg-blue-600 transition-colors'>

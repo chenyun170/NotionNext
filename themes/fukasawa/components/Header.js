@@ -6,14 +6,15 @@ import SearchInput from './SearchInput'
 import { siteConfig } from '@/lib/config'
 
 /**
- * 顶部导航（移动端专用）- 包含详情箭头，彻底解决内容漂移
+ * 顶部导航（移动端专用）- 增强文字抓取逻辑
  */
 const Header = props => {
   const [isOpen, changeShow] = useState(false)
   const collapseRef = useRef(null)
   
-  // 仅获取全局配置公告，不使用任何页面变量
-  const noticeHtml = siteConfig('ANNOUNCEMENT') || ''
+  // 1. 尝试从配置中获取公告内容
+  // 增加多种获取方式，确保在不同版本的 NotionNext 中都能拿到文字
+  const noticeHtml = siteConfig('ANNOUNCEMENT') || props?.notice || ''
 
   const toggleMenuOpen = () => {
     changeShow(!isOpen)
@@ -22,7 +23,7 @@ const Header = props => {
   return (
     <div id='top-nav' className='z-50 block lg:hidden relative'>
       {/* 1. 顶部跑马灯横幅 */}
-      <div className='w-full bg-orange-600 py-2 overflow-hidden relative border-b border-orange-700 shadow-lg' style={{ zIndex: 100 }}>
+      <div className='w-full bg-orange-600 py-2.5 overflow-hidden relative border-b border-orange-700 shadow-lg' style={{ zIndex: 100 }}>
         <div className='flex items-center'>
             {/* 固定小喇叭 */}
             <div className='pl-3 pr-2 bg-orange-600 z-[110] relative flex items-center shadow-[5px_0_10px_rgba(234,88,12,1)]'>
@@ -30,19 +31,18 @@ const Header = props => {
             </div>
             
             {/* 跑马灯滚动容器 */}
-            <div className='marquee-container whitespace-nowrap flex flex-grow'>
-                <div className='marquee-content px-4'>
-                   <span className='marquee-item'>
-                      <span dangerouslySetInnerHTML={{ __html: noticeHtml }} />
-                      <i className='fas fa-arrow-circle-right ml-2 text-[10px] opacity-80'></i>
-                   </span>
-                </div>
-                {/* 无缝循环副本 */}
-                <div className='marquee-content px-4'>
-                   <span className='marquee-item'>
-                      <span dangerouslySetInnerHTML={{ __html: noticeHtml }} />
-                      <i className='fas fa-arrow-circle-right ml-2 text-[10px] opacity-80'></i>
-                   </span>
+            <div className='marquee-container flex-grow overflow-hidden'>
+                <div className='marquee-content whitespace-nowrap flex'>
+                   <div className='marquee-item-wrapper flex items-center'>
+                      {/* 如果 noticeHtml 为空，这里会显示备选文字，方便你排查问题 */}
+                      <span className='marquee-text' dangerouslySetInnerHTML={{ __html: noticeHtml || '欢迎来到外贸获客情报局' }} />
+                      <i className='fas fa-arrow-circle-right ml-2 text-black text-[10px] animate-pulse'></i>
+                   </div>
+                   {/* 循环副本 */}
+                   <div className='marquee-item-wrapper flex items-center'>
+                      <span className='marquee-text' dangerouslySetInnerHTML={{ __html: noticeHtml || '欢迎来到外贸获客情报局' }} />
+                      <i className='fas fa-arrow-circle-right ml-2 text-black text-[10px] animate-pulse'></i>
+                   </div>
                 </div>
             </div>
         </div>
@@ -65,24 +65,32 @@ const Header = props => {
       </div>
 
       <style jsx global>{`
-        .marquee-container { display: flex; overflow: hidden; width: 100%; }
-        .marquee-content { display: flex; animation: marquee 25s linear infinite; }
+        .marquee-container { width: 100%; }
+        .marquee-content { 
+          display: flex; 
+          animation: marquee 25s linear infinite; 
+          width: max-content;
+        }
         
-        .marquee-item {
-          display: flex;
-          align-items: center;
-          color: #000000 !important; 
-          font-weight: 800 !important;
-          font-size: 13px;
-          margin-right: 120px; /* 两个活动之间的安全距离 */
+        .marquee-item-wrapper {
+          padding-right: 150px; /* 两个活动之间的超大间距，防止重叠 */
         }
 
-        /* 强制覆盖所有 HTML 标签样式 */
-        .marquee-item * {
+        .marquee-text {
+          color: #000000 !important; 
+          font-weight: 800 !important;
+          font-size: 14px !important;
+          display: inline-block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+        }
+
+        /* 强制跑马灯内所有 HTML 内容可见 */
+        .marquee-text * {
           color: #000000 !important;
           display: inline !important;
           font-weight: 800 !important;
-          text-decoration: none !important;
+          visibility: visible !important;
         }
 
         @keyframes marquee {

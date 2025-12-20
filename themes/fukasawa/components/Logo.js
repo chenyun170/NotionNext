@@ -16,8 +16,8 @@ const Logo = props => {
       <style jsx>{`
         .christmas-container { position: relative; display: inline-block; }
         .santa-hat {
-          position: absolute; top: -18px; left: 12px; width: 42px;
-          z-index: 10; transform: rotate(-15deg); pointer-events: none;
+          position: absolute; top: -18px; left: 24px; width: 42px;
+          z-index: 10; transform: rotate(5deg); pointer-events: none;
         }
         .snow-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         .snowflake {

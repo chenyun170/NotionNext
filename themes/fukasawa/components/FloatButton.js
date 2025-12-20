@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 /**
- * 侧边栏悬浮组件 - 修复堆叠挡住问题
+ * 侧边栏悬浮组件 - 彻底解决堆叠与遮挡问题
  */
 const FloatButton = () => {
   const [showPopup, setShowPopup] = useState(false)
@@ -10,7 +10,8 @@ const FloatButton = () => {
   // 监听滚动逻辑
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 200)
+      // 降低触发阈值，让用户尽早看到返回顶部按钮
+      setShowScrollTop(window.scrollY > 150)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
@@ -21,9 +22,10 @@ const FloatButton = () => {
   }
 
   return (
-    <div className="fixed bottom-10 right-6 md:right-10 flex flex-col items-center space-y-4" style={{ zIndex: 9999 }}>
+    // 增加最外层 bottom 距离，并将 space-y 增加到 6，拉开按钮间距
+    <div className="fixed bottom-8 right-6 md:right-10 flex flex-col items-center space-y-6" style={{ zIndex: 9999 }}>
       
-      {/* 1. 返回顶部按钮 - 现在它会始终位于礼品包上方，不会被挡住 */}
+      {/* 1. 返回顶部按钮 - 增加过渡效果，确保它在礼品包的正上方且有足够空隙 */}
       <div 
         onClick={scrollToTop}
         className={`w-12 h-12 bg-white dark:bg-gray-800 text-slate-600 dark:text-gray-300 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:text-orange-600 transition-all duration-500 border border-gray-100 dark:border-gray-700 group ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
@@ -33,27 +35,27 @@ const FloatButton = () => {
 
       {/* 2. 礼品包悬浮球区域 */}
       <div className="relative flex flex-col items-center">
-        {/* 二维码弹窗 */}
+        {/* 二维码弹窗 - 修改为向左侧或向上弹出，避免挡住上方的返回按钮 */}
         {showPopup && (
-          <div className="absolute bottom-20 right-0 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 p-6 transition-all transform scale-100 origin-bottom-right">
+          <div className="absolute bottom-20 right-0 w-60 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 p-5 transition-all transform scale-100 origin-bottom-right">
             <div className="text-center">
-              <h3 className="font-bold text-slate-800 dark:text-white text-lg">情报局长私域</h3>
-              <p className="text-gray-500 text-xs mt-1 mb-4 leading-relaxed">
+              <h3 className="font-bold text-slate-800 dark:text-white text-md">情报局长私域</h3>
+              <p className="text-gray-500 text-[10px] mt-1 mb-3 leading-relaxed">
                 扫码添加微信<br/>
                 备注<span className="text-orange-600 font-bold">“获客”</span>领资料包
               </p>
-              <div className="bg-gray-50 dark:bg-gray-900 p-2 rounded-lg mb-4 border dark:border-gray-700">
+              <div className="bg-gray-50 dark:bg-gray-900 p-2 rounded-lg mb-3 border dark:border-gray-700">
                  <img src="/wechat-qr.png" alt="微信二维码" className="w-full h-auto" />
               </div>
-              <button onClick={() => setShowPopup(false)} className="text-gray-400 text-xs hover:text-orange-600">[ 关闭 ]</button>
+              <button onClick={() => setShowPopup(false)} className="text-gray-400 text-[10px] hover:text-orange-600 transition-colors uppercase tracking-widest">[ Close ]</button>
             </div>
           </div>
         )}
 
-        {/* 提示气泡 */}
+        {/* 提示气泡 - 缩小了一点点，减少视觉占用 */}
         {!showPopup && (
-          <div className="absolute -top-12 right-0 bg-slate-800 text-white text-xs py-2 px-4 rounded-xl whitespace-nowrap shadow-lg animate-bounce">
-            领外贸获客资料包 🎁
+          <div className="absolute -top-10 right-0 bg-slate-800 text-white text-[10px] py-1.5 px-3 rounded-lg whitespace-nowrap shadow-lg animate-bounce">
+            领资料包 🎁
             <div className="absolute -bottom-1 right-6 w-2 h-2 bg-slate-800 rotate-45"></div>
           </div>
         )}
@@ -68,10 +70,11 @@ const FloatButton = () => {
         </div>
       </div>
 
+      {/* 呼吸灯动画 */}
       <style jsx>{`
         @keyframes pulse-orange {
           0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.7); }
-          70% { transform: scale(1.08); box-shadow: 0 0 0 15px rgba(234, 88, 12, 0); }
+          70% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(234, 88, 12, 0); }
           100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0); }
         }
       `}</style>

@@ -24,7 +24,7 @@ const Announcement = ({ post, className }) => {
                   <i className='fas fa-gift mr-2 animate-bounce' /> 限时特惠活动
               </div>
               <p className='text-xs text-gray-700 leading-relaxed'>
-                  🔥 <strong>外贸获客岁末大酬宾</strong> 正在进行中！
+                  🔥 <strong>外贸获客软件岁末大酬宾</strong> 正在进行中！
                   <br />
                   原价 ¥2180，现团购价仅需 <strong>¥1600</strong>。
               </p>

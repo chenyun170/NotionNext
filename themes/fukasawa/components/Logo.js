@@ -17,7 +17,7 @@ const Logo = props => {
         .christmas-container { position: relative; display: inline-block; }
         .santa-hat {
           position: absolute; top: -18px; left: 24px; width: 42px;
-          z-index: 10; transform: rotate(5deg); pointer-events: none;
+          z-index: 20; transform: rotate(10deg); pointer-events: none;/* 这里的数字要大于图片的 z-index */
         }
         .snow-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         .snowflake {

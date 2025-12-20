@@ -11,10 +11,11 @@ import { formatDateFmt } from '@/lib/utils/formatDate'
 import SmartLink from '@/components/SmartLink'
 import ArticleAround from './ArticleAround'
 import TagItemMini from './TagItemMini'
+import { isBrowser } from '@/lib/utils' // 确保引入 isBrowser 用于复制功能
 
 /**
- *
- * @param {*} param0
+ * Fukasawa 文章详情页 - 顶尖情报局名片网格版
+ * @param {*} props
  * @returns
  */
 export default function ArticleDetail(props) {
@@ -100,6 +101,74 @@ export default function ArticleDetail(props) {
         <section id='article-wrapper'>
           {post && <NotionPage post={post} />}
         </section>
+
+        {/* --- 名片化网格版权声明 --- */}
+        <div className="mt-14 group print:hidden">
+          <div className="relative overflow-hidden rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 p-8 transition-all hover:shadow-xl hover:border-orange-500/30">
+            
+            <div className="absolute -top-6 -right-6 opacity-[0.03] dark:opacity-[0.05] group-hover:opacity-10 transition-opacity pointer-events-none">
+              <i className="fas fa-shield-alt text-9xl rotate-12 text-slate-900 dark:text-white"></i>
+            </div>
+
+            <div className="relative z-10">
+              <div className="flex items-center space-x-3 mb-8">
+                <div className="flex space-x-1">
+                  <div className="h-4 w-1 bg-orange-600 rounded-full animate-pulse"></div>
+                  <div className="h-4 w-1 bg-orange-600/40 rounded-full"></div>
+                </div>
+                <h3 className="text-xs font-black tracking-[0.2em] text-slate-800 dark:text-gray-200 uppercase">
+                  Intel Report Copyright / 版权声明
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
+                <div className="flex flex-col border-l-2 border-gray-200 dark:border-gray-800 pl-4 transition-colors group-hover:border-orange-600/50">
+                  <span className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Source / 情报源</span>
+                  <span className="text-sm font-bold dark:text-gray-300 flex items-center">
+                    外贸获客情报局 <i className="fas fa-check-circle ml-2 text-blue-500 text-[10px]" title="官方认证"></i>
+                  </span>
+                </div>
+
+                <div className="flex flex-col border-l-2 border-gray-200 dark:border-gray-800 pl-4 transition-colors group-hover:border-orange-600/50">
+                  <span className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Share / 情报传递</span>
+                  <button 
+                    onClick={() => {
+                      if(isBrowser) {
+                        navigator.clipboard.writeText(window.location.href);
+                        alert('情报链接已加密存入剪贴板，快去转发吧！');
+                      }
+                    }}
+                    className="text-sm text-left font-mono text-orange-600 hover:text-orange-500 transition-colors flex items-center group/link"
+                  >
+                    <span className="truncate">点击复制本文永久链接</span>
+                    <i className="fas fa-copy ml-2 text-[10px] opacity-0 group-hover/link:opacity-100 transition-opacity"></i>
+                  </button>
+                </div>
+
+                <div className="flex flex-col border-l-2 border-gray-200 dark:border-gray-800 pl-4 transition-colors group-hover:border-orange-600/50">
+                  <span className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">License / 许可协议</span>
+                  <span className="text-sm dark:text-gray-300">
+                    CC BY-NC-SA 4.0 <span className="text-[10px] text-gray-500 ml-1">(署名-非商-相同方式)</span>
+                  </span>
+                </div>
+
+                <div className="flex flex-col border-l-2 border-gray-200 dark:border-gray-800 pl-4 transition-colors group-hover:border-orange-600/50">
+                  <span className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Index / 情报索引</span>
+                  <span className="text-sm font-mono dark:text-gray-400 tabular-nums uppercase">
+                    #TC-{new Date().getFullYear()}-{post?.id?.slice(0, 6)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-5 border-t border-dashed border-gray-200 dark:border-gray-800">
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed italic">
+                  <i className="fas fa-info-circle mr-2 opacity-60"></i>
+                  局长寄语：本站情报旨在助力外贸人精准获客。严禁恶意洗稿或未经授权的商业挪用。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <section>
           <AdSlot type='in-article' />

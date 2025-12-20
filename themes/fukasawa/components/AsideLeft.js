@@ -21,7 +21,7 @@ import SiteInfo from './SiteInfo'
 import SocialButton from './SocialButton'
 
 /**
- * 侧边栏 - 顶尖级流光 + 全站图片美化版
+ * 侧边栏 - 顶尖级流光 + 全站图片美化版 (修复圣诞帽显示问题)
  */
 function AsideLeft(props) {
   const {
@@ -139,6 +139,7 @@ function AsideLeft(props) {
       )}
 
       <div className={`h-full ${isCollapsed ? 'hidden' : 'p-8'}`}>
+        {/* 修改点：调整容器以适应帽子 */}
         <div className="shimmer-logo-wrapper">
            <Logo {...props} />
         </div>
@@ -217,10 +218,13 @@ function AsideLeft(props) {
 
       {/* --- 顶尖级视觉美化 CSS --- */}
       <style jsx global>{`
-        /* 1. Logo 流光 */
+        /* 1. Logo 流光 - 修复圣诞帽裁切 */
         .shimmer-logo-wrapper {
           position: relative;
-          overflow: hidden;
+          /* 关键修改：通过 padding 为顶部的帽子留出空间，并改 overflow 为 visible */
+          padding-top: 20px; 
+          margin-top: -20px;
+          overflow: visible; 
           mask-image: linear-gradient(-75deg, rgba(0,0,0,.6) 30%, #000 50%, rgba(0,0,0,.6) 70%);
           mask-size: 200%;
           animation: shimmer 4s infinite;
@@ -230,7 +234,7 @@ function AsideLeft(props) {
           to { mask-position: -50%; }
         }
 
-        /* 2. 全站文章图片美化：圆角 + 阴影 + 悬停位移 */
+        /* 2. 全站文章图片美化 */
         #notion-article img, 
         .notion-asset-wrapper img,
         #article-wrapper img {
@@ -240,14 +244,12 @@ function AsideLeft(props) {
           border: 1px solid rgba(0, 0, 0, 0.05) !important;
         }
         
-        /* 悬停时图片轻微上浮并加深阴影 */
         #notion-article img:hover, 
         #article-wrapper img:hover {
           transform: translateY(-5px);
           box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.25) !important;
         }
 
-        /* 深色模式下的图片阴影调整 */
         .dark #notion-article img,
         .dark #article-wrapper img {
           box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;

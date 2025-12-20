@@ -1,3 +1,5 @@
+'use client'
+
 import DarkModeButton from '@/components/DarkModeButton'
 import { AdSlot } from '@/components/GoogleAdsense'
 import { siteConfig } from '@/lib/config'
@@ -36,6 +38,26 @@ function AsideLeft(props) {
   const router = useRouter()
   const { fullWidth } = useGlobal()
 
+  // --- 新增：运行时间统计逻辑 ---
+  const [runtime, setRuntime] = useState('')
+  const START_TIME = '2024-05-01' // <--- 这里修改为你的实际建站日期
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const start = new Date(START_TIME)
+      const now = new Date()
+      const diff = now.getTime() - start.getTime()
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+      
+      setRuntime(`${days}天${hours}时${minutes}分${seconds}秒`)
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
   const FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT =
     fullWidth ||
     siteConfig('FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT', null, CONFIG)
@@ -52,7 +74,6 @@ function AsideLeft(props) {
     CONFIG
   )
 
-  // 侧边栏折叠从 本地存储中获取 open 状态的初始值
   const [isCollapsed, setIsCollapse] = useState(() => {
     if (typeof window !== 'undefined') {
       return (
@@ -63,7 +84,6 @@ function AsideLeft(props) {
     return FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT
   })
 
-  // 在组件卸载时保存 open 状态到本地存储中
   useEffect(() => {
     if (isBrowser) {
       localStorage.setItem('fukasawa-sidebar-collapse', isCollapsed)
@@ -87,12 +107,10 @@ function AsideLeft(props) {
     }
   }, [isCollapsed])
 
-  // 折叠侧边栏
   const toggleOpen = () => {
     setIsCollapse(!isCollapsed)
   }
 
-  // 自动折叠侧边栏 onResize 窗口宽度小于1366 || 滚动条滚动至页面的300px时 ; 将open设置为false
   useEffect(() => {
     if (!FUKASAWA_SIDEBAR_COLLAPSE_ON_SCROLL) {
       return
@@ -121,7 +139,6 @@ function AsideLeft(props) {
   return (
     <div
       className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-300 transition-all bg-white dark:bg-hexo-black-gray min-h-screen hidden lg:block z-20`}>
-      {/* 悬浮的折叠按钮 */}
       {FUKASAWA_SIDEBAR_COLLAPSE_BUTTON && (
         <div
           className={`${position} hidden lg:block fixed top-0 cursor-pointer hover:scale-110 duration-300 px-3 py-2 dark:text-white`}
@@ -185,13 +202,24 @@ function AsideLeft(props) {
           <div className='w-12 my-4' />
           <SocialButton />
           <SiteInfo />
+          
+          {/* --- 新增：实时运行时间显示 --- */}
+          <div className='mt-6 border-t border-gray-100 dark:border-gray-800 pt-4'>
+            <div className='flex items-center text-[11px] text-gray-400 dark:text-gray-500 mb-2'>
+              <i className='fas fa-hourglass-half mr-2 animate-pulse text-orange-600'></i>
+              <span>情报局运行时间</span>
+            </div>
+            <div className='font-mono text-[10px] text-slate-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 py-1 px-2 rounded border border-gray-100 dark:border-gray-800 tabular-nums'>
+              {runtime || 'Initializing...'}
+            </div>
+          </div>
         </section>
 
         <section className='flex justify-center dark:text-gray-200 pt-4'>
           <DarkModeButton />
         </section>
 
-        <section className='sticky top-0 pt-12  flex flex-col max-h-screen '>
+        <section className='sticky top-0 pt-12 flex flex-col max-h-screen '>
           <Catalog toc={post?.toc} />
           <div className='flex justify-center'>
             <div>{slot}</div>

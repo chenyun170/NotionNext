@@ -48,7 +48,7 @@ function AsideLeft(props) {
   })
 
   return (
-    <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-300 transition-all bg-white/60 dark:bg-hexo-black-gray/60 backdrop-blur-lg min-h-screen hidden lg:block z-20`}>
+    <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-300 transition-all bg-white dark:bg-hexo-black-gray min-h-screen hidden lg:block z-20`}>
       <div className={`h-full ${isCollapsed ? 'hidden' : 'p-8'} relative z-10`}>
         <div className="shimmer-logo-wrapper"><Logo {...props} /></div>
         <section className='siteInfo pt-8 italic opacity-80'>{siteConfig('DESCRIPTION')}</section>
@@ -62,9 +62,9 @@ function AsideLeft(props) {
       </div>
 
       <style jsx global>{`
-        /* --- 暴力注入：全站星空穿透 --- */
+        /* 1. 纯净底层星空：只在背景层显示，不穿透容器 */
         body {
-          background-color: #f8f9fa !important;
+          background-color: #f0f2f5 !important; /* 稍微深一点的底色，让星星更明显 */
         }
         .dark body {
           background-color: #050505 !important;
@@ -75,25 +75,16 @@ function AsideLeft(props) {
           position: fixed;
           top: 0; left: 0;
           width: 100%; height: 100%;
-          /* 强化星星对比度，确保肉眼可见 */
           background-image: 
-            radial-gradient(1.5px 1.5px at 20px 30px, #666, rgba(0,0,0,0)),
-            radial-gradient(2px 2px at 50px 160px, #888, rgba(0,0,0,0)),
-            radial-gradient(1.5px 1.5px at 150px 130px, #999, rgba(0,0,0,0)),
-            radial-gradient(2px 2px at 250px 50px, #777, rgba(0,0,0,0));
+            radial-gradient(1.2px 1.2px at 25px 35px, #888, rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 60px 100px, #aaa, rgba(0,0,0,0)),
+            radial-gradient(1.2px 1.2px at 110px 180px, #999, rgba(0,0,0,0));
           background-repeat: repeat;
           background-size: 300px 300px;
-          opacity: 0.3 !important; /* 强制提升透明度 */
-          z-index: 0 !important; 
+          opacity: 0.25; /* 调高亮度，确保能看到 */
+          z-index: -1;
           pointer-events: none;
-          animation: stars-drift 100s linear infinite;
-        }
-
-        .dark body::before {
-          background-image: 
-            radial-gradient(1.5px 1.5px at 20px 30px, #fff, rgba(0,0,0,0)),
-            radial-gradient(2px 2px at 80px 180px, #ddd, rgba(0,0,0,0));
-          opacity: 0.4 !important;
+          animation: stars-drift 150s linear infinite;
         }
 
         @keyframes stars-drift {
@@ -101,22 +92,7 @@ function AsideLeft(props) {
           to { transform: translateY(-300px); }
         }
 
-        /* 强制透明化所有挡住星空的容器 */
-        #wrapper, #container, main, .bg-white, .dark .bg-hexo-black-gray {
-           background-color: transparent !important;
-        }
-
-        /* 恢复文章内容的背景，确保文字可读，但带点透明度 */
-        #article-wrapper, article {
-           background-color: rgba(255, 255, 255, 0.85) !important;
-           backdrop-filter: blur(10px);
-           border-radius: 20px;
-        }
-        .dark #article-wrapper, .dark article {
-           background-color: rgba(18, 18, 18, 0.85) !important;
-        }
-
-        /* Logo 漂浮感 */
+        /* 2. Logo 流光保持 */
         .shimmer-logo-wrapper {
           position: relative; padding-top: 20px; margin-top: -20px; overflow: visible; 
           mask-image: linear-gradient(-75deg, rgba(0,0,0,.6) 30%, #000 50%, rgba(0,0,0,.6) 70%);

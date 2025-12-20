@@ -8,70 +8,48 @@
 Notion是一个能让效率暴涨的生产力引擎，可以帮你书写文档、管理笔记，搭建知识库，甚至可以为你规划项目、时间管理、组织团队、提高生产力、还有当前最强大的AI技术加持。
 
 > 如果希望进一步探索Notion的功能，欢迎购买《[Notion笔记从入门到精通进阶课程](https://docs.tangly1024.com/article/notion-tutorial)》
+以下是对该网页及代码结构的详细分析：
 
-# NotionNext
+1. 项目核心定位
+技术栈：基于 Next.js（React 框架）开发。
 
-<p>
-  <a aria-label="GitHub commit activity" href="https://github.com/tangly1024/NotionNext/commits/main" title="GitHub commit activity">
-    <img src="https://img.shields.io/github/commit-activity/m/tangly1024/NotionNext?style=for-the-badge"/>
-  </a>
-  <a aria-label="GitHub contributors" href="https://github.com/tangly1024/NotionNext/graphs/contributors" title="GitHub contributors">
-    <img src="https://img.shields.io/github/contributors/tangly1024/NotionNext?color=orange&style=for-the-badge"/>
-  </a>
-  <a aria-label="Build status" href="#" title="Build status">
-    <img src="https://img.shields.io/github/deployments/tangly1024/NotionNext/Production?logo=Vercel&style=for-the-badge"/>
-  </a>
-  <a aria-label="Powered by Vercel" href="https://vercel.com?utm_source=Craigary&utm_campaign=oss" title="Powered by Vercel">
-    <img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg" height="28"/>
-  </a>
-</p>
+后端/CMS：使用 Notion 作为内容管理系统（CMS）。你只需要在 Notion 里写文章，网站会自动同步更新。
 
-中文文档 | [README in English](./README_EN.md)
+部署：完美适配 Vercel、Netlify 等平台，支持零成本托管。
 
-<hr/>
+2. 代码结构分析
+在该 GitHub 仓库的 main 分支中，主要的目录结构及功能如下：
 
-一个使用 NextJS + Notion API 实现的，部署在 Vercel 上的静态博客系统。为Notion和所有创作者设计。
+/components：存放网站的所有 React 组件，如导航栏、侧边栏、搜索框、文章列表等。它是 UI 的核心。
 
-支持多种部署方案
+/themes：这是该项目的一大亮点。它内置了多种主题风格（如 Hexo, Medium, Next, Fukasawa 等）。代码逻辑支持一键切换主题，方便用户定制外观。
 
-## 预览效果
+/lib：存放核心逻辑代码，包括：
 
-在线演示：[https://preview.tangly1024.com/](https://preview.tangly1024.com/) ，点击左下角挂件可以切换主题，没找到喜欢的主题？[贡献](/CONTRIBUTING.md)一个吧~
+notion.js：负责调用 Notion API 获取数据、解析 Notion 页面块（Blocks）并转换为 HTML/React 组件。
 
-| Next                                                                                                  | Medium                                                                                                      | Hexo                                                                                                  | Fukasawa                                                                                                          |
-| ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| <img src='./docs/theme-next.png' width='300'/> [预览NEXT](https://preview.tangly1024.com/?theme=next) | <img src='./docs/theme-medium.png' width='300'/> [预览MEDIUM](https://preview.tangly1024.com/?theme=medium) | <img src='./docs/theme-hexo.png' width='300'/> [预览HEXO](https://preview.tangly1024.com/?theme=hexo) | <img src='./docs/theme-fukasawa.png' width='300'/> [预览FUKASAWA](https://preview.tangly1024.com/?theme=fukasawa) |
+cache.js：缓存机制，用于提高静态生成（SSG）的效率。
 
-## 致谢
+/pages：Next.js 的路由目录。每一个 .js 文件对应网站的一个页面（如首页、文章详情页、归档页）。
 
-感谢Craig Hart发起的Nobelium项目
+blog.config.js：最重要的配置文件。用户通过修改这个文件来设置网站标题、社交链接、主题选择、统计代码（GA/百度统计）等。
 
-<table><tr align="left">
-  <td align="center"><a href="https://github.com/craigary" title="Craig Hart"><img src="https://avatars.githubusercontent.com/u/10571717" width="64px;"alt="Craig Hart"/></a><br/><a href="https://github.com/craigary" title="Craig Hart">Craig Hart</a></td>
-</tr></table>
+3. 技术特点总结
+静态生成 (SSG) 与 增量再生 (ISR)：利用 Next.js 特性，保证了极快的加载速度和优秀的 SEO 表现。
 
-## 贡献者
+多主题支持：通过代码解耦，不同主题共用一套 Notion 数据解析逻辑。
 
-致敬每一位开发者！
+高度可配置：无需深入代码，仅通过配置文件就能修改 80% 的样式和功能。
 
-[![Contributors](https://contrib.rocks/image?repo=tangly1024/NotionNext)](https://github.com/tangly1024/NotionNext/graphs/contributors)
+丰富的插件集成：内置支持了评论系统（Giscus, Waline, Utterances）、搜索（Algolia）、深色模式等。
 
-## 引用技术
+4. 给外贸人/内容创作者的建议
+如果你打算用它做公众号内容的同步展示或个人外贸独立站：
 
-- **框架**: [Next.js](https://nextjs.org)
-- **样式**: [Tailwind CSS](https://www.tailwindcss.cn/)
-- **渲染**: [React-notion-x](https://github.com/NotionX/react-notion-x)
-- **评论**: [Twikoo](https://github.com/imaegoo/twikoo), [Giscus](https://giscus.app/zh-CN), [Gitalk](https://gitalk.github.io), [Cusdis](https://cusdis.com), [Utterances](https://utteranc.es)
-- **图标**: [Fontawesome](https://fontawesome.com/v6/icons/)
+低成本：无需购买服务器，只需一个域名（甚至可以用 Vercel 赠送的二级域名）。
 
-## 🔗 友情链接
+易维护：你只需要像用笔记软件一样操作 Notion，不需要懂 Git 或代码发布流程。
 
-- [Elog](https://github.com/LetTTGACO/elog) Markdown 批量导出工具、开放式跨平台博客解决方案，随意组合写作平台(语雀/Notion/FlowUs/飞书)和博客平台(Hexo/Vitepress/Halo/Confluence/WordPress等)
+合规性：代码开源，数据掌握在自己的 Notion 账号里。
 
-## License
-
-The MIT License.
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=tangly1024/NotionNext&type=Date)](https://star-history.com/#tangly1024/NotionNext&Date)
+总结：这是一个代码规范、结构清晰、极易上手的工具类项目。如果你有 Next.js 基础，可以通过修改 /themes 目录下的代码实现完全原创的排版。

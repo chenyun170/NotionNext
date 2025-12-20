@@ -34,10 +34,33 @@ const LayoutBase = props => {
   const leftAreaSlot = <Live2D />
   const { onLoading, fullWidth } = useGlobal()
   const searchModal = useRef(null)
+
+  // --- 新增：阅读进度条逻辑 ---
+  useEffect(() => {
+    const handleScroll = () => {
+      const progressBar = document.getElementById('scroll-progress')
+      if (progressBar) {
+        const scrollHeight = document.documentElement.scrollHeight
+        const clientHeight = document.documentElement.clientHeight
+        const scrollTop = window.scrollY || document.documentElement.scrollTop
+        const percent = Math.min((scrollTop / (scrollHeight - clientHeight)) * 100, 100)
+        progressBar.style.width = `${percent}%`
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
     <ThemeGlobalFukasawa.Provider value={{ searchModal }}>
       <div id='theme-fukasawa' className={`${siteConfig('FONT_STYLE')} dark:bg-black scroll-smooth`}>
         <Style />
+        
+        {/* --- 新增：阅读进度条组件 (置顶并高于Header) --- */}
+        <div className='fixed top-0 left-0 w-full h-1 z-[110] pointer-events-none'>
+            <div id='scroll-progress' className='h-full bg-orange-600 transition-all duration-150 shadow-[0_0_10px_rgba(234,88,12,0.5)]' style={{ width: '0%' }}></div>
+        </div>
+
         <Header {...props} />
         <div className={(JSON.parse(siteConfig('LAYOUT_SIDEBAR_REVERSE')) ? 'flex-row-reverse' : '') + ' flex'}>
           <AsideLeft {...props} slot={leftAreaSlot} />

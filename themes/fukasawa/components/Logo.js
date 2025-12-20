@@ -55,7 +55,7 @@ const Logo = props => {
             <img 
               src='https://cloudflare-imgbed-aa9.pages.dev/file/1766201111415_hat.png' 
               className='santa-hat' 
-              style={{ top: '-18px', left: '35px', width: '42px', transform: 'rotate(20deg)' }}
+              style={{ top: '-18px', left: '35px', width: '42px', transform: 'rotate(23deg)' }}
               alt='Christmas Hat' 
             />
           )}

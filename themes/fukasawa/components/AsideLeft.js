@@ -21,9 +21,7 @@ import SiteInfo from './SiteInfo'
 import SocialButton from './SocialButton'
 
 /**
- * 侧边栏
- * @param {*} props
- * @returns
+ * 侧边栏 - 顶尖级流光 + 全站图片美化版
  */
 function AsideLeft(props) {
   const {
@@ -38,21 +36,19 @@ function AsideLeft(props) {
   const router = useRouter()
   const { fullWidth } = useGlobal()
 
-  // --- 新增：运行时间统计逻辑 ---
+  // --- 实时运行时间统计 ---
   const [runtime, setRuntime] = useState('')
-  const START_TIME = '2024-05-01' // <--- 这里修改为你的实际建站日期
+  const START_TIME = '2024-05-01'
 
   useEffect(() => {
     const timer = setInterval(() => {
       const start = new Date(START_TIME)
       const now = new Date()
       const diff = now.getTime() - start.getTime()
-      
       const days = Math.floor(diff / (1000 * 60 * 60 * 24))
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
       const seconds = Math.floor((diff % (1000 * 60)) / 1000)
-      
       setRuntime(`${days}天${hours}时${minutes}分${seconds}秒`)
     }, 1000)
     return () => clearInterval(timer)
@@ -93,17 +89,9 @@ function AsideLeft(props) {
   const isReverse = siteConfig('LAYOUT_SIDEBAR_REVERSE')
   const position = useMemo(() => {
     if (isCollapsed) {
-      if (isReverse) {
-        return 'right-2'
-      } else {
-        return 'left-2'
-      }
+      return isReverse ? 'right-2' : 'left-2'
     } else {
-      if (isReverse) {
-        return 'right-80'
-      } else {
-        return 'left-80'
-      }
+      return isReverse ? 'right-80' : 'left-80'
     }
   }, [isCollapsed])
 
@@ -112,9 +100,7 @@ function AsideLeft(props) {
   }
 
   useEffect(() => {
-    if (!FUKASAWA_SIDEBAR_COLLAPSE_ON_SCROLL) {
-      return
-    }
+    if (!FUKASAWA_SIDEBAR_COLLAPSE_ON_SCROLL) return
     const handleResize = debounce(() => {
       if (window.innerWidth < 1366 || window.scrollY >= 1366) {
         setIsCollapse(true)
@@ -139,6 +125,7 @@ function AsideLeft(props) {
   return (
     <div
       className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-300 transition-all bg-white dark:bg-hexo-black-gray min-h-screen hidden lg:block z-20`}>
+      
       {FUKASAWA_SIDEBAR_COLLAPSE_BUTTON && (
         <div
           className={`${position} hidden lg:block fixed top-0 cursor-pointer hover:scale-110 duration-300 px-3 py-2 dark:text-white`}
@@ -152,14 +139,16 @@ function AsideLeft(props) {
       )}
 
       <div className={`h-full ${isCollapsed ? 'hidden' : 'p-8'}`}>
-        <Logo {...props} />
+        <div className="shimmer-logo-wrapper">
+           <Logo {...props} />
+        </div>
 
-        <section className='siteInfo flex flex-col dark:text-gray-300 pt-8'>
+        <section className='siteInfo flex flex-col dark:text-gray-300 pt-8 italic opacity-80'>
           {siteConfig('DESCRIPTION')}
         </section>
 
         <section className='flex flex-col text-gray-600'>
-          <div className='w-12 my-4' />
+          <div className='w-12 my-4 border-b-2 border-orange-500' />
           <MenuList {...props} />
         </section>
 
@@ -173,11 +162,11 @@ function AsideLeft(props) {
           <Announcement post={notice} />
         </section>
 
-        <section>
+        <section className='rounded-xl overflow-hidden shadow-inner bg-gray-50 dark:bg-gray-900/20 p-2'>
           <MailChimpForm />
         </section>
 
-        <section>
+        <section className='mt-4'>
           <AdSlot type='in-article' />
         </section>
 
@@ -203,13 +192,12 @@ function AsideLeft(props) {
           <SocialButton />
           <SiteInfo />
           
-          {/* --- 新增：实时运行时间显示 --- */}
           <div className='mt-6 border-t border-gray-100 dark:border-gray-800 pt-4'>
             <div className='flex items-center text-[11px] text-gray-400 dark:text-gray-500 mb-2'>
-              <i className='fas fa-hourglass-half mr-2 animate-pulse text-orange-600'></i>
+              <i className='fas fa-hourglass-half mr-2 animate-spin-slow text-orange-600'></i>
               <span>情报局运行时间</span>
             </div>
-            <div className='font-mono text-[10px] text-slate-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 py-1 px-2 rounded border border-gray-100 dark:border-gray-800 tabular-nums'>
+            <div className='font-mono text-[10px] text-slate-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 py-1.5 px-2 rounded border border-gray-100 dark:border-gray-800 tabular-nums text-center'>
               {runtime || 'Initializing...'}
             </div>
           </div>
@@ -226,6 +214,66 @@ function AsideLeft(props) {
           </div>
         </section>
       </div>
+
+      {/* --- 顶尖级视觉美化 CSS --- */}
+      <style jsx global>{`
+        /* 1. Logo 流光 */
+        .shimmer-logo-wrapper {
+          position: relative;
+          overflow: hidden;
+          mask-image: linear-gradient(-75deg, rgba(0,0,0,.6) 30%, #000 50%, rgba(0,0,0,.6) 70%);
+          mask-size: 200%;
+          animation: shimmer 4s infinite;
+        }
+        @keyframes shimmer {
+          from { mask-position: 150%; }
+          to { mask-position: -50%; }
+        }
+
+        /* 2. 全站文章图片美化：圆角 + 阴影 + 悬停位移 */
+        #notion-article img, 
+        .notion-asset-wrapper img,
+        #article-wrapper img {
+          border-radius: 12px !important;
+          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15) !important;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          border: 1px solid rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        /* 悬停时图片轻微上浮并加深阴影 */
+        #notion-article img:hover, 
+        #article-wrapper img:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        /* 深色模式下的图片阴影调整 */
+        .dark #notion-article img,
+        .dark #article-wrapper img {
+          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* 3. 运行图标旋转 */
+        .animate-spin-slow {
+          animation: spin 3s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        /* 4. 侧边栏菜单精致化 */
+        .sideLeft nav a {
+          transition: all 0.3s ease;
+          border-radius: 6px;
+        }
+        .sideLeft nav a:hover {
+          padding-left: 10px;
+          background: rgba(234, 88, 12, 0.05);
+          color: #ea580c !important;
+        }
+      `}</style>
     </div>
   )
 }

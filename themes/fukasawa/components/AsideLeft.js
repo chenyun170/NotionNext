@@ -21,7 +21,7 @@ import SiteInfo from './SiteInfo'
 import SocialButton from './SocialButton'
 
 /**
- * 侧边栏 - 顶尖级流光 + 全站图片美化 + 极简星空背景版
+ * 侧边栏 - 顶尖级流光 + 全站图片美化 + 极简星空背景(透明透视优化版)
  */
 function AsideLeft(props) {
   const {
@@ -124,11 +124,11 @@ function AsideLeft(props) {
 
   return (
     <div
-      className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-300 transition-all bg-white dark:bg-hexo-black-gray min-h-screen hidden lg:block z-20`}>
+      className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-300 transition-all bg-white/70 dark:bg-hexo-black-gray/70 backdrop-blur-md min-h-screen hidden lg:block z-20`}>
       
       {FUKASAWA_SIDEBAR_COLLAPSE_BUTTON && (
         <div
-          className={`${position} hidden lg:block fixed top-0 cursor-pointer hover:scale-110 duration-300 px-3 py-2 dark:text-white`}
+          className={`${position} hidden lg:block fixed top-0 cursor-pointer hover:scale-110 duration-300 px-3 py-2 dark:text-white z-30`}
           onClick={toggleOpen}>
           {isCollapsed ? (
             <i className='fa-solid fa-indent text-xl'></i>
@@ -138,7 +138,7 @@ function AsideLeft(props) {
         </div>
       )}
 
-      <div className={`h-full ${isCollapsed ? 'hidden' : 'p-8'}`}>
+      <div className={`h-full ${isCollapsed ? 'hidden' : 'p-8'} relative z-10`}>
         <div className="shimmer-logo-wrapper">
            <Logo {...props} />
         </div>
@@ -162,7 +162,7 @@ function AsideLeft(props) {
           <Announcement post={notice} />
         </section>
 
-        <section className='rounded-xl overflow-hidden shadow-inner bg-gray-50 dark:bg-gray-900/20 p-2'>
+        <section className='rounded-xl overflow-hidden shadow-inner bg-gray-50/50 dark:bg-gray-900/40 p-2'>
           <MailChimpForm />
         </section>
 
@@ -197,7 +197,7 @@ function AsideLeft(props) {
               <i className='fas fa-hourglass-half mr-2 animate-spin-slow text-orange-600'></i>
               <span>情报局运行时间</span>
             </div>
-            <div className='font-mono text-[10px] text-slate-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 py-1.5 px-2 rounded border border-gray-100 dark:border-gray-800 tabular-nums text-center'>
+            <div className='font-mono text-[10px] text-slate-600 dark:text-gray-400 bg-gray-50/50 dark:bg-gray-900/50 py-1.5 px-2 rounded border border-gray-100 dark:border-gray-800 tabular-nums text-center'>
               {runtime || 'Initializing...'}
             </div>
           </div>
@@ -216,7 +216,7 @@ function AsideLeft(props) {
       </div>
 
       <style jsx global>{`
-        /* 1. 极简星空粒子背景 */
+        /* 1. 极简星空粒子背景 - 修正色值与层级 */
         body::before {
           content: "";
           position: fixed;
@@ -225,24 +225,28 @@ function AsideLeft(props) {
           width: 100%;
           height: 100%;
           background-image: 
-            radial-gradient(1px 1px at 25px 35px, #bbb, rgba(0,0,0,0)),
-            radial-gradient(1.5px 1.5px at 60px 100px, #ddd, rgba(0,0,0,0)),
-            radial-gradient(1px 1px at 110px 180px, #eee, rgba(0,0,0,0)),
-            radial-gradient(1px 1px at 190px 50px, #fff, rgba(0,0,0,0)),
-            radial-gradient(1.5px 1.5px at 150px 130px, #ccc, rgba(0,0,0,0));
+            radial-gradient(1.2px 1.2px at 25px 35px, #888, rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 60px 100px, #aaa, rgba(0,0,0,0)),
+            radial-gradient(1.2px 1.2px at 110px 180px, #999, rgba(0,0,0,0)),
+            radial-gradient(1.2px 1.2px at 190px 50px, #bbb, rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 150px 130px, #888, rgba(0,0,0,0));
           background-repeat: repeat;
-          background-size: 250px 250px;
-          opacity: 0.12;
+          background-size: 300px 300px;
+          opacity: 0.18;
           z-index: -1;
           pointer-events: none;
           animation: stars-drift 120s linear infinite;
         }
         .dark body::before {
-          opacity: 0.25;
+          opacity: 0.35;
+          background-image: 
+            radial-gradient(1.2px 1.2px at 25px 35px, #fff, rgba(0,0,0,0)),
+            radial-gradient(1.5px 1.5px at 60px 100px, #ddd, rgba(0,0,0,0)),
+            radial-gradient(1.2px 1.2px at 110px 180px, #eee, rgba(0,0,0,0));
         }
         @keyframes stars-drift {
           from { transform: translateY(0); }
-          to { transform: translateY(-250px); }
+          to { transform: translateY(-300px); }
         }
 
         /* 2. Logo 流光 - 修复圣诞帽裁切 */
@@ -269,35 +273,21 @@ function AsideLeft(props) {
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
           border: 1px solid rgba(0, 0, 0, 0.05) !important;
         }
-        #notion-article img:hover, 
-        #article-wrapper img:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.25) !important;
-        }
-        .dark #notion-article img,
-        .dark #article-wrapper img {
-          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
-          border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        }
 
-        /* 4. 运行图标旋转 */
-        .animate-spin-slow {
-          animation: spin 3s linear infinite;
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-
-        /* 5. 侧边栏菜单精致化 */
+        /* 4. 侧边栏菜单精致化 */
         .sideLeft nav a {
           transition: all 0.3s ease;
           border-radius: 6px;
         }
         .sideLeft nav a:hover {
           padding-left: 10px;
-          background: rgba(234, 88, 12, 0.05);
+          background: rgba(234, 88, 12, 0.08);
           color: #ea580c !important;
+        }
+        
+        /* 5. 确保正文部分也稍微透明，透出背景 */
+        #container {
+           background-color: transparent !important;
         }
       `}</style>
     </div>

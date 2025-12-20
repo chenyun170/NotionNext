@@ -24,11 +24,11 @@ const Announcement = ({ post, className }) => {
                   <i className='fas fa-gift mr-2 animate-bounce' /> 限时特惠活动
               </div>
               <p className='text-xs text-gray-700 leading-relaxed'>
-                  🔥 <strong>外贸获客工具团购</strong> 正在进行中！
+                  🔥 <strong>外贸获客岁末大酬宾</strong> 正在进行中！
                   <br />
-                  原价 ¥2999，现团购价仅需 <strong>¥998</strong>。
+                  原价 ¥2180，现团购价仅需 <strong>¥1600</strong>。
               </p>
-              <a href="这里替换成你的活动链接" target="_blank" rel="noopener noreferrer" 
+              <a href="http://h.topeasysoft.com/20251211tls/index.html?i=BB54F6" target="_blank" rel="noopener noreferrer" 
                  className='inline-block bg-orange-500 text-white text-[10px] px-2 py-1 rounded mt-2 hover:bg-orange-600 transition-colors'>
                   立即参与 →
               </a>

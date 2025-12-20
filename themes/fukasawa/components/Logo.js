@@ -12,10 +12,6 @@ const Logo = props => {
         {/* 如果你已经上传了logo.png到public文件夹，请取消下面img标签的注释 */}
               <img src='/logo.png' className='w-16 h-16 mb-3 object-contain' alt={siteConfig('TITLE')} /> 
         
-        {/* 2. 临时图标方案：在没上传图片前，先用一个带颜色的雷达图标占位 */}
-        {/*<div className='w-14 h-14 bg-slate-900 rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-105 duration-300'> */}
-               {/*<i className='fas fa-radar text-orange-500 text-2xl animate-pulse'></i> */}
-        </div>
 
         {/* 3. 文字标题部分：代码渲染，字绝对不会错 */}
         <div className='text-center lg:text-left'>

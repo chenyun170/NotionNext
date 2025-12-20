@@ -18,10 +18,13 @@ const Logo = props => {
         .santa-hat {
           position: absolute; top: -18px; left: 24px; width: 42px;
           z-index: 20; transform: rotate(10deg); pointer-events: none;/* 这里的数字要大于图片的 z-index */
+            /* 添加下面这一行，利用正片叠底模式过滤白色背景 */
+          mix-blend-mode: multiply; 
         }
         .snow-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         .snowflake {
           position: absolute; color: #fff; font-size: 12px; opacity: 0.8;
+          text-shadow: 0 0 3px rgba(0,0,0,0.2); /* 让雪花在白色背景上也能隐约可见 */
           animation: fall linear infinite;
         }
         @keyframes fall {

@@ -20,6 +20,7 @@ const Logo = props => {
           position: absolute; 
           z-index: 30; 
           pointer-events: none;
+          background: transparent !important; /* 确保背景透明 */
         }
         /* 雪花容器：z-index 设为最高，确保在图片最前端 */
         .snow-wrapper { 

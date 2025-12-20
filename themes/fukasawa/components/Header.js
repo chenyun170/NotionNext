@@ -6,7 +6,7 @@ import SearchInput from './SearchInput'
 import Announcement from './Announcement'
 
 /**
- * 顶部导航（移动端专用）- 包含顶部跑马灯横幅
+ * 顶部导航（移动端专用）- 包含高层级跑马灯
  */
 const Header = props => {
   const [isOpen, changeShow] = useState(false)
@@ -17,33 +17,34 @@ const Header = props => {
   }
 
   return (
-    <div id='top-nav' className='z-40 block lg:hidden'>
-      {/* 1. 最顶部的跑马灯横幅 */}
-      <div className='w-full bg-orange-600 text-white py-1.5 overflow-hidden relative border-b border-orange-700'>
+    <div id='top-nav' className='z-50 block lg:hidden relative'>
+      {/* 1. 顶部跑马灯横幅 - 增加 z-index 确保最前端 */}
+      <div className='w-full bg-orange-600 py-2 overflow-hidden relative border-b border-orange-700 shadow-lg' style={{ zIndex: 100 }}>
         <div className='flex items-center'>
-            {/* 固定在左侧的小喇叭图标，增加层级感 */}
-            <div className='pl-3 pr-2 bg-orange-600 z-10 relative flex items-center shadow-[5px_0_10px_rgba(234,88,12,1)]'>
-                <i className='fas fa-bullhorn animate-bounce text-xs'></i>
+            {/* 固定的小喇叭 */}
+            <div className='pl-3 pr-2 bg-orange-600 z-[110] relative flex items-center shadow-[5px_0_10px_rgba(234,88,12,1)]'>
+                <i className='fas fa-bullhorn animate-bounce text-white text-xs'></i>
             </div>
             
             {/* 跑马灯滚动容器 */}
-            <div className='marquee-container whitespace-nowrap flex'>
-                <div className='marquee-content px-4 text-[13px] font-medium tracking-wide'>
+            <div className='marquee-container whitespace-nowrap flex flex-grow'>
+                <div className='marquee-content px-4'>
                    <Announcement {...props} />
                 </div>
-                {/* 复制一份内容以实现无缝循环滚动 */}
-                <div className='marquee-content px-4 text-[13px] font-medium tracking-wide'>
+                {/* 循环副本 */}
+                <div className='marquee-content px-4'>
                    <Announcement {...props} />
                 </div>
             </div>
         </div>
       </div>
 
+      {/* 2. 导航栏主体 */}
       <div
         id='sticky-nav'
-        className='relative w-full top-0 z-20 transform duration-500 bg-white dark:bg-black border-b'
+        className='relative w-full top-0 z-40 transform duration-500 bg-white dark:bg-black border-b'
       >
-        {/* 2. 下拉菜单 */}
+        {/* 下拉菜单 */}
         <Collapse type='vertical' isOpen={isOpen} collapseRef={collapseRef}>
           <div className='py-1 px-5'>
             <MenuList
@@ -56,7 +57,7 @@ const Header = props => {
           </div>
         </Collapse>
 
-        {/* 3. Logo 与 菜单按钮 */}
+        {/* Logo 与 菜单按钮 */}
         <div className='w-full flex justify-between items-center p-4'>
           <div className='flex flex-none flex-grow-0'>
             <Logo {...props} />
@@ -69,29 +70,34 @@ const Header = props => {
         </div>
       </div>
 
-      {/* 跑马灯动画 CSS */}
+      {/* 样式优化 */}
       <style jsx global>{`
         .marquee-container {
           display: flex;
           overflow: hidden;
-          width: 100%;
         }
         .marquee-content {
           display: flex;
-          animation: marquee 20s linear infinite; /* 20秒一圈，数字越大速度越慢 */
+          animation: marquee 25s linear infinite;
         }
-        /* 强制 Announcement 内部样式为白色且单行 */
+        /* 强制跑马灯文字为亮黄色、加粗、且层级最高 */
         .marquee-content * {
           display: inline !important;
-          color: white !important;
+          color: #FFEB3B !important; 
           margin: 0 !important;
           padding: 0 !important;
           white-space: nowrap !important;
+          font-weight: 900 !important; /* 极粗字体 */
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.2); /* 增加轻微阴影提升清晰度 */
         }
         .marquee-content a {
-          margin-right: 40px; /* 两个活动之间的间距 */
+          margin-right: 60px;
           text-decoration: none;
-          border-bottom: 1px dashed rgba(255,255,255,0.5);
+          border-bottom: 2px solid #FFEB3B;
+        }
+        /* 触摸暂停 */
+        .marquee-container:active .marquee-content {
+          animation-play-state: paused;
         }
 
         @keyframes marquee {

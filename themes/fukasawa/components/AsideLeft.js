@@ -19,9 +19,10 @@ import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
 import SiteInfo from './SiteInfo'
 import SocialButton from './SocialButton'
+import Link from 'next/link' // [新增] 引入Link用于热门文章跳转
 
 /**
- * 侧边栏 - 顶尖级流光 + 全站图片美化 + 极简星空背景版
+ * 侧边栏 - 升级版：含悬浮广告 + 热门文章
  */
 function AsideLeft(props) {
   const {
@@ -31,7 +32,8 @@ function AsideLeft(props) {
     currentCategory,
     post,
     slot,
-    notice
+    notice,
+    latestPosts = [] // [新增] 获取最新文章列表
   } = props
   const router = useRouter()
   const { fullWidth } = useGlobal()
@@ -152,17 +154,36 @@ function AsideLeft(props) {
           <MenuList {...props} />
         </section>
 
+        {/* --- [新增功能 2] 热门文章 (显示最新5篇) --- */}
+        {latestPosts && latestPosts.length > 0 && (
+            <section className='flex flex-col text-gray-600 dark:text-gray-300'>
+                <div className='w-12 my-4' />
+                <div className='text-sm font-bold mb-3 flex items-center text-orange-600'>
+                    <i className='fas fa-fire mr-2'></i> 热门文章
+                </div>
+                <ul className='space-y-2'>
+                    {latestPosts.slice(0, 5).map((p, index) => (
+                        <li key={p.id}>
+                            <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} passHref legacyBehavior>
+                                <a className='text-xs hover:text-orange-500 hover:underline line-clamp-2 block'>
+                                    <span className='mr-1.5 opacity-50'>{index + 1}.</span>
+                                    {p.title}
+                                </a>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </section>
+        )}
+
         <section className='flex flex-col text-gray-600'>
           <div className='w-12 my-4' />
           <SearchInput {...props} />
         </section>
 
-        <section className='flex flex-col dark:text-gray-300'>
-          <div className='w-12 my-4' />
-          <Announcement post={notice} />
-        </section>
+        {/* [已移除] 原来的 Announcement 位置，为了悬浮移到了最下面 */}
 
-        <section className='rounded-xl overflow-hidden shadow-inner bg-gray-50 dark:bg-gray-900/20 p-2'>
+        <section className='rounded-xl overflow-hidden shadow-inner bg-gray-50 dark:bg-gray-900/20 p-2 mt-4'>
           <MailChimpForm />
         </section>
 
@@ -207,7 +228,15 @@ function AsideLeft(props) {
           <DarkModeButton />
         </section>
 
-        <section className='sticky top-0 pt-12 flex flex-col max-h-screen '>
+        {/* --- [新增功能 1] 悬浮广告区域 (Sticky) --- */}
+        {/* max-h-screen 和 overflow-y-auto 确保如果内容太长也可以在内部滚动 */}
+        <section className='sticky top-0 pt-8 flex flex-col max-h-screen overflow-y-auto no-scrollbar'>
+          
+          {/* 这里是你的活动广告，现在它会一直悬浮在左侧/右侧 */}
+          <div className='mb-4 shadow-lg rounded-xl overflow-hidden bg-white dark:bg-hexo-black-gray'>
+             <Announcement post={notice} />
+          </div>
+
           <Catalog toc={post?.toc} />
           <div className='flex justify-center'>
             <div>{slot}</div>
@@ -298,6 +327,15 @@ function AsideLeft(props) {
           padding-left: 10px;
           background: rgba(234, 88, 12, 0.05);
           color: #ea580c !important;
+        }
+        
+        /* 隐藏滚动条但保留功能 (用于悬浮区) */
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
     </div>

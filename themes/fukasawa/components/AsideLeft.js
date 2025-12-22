@@ -22,7 +22,7 @@ import SocialButton from './SocialButton'
 import Link from 'next/link'
 
 /**
- * 侧边栏 - 调整版：活动移至菜单和热门文章之间
+ * 侧边栏 - 最终版：活动沉底悬浮 + 热门文章
  */
 function AsideLeft(props) {
   const {
@@ -149,18 +149,12 @@ function AsideLeft(props) {
           {siteConfig('DESCRIPTION')}
         </section>
 
-        {/* 1. 外贸获客工具链接 (菜单) */}
         <section className='flex flex-col text-gray-600'>
           <div className='w-12 my-4 border-b-2 border-orange-500' />
           <MenuList {...props} />
         </section>
 
-        {/* 2. [调整位置] 活动板块 (Announcement) - 放在菜单和热门文章中间 */}
-        <div className='mt-6 mb-2'>
-           <Announcement post={notice} />
-        </div>
-
-        {/* 3. 热门文章 (显示最新5篇) */}
+        {/* 1. 热门文章 (显示最新5篇) - 保持在这里 */}
         {latestPosts && latestPosts.length > 0 && (
             <section className='flex flex-col text-gray-600 dark:text-gray-300'>
                 <div className='w-12 my-4' />
@@ -232,10 +226,18 @@ function AsideLeft(props) {
           <DarkModeButton />
         </section>
 
-        {/* 4. 底部悬浮区 (Sticky) - 只保留文章目录 (Catalog) */}
-        {/* 把 Announcement 移走了，这里只留下 Catalog，避免重复显示 */}
+        {/* --- [核心修改] 底部悬浮区 (Sticky) --- */}
+        {/* 当页面滚动到底部时，这里的 Announcement 和 Catalog 会吸附住 */}
         <section className='sticky top-0 pt-8 flex flex-col max-h-screen overflow-y-auto no-scrollbar'>
+          
+          {/* 1. 把活动广告放在悬浮区的第一位，最显眼 */}
+          <div className='mb-4 shadow-xl rounded-xl overflow-hidden bg-white dark:bg-hexo-black-gray border-2 border-orange-500/20'>
+             <Announcement post={notice} />
+          </div>
+
+          {/* 2. 文章目录紧随其后 */}
           <Catalog toc={post?.toc} />
+          
           <div className='flex justify-center'>
             <div>{slot}</div>
           </div>

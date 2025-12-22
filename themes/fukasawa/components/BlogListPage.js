@@ -7,6 +7,9 @@ import { useEffect, useState } from 'react'
 import BlogCard from './BlogCard'
 import BlogPostListEmpty from './BlogListEmpty'
 import PaginationSimple from './PaginationSimple'
+// 1. 引入外贸仪表盘组件
+import ForeignTradeDashboard from './ForeignTradeDashboard'
+
 /**
  * 文章列表分页表格
  * @param page 当前页
@@ -52,7 +55,7 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
         }
         }
     }
-  
+   
     setFilterPosts(newFilterPosts);
   }, [columns, posts]);
 
@@ -61,6 +64,9 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
   } else {
     return (
       <div>
+        {/* 2. 在这里插入外贸仪表盘 (在文章列表之上) */}
+        <ForeignTradeDashboard />
+
         {/* 文章列表 */}
         <div id='posts-wrapper' className='grid-container'>
           {filterPosts?.map((post, index) => (

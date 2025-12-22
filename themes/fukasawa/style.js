@@ -1,28 +1,50 @@
 /* eslint-disable react/no-unknown-property */
 const Style = () => {
   return <style jsx global>{`
-    body{ background-color: #eeedee; }
-    .dark body{ background-color: black; }
-    
-    /* 文章图片：大圆角、深邃阴影、悬浮反馈 */
-    #notion-article img, .notion-image img, #article-wrapper img {
-      border-radius: 16px !important;
-      box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.2) !important;
-      border: 1px solid rgba(0, 0, 0, 0.05) !important;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-      margin: 1.5rem 0;
-    }
-    #notion-article img:hover {
-      transform: translateY(-8px) scale(1.01) !important;
-      box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.3) !important;
+    /* --- [新增] 页面滚动平滑淡入效果 --- */
+
+    /* 定义淡入动画关键帧 */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px); /* 从下方30px处浮起 */
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    /* 布局修正：确保瀑布流整齐 */
-    #theme-fukasawa .grid-item { break-inside: avoid-column; margin-bottom: 1rem; }
-    @media (min-width: 1024px) { #theme-fukasawa .grid-container { column-count: 3; column-gap: 1rem; } }
-    
-    /* 彻底禁止磨砂效果对正文的干扰 */
-    * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    /* 针对文章内的段落、图片、组件应用动画 */
+    #notion-article > div, 
+    #article-wrapper > article > div,
+    .notion-text, 
+    .notion-image, 
+    .notion-collection,
+    .notion-quote {
+      opacity: 0; /* 初始隐藏 */
+      animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      animation-play-state: paused; /* 默认暂停，待滚动到视口时激活（配合下方JS或简单的延迟） */
+    }
+
+    /* 简单的纯CSS方案：利用现有的滚动容器 */
+    /* 如果不想写JS，可以直接给所有块级元素加一个简单的延迟进入 */
+    #notion-article > div {
+       opacity: 1;
+       animation: fadeInUp 1s ease-out forwards;
+    }
+
+    /* --- 2. 极致平滑滚动补丁 --- */
+    html {
+      scroll-behavior: smooth; /* 强制全站平滑滚动，点击目录跳转时不会突兀 */
+    }
+
+    /* --- 3. 修正图片与阴影（保持之前的优良效果） --- */
+    #notion-article img, .notion-image img {
+      border-radius: 16px !important;
+      box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.15) !important;
+      transition: transform 0.4s ease, box-shadow 0.4s ease !important;
+    }
   `}</style>
 }
 export { Style }

@@ -1,192 +1,281 @@
 import React, { useState, useEffect } from 'react';
 
 /**
- * 外贸工作台组件 (智能缓存版)
- * 功能：
- * 1. 全球商机时钟
- * 2. 实时汇率 (带 LocalStorage 缓存，24小时更新一次，极大节省 API)
+ * 外贸工作台组件 V3.0 (终极完整版)
+ * 集成功能：
+ * 1. 全球商机时钟 (含工作/周末/下班状态判定)
+ * 2. 实时汇率 (带缓存策略)
+ * 3. CBM 装箱量计算器 (20GP/40HQ 装柜参考)
+ * 4. WhatsApp 直连工具
  */
 const ForeignTradeDashboard = () => {
-  const [times, setTimes] = useState({ cn: '', uk: '', us: '', la: '' });
+  // --- 1. 状态管理 ---
+  // 时钟
+  const [times, setTimes] = useState({});
+  // 汇率
   const [usd, setUsd] = useState(100);
   const [cny, setCny] = useState('');
   const [rate, setRate] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isCached, setIsCached] = useState(false); // 标记是否使用了缓存数据
+  const [isCached, setIsCached] = useState(false);
+  // WhatsApp
+  const [waPhone, setWaPhone] = useState('');
+  // CBM 计算器
+  const [dims, setDims] = useState({ l: '', w: '', h: '', pcs: '' });
+  const [cbmResult, setCbmResult] = useState(null);
 
-  // 配置：缓存时间 (毫秒) -> 24小时 = 24 * 60 * 60 * 1000
+  // 配置
   const CACHE_DURATION = 24 * 60 * 60 * 1000; 
   const CACHE_KEY = 'ft_dashboard_rate_cache';
 
-  // 1. 智能获取汇率 (优先读取缓存)
-  useEffect(() => {
-    const fetchRate = async () => {
-      const now = new Date().getTime();
-      
-      // A. 检查本地缓存
-      const cachedData = localStorage.getItem(CACHE_KEY);
-      if (cachedData) {
-        try {
-          const parsed = JSON.parse(cachedData);
-          // 如果缓存存在且未过期
-          if (now - parsed.timestamp < CACHE_DURATION) {
-            console.log('使用本地缓存汇率，节省 API 调用');
-            setRate(parsed.rate);
-            setLoading(false);
-            setIsCached(true);
-            return; // ★ 直接结束，不请求 API
-          }
-        } catch (e) {
-          console.error('缓存解析失败，重新请求');
-        }
-      }
+  // --- 2. 核心逻辑 ---
 
-      // B. 缓存失效或不存在，请求 API
+  // A. 智能时钟 + 状态判断 (避坑神器)
+  useEffect(() => {
+    const getCityStatus = (timeZone) => {
       try {
-        console.log('缓存过期或不存在，请求最新汇率 API...');
-        // 使用你的 API Key
-        const response = await fetch('https://v6.exchangerate-api.com/v6/08bd067e490fdc5d9ccac3bd/latest/USD');
-        const data = await response.json();
-        
-        if (data.result === 'success') {
-          const cnyRate = data.conversion_rates.CNY;
-          setRate(cnyRate);
-          setLoading(false);
-          setIsCached(false);
+        const now = new Date();
+        // 获取当地时间对象
+        const localTimeStr = now.toLocaleString("en-US", { timeZone });
+        const localDate = new Date(localTimeStr);
+        const day = localDate.getDay(); // 0=周日, 6=周六
+        const hour = localDate.getHours();
 
-          // ★ 写入新缓存
-          localStorage.setItem(CACHE_KEY, JSON.stringify({
-            rate: cnyRate,
-            timestamp: now
-          }));
-        } else {
-          handleError();
-        }
-      } catch (error) {
-        console.error('网络错误:', error);
-        handleError();
+        // 判定逻辑
+        if (day === 0 || day === 6) return { text: '周末', color: '#f59e0b', bg: '#fffbeb' }; // 黄色
+        if (hour < 9 || hour >= 18) return { text: '休市', color: '#94a3b8', bg: '#f1f5f9' }; // 灰色
+        return { text: '工作', color: '#10b981', bg: '#ecfdf5' }; // 绿色
+      } catch (e) {
+        return { text: '--', color: '#ccc', bg: '#fff' };
       }
     };
 
-    const handleError = () => {
-      // API 挂了就用兜底值，不影响用户体验
-      setRate(7.28);
-      setLoading(false);
-    };
-
-    fetchRate();
-  }, []);
-
-  // 2. 汇率计算联动
-  useEffect(() => {
-    if (rate !== null) {
-      setCny((usd * rate).toFixed(2));
-    }
-  }, [usd, rate]);
-
-  // 3. 时钟逻辑
-  useEffect(() => {
     const updateTime = () => {
       const now = new Date();
       const opts = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-      setTimes({
-        cn: now.toLocaleTimeString('en-GB', { ...opts, timeZone: 'Asia/Shanghai' }),
-        uk: now.toLocaleTimeString('en-GB', { ...opts, timeZone: 'Europe/London' }),
-        us: now.toLocaleTimeString('en-GB', { ...opts, timeZone: 'America/New_York' }),
-        la: now.toLocaleTimeString('en-GB', { ...opts, timeZone: 'America/Los_Angeles' }),
+      
+      const zones = [
+        { key: 'cn', tz: 'Asia/Shanghai', name: '北京' },
+        { key: 'uk', tz: 'Europe/London', name: '伦敦' },
+        { key: 'us', tz: 'America/New_York', name: '纽约' },
+        { key: 'la', tz: 'America/Los_Angeles', name: '加州' }
+      ];
+
+      const newTimes = {};
+      zones.forEach(z => {
+        newTimes[z.key] = {
+          time: now.toLocaleTimeString('en-GB', { ...opts, timeZone: z.tz }),
+          status: getCityStatus(z.tz)
+        };
       });
+      setTimes(newTimes);
     };
+
     const timer = setInterval(updateTime, 1000);
     updateTime();
     return () => clearInterval(timer);
   }, []);
+
+  // B. 汇率获取 (保持不变，带缓存)
+  useEffect(() => {
+    const fetchRate = async () => {
+      const now = new Date().getTime();
+      const cachedData = localStorage.getItem(CACHE_KEY);
+      if (cachedData) {
+        try {
+          const parsed = JSON.parse(cachedData);
+          if (now - parsed.timestamp < CACHE_DURATION) {
+            setRate(parsed.rate); setLoading(false); setIsCached(true); return;
+          }
+        } catch (e) {}
+      }
+      try {
+        const response = await fetch('https://v6.exchangerate-api.com/v6/08bd067e490fdc5d9ccac3bd/latest/USD');
+        const data = await response.json();
+        if (data.result === 'success') {
+          const cnyRate = data.conversion_rates.CNY;
+          setRate(cnyRate); setLoading(false); setIsCached(false);
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ rate: cnyRate, timestamp: now }));
+        } else { setRate(7.28); setLoading(false); }
+      } catch (error) { setRate(7.28); setLoading(false); }
+    };
+    fetchRate();
+  }, []);
+
+  useEffect(() => {
+    if (rate !== null) setCny((usd * rate).toFixed(2));
+  }, [usd, rate]);
+
+  // C. CBM 计算逻辑
+  const calculateCBM = () => {
+    const { l, w, h, pcs } = dims;
+    if (l && w && h && pcs) {
+      // 假设输入单位是 cm
+      const totalCBM = (l * w * h / 1000000) * pcs;
+      
+      // 装柜估算
+      // 20GP ≈ 28cbm, 40GP ≈ 58cbm, 40HQ ≈ 68cbm
+      let container = '';
+      if (totalCBM < 28) container = `约占 20GP 的 ${(totalCBM/28*100).toFixed(0)}%`;
+      else if (totalCBM < 58) container = `建议走 40GP`;
+      else if (totalCBM < 68) container = `建议走 40HQ`;
+      else container = `超过一个高柜，需分柜`;
+
+      setCbmResult({ cbm: totalCBM.toFixed(3), suggestion: container });
+    } else {
+      setCbmResult(null);
+    }
+  };
+
+  // D. WhatsApp 逻辑
+  const handleWaClick = () => {
+    if (!waPhone) return;
+    const cleanNum = waPhone.replace(/[^0-9]/g, '');
+    window.open(`https://wa.me/${cleanNum}`, '_blank');
+  };
 
   return (
     <div className="ft-dashboard-container">
       <style jsx>{`
         .ft-dashboard-container {
           margin-bottom: 30px;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          color: #334155;
         }
-        .dashboard-grid {
-          display: grid; grid-template-columns: 1.5fr 1fr; gap: 15px;
+        
+        /* 布局网格 */
+        .dashboard-row-1 { margin-bottom: 15px; }
+        .dashboard-row-2 { 
+          display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; 
         }
+        .dashboard-row-3 { display: block; }
+
+        /* 通用卡片 */
         .dash-card {
           background: #fff; border-radius: 10px; padding: 15px;
           box-shadow: 0 2px 4px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
+          height: 100%;
         }
         .card-header {
-          font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 12px;
+          font-size: 0.9rem; font-weight: 700; color: #1e293b; margin-bottom: 12px;
           display: flex; align-items: center; gap: 6px;
         }
         .card-header::before {
           content: ''; display: block; width: 3px; height: 12px; background: #3b82f6; border-radius: 2px;
         }
-        /* 时钟样式 */
-        .clock-wrapper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .clock-box { text-align: center; background: #f8fafc; padding: 8px 4px; border-radius: 6px; }
-        .city-name { font-size: 0.7rem; color: #64748b; margin-bottom: 2px; text-transform: uppercase; }
-        .time-text { font-size: 1rem; font-weight: 700; color: #1e293b; font-variant-numeric: tabular-nums; letter-spacing: -0.5px; }
 
-        /* 汇率样式 */
-        .calc-row { display: flex; align-items: center; gap: 8px; }
+        /* 1. 时钟卡片 */
+        .clock-wrapper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .clock-box { 
+          text-align: center; background: #f8fafc; padding: 10px 4px; border-radius: 8px; border: 1px solid #e2e8f0;
+          position: relative; overflow: hidden;
+        }
+        .city-name { font-size: 0.7rem; color: #64748b; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .time-text { font-size: 1.1rem; font-weight: 700; color: #0f172a; line-height: 1.2; font-variant-numeric: tabular-nums; }
+        .status-badge {
+          font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; font-weight: 600;
+        }
+
+        /* 2. 汇率 & CBM 计算通用输入框 */
+        .calc-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px;}
         .input-group { position: relative; flex: 1; }
-        .currency-input {
-          width: 100%; padding: 8px 8px 8px 36px;
-          border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+        .std-input {
+          width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; outline: none; transition: 0.2s;
         }
-        .currency-input:focus { border-color: #3b82f6; }
-        .currency-symbol {
-          position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-          color: #94a3b8; font-size: 0.8rem; font-weight: bold;
-        }
-        .arrow-icon { color: #94a3b8; font-size: 1.2rem; }
-        .rate-info {
-          font-size: 0.75rem; color: #64748b; margin-top: 8px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; }
+        .std-input:focus { border-color: #3b82f6; }
+        .input-label { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.75rem; }
         
+        .cbm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        .result-box { background: #f0f9ff; padding: 8px; border-radius: 6px; text-align: center; font-size: 0.85rem; color: #0369a1; border: 1px dashed #bae6fd;}
+
+        /* 3. WhatsApp */
+        .wa-box { display: flex; gap: 10px; }
+        .wa-btn {
+          background: #25d366; color: white; border: none; padding: 0 20px; border-radius: 6px; font-weight: 600; cursor: pointer;
+        }
+        .wa-btn:hover { background: #128c7e; }
+
+        /* 移动端适配 */
         @media (max-width: 768px) {
-          .dashboard-grid { grid-template-columns: 1fr; }
+          .dashboard-row-2 { grid-template-columns: 1fr; } /* 手机端汇率和CBM上下排 */
           .clock-wrapper { grid-template-columns: 1fr 1fr; }
+          .wa-box { flex-direction: column; }
+          .wa-btn { padding: 10px; }
         }
       `}</style>
 
-      <div className="dashboard-grid">
-        {/* 世界时钟 */}
+      {/* 第一行：全能时钟 */}
+      <div className="dashboard-row-1">
         <div className="dash-card">
-          <div className="card-header">全球商机时间</div>
+          <div className="card-header">全球商机监控 (当地状态)</div>
           <div className="clock-wrapper">
-            <div className="clock-box"><div className="city-name">北京 CN</div><div className="time-text">{times.cn}</div></div>
-            <div className="clock-box"><div className="city-name">伦敦 UK</div><div className="time-text">{times.uk}</div></div>
-            <div className="clock-box"><div className="city-name">纽约 US</div><div className="time-text">{times.us}</div></div>
-            <div className="clock-box"><div className="city-name">洛杉矶 US</div><div className="time-text">{times.la}</div></div>
-          </div>
-        </div>
-
-        {/* 汇率计算器 */}
-        <div className="dash-card">
-          <div className="card-header">实时报价 (USD → CNY)</div>
-          <div className="calc-row">
-            <div className="input-group">
-              <span className="currency-symbol">$</span>
-              <input type="number" className="currency-input" value={usd} onChange={(e) => setUsd(e.target.value)} placeholder="USD" />
-            </div>
-            <div className="arrow-icon">→</div>
-            <div className="input-group">
-              <span className="currency-symbol">¥</span>
-              <input type="text" className="currency-input" value={cny} readOnly placeholder="CNY" style={{ background: '#f8fafc', color: '#334155' }} />
-            </div>
-          </div>
-          <div className="rate-info">
-            <span style={{ color: loading ? '#94a3b8' : '#10b981' }}>
-              <span className="status-dot" style={{ background: loading ? '#94a3b8' : '#10b981' }}></span>
-              {loading ? '更新中...' : (isCached ? '已更新 (缓存)' : '已更新 (实时)')}
-            </span>
-            <span>1 USD ≈ {rate || '--'} CNY</span>
+            {['cn','uk','us','la'].map(k => (
+              <div className="clock-box" key={k}>
+                <div className="city-name">{times[k]?.status?.name || (k==='cn'?'北京':k==='uk'?'伦敦':k==='us'?'纽约':'加州')}</div>
+                <div className="time-text">{times[k]?.time || '--:--'}</div>
+                {times[k]?.status && (
+                  <span className="status-badge" style={{ color: times[k].status.color, background: times[k].status.bg }}>
+                    {times[k].status.text}
+                  </span>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>
+
+      {/* 第二行：算钱 + 算货 */}
+      <div className="dashboard-row-2">
+        {/* 左：汇率计算 */}
+        <div className="dash-card">
+          <div className="card-header">报价换算 (USD → CNY)</div>
+          <div className="calc-row">
+            <input type="number" className="std-input" value={usd} onChange={(e) => setUsd(e.target.value)} />
+            <span style={{color:'#94a3b8'}}>⇄</span>
+            <input type="text" className="std-input" value={cny} readOnly style={{background:'#f8fafc'}} />
+          </div>
+          <div style={{ fontSize: '0.75rem', color: '#64748b', display: 'flex', justifyContent: 'space-between' }}>
+             <span>{loading ? '更新中...' : '● 汇率已更新'}</span>
+             <span>1$ ≈ {rate}¥</span>
+          </div>
+        </div>
+
+        {/* 右：CBM 算货 */}
+        <div className="dash-card">
+          <div className="card-header">装箱计算 (单位: cm)</div>
+          <div className="cbm-grid">
+            <div className="input-group"><input placeholder="长" className="std-input" onChange={e => setDims({...dims, l:e.target.value})} onBlur={calculateCBM} /><span className="input-label">L</span></div>
+            <div className="input-group"><input placeholder="宽" className="std-input" onChange={e => setDims({...dims, w:e.target.value})} onBlur={calculateCBM} /><span className="input-label">W</span></div>
+            <div className="input-group"><input placeholder="高" className="std-input" onChange={e => setDims({...dims, h:e.target.value})} onBlur={calculateCBM} /><span className="input-label">H</span></div>
+            <div className="input-group"><input placeholder="箱数" className="std-input" onChange={e => setDims({...dims, pcs:e.target.value})} onBlur={calculateCBM} /><span className="input-label">Pcs</span></div>
+          </div>
+          {cbmResult ? (
+            <div className="result-box">
+              <strong>{cbmResult.cbm} m³</strong> <span style={{opacity:0.6}}>|</span> {cbmResult.suggestion}
+            </div>
+          ) : (
+             <div style={{fontSize:'0.75rem', color:'#94a3b8', textAlign:'center', marginTop:'5px'}}>输入尺寸自动计算体积</div>
+          )}
+        </div>
+      </div>
+
+      {/* 第三行：WhatsApp */}
+      <div className="dashboard-row-3">
+        <div className="dash-card" style={{ padding: '12px 15px' }}>
+          <div className="wa-box">
+            <input 
+              type="text" 
+              className="std-input" 
+              placeholder="WhatsApp 极速对话 (输入号码，如 86138000000)" 
+              value={waPhone}
+              onChange={(e) => setWaPhone(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleWaClick()}
+            />
+            <button className="wa-btn" onClick={handleWaClick}>开始对话</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

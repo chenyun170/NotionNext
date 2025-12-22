@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
 /**
- * 外贸工作台组件 V6.5 (深色模式适配旗舰版)
- * 特色：
- * 1. [深色模式] 自动识别 NotionNext 主题的暗色开关，支持平滑过渡。
- * 2. [响应式] 完美适配手机端、平板与 PC。
- * 3. [稳定性] 多接口 IP 漂移检测，确保移动端不再显示“未知”。
+ * 外贸工作台组件 V7.0 (深度定制优化版)
  */
 const ForeignTradeDashboard = () => {
-  // --- 状态管理 (保持核心逻辑) ---
   const [times, setTimes] = useState({});
-  const [rateData, setRateData] = useState({ val: null, loading: true });
+  const [rateData, setRateData] = useState({ val: null, loading: true, cached: false });
   
   const usePersistentState = (key, defaultValue) => {
     const [state, setState] = useState(() => {
@@ -40,12 +35,11 @@ const ForeignTradeDashboard = () => {
   const [searchKw, setSearchKw] = useState('');
   const [searchType, setSearchType] = useState('hs'); 
   const [copyTip, setCopyTip] = useState('');
-  const [ipInfo, setIpInfo] = useState({ country: '检测中...', loading: true });
+  const [ipInfo, setIpInfo] = useState({ country: '...', loading: true });
 
   const CACHE_DURATION = 24 * 60 * 60 * 1000; 
   const CACHE_KEY = 'ft_dashboard_rate_cache';
 
-  // --- 逻辑处理 ---
   const copyToClipboard = (text, label) => {
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
@@ -56,17 +50,13 @@ const ForeignTradeDashboard = () => {
 
   useEffect(() => {
     const fetchIP = async () => {
-      const endpoints = [
-        'https://ipapi.co/json/',
-        'https://api.ipify.org?format=json',
-        'https://ip.seeip.org/jsonip'
-      ];
+      const endpoints = ['https://ipapi.co/json/', 'https://api.ipify.org?format=json'];
       for (const url of endpoints) {
         try {
           const res = await fetch(url);
           const data = await res.json();
           const ip = data.ip || data.query || '未知';
-          const country = data.country_name || data.country || '海外';
+          const country = data.country_name || data.country || '';
           setIpInfo({ country: `${country} [${ip}]`, loading: false });
           return;
         } catch (e) {}
@@ -83,9 +73,9 @@ const ForeignTradeDashboard = () => {
         const localTime = new Date(now.toLocaleString("en-US", { timeZone: tz }));
         const day = localTime.getDay();
         const hour = localTime.getHours();
-        if (day === 0 || day === 6) return { text: '周末', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)' };
-        if (hour < 9 || hour >= 18) return { text: '休市', color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' };
-        return { text: '工作', color: '#10b981', bg: 'rgba(16,185,129,0.1)' };
+        if (day === 0 || day === 6) return { text: '周末', color: '#d97706', bg: '#fffbeb' };
+        if (hour < 9 || hour >= 18) return { text: '休市', color: '#94a3b8', bg: '#f1f5f9' };
+        return { text: '工作', color: '#059669', bg: '#ecfdf5' };
       } catch (e) { return {}; }
     };
     const updateTime = () => {
@@ -120,7 +110,7 @@ const ForeignTradeDashboard = () => {
         try {
           const p = JSON.parse(cached);
           if (now - p.timestamp < CACHE_DURATION) {
-            setRateData({ val: p.rate, loading: false }); return;
+            setRateData({ val: p.rate, loading: false, cached: true }); return;
           }
         } catch (e) {}
       }
@@ -129,10 +119,10 @@ const ForeignTradeDashboard = () => {
         const d = await res.json();
         if (d.result === 'success') {
           const r = d.conversion_rates.CNY;
-          setRateData({ val: r, loading: false });
+          setRateData({ val: r, loading: false, cached: false });
           localStorage.setItem(CACHE_KEY, JSON.stringify({ rate: r, timestamp: now }));
-        } else { setRateData({ val: 7.28, loading: false }); }
-      } catch (e) { setRateData({ val: 7.28, loading: false }); }
+        } else { setRateData({ val: 7.28, loading: false, cached: false }); }
+      } catch (e) { setRateData({ val: 7.28, loading: false, cached: false }); }
     };
     fetchRate();
   }, []);
@@ -173,87 +163,35 @@ const ForeignTradeDashboard = () => {
   };
 
   return (
-    <div className="ft-dashboard-container" id="trade-tools">
+    <div className="ft-dashboard-container">
       <style jsx>{`
-        /* 变量定义：适配 NotionNext 深色模式 */
-        .ft-dashboard-container {
-          --dash-bg: #ffffff;
-          --dash-card-bg: #ffffff;
-          --dash-border: #f1f5f9;
-          --dash-text-main: #0f172a;
-          --dash-text-sub: #64748b;
-          --dash-input-bg: #ffffff;
-          --dash-input-border: #cbd5e1;
-          --dash-res-bg: #f0f9ff;
-          --dash-res-border: #bae6fd;
-          --dash-res-text: #0369a1;
-          margin-bottom: 25px;
-          font-family: -apple-system, sans-serif;
-          transition: all 0.3s ease;
-        }
-
-        /* 当 body 包含 dark 类时（NotionNext 标准暗号） */
-        :global(body.dark) .ft-dashboard-container {
-          --dash-bg: transparent;
-          --dash-card-bg: #1e293b;
-          --dash-border: #334155;
-          --dash-text-main: #f1f5f9;
-          --dash-text-sub: #94a3b8;
-          --dash-input-bg: #0f172a;
-          --dash-input-border: #475569;
-          --dash-res-bg: rgba(30, 58, 138, 0.3);
-          --dash-res-border: #1e40af;
-          --dash-res-text: #60a5fa;
-        }
-
-        .copy-toast {
-          position: fixed; top: 15%; left: 50%; transform: translateX(-50%);
-          background: rgba(15, 23, 42, 0.9); color: #fff; padding: 10px 20px; border-radius: 30px;
-          font-size: 0.85rem; opacity: ${copyTip ? 1 : 0}; transition: opacity 0.3s; z-index: 9999;
-        }
-
+        .ft-dashboard-container { margin-bottom: 25px; font-family: -apple-system, sans-serif; color: #334155; position: relative; }
+        .copy-toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; opacity: ${copyTip ? 1 : 0}; transition: opacity 0.3s; z-index: 9999; }
         .monitor-row { margin-bottom: 12px; }
-        .clock-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .clock-item { 
-          background: var(--dash-card-bg); border-radius: 8px; padding: 8px; border: 1px solid var(--dash-border);
-          display: flex; justify-content: space-between; align-items: center;
-        }
-        .c-city { font-size: 0.8rem; font-weight: 600; color: var(--dash-text-sub); }
-        .c-time { font-size: 0.95rem; font-weight: 700; color: var(--dash-text-main); font-variant-numeric: tabular-nums; }
-        .c-status { font-size: 0.6rem; padding: 1px 4px; border-radius: 3px; margin-left: 5px; }
-
+        .clock-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .clock-item { background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+        .c-city { font-size: 0.8rem; font-weight: 600; color: #64748b; }
+        .c-time { font-size: 0.95rem; font-weight: 700; color: #0f172a; font-variant-numeric: tabular-nums; }
+        .c-status { font-size: 0.6rem; margin-top: 2px; display: inline-block; padding: 1px 4px; border-radius: 3px; }
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .dash-card { background: var(--dash-card-bg); border-radius: 10px; padding: 12px; border: 1px solid var(--dash-border); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .header-title { font-size: 0.85rem; font-weight: 700; color: var(--dash-text-main); display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-        .title-left::before { content: ''; display: inline-block; width: 3px; height: 10px; background: #3b82f6; border-radius: 2px; margin-right: 6px; }
-        
-        .std-input { 
-          width: 100%; padding: 8px; background: var(--dash-input-bg); border: 1px solid var(--dash-input-border); 
-          color: var(--dash-text-main); border-radius: 6px; font-size: 0.95rem; outline: none; 
-        }
-        .input-row { display: flex; align-items: center; gap: 8px; }
-        .res-box { background: var(--dash-res-bg); border: 1px dashed var(--dash-res-border); padding: 10px; border-radius: 6px; text-align: center; font-size: 0.9rem; color: var(--dash-res-text); cursor: pointer; margin-top: 10px; }
-        
-        .tab-wrap { display: flex; gap: 3px; background: var(--dash-border); padding: 2px; border-radius: 5px; }
-        .tab-btn { border: none; background: none; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; cursor: pointer; color: var(--dash-text-sub); }
-        .tab-btn.active { background: var(--dash-card-bg); color: #3b82f6; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        
-        .wa-btn, .search-btn { background: #22c55e; color: white; border: none; padding: 0 18px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-        .wa-btn:hover, .search-btn:hover { opacity: 0.9; }
-        .search-btn { background: #3b82f6; }
-        
-        @media (max-width: 768px) {
-          .clock-grid { grid-template-columns: repeat(2, 1fr); }
-          .main-grid { grid-template-columns: 1fr; }
-          .clock-item { padding: 12px; }
-          .std-input { padding: 12px; font-size: 1rem; }
-          .wa-btn, .search-btn { padding: 12px 20px; }
-        }
+        .dash-card { background: #fff; border-radius: 10px; padding: 12px; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.03); position: relative; }
+        .header-title { font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .header-title::before { content: ''; display: block; width: 3px; height: 10px; background: #3b82f6; border-radius: 2px; }
+        .std-input { width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; outline: none; }
+        .input-row { display: flex; align-items: center; gap: 6px; }
+        .res-box { background: #f0f9ff; border: 1px dashed #bae6fd; padding: 6px; border-radius: 6px; text-align: center; font-size: 0.85rem; color: #0369a1; cursor: pointer; margin-top: 8px; }
+        .tab-wrap { display: flex; gap: 4px; background: #f1f5f9; padding: 2px; border-radius: 4px; margin-left: auto; }
+        .tab-btn { border: none; background: none; font-size: 0.7rem; padding: 2px 8px; border-radius: 3px; cursor: pointer; color: #64748b; }
+        .tab-btn.active { background: #fff; color: #3b82f6; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .wa-row { display: flex; align-items: center; gap: 8px; width: 100%; }
+        .wa-btn { background: #25d366; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.75rem; white-space: nowrap; flex-shrink: 0; }
+        .status-tag { font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; background: #f1f5f9; color: #64748b; font-weight: normal; margin-left: 4px; }
+        .ip-inline { position: absolute; bottom: 6px; right: 10px; font-size: 0.6rem; color: #cbd5e1; pointer-events: none; }
+        @media (max-width: 768px) { .clock-grid { grid-template-columns: 1fr 1fr; } .main-grid { grid-template-columns: 1fr; } }
       `}</style>
 
       <div className="copy-toast">{copyTip}</div>
 
-      {/* 1. 时钟显示 */}
       <div className="monitor-row">
         <div className="clock-grid">
           {['cn','uk','us','la'].map(k => (
@@ -270,30 +208,38 @@ const ForeignTradeDashboard = () => {
 
       <div className="main-grid">
         <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
-          {/* 2. 报价换算 */}
           <div className="dash-card">
-            <div className="header-title"><span className="title-left">报价换算 ($→¥)</span></div>
+            <div className="header-title">
+              报价换算 ($→¥)
+              <span className="status-tag">{rateData.loading ? '正在同步...' : (rateData.cached ? '缓存数据' : '实时数据')}</span>
+            </div>
             <div className="input-row">
                <input type="number" className="std-input" value={usd} onChange={e=>setUsd(e.target.value)} />
-               <span style={{color:'var(--dash-input-border)'}}>⇄</span>
-               <div className="std-input" style={{background:'var(--dash-border)', fontWeight:'bold', cursor:'pointer'}} onClick={() => copyToClipboard(cny, '价格')}>{cny}</div>
+               <span style={{color:'#cbd5e1', fontSize:'0.8rem'}}>⇄</span>
+               <div className="std-input" style={{background:'#f8fafc', cursor:'pointer'}} onClick={() => copyToClipboard(cny, '价格')}>{cny}</div>
             </div>
+            <div style={{fontSize:'0.7rem', color:'#94a3b8', marginTop:'4px', textAlign:'right'}}>1$ ≈ {rateData.val}</div>
           </div>
 
-          {/* 3. WhatsApp 直连 */}
           <div className="dash-card">
-            <div className="header-title"><span className="title-left">WhatsApp 直连</span></div>
-            <div className="input-row">
-               <input className="std-input" placeholder="号码..." value={waPhone} onChange={e=>setWaPhone(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleWaClick()}/>
+            <div className="header-title">WhatsApp 直连</div>
+            <div className="wa-row">
+               <input 
+                 className="std-input" 
+                 placeholder="输入区号和号码 (例: 86138...)" 
+                 value={waPhone} 
+                 onChange={e=>setWaPhone(e.target.value)}
+                 onKeyPress={e=>e.key==='Enter'&&handleWaClick()}
+                 style={{background:'#f8fafc'}}
+               />
                <button className="wa-btn" onClick={handleWaClick}>对话</button>
             </div>
           </div>
         </div>
 
-        {/* 4. 常用工具箱 */}
         <div className="dash-card">
           <div className="header-title">
-            <span className="title-left">常用工具</span>
+            常用工具
             <div className="tab-wrap">
               <button className={`tab-btn ${calcMode==='cbm'?'active':''}`} onClick={()=>setCalcMode('cbm')}>算柜</button>
               <button className={`tab-btn ${calcMode==='unit'?'active':''}`} onClick={()=>setCalcMode('unit')}>换算</button>
@@ -303,21 +249,21 @@ const ForeignTradeDashboard = () => {
 
           {calcMode === 'cbm' && (
             <>
-              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px'}}>
-                <input placeholder="长" className="std-input" value={dims.l} onChange={e=>setDims({...dims,l:e.target.value})}/>
-                <input placeholder="宽" className="std-input" value={dims.w} onChange={e=>setDims({...dims,w:e.target.value})}/>
-                <input placeholder="高" className="std-input" value={dims.h} onChange={e=>setDims({...dims,h:e.target.value})}/>
-                <input placeholder="箱数" className="std-input" value={dims.pcs} onChange={e=>setDims({...dims,pcs:e.target.value})}/>
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'6px'}}>
+                <input placeholder="长cm" className="std-input" onChange={e=>setDims({...dims,l:e.target.value})} onBlur={calculateCBM}/>
+                <input placeholder="宽cm" className="std-input" onChange={e=>setDims({...dims,w:e.target.value})} onBlur={calculateCBM}/>
+                <input placeholder="高cm" className="std-input" onChange={e=>setDims({...dims,h:e.target.value})} onBlur={calculateCBM}/>
+                <input placeholder="箱数" className="std-input" onChange={e=>setDims({...dims,pcs:e.target.value})} onBlur={calculateCBM}/>
               </div>
-              {cbmResult && <div className="res-box" onClick={() => copyToClipboard(`${cbmResult.val} m³`, '体积')}><strong>{cbmResult.val} m³</strong> | {cbmResult.sug}</div>}
+              {cbmResult && <div className="res-box" onClick={() => copyToClipboard(cbmResult.val, '体积')}><strong>{cbmResult.val} m³</strong> | {cbmResult.sug}</div>}
             </>
           )}
 
           {calcMode === 'unit' && (
             <>
-              <div style={{display:'flex', gap:10, justifyContent:'center', marginBottom:8, color:'var(--dash-text-sub)', fontSize:'0.8rem'}}>
-                 <label><input type="radio" checked={unitType==='len'} onChange={()=>setUnitType('len')}/> 长度</label>
-                 <label><input type="radio" checked={unitType==='wt'} onChange={()=>setUnitType('wt')}/> 重量</label>
+              <div style={{display:'flex', gap:8, justifyContent:'center', marginBottom:6}}>
+                 <label style={{fontSize:'0.75rem'}}><input type="radio" checked={unitType==='len'} onChange={()=>setUnitType('len')}/> 长度</label>
+                 <label style={{fontSize:'0.75rem'}}><input type="radio" checked={unitType==='wt'} onChange={()=>setUnitType('wt')}/> 重量</label>
               </div>
               <input type="number" className="std-input" placeholder="输入数值..." value={unitVal} onChange={e=>setUnitVal(e.target.value)} />
               {unitRes.line1 && <div className="res-box" onClick={() => copyToClipboard(unitRes.line1, '结果')}>{unitRes.line1}<br/>{unitRes.line2}</div>}
@@ -325,23 +271,14 @@ const ForeignTradeDashboard = () => {
           )}
 
           {calcMode === 'search' && (
-            <>
-              <div style={{display:'flex', gap:10, justifyContent:'center', marginBottom:8, color:'var(--dash-text-sub)', fontSize:'0.8rem'}}>
-                 <label><input type="radio" checked={searchType==='hs'} onChange={()=>setSearchType('hs')}/> HS编码</label>
-                 <label><input type="radio" checked={searchType==='google'} onChange={()=>setSearchType('google')}/> 谷歌</label>
-              </div>
-              <div className="input-row">
-                 <input className="std-input" placeholder="搜索关键词..." value={searchKw} onChange={e=>setSearchKw(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleSearch()}/>
-                 <button className="search-btn" onClick={handleSearch}>GO</button>
-              </div>
-            </>
+            <div className="input-row" style={{marginTop:'10px'}}>
+               <input className="std-input" placeholder="搜索品名或代码..." value={searchKw} onChange={e=>setSearchKw(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleSearch()}/>
+               <button className="wa-btn" style={{background:'#3b82f6'}} onClick={handleSearch}>GO</button>
+            </div>
           )}
+          
+          <div className="ip-inline">环境: {ipInfo.country}</div>
         </div>
-      </div>
-      
-      {/* 5. 底部信息 */}
-      <div style={{textAlign:'right', fontSize:'0.6rem', color:'var(--dash-text-sub)', marginTop:'8px', paddingRight:'5px'}}>
-        环境: {ipInfo.country}
       </div>
     </div>
   );

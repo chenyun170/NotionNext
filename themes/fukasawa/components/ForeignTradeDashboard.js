@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
 /**
- * 外贸工作台组件 V8.0 (视觉巅峰版)
- * 升级点：1.时钟呼吸灯 2.汇率实时闪烁 3.全站阴影对齐 4.数据持久化
+ * 外贸工作台组件 V9.0 (极致布局版)
+ * 升级点：1.时钟布局紧凑化 2.集成高德天气 3.搜索/WhatsApp深度优化
  */
 const ForeignTradeDashboard = () => {
   const [times, setTimes] = useState({});
   const [rateData, setRateData] = useState({ val: null, loading: true, cached: false });
+  const [weather, setWeather] = useState({ city: '定位中...', info: '', temp: '', loading: true });
   
+  const WEATHER_KEY = "41151e8e6a20ccd713ae595cd3236735";
+
   const usePersistentState = (key, defaultValue) => {
     const [state, setState] = useState(() => {
       if (typeof window !== 'undefined') {
@@ -49,24 +52,33 @@ const ForeignTradeDashboard = () => {
     });
   };
 
+  // 1. 获取 IP 及 天气 (高德 API)
   useEffect(() => {
-    const fetchIP = async () => {
-      const endpoints = ['https://ipapi.co/json/', 'https://api.ipify.org?format=json'];
-      for (const url of endpoints) {
-        try {
-          const res = await fetch(url);
-          const data = await res.json();
-          const ip = data.ip || data.query || '未知';
-          const country = data.country_name || data.country || '';
-          setIpInfo({ country: `${country} [${ip}]`, loading: false });
-          return;
-        } catch (e) {}
+    const initData = async () => {
+      try {
+        // 先通过高德 IP 定位接口获取城市代码
+        const ipRes = await fetch(`https://restapi.amap.com/v3/ip?key=${WEATHER_KEY}`);
+        const ipData = await ipRes.json();
+        
+        if (ipData.status === '1') {
+          setIpInfo({ country: `${ipData.province}${ipData.city} [${ipData.adcode}]`, loading: false });
+          
+          // 获取天气
+          const weatherRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?key=${WEATHER_KEY}&city=${ipData.adcode}`);
+          const weatherData = await weatherRes.json();
+          if (weatherData.status === '1' && weatherData.lives.length > 0) {
+            const live = weatherData.lives[0];
+            setWeather({ city: live.city, info: live.weather, temp: live.temperature, loading: false });
+          }
+        }
+      } catch (e) {
+        setWeather({ city: '获取失败', info: '', temp: '', loading: false });
       }
-      setIpInfo({ country: '检测超时', loading: false });
     };
-    fetchIP();
+    initData();
   }, []);
 
+  // 2. 时钟逻辑
   useEffect(() => {
     const getCityStatus = (tz) => {
       try {
@@ -103,6 +115,7 @@ const ForeignTradeDashboard = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // 3. 汇率逻辑
   useEffect(() => {
     const fetchRate = async () => {
       const now = new Date().getTime();
@@ -142,17 +155,6 @@ const ForeignTradeDashboard = () => {
   };
   useEffect(() => { calculateCBM(); }, [dims]);
 
-  useEffect(() => {
-    if (!unitVal) { setUnitRes({ line1: '', line2: '' }); return; }
-    const v = parseFloat(unitVal);
-    if (isNaN(v)) return;
-    if (unitType === 'len') {
-      setUnitRes({ line1: `${v}in=${(v*2.54).toFixed(1)}cm`, line2: `${v}cm=${(v/2.54).toFixed(1)}in` });
-    } else {
-      setUnitRes({ line1: `${v}lb=${(v*0.45).toFixed(1)}kg`, line2: `${v}kg=${(v/0.45).toFixed(1)}lb` });
-    }
-  }, [unitVal, unitType]);
-
   const handleSearch = () => {
     if (!searchKw) return;
     window.open(searchType === 'hs' ? `https://www.hsbianma.com/search?keywords=${encodeURIComponent(searchKw)}` : `https://www.google.com/search?q=${encodeURIComponent(searchKw)}`, '_blank');
@@ -169,22 +171,17 @@ const ForeignTradeDashboard = () => {
         .ft-dashboard-container { margin-bottom: 25px; font-family: -apple-system, sans-serif; color: #334155; position: relative; }
         .copy-toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; opacity: ${copyTip ? 1 : 0}; transition: opacity 0.3s; z-index: 9999; }
         
-        /* 统一卡片阴影，与文章卡片一致 */
-        .dash-card { 
-            background: #fff; border-radius: 10px; padding: 12px; 
-            border: 1px solid #f1f5f9; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
-            transition: all 0.3s ease;
+        /* 紧凑时钟布局 */
+        .clock-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .clock-item { 
+          flex: 1; min-width: 140px; background: #fff; border-radius: 8px; padding: 6px 12px; 
+          border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        :global(body.dark) .dash-card { background: #1e293b; border-color: #334155; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4) !important; }
-
-        .clock-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
-        .clock-item { background: inherit; border-radius: 8px; padding: 8px 12px; border: 1px solid var(--dash-border, #f1f5f9); display: flex; justify-content: space-between; align-items: center; }
-        .c-city { font-size: 0.8rem; font-weight: 600; color: #64748b; }
-        .c-time { font-size: 0.95rem; font-weight: 700; color: inherit; font-variant-numeric: tabular-nums; }
-        
-        /* 呼吸灯动画 */
-        .c-status { font-size: 0.6rem; margin-top: 2px; display: inline-block; padding: 1px 4px; border-radius: 3px; position: relative; }
+        :global(body.dark) .clock-item { background: #1e293b; border-color: #334155; }
+        .c-city { font-size: 0.75rem; font-weight: 600; color: #64748b; }
+        .c-time { font-size: 0.9rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .c-status { font-size: 0.55rem; padding: 1px 4px; border-radius: 3px; margin-left: 6px; }
         .status-pulse { animation: status-glow 2s infinite; }
         @keyframes status-glow {
           0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
@@ -192,86 +189,66 @@ const ForeignTradeDashboard = () => {
           100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .header-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; color: inherit; }
-        .header-title::before { content: ''; display: block; width: 3px; height: 10px; background: #3b82f6; border-radius: 2px; }
-        .std-input { width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; outline: none; background: inherit; color: inherit; }
-        .input-row { display: flex; align-items: center; gap: 6px; }
+        .main-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 12px; }
+        .dash-card { background: #fff; border-radius: 10px; padding: 12px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; }
+        :global(body.dark) .dash-card { background: #1e293b; border-color: #334155; color: #f1f5f9; }
         
-        /* 汇率实时闪烁动画 */
-        .res-box { background: rgba(59,130,246,0.05); border: 1px dashed #3b82f6; padding: 6px; border-radius: 6px; text-align: center; font-size: 0.85rem; color: #3b82f6; cursor: pointer; margin-top: 8px; }
-        .rate-live-shine { animation: rate-glow 2s ease-in-out infinite; }
-        @keyframes rate-glow {
-          0% { border-color: #cbd5e1; }
-          50% { border-color: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.2); }
-          100% { border-color: #cbd5e1; }
-        }
-
+        .header-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .header-title::before { content: ''; display: block; width: 3px; height: 10px; background: #3b82f6; border-radius: 2px; }
+        .std-input { width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; outline: none; background: transparent; color: inherit; }
+        .input-row { display: flex; align-items: center; gap: 8px; }
+        .res-box { background: rgba(59,130,246,0.05); border: 1px dashed #3b82f6; padding: 8px; border-radius: 6px; text-align: center; font-size: 0.85rem; color: #3b82f6; cursor: pointer; margin-top: 8px; }
+        
         .tab-wrap { display: flex; gap: 4px; background: rgba(0,0,0,0.05); padding: 2px; border-radius: 4px; margin-left: auto; }
         .tab-btn { border: none; background: none; font-size: 0.7rem; padding: 2px 8px; border-radius: 3px; cursor: pointer; color: inherit; opacity: 0.6; }
         .tab-btn.active { background: #fff; color: #3b82f6; font-weight: 600; opacity: 1; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        :global(body.dark) .tab-btn.active { background: #334155; color: #60a5fa; }
+        :global(body.dark) .tab-btn.active { background: #334155; }
+
+        .wa-btn { background: #25d366; color: white; border: none; padding: 7px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.8rem; white-space: nowrap; }
+        .weather-bar { position: absolute; bottom: 8px; left: 12px; font-size: 0.7rem; color: #64748b; display: flex; align-items: center; gap: 8px; }
+        .ip-bar { position: absolute; bottom: 8px; right: 12px; font-size: 0.6rem; color: #cbd5e1; }
         
-        .wa-btn { background: #25d366; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.75rem; white-space: nowrap; }
-        .status-tag { font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; background: rgba(0,0,0,0.05); font-weight: normal; margin-left: 4px; }
-        .ip-inline { position: absolute; bottom: 6px; right: 10px; font-size: 0.6rem; color: #cbd5e1; opacity: 0.6; }
-        @media (max-width: 768px) { .clock-grid { grid-template-columns: 1fr 1fr; } .main-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } .clock-row { display: grid; grid-template-columns: 1fr 1fr; } }
       `}</style>
 
       <div className="copy-toast">{copyTip}</div>
 
-      {/* 1. 全球时钟 */}
-      <div className="monitor-row">
-        <div className="clock-grid">
-          {['cn','uk','us','la'].map(k => (
-            <div className="dash-card clock-item" key={k}>
-              <div className="c-city">{times[k]?.name}</div>
-              <div style={{textAlign:'right'}}>
-                <div className="c-time">{times[k]?.time||'--:--'}</div>
-                {times[k]?.status && 
-                  <span className={`c-status ${times[k].status.pulse ? 'status-pulse' : ''}`} 
-                        style={{color:times[k].status.color, background:times[k].status.bg}}>
-                    {times[k].status.text}
-                  </span>
-                }
-              </div>
+      {/* 1. 紧凑型时钟栏 */}
+      <div className="clock-row">
+        {['cn','uk','us','la'].map(k => (
+          <div className="clock-item" key={k}>
+            <span className="c-city">{times[k]?.name}</span>
+            <div style={{display:'flex', alignItems:'center'}}>
+              <span className="c-time">{times[k]?.time||'--:--'}</span>
+              {times[k]?.status && <span className={`c-status ${times[k].status.pulse ? 'status-pulse' : ''}`} style={{color:times[k].status.color, background:times[k].status.bg}}>{times[k].status.text}</span>}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
       <div className="main-grid">
+        {/* 左侧：报价 + WhatsApp */}
         <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
-          {/* 汇率模块 */}
           <div className="dash-card">
-            <div className="header-title">
-              报价换算 ($→¥)
-              <span className="status-tag">{rateData.cached ? '已缓存' : '实时同步'}</span>
-            </div>
+            <div className="header-title">报价换算 ($→¥)</div>
             <div className="input-row">
                <input type="number" className="std-input" value={usd} onChange={e=>setUsd(e.target.value)} />
-               <span style={{color:'#cbd5e1', fontSize:'0.8rem'}}>⇄</span>
-               <div className={`std-input ${!rateData.cached ? 'rate-live-shine' : ''}`} 
-                    style={{background:'rgba(0,0,0,0.02)', cursor:'pointer', fontWeight:'bold'}} 
-                    onClick={() => copyToClipboard(cny, '价格')}>
-                 {cny}
-               </div>
+               <span style={{color:'#cbd5e1'}}>⇄</span>
+               <div className="std-input" style={{background:'rgba(0,0,0,0.02)', fontWeight:'bold', cursor:'pointer'}} onClick={() => copyToClipboard(cny, '价格')}>{cny}</div>
             </div>
-            <div style={{fontSize:'0.7rem', opacity:0.5, marginTop:'4px', textAlign:'right'}}>1$ ≈ {rateData.val}</div>
           </div>
 
-          {/* WhatsApp 模块 */}
           <div className="dash-card">
             <div className="header-title">WhatsApp 直连</div>
             <div className="input-row">
-               <input className="std-input" placeholder="输入区号和号码 (例: 86138...)" value={waPhone} onChange={e=>setWaPhone(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleWaClick()}/>
+               <input className="std-input" placeholder="输入号码 (例: 86138...)" value={waPhone} onChange={e=>setWaPhone(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleWaClick()}/>
                <button className="wa-btn" onClick={handleWaClick}>对话</button>
             </div>
           </div>
         </div>
 
-        {/* 常用工具模块 */}
-        <div className="dash-card">
+        {/* 右侧：常用工具（算柜/换算/搜索）+ 天气展示 */}
+        <div className="dash-card" style={{paddingBottom:'35px'}}>
           <div className="header-title">
             常用工具
             <div className="tab-wrap">
@@ -282,26 +259,12 @@ const ForeignTradeDashboard = () => {
           </div>
 
           {calcMode === 'cbm' && (
-            <>
-              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'6px'}}>
-                <input placeholder="长cm" className="std-input" value={dims.l} onChange={e=>setDims({...dims,l:e.target.value})}/>
-                <input placeholder="宽cm" className="std-input" value={dims.w} onChange={e=>setDims({...dims,w:e.target.value})}/>
-                <input placeholder="高cm" className="std-input" value={dims.h} onChange={e=>setDims({...dims,h:e.target.value})}/>
-                <input placeholder="箱数" className="std-input" value={dims.pcs} onChange={e=>setDims({...dims,pcs:e.target.value})}/>
-              </div>
-              {cbmResult && <div className="res-box" onClick={() => copyToClipboard(cbmResult.val, '体积')}><strong>{cbmResult.val} m³</strong> | {cbmResult.sug}</div>}
-            </>
-          )}
-
-          {calcMode === 'unit' && (
-            <>
-              <div style={{display:'flex', gap:8, justifyContent:'center', marginBottom:6}}>
-                 <label style={{fontSize:'0.75rem'}}><input type="radio" checked={unitType==='len'} onChange={()=>setUnitType('len')}/> 长度</label>
-                 <label style={{fontSize:'0.75rem'}}><input type="radio" checked={unitType==='wt'} onChange={()=>setUnitType('wt')}/> 重量</label>
-              </div>
-              <input type="number" className="std-input" placeholder="输入数值..." value={unitVal} onChange={e=>setUnitVal(e.target.value)} />
-              {unitRes.line1 && <div className="res-box" onClick={() => copyToClipboard(unitRes.line1, '结果')}>{unitRes.line1}<br/>{unitRes.line2}</div>}
-            </>
+            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px'}}>
+              <input placeholder="长cm" className="std-input" value={dims.l} onChange={e=>setDims({...dims,l:e.target.value})} onBlur={calculateCBM}/>
+              <input placeholder="宽cm" className="std-input" value={dims.w} onChange={e=>setDims({...dims,w:e.target.value})} onBlur={calculateCBM}/>
+              <input placeholder="高cm" className="std-input" value={dims.h} onChange={e=>setDims({...dims,h:e.target.value})} onBlur={calculateCBM}/>
+              <input placeholder="箱数" className="std-input" value={dims.pcs} onChange={e=>setDims({...dims,pcs:e.target.value})} onBlur={calculateCBM}/>
+            </div>
           )}
 
           {calcMode === 'search' && (
@@ -316,8 +279,15 @@ const ForeignTradeDashboard = () => {
                </div>
             </div>
           )}
-          
-          <div className="ip-inline">环境: {ipInfo.country}</div>
+
+          {/* 底部天气与IP栏 */}
+          <div className="weather-bar">
+             <i className="fas fa-cloud-sun text-blue-400"></i>
+             <span>{weather.city}</span>
+             <span className="font-bold text-slate-700 dark:text-slate-300">{weather.temp}℃</span>
+             <span className="opacity-70">{weather.info}</span>
+          </div>
+          <div className="ip-bar">环境: {ipInfo.country}</div>
         </div>
       </div>
     </div>

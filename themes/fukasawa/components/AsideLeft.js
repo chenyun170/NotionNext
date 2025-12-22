@@ -22,7 +22,7 @@ import SocialButton from './SocialButton'
 import Link from 'next/link'
 
 /**
- * 侧边栏 - 调整版：活动移至菜单和热门文章之间
+ * 侧边栏 - 精致重构版
  */
 function AsideLeft(props) {
   const {
@@ -126,54 +126,62 @@ function AsideLeft(props) {
 
   return (
     <div
-      className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-300 transition-all bg-white dark:bg-hexo-black-gray min-h-screen hidden lg:block z-20`}>
+      className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#121212] min-h-screen hidden lg:block z-20 border-r border-gray-50 dark:border-gray-900`}>
       
       {FUKASAWA_SIDEBAR_COLLAPSE_BUTTON && (
         <div
-          className={`${position} hidden lg:block fixed top-0 cursor-pointer hover:scale-110 duration-300 px-3 py-2 dark:text-white`}
+          className={`${position} hidden lg:block fixed top-4 cursor-pointer z-50 bg-white/80 dark:bg-black/80 backdrop-blur rounded-full shadow-lg p-2.5 hover:scale-110 duration-300 dark:text-white border border-gray-100 dark:border-gray-800`}
           onClick={toggleOpen}>
           {isCollapsed ? (
-            <i className='fa-solid fa-indent text-xl'></i>
+            <i className='fa-solid fa-indent text-lg'></i>
           ) : (
-            <i className='fas fa-bars text-xl'></i>
+            <i className='fas fa-chevron-left text-lg'></i>
           )}
         </div>
       )}
 
-      <div className={`h-full ${isCollapsed ? 'hidden' : 'p-8'}`}>
-        <div className="shimmer-logo-wrapper">
-           <Logo {...props} />
+      <div className={`h-full ${isCollapsed ? 'hidden' : 'px-9 py-10'} flex flex-col`}>
+        {/* Logo & Info */}
+        <div className="shimmer-logo-wrapper mb-2">
+            <Logo {...props} />
         </div>
 
-        <section className='siteInfo flex flex-col dark:text-gray-300 pt-8 italic opacity-80'>
+        <section className='siteInfo dark:text-gray-400 text-[13px] italic opacity-70 leading-relaxed mb-8'>
           {siteConfig('DESCRIPTION')}
         </section>
 
-        {/* 1. 外贸获客工具链接 (菜单) */}
-        <section className='flex flex-col text-gray-600'>
-          <div className='w-12 my-4 border-b-2 border-orange-500' />
+        {/* 1. 导航菜单 (精致化) */}
+        <section className='menu-nav-wrapper flex flex-col mb-8'>
+          <div className='flex items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4'>
+            <span className='mr-2'>Navigation</span>
+            <div className='flex-grow border-b border-gray-50 dark:border-gray-800 opacity-50' />
+          </div>
           <MenuList {...props} />
         </section>
 
-        {/* 2. [调整位置] 活动板块 (Announcement) - 放在菜单和热门文章中间 */}
-        <div className='mt-6 mb-2'>
+        {/* 2. 活动公告 (圆角卡片化) */}
+        <div className='announcement-wrapper mb-8 transform transition-transform hover:scale-[1.02] duration-300'>
            <Announcement post={notice} />
         </div>
 
-        {/* 3. 热门文章 (显示最新5篇) */}
+        {/* 3. 热门文章 (胶囊排行版) */}
         {latestPosts && latestPosts.length > 0 && (
-            <section className='flex flex-col text-gray-600 dark:text-gray-300'>
-                <div className='w-12 my-4' />
-                <div className='text-sm font-bold mb-3 flex items-center text-orange-600'>
-                    <i className='fas fa-fire mr-2'></i> 热门文章
+            <section className='flex flex-col mb-8'>
+                <div className='flex items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4'>
+                    <i className='fas fa-fire-alt mr-2 text-orange-500'></i>
+                    <span>Trending Now</span>
                 </div>
-                <ul className='space-y-2'>
+                <ul className='space-y-3'>
                     {latestPosts.slice(0, 5).map((p, index) => (
-                        <li key={p.id}>
+                        <li key={p.id} className="group">
                             <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} passHref legacyBehavior>
-                                <a className='text-xs hover:text-orange-500 hover:underline line-clamp-2 block'>
-                                    <span className='mr-1.5 opacity-50'>{index + 1}.</span>
-                                    {p.title}
+                                <a className='flex items-start text-[13px] text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-all duration-300'>
+                                    <span className={`flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-md text-[10px] mr-3 font-bold transition-colors duration-300 ${index < 3 ? 'bg-orange-50 text-orange-600 dark:bg-orange-950/30' : 'bg-gray-50 text-gray-400 dark:bg-gray-800'}`}>
+                                      {index + 1}
+                                    </span>
+                                    <span className='line-clamp-2 leading-snug group-hover:underline decoration-orange-200 underline-offset-4'>
+                                        {p.title}
+                                    </span>
                                 </a>
                             </Link>
                         </li>
@@ -182,159 +190,108 @@ function AsideLeft(props) {
             </section>
         )}
 
-        <section className='flex flex-col text-gray-600'>
-          <div className='w-12 my-4' />
-          <SearchInput {...props} />
+        {/* 搜索 & 订阅 */}
+        <section className='space-y-6 mb-8'>
+          <div className='bg-gray-50 dark:bg-gray-900/40 p-1.5 rounded-xl border border-gray-100 dark:border-gray-800'>
+            <SearchInput {...props} />
+          </div>
+          <div className='rounded-2xl overflow-hidden shadow-sm bg-gradient-to-br from-gray-50 to-white dark:from-gray-900/40 dark:to-gray-900/20 p-2 border border-gray-100 dark:border-gray-800'>
+            <MailChimpForm />
+          </div>
         </section>
 
-        <section className='rounded-xl overflow-hidden shadow-inner bg-gray-50 dark:bg-gray-900/20 p-2 mt-4'>
-          <MailChimpForm />
-        </section>
-
-        <section className='mt-4'>
+        {/* 广告位 */}
+        <section className='mb-8 rounded-xl overflow-hidden'>
           <AdSlot type='in-article' />
         </section>
 
-        {router.asPath !== '/tag' && (
-          <section className='flex flex-col'>
-            <div className='w-12 my-4' />
-            <GroupTag tags={tagOptions} currentTag={currentTag} />
-          </section>
-        )}
+        {/* 分类 & 标签 (胶囊列表) */}
+        <div className="space-y-8">
+            {router.asPath !== '/tag' && (
+            <section className='flex flex-col'>
+                <h3 className='text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>Popular Tags</h3>
+                <GroupTag tags={tagOptions} currentTag={currentTag} />
+            </section>
+            )}
 
-        {router.asPath !== '/category' && (
-          <section className='flex flex-col'>
-            <div className='w-12 my-4' />
-            <GroupCategory
-              categories={categoryOptions}
-              currentCategory={currentCategory}
-            />
-          </section>
-        )}
+            {router.asPath !== '/category' && (
+            <section className='flex flex-col'>
+                <h3 className='text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>Categories</h3>
+                <GroupCategory
+                categories={categoryOptions}
+                currentCategory={currentCategory}
+                />
+            </section>
+            )}
+        </div>
 
-        <section className='flex flex-col'>
-          <div className='w-12 my-4' />
+        {/* 页脚 & 运行时间 */}
+        <section className='mt-auto pt-10 border-t border-gray-50 dark:border-gray-900'>
           <SocialButton />
-          <SiteInfo />
+          <div className="mt-4 opacity-60">
+            <SiteInfo />
+          </div>
           
-          <div className='mt-6 border-t border-gray-100 dark:border-gray-800 pt-4'>
-            <div className='flex items-center text-[11px] text-gray-400 dark:text-gray-500 mb-2'>
-              <i className='fas fa-hourglass-half mr-2 animate-spin-slow text-orange-600'></i>
-              <span>情报局运行时间</span>
+          <div className='mt-8 p-4 bg-gray-50 dark:bg-gray-900/60 rounded-2xl border border-gray-100 dark:border-gray-800'>
+            <div className='flex items-center justify-center text-[10px] text-gray-400 dark:text-gray-500 mb-3 tracking-tighter uppercase font-bold'>
+              <i className='fas fa-bolt mr-2 text-orange-500 animate-pulse'></i>
+              <span>System Operational Status</span>
             </div>
-            <div className='font-mono text-[10px] text-slate-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 py-1.5 px-2 rounded border border-gray-100 dark:border-gray-800 tabular-nums text-center'>
+            <div className='font-mono text-[11px] text-orange-600 dark:text-orange-500 tabular-nums text-center font-bold'>
               {runtime || 'Initializing...'}
             </div>
           </div>
-        </section>
-
-        <section className='flex justify-center dark:text-gray-200 pt-4'>
-          <DarkModeButton />
-        </section>
-
-        {/* 4. 底部悬浮区 (Sticky) - 只保留文章目录 (Catalog) */}
-        {/* 把 Announcement 移走了，这里只留下 Catalog，避免重复显示 */}
-        <section className='sticky top-0 pt-8 flex flex-col max-h-screen overflow-y-auto no-scrollbar'>
-          <Catalog toc={post?.toc} />
-          <div className='flex justify-center'>
-            <div>{slot}</div>
+          
+          <div className='flex justify-center mt-6'>
+            <DarkModeButton />
           </div>
+        </section>
+
+        {/* 目录悬浮 */}
+        <section className='sticky top-4 pt-4 flex flex-col max-h-[80vh] overflow-y-auto no-scrollbar'>
+          <Catalog toc={post?.toc} />
+          <div className='mt-4'>{slot}</div>
         </section>
       </div>
 
       <style jsx global>{`
-        /* 1. 极简星空粒子背景 */
-        body::before {
-          content: "";
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-image: 
-            radial-gradient(1px 1px at 25px 35px, #bbb, rgba(0,0,0,0)),
-            radial-gradient(1.5px 1.5px at 60px 100px, #ddd, rgba(0,0,0,0)),
-            radial-gradient(1px 1px at 110px 180px, #eee, rgba(0,0,0,0)),
-            radial-gradient(1px 1px at 190px 50px, #fff, rgba(0,0,0,0)),
-            radial-gradient(1.5px 1.5px at 150px 130px, #ccc, rgba(0,0,0,0));
-          background-repeat: repeat;
-          background-size: 250px 250px;
-          opacity: 0.12;
-          z-index: -1;
-          pointer-events: none;
-          animation: stars-drift 120s linear infinite;
+        /* 全局美化：侧边栏菜单 Link 悬浮效果 */
+        .sideLeft .menu-nav-wrapper nav a {
+          font-size: 14px;
+          padding: 8px 12px;
+          margin: 2px 0;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          color: #4b5563;
         }
-        .dark body::before {
-          opacity: 0.25;
-        }
-        @keyframes stars-drift {
-          from { transform: translateY(0); }
-          to { transform: translateY(-250px); }
-        }
+        .dark .sideLeft .menu-nav-wrapper nav a { color: #9ca3af; }
 
-        /* 2. Logo 流光 - 修复圣诞帽裁切 */
-        .shimmer-logo-wrapper {
-          position: relative;
-          padding-top: 20px; 
-          margin-top: -20px;
-          overflow: visible; 
-          mask-image: linear-gradient(-75deg, rgba(0,0,0,.6) 30%, #000 50%, rgba(0,0,0,.6) 70%);
-          mask-size: 200%;
-          animation: shimmer 4s infinite;
-        }
-        @keyframes shimmer {
-          from { mask-position: 150%; }
-          to { mask-position: -50%; }
-        }
-
-        /* 3. 全站文章图片美化 */
-        #notion-article img, 
-        .notion-asset-wrapper img,
-        #article-wrapper img {
-          border-radius: 12px !important;
-          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15) !important;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-          border: 1px solid rgba(0, 0, 0, 0.05) !important;
-        }
-        #notion-article img:hover, 
-        #article-wrapper img:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.25) !important;
-        }
-        .dark #notion-article img,
-        .dark #article-wrapper img {
-          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
-          border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        }
-
-        /* 4. 运行图标旋转 */
-        .animate-spin-slow {
-          animation: spin 3s linear infinite;
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-
-        /* 5. 侧边栏菜单精致化 */
-        .sideLeft nav a {
-          transition: all 0.3s ease;
-          border-radius: 6px;
-        }
-        .sideLeft nav a:hover {
-          padding-left: 10px;
-          background: rgba(234, 88, 12, 0.05);
-          color: #ea580c !important;
+        .sideLeft .menu-nav-wrapper nav a:hover {
+          background: rgba(249, 115, 22, 0.08);
+          color: #f97316 !important;
+          transform: translateX(4px);
         }
         
-        /* 隐藏滚动条但保留功能 (用于悬浮区) */
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
+        .sideLeft .menu-nav-wrapper nav a i {
+          margin-right: 12px;
+          font-size: 14px;
+          width: 20px;
+          text-align: center;
+          opacity: 0.7;
         }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+
+        /* 极简星空粒子背景 */
+        body::before {
+          background-image: radial-gradient(1px 1px at 20px 30px, #eee, rgba(0,0,0,0));
+          opacity: 0.05;
         }
+        .dark body::before { opacity: 0.15; }
+
+        /* 隐藏滚动条 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   )

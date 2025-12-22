@@ -19,10 +19,10 @@ import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
 import SiteInfo from './SiteInfo'
 import SocialButton from './SocialButton'
-import Link from 'next/link' // [新增] 引入Link用于热门文章跳转
+import Link from 'next/link'
 
 /**
- * 侧边栏 - 升级版：含悬浮广告 + 热门文章
+ * 侧边栏 - 调整版：活动移至菜单和热门文章之间
  */
 function AsideLeft(props) {
   const {
@@ -33,7 +33,7 @@ function AsideLeft(props) {
     post,
     slot,
     notice,
-    latestPosts = [] // [新增] 获取最新文章列表
+    latestPosts = [] 
   } = props
   const router = useRouter()
   const { fullWidth } = useGlobal()
@@ -149,12 +149,18 @@ function AsideLeft(props) {
           {siteConfig('DESCRIPTION')}
         </section>
 
+        {/* 1. 外贸获客工具链接 (菜单) */}
         <section className='flex flex-col text-gray-600'>
           <div className='w-12 my-4 border-b-2 border-orange-500' />
           <MenuList {...props} />
         </section>
 
-        {/* --- [新增功能 2] 热门文章 (显示最新5篇) --- */}
+        {/* 2. [调整位置] 活动板块 (Announcement) - 放在菜单和热门文章中间 */}
+        <div className='mt-6 mb-2'>
+           <Announcement post={notice} />
+        </div>
+
+        {/* 3. 热门文章 (显示最新5篇) */}
         {latestPosts && latestPosts.length > 0 && (
             <section className='flex flex-col text-gray-600 dark:text-gray-300'>
                 <div className='w-12 my-4' />
@@ -180,8 +186,6 @@ function AsideLeft(props) {
           <div className='w-12 my-4' />
           <SearchInput {...props} />
         </section>
-
-        {/* [已移除] 原来的 Announcement 位置，为了悬浮移到了最下面 */}
 
         <section className='rounded-xl overflow-hidden shadow-inner bg-gray-50 dark:bg-gray-900/20 p-2 mt-4'>
           <MailChimpForm />
@@ -228,15 +232,9 @@ function AsideLeft(props) {
           <DarkModeButton />
         </section>
 
-        {/* --- [新增功能 1] 悬浮广告区域 (Sticky) --- */}
-        {/* max-h-screen 和 overflow-y-auto 确保如果内容太长也可以在内部滚动 */}
+        {/* 4. 底部悬浮区 (Sticky) - 只保留文章目录 (Catalog) */}
+        {/* 把 Announcement 移走了，这里只留下 Catalog，避免重复显示 */}
         <section className='sticky top-0 pt-8 flex flex-col max-h-screen overflow-y-auto no-scrollbar'>
-          
-          {/* 这里是你的活动广告，现在它会一直悬浮在左侧/右侧 */}
-          <div className='mb-4 shadow-lg rounded-xl overflow-hidden bg-white dark:bg-hexo-black-gray'>
-             <Announcement post={notice} />
-          </div>
-
           <Catalog toc={post?.toc} />
           <div className='flex justify-center'>
             <div>{slot}</div>

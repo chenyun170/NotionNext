@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 /**
- * 外贸工作台组件 V13.0 (国旗 IP 稳定版)
- * 1. 恢复自动匹配小国旗功能
- * 2. 修复 IP 显示失效：采用高德 + 国际 IP 接口联动
- * 3. 布局微调：确保 WhatsApp 按钮不折行，输入框自适应
+ * 外贸工作台组件 V12.8 (空间极致压缩版)
+ * 1. 换算结果左右横向显示
+ * 2. 极致压缩高度，消除垂直空隙
+ * 3. 修复换算显示逻辑
  */
 const ForeignTradeDashboard = () => {
-  // --- 状态定义 ---
   const [times, setTimes] = useState({});
   const [rateData, setRateData] = useState({ val: 7.25, loading: true, cached: false });
   const [weather, setWeather] = useState({ city: '定位中', temp: '', info: '' });
-  const [ipInfo, setIpInfo] = useState({ country: '检测中...', flag: '🌐' });
+  const [ipInfo, setIpInfo] = useState({ country: '检测中' });
+  
   const WEATHER_KEY = "41151e8e6a20ccd713ae595cd3236735";
 
   const usePersistentState = (key, defaultValue) => {
@@ -37,19 +37,8 @@ const ForeignTradeDashboard = () => {
   const [cbmResult, setCbmResult] = useState(null);
   const [unitVal, setUnitVal] = useState('');
   const [unitType, setUnitType] = useState('len');
+  const [unitRes, setUnitRes] = useState({ line1: '', line2: '' });
   const [copyTip, setCopyTip] = useState('');
-
-  // --- 工具函数 ---
-  
-  // 国家代码转国旗 Emoji (如 CN -> 🇨🇳)
-  const getFlagEmoji = (countryCode) => {
-    if (!countryCode || countryCode.length !== 2) return '🌐';
-    const codePoints = countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => 127397 + char.charCodeAt());
-    return String.fromCodePoint(...codePoints);
-  };
 
   const copyToClipboard = (text, label) => {
     if (!text) return;
@@ -79,47 +68,46 @@ const ForeignTradeDashboard = () => {
       const total = (parseFloat(l) * parseFloat(w) * parseFloat(h) / 1000000) * parseFloat(pcs);
       const sug = total < 28 ? `占20GP ${((total/28)*100).toFixed(0)}%` : total < 68 ? '荐40HQ' : '需分柜';
       setCbmResult({ val: total.toFixed(3), sug });
-    } else {
-      setCbmResult(null);
-    }
+    } else { setCbmResult(null); }
   }, [dims]);
 
   useEffect(() => { calculateCBM(); }, [calculateCBM]);
 
-  // --- IP 与数据获取逻辑 ---
+  // --- 增强：单位换算逻辑 ---
   useEffect(() => {
-    const fetchEnv = async () => {
-      try {
-        // 1. 优先尝试 ipapi.co 获取国际化 IP 和国家代码 (用于国旗)
-        const res = await fetch('https://ipapi.co/json/');
-        const data = await res.json();
-        
-        if (data && data.ip) {
-          setIpInfo({ 
-            country: `${data.country_name} [${data.ip}]`, 
-            flag: getFlagEmoji(data.country_code) 
-          });
+    if (!unitVal) { setUnitRes({ line1: '', line2: '' }); return; }
+    const v = parseFloat(unitVal);
+    if (isNaN(v)) return;
+    if (unitType === 'len') {
+      setUnitRes({ 
+        line1: `${(v * 2.54).toFixed(1)}cm`, 
+        line2: `${(v / 2.54).toFixed(1)}in` 
+      });
+    } else {
+      setUnitRes({ 
+        line1: `${(v * 0.45).toFixed(1)}kg`, 
+        line2: `${(v / 0.45).toFixed(1)}lb` 
+      });
+    }
+  }, [unitVal, unitType]);
 
-          // 2. 如果是国内，尝试用高德细化天气
-          const amapIp = await fetch(`https://restapi.amap.com/v3/ip?key=${WEATHER_KEY}`);
-          const amapData = await amapIp.json();
-          if (amapData.status === '1') {
-            const wRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?key=${WEATHER_KEY}&city=${amapData.adcode}`);
-            const wData = await wRes.json();
-            if (wData.lives?.length > 0) {
-              const L = wData.lives[0];
-              setWeather({ city: L.city, temp: L.temperature, info: L.weather });
-            }
-          } else {
-            // 海外环境则直接显示 ipapi 的城市
-            setWeather({ city: data.city || '海外', temp: '-', info: '环境正常' });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const amapIp = await fetch(`https://restapi.amap.com/v3/ip?key=${WEATHER_KEY}`);
+        const amapData = await amapIp.json();
+        if (amapData.status === '1') {
+          setIpInfo({ country: `${amapData.province}${amapData.city} [${amapData.adcode}]` });
+          const wRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?key=${WEATHER_KEY}&city=${amapData.adcode}`);
+          const wData = await wRes.json();
+          if (wData.lives?.length > 0) {
+            const L = wData.lives[0];
+            setWeather({ city: L.city, temp: L.temperature, info: L.weather });
           }
         }
-      } catch (e) {
-        setIpInfo({ country: '检测超时', flag: '⚠️' });
-      }
+      } catch (e) { console.error("Weather Error"); }
     };
-    fetchEnv();
+    fetchData();
 
     const fetchRate = async () => {
       const now = Date.now();
@@ -143,7 +131,6 @@ const ForeignTradeDashboard = () => {
     fetchRate();
   }, []);
 
-  // --- 时钟逻辑 ---
   useEffect(() => {
     const update = () => {
       const zones = [{k:'cn',t:'Asia/Shanghai',n:'北京'},{k:'uk',t:'Europe/London',n:'伦敦'},{k:'us',t:'America/New_York',n:'纽约'},{k:'la',t:'America/Los_Angeles',n:'加州'}];
@@ -167,31 +154,31 @@ const ForeignTradeDashboard = () => {
   return (
     <div className="ft-dashboard-container">
       <style jsx>{`
-        .ft-dashboard-container { margin-bottom: 10px; font-family: system-ui, sans-serif; color: #334155; }
+        .ft-dashboard-container { margin-bottom: 5px; font-family: system-ui, sans-serif; color: #334155; }
         .copy-toast { position: fixed; top: 10%; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; z-index: 9999; pointer-events: none; opacity: ${copyTip ? 1 : 0}; transition: opacity 0.3s; }
-        .clock-row { display: flex; gap: 4px; margin-bottom: 6px; }
-        .clock-item { flex: 1; background: #fff; border-radius: 6px; padding: 2px 6px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+        .clock-row { display: flex; gap: 4px; margin-bottom: 5px; }
+        .clock-item { flex: 1; background: #fff; border-radius: 6px; padding: 1px 6px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
         :global(body.dark) .clock-item { background: #1e293b; border-color: #334155; color: #f1f5f9; }
-        .c-city { font-size: 0.65rem; color: #64748b; }
+        .c-city { font-size: 0.6rem; color: #64748b; }
         .c-time { font-size: 0.75rem; font-weight: 700; }
         .c-status { font-size: 0.5rem; padding: 0px 2px; border-radius: 2px; margin-left: 2px; }
         .status-pulse { animation: glow 2s infinite; }
         @keyframes glow { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .dash-card { background: #fff; border-radius: 8px; padding: 6px 10px; border: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.02); position: relative; }
+        .dash-card { background: #fff; border-radius: 8px; padding: 5px 8px; border: 1px solid #f1f5f9; box-shadow: 0 1px 2px rgba(0,0,0,0.01); position: relative; }
         :global(body.dark) .dash-card { background: #1e293b; border-color: #334155; color: #f1f5f9; }
-        .header-title { font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; }
-        .header-title::before { content: ''; width: 3px; height: 8px; background: #3b82f6; border-radius: 2px; margin-right: 4px; }
-        .std-input { flex: 1; min-width: 0; padding: 3px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; outline: none; background: transparent; color: inherit; }
+        .header-title { font-size: 0.7rem; font-weight: 700; margin-bottom: 3px; display: flex; align-items: center; }
+        .header-title::before { content: ''; width: 2px; height: 7px; background: #3b82f6; border-radius: 2px; margin-right: 3px; }
+        .std-input { flex: 1; min-width: 0; padding: 2px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.75rem; outline: none; background: transparent; color: inherit; }
         .input-row { display: flex; align-items: center; gap: 4px; }
-        .tab-wrap { display: flex; gap: 2px; background: rgba(0,0,0,0.05); padding: 1px; border-radius: 4px; margin-left: auto; }
-        .tab-btn { border: none; background: none; font-size: 0.6rem; padding: 1px 5px; border-radius: 3px; cursor: pointer; color: inherit; opacity: 0.6; }
+        .tab-wrap { display: flex; gap: 2px; background: rgba(0,0,0,0.05); padding: 1px; border-radius: 3px; margin-left: auto; }
+        .tab-btn { border: none; background: none; font-size: 0.55rem; padding: 1px 4px; border-radius: 2px; cursor: pointer; color: inherit; opacity: 0.6; }
         .tab-btn.active { background: #fff; color: #3b82f6; font-weight: 600; opacity: 1; }
         :global(body.dark) .tab-btn.active { background: #334155; }
-        .wa-btn { background: #25d366; color: white; border: none; padding: 4px 12px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.75rem; white-space: nowrap; flex-shrink: 0; }
-        .status-tag { font-size: 0.55rem; padding: 0px 3px; border-radius: 2px; background: rgba(0,0,0,0.05); margin-left: 4px; color: #64748b; }
-        .res-box { background: rgba(59,130,246,0.05); border: 1px dashed #3b82f6; padding: 3px; border-radius: 4px; text-align: center; font-size: 0.7rem; color: #3b82f6; margin-top: 4px; cursor: pointer; }
-        .card-footer { position: absolute; bottom: 2px; width: calc(100% - 20px); display: flex; justify-content: space-between; align-items: center; font-size: 0.55rem; color: #94a3b8; }
+        .wa-btn { background: #25d366; color: white; border: none; padding: 3px 8px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.7rem; white-space: nowrap; flex-shrink: 0; }
+        .status-tag { font-size: 0.55rem; padding: 0px 2px; border-radius: 2px; background: rgba(0,0,0,0.05); margin-left: 2px; color: #64748b; }
+        .res-box-side { background: rgba(59,130,246,0.03); border: 1px dashed #3b82f6; border-radius: 4px; padding: 2px 5px; font-size: 0.7rem; color: #3b82f6; display: flex; align-items: center; gap: 4px; flex-shrink: 0; cursor: pointer; }
+        .card-footer { position: absolute; bottom: 2px; width: calc(100% - 16px); display: flex; justify-content: space-between; align-items: center; font-size: 0.55rem; color: #94a3b8; }
         @media (max-width: 768px) { .clock-row { display: grid; grid-template-columns: 1fr 1fr; } .main-grid { grid-template-columns: 1fr; } }
       `}</style>
 
@@ -211,18 +198,17 @@ const ForeignTradeDashboard = () => {
       </div>
 
       <div className="main-grid">
-        <div style={{display:'flex', flexDirection:'column', gap:'6px'}}>
+        <div style={{display:'flex', flexDirection:'column', gap:'5px'}}>
           <div className="dash-card">
-            <div className="header-title">报价换算 <span className="status-tag">{rateData.cached?'已缓存':'实时'}</span></div>
+            <div className="header-title">报价换算 <span className="status-tag">{rateData.cached?'缓存':'实时'}</span></div>
             <div className="input-row">
                <input type="number" className="std-input" value={usd} onChange={e=>setUsd(e.target.value)} />
-               <span style={{color:'#cbd5e1', fontSize:'0.7rem'}}>⇄</span>
-               <div className="std-input" style={{background:'rgba(0,0,0,0.02)', fontWeight:'bold', cursor:'pointer'}} onClick={() => copyToClipboard(cnyVal, '价格')}>{cnyVal}</div>
+               <span style={{color:'#cbd5e1', fontSize:'0.6rem'}}>⇄</span>
+               <div className="std-input" style={{background:'rgba(0,0,0,0.01)', fontWeight:'bold', cursor:'pointer'}} onClick={() => copyToClipboard(cnyVal, '价格')}>{cnyVal}</div>
             </div>
-            <div style={{marginTop:'1px', fontSize:'0.55rem', opacity:0.5, textAlign:'right'}}>1$ ≈ {rateData.val}</div>
           </div>
           <div className="dash-card">
-            <div className="header-title">WhatsApp 直连</div>
+            <div className="header-title">WhatsApp</div>
             <div className="input-row">
                <input className="std-input" placeholder="号码 (例: 86138...)" value={waPhone} onChange={e=>setWaPhone(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleWaClick()}/>
                <button className="wa-btn" onClick={handleWaClick}>对话</button>
@@ -230,52 +216,58 @@ const ForeignTradeDashboard = () => {
           </div>
         </div>
 
-        <div className="dash-card" style={{paddingBottom:'20px'}}>
+        <div className="dash-card" style={{paddingBottom:'18px'}}>
           <div className="header-title">常用工具
             <div className="tab-wrap">
               {['cbm','unit','search'].map(m => <button key={m} className={`tab-btn ${calcMode===m?'active':''}`} onClick={()=>setCalcMode(m)}>{m==='cbm'?'算柜':m==='unit'?'换算':'搜索'}</button>)}
             </div>
           </div>
 
+          {/* 算柜布局优化 */}
           {calcMode === 'cbm' && (
-            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'4px'}}>
-              <input placeholder="长cm" className="std-input" value={dims.l} onChange={e=>setDims({...dims,l:e.target.value})}/>
-              <input placeholder="宽cm" className="std-input" value={dims.w} onChange={e=>setDims({...dims,w:e.target.value})}/>
-              <input placeholder="高cm" className="std-input" value={dims.h} onChange={e=>setDims({...dims,h:e.target.value})}/>
-              <input placeholder="箱数" className="std-input" value={dims.pcs} onChange={e=>setDims({...dims,pcs:e.target.value})}/>
+            <div className="input-row">
+               <div style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:'2px', flex:1}}>
+                  <input placeholder="长" className="std-input" value={dims.l} onChange={e=>setDims({...dims,l:e.target.value})}/>
+                  <input placeholder="宽" className="std-input" value={dims.w} onChange={e=>setDims({...dims,w:e.target.value})}/>
+                  <input placeholder="高" className="std-input" value={dims.h} onChange={e=>setDims({...dims,h:e.target.value})}/>
+                  <input placeholder="箱" className="std-input" value={dims.pcs} onChange={e=>setDims({...dims,pcs:e.target.value})}/>
+               </div>
+               {cbmResult && <div className="res-box-side" onClick={() => copyToClipboard(cbmResult.val, '体积')}>{cbmResult.val}m³</div>}
             </div>
           )}
 
+          {/* 换算布局优化：左右显示 */}
           {calcMode === 'unit' && (
-            <div style={{display:'flex', flexDirection:'column', gap:'3px'}}>
-               <div style={{display:'flex', gap:6, justifyContent:'center'}}>
-                 {['len','wt'].map(t => <label key={t} style={{fontSize:'0.6rem'}}><input type="radio" checked={unitType===t} onChange={()=>setUnitType(t)}/> {t==='len'?'长度':'重量'}</label>)}
-               </div>
-               <input type="number" className="std-input" placeholder="输入数值" value={unitVal} onChange={e=>setUnitVal(e.target.value)} />
+            <div style={{display:'flex', flexDirection:'column', gap:'2px'}}>
+              <div className="tab-wrap" style={{marginLeft:'0', marginRight:'auto'}}>
+                {['len','wt'].map(t => <button key={t} className={`tab-btn ${unitType===t?'active':''}`} onClick={()=>setUnitType(t)}>{t==='len'?'长度':'重量'}</button>)}
+              </div>
+              <div className="input-row">
+                <input type="number" className="std-input" placeholder="数值" value={unitVal} onChange={e=>setUnitVal(e.target.value)} />
+                {unitRes.line1 && (
+                  <div className="res-box-side" onClick={() => copyToClipboard(`${unitRes.line1}/${unitRes.line2}`, '结果')}>
+                    {unitRes.line1} | {unitRes.line2}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
           {calcMode === 'search' && (
-            <div style={{display:'flex', flexDirection:'column', gap:'4px'}}>
+            <div style={{display:'flex', flexDirection:'column', gap:'2px'}}>
                <div className="tab-wrap" style={{marginLeft:'0', marginRight:'auto'}}>
-                  {['hs','google'].map(t => <button key={t} className={`tab-btn ${searchType===t?'active':''}`} onClick={()=>setSearchType(t)}>{t==='hs'?'HS编码':'谷歌'}</button>)}
+                  {['hs','google'].map(t => <button key={t} className={`tab-btn ${searchType===t?'active':''}`} onClick={()=>setSearchType(t)}>{t==='hs'?'HS':'谷歌'}</button>)}
                </div>
                <div className="input-row">
-                  <input className="std-input" placeholder="输入关键词..." value={searchKw} onChange={e=>setSearchKw(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleSearch()}/>
+                  <input className="std-input" placeholder="关键词..." value={searchKw} onChange={e=>setSearchKw(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleSearch()}/>
                   <button className="wa-btn" style={{background:'#3b82f6'}} onClick={handleSearch}>GO</button>
                </div>
             </div>
           )}
 
-          {cbmResult && calcMode === 'cbm' && <div className="res-box" onClick={() => copyToClipboard(cbmResult.val, '体积')}><strong>{cbmResult.val} m³</strong> | {cbmResult.sug}</div>}
-
           <div className="card-footer">
-             <div style={{display:'flex', gap:3}}>
-                <span>{weather.city} {weather.temp}℃ {weather.info}</span>
-             </div>
-             <div>
-                <span>{ipInfo.flag} {ipInfo.country}</span>
-             </div>
+             <div>{weather.city} {weather.temp}℃</div>
+             <div>{ipInfo.country}</div>
           </div>
         </div>
       </div>

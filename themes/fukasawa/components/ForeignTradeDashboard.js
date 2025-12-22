@@ -1,17 +1,32 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 /**
- * 外贸工作台组件 V12.8 (空间极致压缩版)
- * 1. 换算结果左右横向显示
- * 2. 极致压缩高度，消除垂直空隙
- * 3. 修复换算显示逻辑
+ * 外贸工作台组件 V13.6 (单位增强版)
+ * 1. 明确标明工具单位 (cm, kg, in, lb)
+ * 2. 强化 IP 检测稳定性
+ * 3. 极致压缩高度并防止按钮折行
  */
 const ForeignTradeDashboard = () => {
+  // --- 1. 交互函数 ---
+  const handleWaClick = (phone) => {
+    if (!phone) return;
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    window.open(`https://wa.me/${cleanPhone}`, '_blank');
+  };
+
+  const handleSearch = (kw, type) => {
+    if (!kw) return;
+    const url = type === 'hs' 
+      ? `https://www.hsbianma.com/search?keywords=${encodeURIComponent(kw)}` 
+      : `https://www.google.com/search?q=${encodeURIComponent(kw)}`;
+    window.open(url, '_blank');
+  };
+
+  // --- 2. 状态管理 ---
   const [times, setTimes] = useState({});
   const [rateData, setRateData] = useState({ val: 7.25, loading: true, cached: false });
   const [weather, setWeather] = useState({ city: '定位中', temp: '', info: '' });
-  const [ipInfo, setIpInfo] = useState({ country: '检测中' });
-  
+  const [ipInfo, setIpInfo] = useState({ country: '检测中...' });
   const WEATHER_KEY = "41151e8e6a20ccd713ae595cd3236735";
 
   const usePersistentState = (key, defaultValue) => {
@@ -48,20 +63,7 @@ const ForeignTradeDashboard = () => {
     });
   };
 
-  const handleWaClick = () => {
-    if (!waPhone) return;
-    const cleanPhone = waPhone.replace(/[^0-9]/g, '');
-    window.open(`https://wa.me/${cleanPhone}`, '_blank');
-  };
-
-  const handleSearch = () => {
-    if (!searchKw) return;
-    const url = searchType === 'hs' 
-      ? `https://www.hsbianma.com/search?keywords=${encodeURIComponent(searchKw)}` 
-      : `https://www.google.com/search?q=${encodeURIComponent(searchKw)}`;
-    window.open(url, '_blank');
-  };
-
+  // --- 3. 计算逻辑 ---
   const calculateCBM = useCallback(() => {
     const { l, w, h, pcs } = dims;
     if (l && w && h && pcs) {
@@ -73,41 +75,42 @@ const ForeignTradeDashboard = () => {
 
   useEffect(() => { calculateCBM(); }, [calculateCBM]);
 
-  // --- 增强：单位换算逻辑 ---
   useEffect(() => {
     if (!unitVal) { setUnitRes({ line1: '', line2: '' }); return; }
     const v = parseFloat(unitVal);
     if (isNaN(v)) return;
     if (unitType === 'len') {
-      setUnitRes({ 
-        line1: `${(v * 2.54).toFixed(1)}cm`, 
-        line2: `${(v / 2.54).toFixed(1)}in` 
-      });
+      setUnitRes({ line1: `${(v * 2.54).toFixed(1)}cm`, line2: `${(v / 2.54).toFixed(1)}in` });
     } else {
-      setUnitRes({ 
-        line1: `${(v * 0.45).toFixed(1)}kg`, 
-        line2: `${(v / 0.45).toFixed(1)}lb` 
-      });
+      setUnitRes({ line1: `${(v * 0.45).toFixed(1)}kg`, line2: `${(v / 0.45).toFixed(1)}lb` });
     }
   }, [unitVal, unitType]);
 
+  // --- 4. 环境检测 ---
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchEnv = async () => {
       try {
-        const amapIp = await fetch(`https://restapi.amap.com/v3/ip?key=${WEATHER_KEY}`);
-        const amapData = await amapIp.json();
-        if (amapData.status === '1') {
-          setIpInfo({ country: `${amapData.province}${amapData.city} [${amapData.adcode}]` });
+        const amapRes = await fetch(`https://restapi.amap.com/v3/ip?key=${WEATHER_KEY}`);
+        const amapData = await amapRes.json();
+        if (amapData.status === '1' && amapData.adcode) {
+          setIpInfo({ country: `${amapData.province}${amapData.city} [${amapData.ip}]` });
           const wRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?key=${WEATHER_KEY}&city=${amapData.adcode}`);
           const wData = await wRes.json();
           if (wData.lives?.length > 0) {
             const L = wData.lives[0];
             setWeather({ city: L.city, temp: L.temperature, info: L.weather });
           }
-        }
-      } catch (e) { console.error("Weather Error"); }
+        } else { throw new Error('Retry'); }
+      } catch (e) {
+        try {
+          const res = await fetch('https://ipapi.co/json/');
+          const data = await res.json();
+          setIpInfo({ country: `${data.country_name} ${data.city} [${data.ip}]` });
+          setWeather({ city: data.city || '海外', temp: '-', info: '正常' });
+        } catch (e2) { setIpInfo({ country: '检测超时' }); }
+      }
     };
-    fetchData();
+    fetchEnv();
 
     const fetchRate = async () => {
       const now = Date.now();
@@ -131,6 +134,7 @@ const ForeignTradeDashboard = () => {
     fetchRate();
   }, []);
 
+  // 时钟刷新
   useEffect(() => {
     const update = () => {
       const zones = [{k:'cn',t:'Asia/Shanghai',n:'北京'},{k:'uk',t:'Europe/London',n:'伦敦'},{k:'us',t:'America/New_York',n:'纽约'},{k:'la',t:'America/Los_Angeles',n:'加州'}];
@@ -175,7 +179,7 @@ const ForeignTradeDashboard = () => {
         .tab-btn { border: none; background: none; font-size: 0.55rem; padding: 1px 4px; border-radius: 2px; cursor: pointer; color: inherit; opacity: 0.6; }
         .tab-btn.active { background: #fff; color: #3b82f6; font-weight: 600; opacity: 1; }
         :global(body.dark) .tab-btn.active { background: #334155; }
-        .wa-btn { background: #25d366; color: white; border: none; padding: 3px 8px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.7rem; white-space: nowrap; flex-shrink: 0; }
+        .wa-btn { background: #25d366; color: white; border: none; padding: 3px 10px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.7rem; white-space: nowrap; flex-shrink: 0; }
         .status-tag { font-size: 0.55rem; padding: 0px 2px; border-radius: 2px; background: rgba(0,0,0,0.05); margin-left: 2px; color: #64748b; }
         .res-box-side { background: rgba(59,130,246,0.03); border: 1px dashed #3b82f6; border-radius: 4px; padding: 2px 5px; font-size: 0.7rem; color: #3b82f6; display: flex; align-items: center; gap: 4px; flex-shrink: 0; cursor: pointer; }
         .card-footer { position: absolute; bottom: 2px; width: calc(100% - 16px); display: flex; justify-content: space-between; align-items: center; font-size: 0.55rem; color: #94a3b8; }
@@ -184,7 +188,6 @@ const ForeignTradeDashboard = () => {
 
       <div className="copy-toast">{copyTip}</div>
 
-      {/* 1. 时钟区 */}
       <div className="clock-row">
         {['cn','uk','us','la'].map(k => (
           <div className="clock-item" key={k}>
@@ -202,16 +205,16 @@ const ForeignTradeDashboard = () => {
           <div className="dash-card">
             <div className="header-title">报价换算 <span className="status-tag">{rateData.cached?'缓存':'实时'}</span></div>
             <div className="input-row">
-               <input type="number" className="std-input" value={usd} onChange={e=>setUsd(e.target.value)} />
+               <input type="number" className="std-input" placeholder="输入美元($)" value={usd} onChange={e=>setUsd(e.target.value)} />
                <span style={{color:'#cbd5e1', fontSize:'0.6rem'}}>⇄</span>
-               <div className="std-input" style={{background:'rgba(0,0,0,0.01)', fontWeight:'bold', cursor:'pointer'}} onClick={() => copyToClipboard(cnyVal, '价格')}>{cnyVal}</div>
+               <div className="std-input" style={{background:'rgba(0,0,0,0.01)', fontWeight:'bold', cursor:'pointer'}} onClick={() => copyToClipboard(cnyVal, '价格')}>{cnyVal} (¥)</div>
             </div>
           </div>
           <div className="dash-card">
             <div className="header-title">WhatsApp</div>
             <div className="input-row">
-               <input className="std-input" placeholder="号码 (例: 86138...)" value={waPhone} onChange={e=>setWaPhone(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleWaClick()}/>
-               <button className="wa-btn" onClick={handleWaClick}>对话</button>
+               <input className="std-input" placeholder="区号+号码 (如: 8613...)" value={waPhone} onChange={e=>setWaPhone(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleWaClick(waPhone)}/>
+               <button className="wa-btn" onClick={() => handleWaClick(waPhone)}>对话</button>
             </div>
           </div>
         </div>
@@ -223,27 +226,25 @@ const ForeignTradeDashboard = () => {
             </div>
           </div>
 
-          {/* 算柜布局优化 */}
           {calcMode === 'cbm' && (
             <div className="input-row">
                <div style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:'2px', flex:1}}>
-                  <input placeholder="长" className="std-input" value={dims.l} onChange={e=>setDims({...dims,l:e.target.value})}/>
-                  <input placeholder="宽" className="std-input" value={dims.w} onChange={e=>setDims({...dims,w:e.target.value})}/>
-                  <input placeholder="高" className="std-input" value={dims.h} onChange={e=>setDims({...dims,h:e.target.value})}/>
-                  <input placeholder="箱" className="std-input" value={dims.pcs} onChange={e=>setDims({...dims,pcs:e.target.value})}/>
+                  <input placeholder="长cm" className="std-input" value={dims.l} onChange={e=>setDims({...dims,l:e.target.value})}/>
+                  <input placeholder="宽cm" className="std-input" value={dims.w} onChange={e=>setDims({...dims,w:e.target.value})}/>
+                  <input placeholder="高cm" className="std-input" value={dims.h} onChange={e=>setDims({...dims,h:e.target.value})}/>
+                  <input placeholder="箱数" className="std-input" value={dims.pcs} onChange={e=>setDims({...dims,pcs:e.target.value})}/>
                </div>
                {cbmResult && <div className="res-box-side" onClick={() => copyToClipboard(cbmResult.val, '体积')}>{cbmResult.val}m³</div>}
             </div>
           )}
 
-          {/* 换算布局优化：左右显示 */}
           {calcMode === 'unit' && (
             <div style={{display:'flex', flexDirection:'column', gap:'2px'}}>
               <div className="tab-wrap" style={{marginLeft:'0', marginRight:'auto'}}>
                 {['len','wt'].map(t => <button key={t} className={`tab-btn ${unitType===t?'active':''}`} onClick={()=>setUnitType(t)}>{t==='len'?'长度':'重量'}</button>)}
               </div>
               <div className="input-row">
-                <input type="number" className="std-input" placeholder="数值" value={unitVal} onChange={e=>setUnitVal(e.target.value)} />
+                <input type="number" className="std-input" placeholder={unitType==='len'?'输入英寸(in)':'输入磅(lb)'} value={unitVal} onChange={e=>setUnitVal(e.target.value)} />
                 {unitRes.line1 && (
                   <div className="res-box-side" onClick={() => copyToClipboard(`${unitRes.line1}/${unitRes.line2}`, '结果')}>
                     {unitRes.line1} | {unitRes.line2}
@@ -259,15 +260,15 @@ const ForeignTradeDashboard = () => {
                   {['hs','google'].map(t => <button key={t} className={`tab-btn ${searchType===t?'active':''}`} onClick={()=>setSearchType(t)}>{t==='hs'?'HS':'谷歌'}</button>)}
                </div>
                <div className="input-row">
-                  <input className="std-input" placeholder="关键词..." value={searchKw} onChange={e=>setSearchKw(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleSearch()}/>
-                  <button className="wa-btn" style={{background:'#3b82f6'}} onClick={handleSearch}>GO</button>
+                  <input className="std-input" placeholder="关键词..." value={searchKw} onChange={e=>setSearchKw(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleSearch(searchKw, searchType)}/>
+                  <button className="wa-btn" style={{background:'#3b82f6'}} onClick={() => handleSearch(searchKw, searchType)}>GO</button>
                </div>
             </div>
           )}
 
           <div className="card-footer">
              <div>{weather.city} {weather.temp}℃</div>
-             <div>{ipInfo.country}</div>
+             <div>IP: {ipInfo.country}</div>
           </div>
         </div>
       </div>

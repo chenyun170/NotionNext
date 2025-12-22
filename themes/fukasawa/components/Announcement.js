@@ -24,7 +24,7 @@ const Announcement = ({ post, className }) => {
 
     // --- 活动 2 配置：新春特惠或其它活动 ---
     // 设置截止时间为 2025年12月31日 23:59:59
-    const deadline2 = new Date('2023-12-31T23:59:59')
+    const deadline2 = new Date('2025-12-31T23:59:59')
     if (now < deadline2) {
       setShowActivity2(true)
     }

@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 /**
- * 外贸工作台组件 V12.6 (布局微调版)
- * 1. 缩短 WhatsApp 输入框宽度，确保按钮横向显示
- * 2. 极致压缩高度，锁定高德天气
+ * 外贸工作台组件 V13.0 (国旗 IP 稳定版)
+ * 1. 恢复自动匹配小国旗功能
+ * 2. 修复 IP 显示失效：采用高德 + 国际 IP 接口联动
+ * 3. 布局微调：确保 WhatsApp 按钮不折行，输入框自适应
  */
 const ForeignTradeDashboard = () => {
+  // --- 状态定义 ---
   const [times, setTimes] = useState({});
   const [rateData, setRateData] = useState({ val: 7.25, loading: true, cached: false });
   const [weather, setWeather] = useState({ city: '定位中', temp: '', info: '' });
-  const [ipInfo, setIpInfo] = useState({ country: '检测中' });
-  
+  const [ipInfo, setIpInfo] = useState({ country: '检测中...', flag: '🌐' });
   const WEATHER_KEY = "41151e8e6a20ccd713ae595cd3236735";
 
   const usePersistentState = (key, defaultValue) => {
@@ -37,6 +38,18 @@ const ForeignTradeDashboard = () => {
   const [unitVal, setUnitVal] = useState('');
   const [unitType, setUnitType] = useState('len');
   const [copyTip, setCopyTip] = useState('');
+
+  // --- 工具函数 ---
+  
+  // 国家代码转国旗 Emoji (如 CN -> 🇨🇳)
+  const getFlagEmoji = (countryCode) => {
+    if (!countryCode || countryCode.length !== 2) return '🌐';
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt());
+    return String.fromCodePoint(...codePoints);
+  };
 
   const copyToClipboard = (text, label) => {
     if (!text) return;
@@ -73,23 +86,40 @@ const ForeignTradeDashboard = () => {
 
   useEffect(() => { calculateCBM(); }, [calculateCBM]);
 
+  // --- IP 与数据获取逻辑 ---
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchEnv = async () => {
       try {
-        const amapIp = await fetch(`https://restapi.amap.com/v3/ip?key=${WEATHER_KEY}`);
-        const amapData = await amapIp.json();
-        if (amapData.status === '1') {
-          setIpInfo({ country: `${amapData.province}${amapData.city} [${amapData.adcode}]` });
-          const wRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?key=${WEATHER_KEY}&city=${amapData.adcode}`);
-          const wData = await wRes.json();
-          if (wData.lives?.length > 0) {
-            const L = wData.lives[0];
-            setWeather({ city: L.city, temp: L.temperature, info: L.weather });
+        // 1. 优先尝试 ipapi.co 获取国际化 IP 和国家代码 (用于国旗)
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        
+        if (data && data.ip) {
+          setIpInfo({ 
+            country: `${data.country_name} [${data.ip}]`, 
+            flag: getFlagEmoji(data.country_code) 
+          });
+
+          // 2. 如果是国内，尝试用高德细化天气
+          const amapIp = await fetch(`https://restapi.amap.com/v3/ip?key=${WEATHER_KEY}`);
+          const amapData = await amapIp.json();
+          if (amapData.status === '1') {
+            const wRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?key=${WEATHER_KEY}&city=${amapData.adcode}`);
+            const wData = await wRes.json();
+            if (wData.lives?.length > 0) {
+              const L = wData.lives[0];
+              setWeather({ city: L.city, temp: L.temperature, info: L.weather });
+            }
+          } else {
+            // 海外环境则直接显示 ipapi 的城市
+            setWeather({ city: data.city || '海外', temp: '-', info: '环境正常' });
           }
         }
-      } catch (e) { console.error("Weather Error"); }
+      } catch (e) {
+        setIpInfo({ country: '检测超时', flag: '⚠️' });
+      }
     };
-    fetchData();
+    fetchEnv();
 
     const fetchRate = async () => {
       const now = Date.now();
@@ -113,6 +143,7 @@ const ForeignTradeDashboard = () => {
     fetchRate();
   }, []);
 
+  // --- 时钟逻辑 ---
   useEffect(() => {
     const update = () => {
       const zones = [{k:'cn',t:'Asia/Shanghai',n:'北京'},{k:'uk',t:'Europe/London',n:'伦敦'},{k:'us',t:'America/New_York',n:'纽约'},{k:'la',t:'America/Los_Angeles',n:'加州'}];
@@ -136,7 +167,7 @@ const ForeignTradeDashboard = () => {
   return (
     <div className="ft-dashboard-container">
       <style jsx>{`
-        .ft-dashboard-container { margin-bottom: 8px; font-family: system-ui, sans-serif; color: #334155; }
+        .ft-dashboard-container { margin-bottom: 10px; font-family: system-ui, sans-serif; color: #334155; }
         .copy-toast { position: fixed; top: 10%; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; z-index: 9999; pointer-events: none; opacity: ${copyTip ? 1 : 0}; transition: opacity 0.3s; }
         .clock-row { display: flex; gap: 4px; margin-bottom: 6px; }
         .clock-item { flex: 1; background: #fff; border-radius: 6px; padding: 2px 6px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
@@ -166,6 +197,7 @@ const ForeignTradeDashboard = () => {
 
       <div className="copy-toast">{copyTip}</div>
 
+      {/* 1. 时钟区 */}
       <div className="clock-row">
         {['cn','uk','us','la'].map(k => (
           <div className="clock-item" key={k}>
@@ -207,10 +239,10 @@ const ForeignTradeDashboard = () => {
 
           {calcMode === 'cbm' && (
             <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'4px'}}>
-              <input placeholder="长cm" className="std-input" style={{flex:'none', width:'100%'}} value={dims.l} onChange={e=>setDims({...dims,l:e.target.value})}/>
-              <input placeholder="宽cm" className="std-input" style={{flex:'none', width:'100%'}} value={dims.w} onChange={e=>setDims({...dims,w:e.target.value})}/>
-              <input placeholder="高cm" className="std-input" style={{flex:'none', width:'100%'}} value={dims.h} onChange={e=>setDims({...dims,h:e.target.value})}/>
-              <input placeholder="箱数" className="std-input" style={{flex:'none', width:'100%'}} value={dims.pcs} onChange={e=>setDims({...dims,pcs:e.target.value})}/>
+              <input placeholder="长cm" className="std-input" value={dims.l} onChange={e=>setDims({...dims,l:e.target.value})}/>
+              <input placeholder="宽cm" className="std-input" value={dims.w} onChange={e=>setDims({...dims,w:e.target.value})}/>
+              <input placeholder="高cm" className="std-input" value={dims.h} onChange={e=>setDims({...dims,h:e.target.value})}/>
+              <input placeholder="箱数" className="std-input" value={dims.pcs} onChange={e=>setDims({...dims,pcs:e.target.value})}/>
             </div>
           )}
 
@@ -219,7 +251,7 @@ const ForeignTradeDashboard = () => {
                <div style={{display:'flex', gap:6, justifyContent:'center'}}>
                  {['len','wt'].map(t => <label key={t} style={{fontSize:'0.6rem'}}><input type="radio" checked={unitType===t} onChange={()=>setUnitType(t)}/> {t==='len'?'长度':'重量'}</label>)}
                </div>
-               <input type="number" className="std-input" style={{flex:'none', width:'100%'}} placeholder="输入数值" value={unitVal} onChange={e=>setUnitVal(e.target.value)} />
+               <input type="number" className="std-input" placeholder="输入数值" value={unitVal} onChange={e=>setUnitVal(e.target.value)} />
             </div>
           )}
 
@@ -242,7 +274,7 @@ const ForeignTradeDashboard = () => {
                 <span>{weather.city} {weather.temp}℃ {weather.info}</span>
              </div>
              <div>
-                <span>{ipInfo.country}</span>
+                <span>{ipInfo.flag} {ipInfo.country}</span>
              </div>
           </div>
         </div>

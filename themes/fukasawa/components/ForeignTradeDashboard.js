@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 /**
- * 外贸工作台 V15.7 (功能补完版)
- * 1. 修复算柜：显示体积 + 装柜建议
- * 2. 强化单位显示：cm, pcs, in, lb
- * 3. 增强代理环境 IP 探测稳定性
+ * 外贸工作台 V15.8 (状态回归版)
+ * 1. 修复：恢复城市工作/休市状态显示
+ * 2. 布局：4城市横向一排 + 秒显 (HH:mm:ss)
+ * 3. 算柜：体积 + 智能装柜建议
  */
 const ForeignTradeDashboard = () => {
   const [times, setTimes] = useState({});
@@ -60,11 +60,10 @@ const ForeignTradeDashboard = () => {
     window.open(url, '_blank');
   };
 
-  // --- IP 与数据初始化 ---
+  // --- IP 与 汇率获取 ---
   useEffect(() => {
     const fetchEnv = async () => {
       try {
-        // 代理环境下，优先通过国际接口抓取，避免高德拦截
         const res = await fetch('https://ipapi.co/json/');
         const data = await res.json();
         if (data.ip) {
@@ -73,7 +72,6 @@ const ForeignTradeDashboard = () => {
           setWeather({ city: data.city || '海外', temp: '-', info: '接入' });
         }
       } catch (e) {
-        // 国际接口失败再尝试高德
         try {
           const amapRes = await fetch(`https://restapi.amap.com/v3/ip?key=${AMAP_KEY}`);
           const amapData = await amapRes.json();
@@ -87,8 +85,7 @@ const ForeignTradeDashboard = () => {
 
     const fetchRate = async () => {
       const now = Date.now();
-      const CACHE_KEY = 'ft_rate_cache_v2';
-      const cached = localStorage.getItem(CACHE_KEY);
+      const cached = localStorage.getItem('ft_rate_cache_v2');
       if (cached) {
         const p = JSON.parse(cached);
         if (now - p.timestamp < 86400000) {
@@ -101,14 +98,14 @@ const ForeignTradeDashboard = () => {
         if (d.result === 'success') {
           const r = d.conversion_rates.CNY;
           setRateData({ val: r, cached: false, sync: true });
-          localStorage.setItem(CACHE_KEY, JSON.stringify({ rate: r, timestamp: now }));
+          localStorage.setItem('ft_rate_cache_v2', JSON.stringify({ rate: r, timestamp: now }));
         }
       } catch (e) { setRateData({ val: 7.25, cached: true, sync: false }); }
     };
     fetchRate();
   }, []);
 
-  // --- 动态时钟 ---
+  // --- 核心：秒级动态时钟与状态逻辑 ---
   useEffect(() => {
     const update = () => {
       const zones = [{k:'cn',t:'Asia/Shanghai',n:'北京'},{k:'uk',t:'Europe/London',n:'伦敦'},{k:'us',t:'America/New_York',n:'纽约'},{k:'la',t:'America/Los_Angeles',n:'加州'}];
@@ -127,18 +124,13 @@ const ForeignTradeDashboard = () => {
     const t = setInterval(update, 1000); update(); return () => clearInterval(t);
   }, []);
 
-  // --- 算柜逻辑增强 ---
+  // --- 算柜逻辑 ---
   const getCbmResult = () => {
     const { l, w, h, pcs } = dims;
     if (l && w && h && pcs) {
       const v = (parseFloat(l) * parseFloat(w) * parseFloat(h) / 1000000 * parseFloat(pcs)).toFixed(3);
-      let sug = "";
-      if (v < 15) sug = "建议拼箱/散货";
-      else if (v < 28) sug = `占20GP约${(v/28*100).toFixed(0)}%`;
-      else if (v < 58) sug = "建议走40GP";
-      else if (v < 68) sug = "建议走40HQ";
-      else sug = "需拆柜/分柜";
-      return { val: v, sug: sug };
+      let sug = v < 15 ? "建议拼箱" : v < 28 ? `占20GP约${(v/28*100).toFixed(0)}%` : v < 68 ? "建议走40HQ" : "需拆柜";
+      return { val: v, sug };
     }
     return null;
   };
@@ -152,13 +144,20 @@ const ForeignTradeDashboard = () => {
       <style jsx>{`
         .ft-dashboard-container { margin-bottom: 5px; font-family: system-ui, sans-serif; color: #334155; }
         .copy-toast { position: fixed; top: 10%; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; z-index: 9999; opacity: ${copyTip ? 1 : 0}; transition: opacity 0.3s; pointer-events: none; }
+        
         .clock-row { display: flex; gap: 4px; margin-bottom: 5px; }
         .clock-item { flex: 1; background: #fff; border-radius: 6px; padding: 2px 6px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         :global(body.dark) .clock-item { background: #1e293b; border-color: #334155; color: #f1f5f9; }
-        .c-time { font-size: 0.8rem; font-weight: 700; font-family: 'Courier New', monospace; }
+        
+        .c-time { font-size: 0.8rem; font-weight: 700; font-family: 'Courier New', monospace; letter-spacing: -0.5px; }
+        .c-status { font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; margin-left: 3px; font-weight: bold; }
+        .pulse { animation: glow 2s infinite; }
+        @keyframes glow { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .dash-card { background: #fff; border-radius: 8px; padding: 5px 8px; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02); position: relative; }
         :global(body.dark) .dash-card { background: #1e293b; border-color: #334155; color: #f1f5f9; }
+        
         .header-title { font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
         .header-title::before { content: ''; width: 3px; height: 9px; background: #3b82f6; border-radius: 2px; }
         .std-input { flex: 1; min-width: 0; padding: 2px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.75rem; outline: none; background: transparent; color: inherit; }
@@ -167,18 +166,23 @@ const ForeignTradeDashboard = () => {
         .wa-btn { background: #25d366; color: white; border: none; padding: 3px 10px; border-radius: 5px; font-weight: 600; cursor: pointer; font-size: 0.75rem; }
         .res-box { background: rgba(59,130,246,0.05); border: 1px dashed #3b82f6; padding: 3px; border-radius: 4px; text-align: center; font-size: 0.75rem; color: #3b82f6; margin-top: 4px; cursor: pointer; }
         .card-footer { position: absolute; bottom: 2px; width: calc(100% - 16px); display: flex; justify-content: space-between; align-items: center; font-size: 0.55rem; color: #94a3b8; }
-        @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } .clock-row { display: grid; grid-template-columns: 1fr 1fr; } }
       `}</style>
 
       <div className="copy-toast">{copyTip}</div>
 
-      {/* 1. 横向秒显时钟 */}
+      {/* 1. 横向一排秒显时钟区 */}
       <div className="clock-row">
         {['cn','uk','us','la'].map(k => (
           <div className="clock-item" key={k}>
             <span style={{fontSize:'0.6rem'}}>{times[k]?.name}</span>
             <div style={{display:'flex', alignItems:'center'}}>
               <span className="c-time">{times[k]?.time||'--:--:--'}</span>
+              {times[k]?.status && (
+                <span className={`c-status ${times[k].status.pulse?'pulse':''}`} style={{color:times[k].status.color, background:times[k].status.bg}}>
+                  {times[k].status.text}
+                </span>
+              )}
             </div>
           </div>
         ))}
@@ -235,9 +239,8 @@ const ForeignTradeDashboard = () => {
             </div>
           )}
 
-          {/* 增强的结果反馈 */}
           {calcMode === 'cbm' && cbmInfo && <div className="res-box" onClick={() => copyToClipboard(cbmInfo.val, '体积')}>{cbmInfo.val} m³ | {cbmInfo.sug}</div>}
-          {calcMode === 'unit' && unitVal && <div className="res-box" onClick={() => copyToClipboard(unitLine, '结果')}>{unitLine}</div>}
+          {calcMode === 'unit' && unitVal && <div className="res-box" onClick={() => copyToClipboard(unitLine, '换算结果')}>{unitLine}</div>}
 
           <div className="card-footer">
              <div>{weather.city} {weather.temp}℃</div>

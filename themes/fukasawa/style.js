@@ -1,33 +1,36 @@
 /* eslint-disable react/no-unknown-property */
 const Style = () => {
   return <style jsx global>{`
-    /* 1. 强制关闭所有磨砂/模糊滤镜，确保文字锐利 */
-    * {
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
+    // 背景底色
+    body{ background-color: #eeedee; }
+    .dark body{ background-color: black; }
+    
+    // 恢复文章图片美化：圆角与阴影
+    #notion-article img, .notion-image img, #article-wrapper img {
+      border-radius: 16px !important;
+      box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.15) !important;
+      border: 1px solid rgba(0, 0, 0, 0.05) !important;
+      transition: transform 0.4s ease !important;
+      margin: 1rem 0;
+    }
+    #notion-article img:hover {
+      transform: translateY(-5px) !important;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.25) !important;
     }
 
-    /* 2. 优化文章正文清晰度 */
-    #notion-article, .notion-text {
-        color: #000 !important; /* 强制黑色文字 */
-        opacity: 1 !important;   /* 强制不透明 */
-        text-rendering: optimizeLegibility;
-        -webkit-font-smoothing: antialiased;
-    }
+    // 强制清除所有可能导致模糊的滤镜
+    * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
 
-    /* 3. 修正背景色，防止背景太暗导致文字发虚 */
-    body {
-        background-color: #f8fafc !important;
+    // 瀑布流布局修正
+    #theme-fukasawa .grid-container {
+      column-gap: .5rem;
     }
-    .dark body {
-        background-color: #0f172a !important;
-    }
-
-    /* 4. 瀑布流卡片阴影微调 */
     #theme-fukasawa .grid-item {
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
-        border-radius: 8px;
+      break-inside: avoid-column;
+      margin-bottom: .5rem;
     }
+    @media (min-width: 1024px) { #theme-fukasawa .grid-container { column-count: 3; } }
+    @media (min-width: 640px) and (max-width: 1023px) { #theme-fukasawa .grid-container { column-count: 2; } }
   `}</style>
 }
 export { Style }

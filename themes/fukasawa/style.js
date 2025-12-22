@@ -88,6 +88,38 @@ const Style = () => {
       overflow: visible !important;
     }
 
+    /* --- 步骤 2：瀑布流卡片秩序感提升 --- */
+#theme-fukasawa main {
+  line-height: 1.8 !important; /* 提升摘要行高 */
+  letter-spacing: 0.02em !important; /* 微调字间距 */
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+
+/* 步骤 3：侧边栏“仪式感”毛玻璃与排行美化 */
+.sideLeft .bg-gray-50.dark\:bg-gray-900\/60 {
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.dark .sideLeft .bg-gray-50.dark\:bg-gray-900\/60 {
+  background: rgba(15, 23, 42, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 热门文章数字排名微浮雕效果 */
+.sideLeft ul li span.flex-shrink-0 {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.8);
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.dark .sideLeft ul li span.flex-shrink-0 {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
   `}</style>
 }
 

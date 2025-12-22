@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 /**
- * 外贸工作台组件 V10.0 (终极旗舰版)
- * 升级点：
- * 1. 紧凑型时钟：消除空白，流式排列
- * 2. 高德实时天气：自动定位访客城市
- * 3. 环境 IP + 自动国旗：根据国家代码自动显示 Emoji 国旗
- * 4. 全屏适配：PC端精致，移动端自动堆叠
+ * 外贸工作台组件 V11.0 (极致压缩修复版)
+ * 1. 调低整体高度 2. 修复换算显示 3. 找回通知标签 4. 优化国旗 IP
  */
 const ForeignTradeDashboard = () => {
   const [times, setTimes] = useState({});
-  const [rateData, setRateData] = useState({ val: null, loading: true, cached: false });
-  const [weather, setWeather] = useState({ city: '定位中...', info: '', temp: '', loading: true });
-  const [ipInfo, setIpInfo] = useState({ country: '...', flag: '🌐', loading: true });
+  const [rateData, setRateData] = useState({ val: 7.2, loading: true, cached: false });
+  const [weather, setWeather] = useState({ city: '定位中', temp: '', info: '' });
+  const [ipInfo, setIpInfo] = useState({ country: '检测中', flag: '🌐' });
   
   const WEATHER_KEY = "41151e8e6a20ccd713ae595cd3236735";
 
@@ -25,9 +21,7 @@ const ForeignTradeDashboard = () => {
       return defaultValue;
     });
     useEffect(() => {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(key, JSON.stringify(state));
-      }
+      if (typeof window !== 'undefined') localStorage.setItem(key, JSON.stringify(state));
     }, [key, state]);
     return [state, setState];
   };
@@ -35,7 +29,6 @@ const ForeignTradeDashboard = () => {
   const [usd, setUsd] = usePersistentState('ft_usd', 100);
   const [waPhone, setWaPhone] = usePersistentState('ft_wa_phone', '');
   const [dims, setDims] = usePersistentState('ft_dims', { l: '', w: '', h: '', pcs: '' });
-  const [cny, setCny] = useState('');
   const [calcMode, setCalcMode] = useState('cbm'); 
   const [searchType, setSearchType] = useState('hs');
   const [searchKw, setSearchKw] = useState('');
@@ -56,232 +49,163 @@ const ForeignTradeDashboard = () => {
     });
   };
 
-  // 国家代码转国旗 Emoji 函数
-  const getFlagEmoji = (countryCode) => {
-    if (!countryCode) return '🌐';
-    const codePoints = countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => 127397 + char.charCodeAt());
-    return String.fromCodePoint(...codePoints);
+  const getFlagEmoji = (code) => {
+    if (!code) return '🌐';
+    return code.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0) + 127397));
   };
 
-  // 获取 IP 环境及天气
+  // 获取数据
   useEffect(() => {
-    const initData = async () => {
+    const fetchData = async () => {
       try {
-        // 使用 ipapi.co 获取详细的地理位置和国家代码（带国旗支持）
         const ipRes = await fetch('https://ipapi.co/json/');
         const ipData = await ipRes.json();
-        
         if (ipData) {
-          setIpInfo({ 
-            country: `${ipData.country_name} [${ipData.ip}]`, 
-            flag: getFlagEmoji(ipData.country_code),
-            loading: false 
-          });
-
-          // 如果是国内访客，使用高德获取更精准的天气
-          const amapIpRes = await fetch(`https://restapi.amap.com/v3/ip?key=${WEATHER_KEY}`);
-          const amapIpData = await amapIpRes.json();
-          
-          if (amapIpData.status === '1') {
-            const weatherRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?key=${WEATHER_KEY}&city=${amapIpData.adcode}`);
-            const weatherData = await weatherRes.json();
-            if (weatherData.status === '1' && weatherData.lives.length > 0) {
-              const live = weatherData.lives[0];
-              setWeather({ city: live.city, info: live.weather, temp: live.temperature, loading: false });
+          setIpInfo({ country: `${ipData.country_name} [${ipData.ip}]`, flag: getFlagEmoji(ipData.country_code) });
+          // 天气
+          const amapIp = await fetch(`https://restapi.amap.com/v3/ip?key=${WEATHER_KEY}`);
+          const amapData = await amapIp.json();
+          if (amapData.status === '1') {
+            const wRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?key=${WEATHER_KEY}&city=${amapData.adcode}`);
+            const wData = await wRes.json();
+            if (wData.lives?.length > 0) {
+                const L = wData.lives[0];
+                setWeather({ city: L.city, temp: L.temperature, info: L.weather });
             }
           }
         }
-      } catch (e) {
-        setWeather({ city: '定位中', info: '', temp: '', loading: false });
-      }
+      } catch (e) { console.error(e) }
     };
-    initData();
-  }, []);
+    fetchData();
 
-  // 时钟逻辑
-  useEffect(() => {
-    const getCityStatus = (tz) => {
-      try {
-        const now = new Date();
-        const localTime = new Date(now.toLocaleString("en-US", { timeZone: tz }));
-        const day = localTime.getDay();
-        const hour = localTime.getHours();
-        if (day === 0 || day === 6) return { text: '周末', color: '#d97706', bg: 'rgba(217,119,6,0.1)' };
-        if (hour < 9 || hour >= 18) return { text: '休市', color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' };
-        return { text: '工作', color: '#059669', bg: 'rgba(5,150,105,0.1)', pulse: true };
-      } catch (e) { return {}; }
-    };
-    const updateTime = () => {
-      const now = new Date();
-      const opts = { hour: '2-digit', minute: '2-digit', hour12: false };
-      const zones = [
-        { key: 'cn', tz: 'Asia/Shanghai', name: '北京' },
-        { key: 'uk', tz: 'Europe/London', name: '伦敦' },
-        { key: 'us', tz: 'America/New_York', name: '纽约' },
-        { key: 'la', tz: 'America/Los_Angeles', name: '加州' }
-      ];
-      const newTimes = {};
-      zones.forEach(z => {
-        newTimes[z.key] = {
-          time: now.toLocaleTimeString('en-GB', { ...opts, timeZone: z.tz }),
-          status: getCityStatus(z.tz),
-          name: z.name
-        };
-      });
-      setTimes(newTimes);
-    };
-    const timer = setInterval(updateTime, 1000);
-    updateTime();
-    return () => clearInterval(timer);
-  }, []);
-
-  // 汇率逻辑
-  useEffect(() => {
+    // 汇率
     const fetchRate = async () => {
       const now = new Date().getTime();
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
-        try {
-          const p = JSON.parse(cached);
-          if (now - p.timestamp < CACHE_DURATION) {
-            setRateData({ val: p.rate, loading: false, cached: true }); return;
-          }
-        } catch (e) {}
+        const p = JSON.parse(cached);
+        if (now - p.timestamp < CACHE_DURATION) {
+          setRateData({ val: p.rate, loading: false, cached: true }); return;
+        }
       }
       try {
         const res = await fetch('https://v6.exchangerate-api.com/v6/08bd067e490fdc5d9ccac3bd/latest/USD');
         const d = await res.json();
         if (d.result === 'success') {
-          const r = d.conversion_rates.CNY;
-          setRateData({ val: r, loading: false, cached: false });
-          localStorage.setItem(CACHE_KEY, JSON.stringify({ rate: r, timestamp: now }));
-        } else { setRateData({ val: 7.28, loading: false, cached: false }); }
-      } catch (e) { setRateData({ val: 7.28, loading: false, cached: false }); }
+          setRateData({ val: d.conversion_rates.CNY, loading: false, cached: false });
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ rate: d.conversion_rates.CNY, timestamp: now }));
+        }
+      } catch (e) { setRateData({ val: 7.25, loading: false, cached: false }); }
     };
     fetchRate();
   }, []);
 
+  // 时钟
   useEffect(() => {
-    if (rateData.val) setCny((usd * rateData.val).toFixed(2));
-  }, [usd, rateData.val]);
+    const getStatus = (tz) => {
+      const h = new Date(new Date().toLocaleString("en-US", {timeZone: tz})).getHours();
+      const d = new Date(new Date().toLocaleString("en-US", {timeZone: tz})).getDay();
+      if (d === 0 || d === 6) return { text: '周末', color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' };
+      return (h >= 9 && h < 18) ? { text: '工作', color: '#059669', bg: 'rgba(5,150,105,0.1)', pulse: true } : { text: '休市', color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' };
+    };
+    const update = () => {
+      const zones = [{k:'cn',t:'Asia/Shanghai',n:'北京'},{k:'uk',t:'Europe/London',n:'伦敦'},{k:'us',t:'America/New_York',n:'纽约'},{k:'la',t:'America/Los_Angeles',n:'加州'}];
+      const res = {};
+      zones.forEach(z => {
+        res[z.k] = { time: new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',timeZone:z.t}), status: getStatus(z.t), name:z.n };
+      });
+      setTimes(res);
+    };
+    const t = setInterval(update, 1000); update(); return () => clearInterval(t);
+  }, []);
+
+  const cnyResult = (usd * rateData.val).toFixed(2);
 
   const calculateCBM = () => {
     const { l, w, h, pcs } = dims;
     if (l && w && h && pcs) {
       const total = (l * w * h / 1000000) * pcs;
-      let sug = total < 28 ? `占20GP ${((total/28)*100).toFixed(0)}%` : total < 58 ? '荐40GP' : total < 68 ? '荐40HQ' : '需分柜';
+      const sug = total < 28 ? `占20GP ${((total/28)*100).toFixed(0)}%` : total < 68 ? '荐40HQ' : '需分柜';
       setCbmResult({ val: total.toFixed(3), sug });
-    } else { setCbmResult(null); }
+    }
   };
-  useEffect(() => { calculateCBM(); }, [dims]);
+  useEffect(calculateCBM, [dims]);
 
   const handleSearch = () => {
     if (!searchKw) return;
     window.open(searchType === 'hs' ? `https://www.hsbianma.com/search?keywords=${encodeURIComponent(searchKw)}` : `https://www.google.com/search?q=${encodeURIComponent(searchKw)}`, '_blank');
   };
 
-  const handleWaClick = () => {
-    if (!waPhone) return;
-    window.open(`https://wa.me/${waPhone.replace(/[^0-9]/g, '')}`, '_blank');
-  };
-
   return (
     <div className="ft-dashboard-container">
       <style jsx>{`
-        .ft-dashboard-container { margin-bottom: 25px; font-family: -apple-system, sans-serif; color: #334155; position: relative; }
-        .copy-toast { position: fixed; top: 15%; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; opacity: ${copyTip ? 1 : 0}; transition: opacity 0.3s; z-index: 9999; }
-        
-        /* 紧凑流式时钟 */
-        .clock-row { display: flex; gap: 8px; margin-bottom: 12px; }
-        .clock-item { 
-          flex: 1; background: #fff; border-radius: 8px; padding: 8px 12px; 
-          border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
+        .ft-dashboard-container { margin-bottom: 15px; font-family: -apple-system, sans-serif; color: #334155; }
+        .copy-toast { position: fixed; top: 10%; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; opacity: ${copyTip ? 1 : 0}; z-index: 9999; }
+        .clock-row { display: flex; gap: 6px; margin-bottom: 8px; }
+        .clock-item { flex: 1; background: #fff; border-radius: 6px; padding: 4px 8px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
         :global(body.dark) .clock-item { background: #1e293b; border-color: #334155; color: #f1f5f9; }
-        .c-city { font-size: 0.8rem; font-weight: 600; color: #64748b; }
-        .c-time { font-size: 0.95rem; font-weight: 700; font-variant-numeric: tabular-nums; }
-        .c-status { font-size: 0.6rem; padding: 1px 4px; border-radius: 4px; margin-left: 6px; }
-        .status-pulse { animation: status-glow 2s infinite; }
-        @keyframes status-glow {
-          0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-          70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .dash-card { background: #fff; border-radius: 10px; padding: 12px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; }
+        .c-city { font-size: 0.7rem; color: #64748b; }
+        .c-time { font-size: 0.85rem; font-weight: 700; }
+        .c-status { font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; margin-left: 4px; }
+        .status-pulse { animation: glow 2s infinite; }
+        @keyframes glow { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .dash-card { background: #fff; border-radius: 8px; padding: 10px; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.03); position: relative; }
         :global(body.dark) .dash-card { background: #1e293b; border-color: #334155; color: #f1f5f9; }
-        
-        .header-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-        .header-title::before { content: ''; display: block; width: 3px; height: 10px; background: #3b82f6; border-radius: 2px; }
-        .std-input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; outline: none; background: transparent; color: inherit; }
-        .input-row { display: flex; align-items: center; gap: 8px; }
-        
-        .tab-wrap { display: flex; gap: 4px; background: rgba(0,0,0,0.05); padding: 2px; border-radius: 5px; margin-left: auto; }
-        .tab-btn { border: none; background: none; font-size: 0.75rem; padding: 4px 10px; border-radius: 4px; cursor: pointer; color: inherit; opacity: 0.6; }
-        .tab-btn.active { background: #fff; color: #3b82f6; font-weight: 600; opacity: 1; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        :global(body.dark) .tab-btn.active { background: #334155; }
-
-        .wa-btn { background: #25d366; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.8rem; white-space: nowrap; }
-        
-        /* 底部信息栏 */
-        .card-footer { 
-          position: absolute; bottom: 8px; width: calc(100% - 24px);
-          display: flex; justify-content: space-between; align-items: center;
-          font-size: 0.65rem; color: #94a3b8;
-        }
-        .weather-info { display: flex; align-items: center; gap: 6px; color: #64748b; font-weight: 500; }
-        .flag-icon { margin-right: 4px; font-size: 0.8rem; }
-
-        @media (max-width: 768px) { 
-          .clock-row { display: grid; grid-template-columns: 1fr 1fr; }
-          .main-grid { grid-template-columns: 1fr; } 
-        }
+        .header-title { font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; }
+        .header-title::before { content: ''; width: 3px; height: 10px; background: #3b82f6; border-radius: 2px; margin-right: 5px; }
+        .std-input { width: 100%; padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 0.85rem; outline: none; background: transparent; color: inherit; }
+        .input-row { display: flex; align-items: center; gap: 5px; }
+        .tab-wrap { display: flex; gap: 3px; background: rgba(0,0,0,0.05); padding: 2px; border-radius: 4px; margin-left: auto; }
+        .tab-btn { border: none; background: none; font-size: 0.65rem; padding: 2px 6px; border-radius: 3px; cursor: pointer; color: inherit; opacity: 0.6; }
+        .tab-btn.active { background: #fff; color: #3b82f6; font-weight: 600; opacity: 1; }
+        .wa-btn { background: #25d366; color: white; border: none; padding: 5px 12px; border-radius: 5px; font-weight: 600; cursor: pointer; font-size: 0.75rem; white-space: nowrap; }
+        .status-tag { font-size: 0.6rem; padding: 0px 4px; border-radius: 3px; background: #f1f5f9; color: #64748b; margin-left: 6px; font-weight: 400; }
+        :global(body.dark) .status-tag { background: #334155; color: #94a3b8; }
+        .res-box { background: rgba(59,130,246,0.05); border: 1px dashed #3b82f6; padding: 5px; border-radius: 5px; text-align: center; font-size: 0.8rem; color: #3b82f6; margin-top: 6px; cursor: pointer; }
+        .card-footer { position: absolute; bottom: 4px; width: calc(100% - 20px); display: flex; justify-content: space-between; align-items: center; font-size: 0.6rem; color: #94a3b8; }
+        @media (max-width: 768px) { .clock-row { display: grid; grid-template-columns: 1fr 1fr; } .main-grid { grid-template-columns: 1fr; } }
       `}</style>
 
       <div className="copy-toast">{copyTip}</div>
 
-      {/* 1. 紧凑型时钟栏 */}
       <div className="clock-row">
         {['cn','uk','us','la'].map(k => (
           <div className="clock-item" key={k}>
             <span className="c-city">{times[k]?.name}</span>
             <div style={{display:'flex', alignItems:'center'}}>
               <span className="c-time">{times[k]?.time||'--:--'}</span>
-              {times[k]?.status && <span className={`c-status ${times[k].status.pulse ? 'status-pulse' : ''}`} style={{color:times[k].status.color, background:times[k].status.bg}}>{times[k].status.text}</span>}
+              {times[k]?.status && <span className={`c-status ${times[k].status.pulse?'status-pulse':''}`} style={{color:times[k].status.color, background:times[k].status.bg}}>{times[k].status.text}</span>}
             </div>
           </div>
         ))}
       </div>
 
       <div className="main-grid">
-        {/* 左侧：换算 + WhatsApp */}
-        <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
-          <div className="dash-card" style={{paddingBottom:'30px'}}>
-            <div className="header-title">报价换算 ($→¥)</div>
+        <div style={{display:'flex', flexDirection:'column', gap:'8px'}}>
+          <div className="dash-card">
+            <div className="header-title">
+              报价换算 ($→¥)
+              <span className="status-tag">{rateData.loading ? '同步中' : (rateData.cached ? '已缓存' : '实时')}</span>
+            </div>
             <div className="input-row">
                <input type="number" className="std-input" value={usd} onChange={e=>setUsd(e.target.value)} />
                <span style={{color:'#cbd5e1'}}>⇄</span>
-               <div className="std-input" style={{background:'rgba(0,0,0,0.02)', fontWeight:'bold', cursor:'pointer'}} onClick={() => copyToClipboard(cny, '价格')}>{cny}</div>
+               <div className="std-input" style={{background:'rgba(0,0,0,0.02)', fontWeight:'bold', cursor:'pointer'}} onClick={() => copyToClipboard(cnyResult, '价格')}>{cnyResult}</div>
             </div>
-            <div style={{marginTop:'8px', fontSize:'0.7rem', opacity:0.5, textAlign:'right'}}>1$ ≈ {rateData.val}</div>
+            <div style={{marginTop:'4px', fontSize:'0.65rem', opacity:0.5, textAlign:'right'}}>1$ ≈ {rateData.val}</div>
           </div>
 
           <div className="dash-card">
             <div className="header-title">WhatsApp 直连</div>
             <div className="input-row">
-               <input className="std-input" placeholder="号码 (例: 86138...)" value={waPhone} onChange={e=>setWaPhone(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleWaClick()}/>
+               <input className="std-input" placeholder="区号+号码 (如 86138...)" value={waPhone} onChange={e=>setWaPhone(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleWaClick()}/>
                <button className="wa-btn" onClick={handleWaClick}>对话</button>
             </div>
           </div>
         </div>
 
-        {/* 右侧：工具箱（带国旗 IP 与天气） */}
-        <div className="dash-card" style={{paddingBottom:'40px'}}>
+        <div className="dash-card" style={{paddingBottom:'24px'}}>
           <div className="header-title">
             常用工具
             <div className="tab-wrap">
@@ -292,7 +216,7 @@ const ForeignTradeDashboard = () => {
           </div>
 
           {calcMode === 'cbm' && (
-            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px'}}>
+            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'5px'}}>
               <input placeholder="长cm" className="std-input" value={dims.l} onChange={e=>setDims({...dims,l:e.target.value})} onBlur={calculateCBM}/>
               <input placeholder="宽cm" className="std-input" value={dims.w} onChange={e=>setDims({...dims,w:e.target.value})} onBlur={calculateCBM}/>
               <input placeholder="高cm" className="std-input" value={dims.h} onChange={e=>setDims({...dims,h:e.target.value})} onBlur={calculateCBM}/>
@@ -300,28 +224,39 @@ const ForeignTradeDashboard = () => {
             </div>
           )}
 
+          {calcMode === 'unit' && (
+            <div style={{display:'flex', flexDirection:'column', gap:'5px'}}>
+               <div style={{display:'flex', gap:10, justifyContent:'center'}}>
+                 <label style={{fontSize:'0.65rem'}}><input type="radio" checked={unitType==='len'} onChange={()=>setUnitType('len')}/> 长度</label>
+                 <label style={{fontSize:'0.65rem'}}><input type="radio" checked={unitType==='wt'} onChange={()=>setUnitType('wt')}/> 重量</label>
+               </div>
+               <input type="number" className="std-input" placeholder="输入数值" value={unitVal} onChange={e=>setUnitVal(e.target.value)} />
+            </div>
+          )}
+
           {calcMode === 'search' && (
-            <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+            <div style={{display:'flex', flexDirection:'column', gap:'5px'}}>
                <div className="tab-wrap" style={{marginLeft:'0', marginRight:'auto'}}>
                   <button className={`tab-btn ${searchType==='hs'?'active':''}`} onClick={()=>setSearchType('hs')}>HS编码</button>
                   <button className={`tab-btn ${searchType==='google'?'active':''}`} onClick={()=>setSearchType('google')}>谷歌</button>
                </div>
                <div className="input-row">
-                  <input className="std-input" placeholder="输入关键词..." value={searchKw} onChange={e=>setSearchKw(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleSearch()}/>
+                  <input className="std-input" placeholder="关键词..." value={searchKw} onChange={e=>setSearchKw(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleSearch()}/>
                   <button className="wa-btn" style={{background:'#3b82f6'}} onClick={handleSearch}>GO</button>
                </div>
             </div>
           )}
 
-          {/* 核心升级：底部天气 + 国旗 IP */}
+          {cbmResult && calcMode === 'cbm' && <div className="res-box" onClick={() => copyToClipboard(cbmResult.val, '体积')}><strong>{cbmResult.val} m³</strong> | {cbmResult.sug}</div>}
+
           <div className="card-footer">
-             <div className="weather-info">
-                <i className="fas fa-temperature-low text-blue-400"></i>
-                <span>{weather.city} {weather.temp}℃ {weather.info}</span>
+             <div style={{display:'flex', gap:5}}>
+                <span>{weather.city}</span>
+                <span>{weather.temp}℃ {weather.info}</span>
              </div>
-             <div className="ip-info">
-                <span className="flag-icon">{ipInfo.flag}</span>
-                <span>{ipInfo.country}</span>
+             <div>
+                <span>{ipInfo.flag}</span>
+                <span style={{marginLeft:3}}>{ipInfo.country}</span>
              </div>
           </div>
         </div>

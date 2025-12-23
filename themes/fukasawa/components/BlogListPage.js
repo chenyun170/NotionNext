@@ -1,7 +1,6 @@
 import React from 'react'
 import { siteConfig } from '@/lib/config'
 import BlogCard from './BlogCard'
-import SidebarTools from './SidebarTools'
 import PaginationSimple from './PaginationSimple'
 
 const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {

@@ -33,41 +33,49 @@ const FloatButton = () => {
         <i className="fas fa-chevron-up text-lg group-hover:-translate-y-1 transition-transform"></i>
       </div>
 
-      {/* 2. 礼品包悬浮球区域 */}
-      <div className="relative flex flex-col items-center">
-        {/* 二维码弹窗 - 修改为向左侧或向上弹出，避免挡住上方的返回按钮 */}
-        {showPopup && (
-          <div className="absolute bottom-20 right-0 w-60 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 p-5 transition-all transform scale-100 origin-bottom-right">
-            <div className="text-center">
-              <h3 className="font-bold text-slate-800 dark:text-white text-md">情报局长私域</h3>
-              <p className="text-gray-500 text-[10px] mt-1 mb-3 leading-relaxed">
-                扫码添加微信<br/>
-                备注<span className="text-orange-600 font-bold">“获客”</span>领资料包
-              </p>
-              <div className="bg-gray-50 dark:bg-gray-900 p-2 rounded-lg mb-3 border dark:border-gray-700">
-                 <img src="/wechat-qr.png" alt="微信二维码" className="w-full h-auto" />
-              </div>
-              <button onClick={() => setShowPopup(false)} className="text-gray-400 text-[10px] hover:text-orange-600 transition-colors uppercase tracking-widest">[ Close ]</button>
-            </div>
-          </div>
-        )}
-
-        {/* 提示气泡 - 缩小了一点点，减少视觉占用 */}
-        {!showPopup && (
-          <div className="absolute -top-10 right-0 bg-slate-800 text-white text-[10px] py-1.5 px-3 rounded-lg whitespace-nowrap shadow-lg animate-bounce">
-            领资料包 🎁
-            <div className="absolute -bottom-1 right-6 w-2 h-2 bg-slate-800 rotate-45"></div>
-          </div>
-        )}
-
-        {/* 礼品包主按钮 */}
-        <div 
-          onClick={() => setShowPopup(!showPopup)}
-          className="w-14 h-14 bg-orange-600 rounded-full flex items-center justify-center cursor-pointer shadow-xl hover:bg-orange-700 transition-all duration-300"
-          style={{ animation: 'pulse-orange 2s infinite' }}
-        >
-          <i className={`fas ${showPopup ? 'fa-times' : 'fa-gift'} text-white text-xl`}></i>
+{/* 2. 礼品包悬浮球区域 */}
+<div className="relative flex flex-col items-center">
+  {/* 二维码弹窗 - 升级为毛玻璃质感，并微调位置 */}
+  {showPopup && (
+    <div className="absolute bottom-16 right-0 w-56 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-2xl border border-white/20 dark:border-gray-800 p-5 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
+      <div className="text-center">
+        <h3 className="font-black text-slate-800 dark:text-white text-sm tracking-tight">情报局长私域</h3>
+        <p className="text-gray-500 dark:text-gray-400 text-[10px] mt-1 mb-3 leading-relaxed">
+          扫码添加微信<br/>
+          备注<span className="text-orange-600 font-black italic">“获客”</span>领资料包
+        </p>
+        {/* 二维码容器也做轻量化处理 */}
+        <div className="bg-white dark:bg-black/20 p-2 rounded-xl mb-3 border border-gray-100 dark:border-gray-800 shadow-inner">
+           <img src="/wechat-qr.png" alt="微信二维码" className="w-full h-auto rounded-lg" />
         </div>
+        <button 
+          onClick={() => setShowPopup(false)} 
+          className="text-gray-400 text-[9px] font-bold hover:text-orange-600 transition-colors uppercase tracking-[0.2em]"
+        >
+          [ Close ]
+        </button>
+      </div>
+    </div>
+  )}
+
+  {/* 提示气泡 - 改为毛玻璃黑色，更显专业 */}
+  {!showPopup && (
+    <div className="absolute -top-10 right-0 backdrop-blur-md bg-slate-900/80 text-white text-[9px] py-1.5 px-3 rounded-full whitespace-nowrap shadow-xl animate-bounce border border-white/10 font-bold tracking-wider">
+      领资料包 🎁
+      <div className="absolute -bottom-1 right-6 w-2 h-2 bg-slate-900/80 rotate-45 border-r border-b border-white/10"></div>
+    </div>
+  )}
+
+  {/* 礼品包主按钮 - 缩小尺寸 (w-14 -> w-12)，增加渐变与阴影 */}
+  <div 
+    onClick={() => setShowPopup(!showPopup)}
+    className={`w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-2xl transition-all duration-500 active:scale-90 ${
+      showPopup ? 'bg-slate-800 rotate-90' : 'bg-gradient-to-tr from-orange-600 to-orange-400 shadow-orange-500/30'
+    }`}
+  >
+    <i className={`fas ${showPopup ? 'fa-times' : 'fa-gift'} text-white text-lg`}></i>
+  </div>
+</div>
       </div>
 
       {/* 呼吸灯动画 */}

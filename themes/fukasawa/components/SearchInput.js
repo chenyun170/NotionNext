@@ -11,85 +11,65 @@ const SearchInput = (props) => {
   const { locale } = useGlobal()
   const router = useRouter()
   const searchInputRef = useRef()
-  useImperativeHandle(cRef, () => {
-    return {
-      focus: () => {
-        searchInputRef?.current?.focus()
-      }
-    }
-  })
 
-  /**
-   * 搜索
-   */
+  useImperativeHandle(cRef, () => ({
+    focus: () => searchInputRef?.current?.focus()
+  }))
+
   const handleSearch = () => {
-    if (siteConfig('ALGOLIA_APP_ID')) {
-      searchModal?.current?.openSearch()
-    }
-    const key = searchInputRef.current.value
-    if (key && key !== '') {
-      setLoadingState(true)
-      router.push({ pathname: '/search/' + key }).then(r => {
-        setLoadingState(false)
-      })
-      // location.href = '/search/' + key
-    } else {
-      router.push({ pathname: '/' }).then(r => {
-      })
-    }
-  }
-
-  /**
-   * 监听事件
-   * @param {*} e
-   */
-  const handleKeyUp = (e) => {
     if (siteConfig('ALGOLIA_APP_ID')) {
       searchModal?.current?.openSearch()
       return
     }
-    if (e.keyCode === 13) { // 回车
-      handleSearch(searchInputRef.current.value)
-    } else if (e.keyCode === 27) { // ESC
-      cleanSearch()
+    const key = searchInputRef.current.value
+    if (key && key !== '') {
+      setLoadingState(true)
+      // 使用 encodeURIComponent 确保特殊字符不会导致路由错误
+      router.push({ pathname: '/search/' + encodeURIComponent(key) }).then(() => {
+        setLoadingState(false)
+      })
+    } else {
+      router.push({ pathname: '/' })
     }
   }
-  const handleFocus = () => {
-    // 使用Algolia
-    if (siteConfig('ALGOLIA_APP_ID')) {
-      searchModal?.current?.openSearch()
-    }
-  }
-  /**
-   * 清理索引
-   */
-  const cleanSearch = () => {
-    searchInputRef.current.value = ''
+
+  const handleKeyUp = (e) => {
+    if (e.keyCode === 13) handleSearch()
+    if (e.keyCode === 27) searchInputRef.current.value = ''
   }
 
-  return <div className='flex w-full bg-gray-100'>
-    <input
-      ref={searchInputRef}
-      type='text'
-      placeholder={locale.SEARCH.ARTICLES}
-      aria-label="Search"
-      className={'outline-none w-full text-sm pl-2 transition focus:shadow-lg font-light leading-10 text-black bg-gray-100 dark:bg-gray-800 dark:text-white'}
-      onKeyUp={handleKeyUp}
-      onFocus={handleFocus}
-      defaultValue={keyword || ''}
-    />
-
-    <div className='-ml-8 cursor-pointer float-right items-center justify-center py-2'
-      onClick={handleSearch}>
-      <i className={`hover:text-black transform duration-200  text-gray-500 cursor-pointer fas ${onLoading ? 'fa-spinner animate-spin' : 'fa-search'}`} />
-    </div>
-
-    {(keyword && keyword.length &&
-      <div className='-ml-12 cursor-pointer flex float-right items-center justify-center py-2'>
-        <i className='hover:text-black transform duration-200 text-gray-400 cursor-pointer fas fa-times' onClick={cleanSearch} />
+  return (
+    <div className='relative w-full group'>
+      {/* 搜索输入框：高度压缩至 h-8，样式与 SidebarTools 对齐 */}
+      <input
+        ref={searchInputRef}
+        type='text'
+        placeholder={locale.SEARCH.ARTICLES}
+        className='w-full h-8 pl-3 pr-8 text-[11px] outline-none bg-gray-100/50 dark:bg-white/5 border border-transparent focus:border-orange-500/50 rounded-lg transition-all dark:text-gray-200'
+        onKeyUp={handleKeyUp}
+        onFocus={() => siteConfig('ALGOLIA_APP_ID') && searchModal?.current?.openSearch()}
+        defaultValue={keyword || ''}
+      />
+      
+      {/* 搜索图标：绝对定位在右侧 */}
+      <div 
+        className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center'
+        onClick={handleSearch}
+      >
+        <i className={`text-[10px] transition-colors duration-200 ${onLoading ? 'fa-spinner animate-spin text-orange-500' : 'fa-search text-gray-400 group-hover:text-orange-500'}`} />
       </div>
-    )}
-  </div>
+
+      {/* 清除按钮：仅在有搜索词时显示 */}
+      {keyword && (
+        <div 
+          className='absolute right-7 top-1/2 -translate-y-1/2 cursor-pointer'
+          onClick={() => { searchInputRef.current.value = ''; handleSearch(); }}
+        >
+          <i className='fas fa-times text-[10px] text-gray-300 hover:text-gray-500' />
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default SearchInput

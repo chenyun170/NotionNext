@@ -29,12 +29,12 @@ const FloatButton = () => {
   }
 
   return (
-    <div className="fixed bottom-20 right-6 md:right-10 flex flex-col items-center space-y-6" style={{ zIndex: 9999 }}>  
+    <div className="fixed bottom-8 right-6 md:right-10 flex flex-col items-center space-y-6" style={{ zIndex: 9999 }}>  
       
       {/* 1. 返回顶部按钮 */}
       <div 
         onClick={scrollToTop}
-        className={`w-12 h-12 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md text-slate-600 dark:text-gray-300 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:text-orange-600 transition-all duration-500 border border-white/20 dark:border-gray-700 group ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+        className={`mb-10 w-12 h-12 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md text-slate-600 dark:text-gray-300 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:text-orange-600 transition-all duration-500 border border-white/20 dark:border-gray-700 group ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
       >
         <i className="fas fa-chevron-up text-lg group-hover:-translate-y-1 transition-transform"></i>
       </div>

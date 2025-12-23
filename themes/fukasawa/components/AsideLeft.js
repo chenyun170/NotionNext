@@ -153,13 +153,6 @@ function AsideLeft(props) {
           <MailChimpForm />
         </section>
 
-{/* 7. 搜索框升级 */}
-<section className='mb-8'>
-  <div className='bg-white/40 dark:bg-gray-900/40 backdrop-blur-md p-2 rounded-2xl border border-white/20 dark:border-gray-800 shadow-sm'>
-    <SearchInput {...props} />
-  </div>
-</section>
-
 {/* 8. 页脚系统状态升级 */}
 <section className='mt-auto pt-8 border-t border-gray-50 dark:border-gray-900'>
   <SocialButton />

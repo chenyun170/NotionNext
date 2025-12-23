@@ -62,13 +62,13 @@ function generateLocalesSitemap(link, allPages, locale) {
       loc: `${link}${locale}`,
       lastmod: dateNow,
       changefreq: 'daily',
-      priority: '0.7'
+      priority: '1.0'
     },
     {
       loc: `${link}${locale}/archive`,
       lastmod: dateNow,
       changefreq: 'daily',
-      priority: '0.7'
+      priority: '0.8'
     },
     {
       loc: `${link}${locale}/category`,

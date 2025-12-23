@@ -7,8 +7,6 @@ import { useEffect, useState } from 'react'
 import BlogCard from './BlogCard'
 import BlogPostListEmpty from './BlogListEmpty'
 import PaginationSimple from './PaginationSimple'
-// 1. 引入外贸仪表盘组件
-import ForeignTradeDashboard from './ForeignTradeDashboard'
 
 /**
  * 文章列表分页表格

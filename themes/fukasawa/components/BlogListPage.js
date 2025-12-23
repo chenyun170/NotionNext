@@ -141,4 +141,4 @@ const calculateColumns = () => {
   return 1
 }
 
-export default BlogListPage
+export default SidebarTools;

@@ -1,105 +1,116 @@
 import React, { useState, useEffect } from 'react';
 
-/**
- * SidebarTools - 侧边栏精炼版
- */
 const SidebarTools = () => {
-  const [usd, setUsd] = useState(1);
-  const [rateData, setRateData] = useState({ val: 7.23, sync: false });
-  const [waPhone, setWaPhone] = useState('');
-  const [times, setTimes] = useState({});
+  // 1. 状态管理
+  const [calcMode, setCalcMode] = useState('cbm'); // cbm, unit, search
+  const [dims, setDims] = useState({ l: '', w: '', h: '', pcs: '' });
+  const [unitType, setUnitType] = useState('len'); // len: 长度, wt: 重量
+  const [unitVal, setUnitVal] = useState('');
+  const [searchKw, setSearchKw] = useState('');
+  const [searchType, setSearchType] = useState('hs');
 
-  useEffect(() => {
-    const updateTime = () => {
-      const zones = [
-        { k: 'CN', t: 'Asia/Shanghai', n: '北京' },
-        { k: 'UK', t: 'Europe/London', n: '伦敦' },
-        { k: 'US', t: 'America/New_York', n: '纽约' },
-        { k: 'LA', t: 'America/Los_Angeles', n: '洛杉矶' }
-      ];
-      const res = {};
-      zones.forEach(z => {
-        const date = new Date(new Date().toLocaleString("en-US", { timeZone: z.t }));
-        const h = date.getHours();
-        const d = date.getDay();
-        const isWork = d !== 0 && d !== 6 && h >= 9 && h < 18;
-        res[z.k] = { 
-          time: date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }), 
-          name: z.n, 
-          isWork 
-        };
-      });
-      setTimes(res);
-    };
-    updateTime();
-    const t = setInterval(updateTime, 10000);
-    return () => clearInterval(t);
-  }, []);
+  // 2. 算柜逻辑
+  const getCbmRes = () => {
+    const { l, w, h, pcs } = dims;
+    if (!l || !w || !h) return '---';
+    const total = (parseFloat(l) * parseFloat(w) * parseFloat(h) * (pcs || 1)) / 1000000;
+    return `结果: ${total.toFixed(3)} m³`;
+  };
 
-  useEffect(() => {
-    const fetchRate = async () => {
-      try {
-        const res = await fetch('https://v6.exchangerate-api.com/v6/08bd067e490fdc5d9ccac3bd/latest/USD');
-        const d = await res.json();
-        if (d.result === 'success') {
-          setRateData({ val: d.conversion_rates.CNY, sync: true });
-        }
-      } catch (e) {
-        console.error("汇率同步失败");
-      }
-    };
-    fetchRate();
-  }, []);
+  // 3. 换算逻辑
+  const getUnitRes = () => {
+    if (!unitVal) return '---';
+    const val = parseFloat(unitVal);
+    return unitType === 'len' 
+      ? `${val} in = ${(val * 2.54).toFixed(2)} cm` 
+      : `${val} lb = ${(val * 0.4536).toFixed(2)} kg`;
+  };
 
-  const handleWaClick = () => {
-    if (!waPhone) return;
-    const cleanPhone = waPhone.replace(/[^0-9]/g, '');
-    window.open(`https://wa.me/${cleanPhone}`, '_blank');
+  // 4. 搜索逻辑
+  const handleSearch = () => {
+    if (!searchKw) return;
+    const url = searchType === 'hs' 
+      ? `https://www.hsbianma.com/Search?keywords=${searchKw}`
+      : `https://www.google.com/search?q=${encodeURIComponent(searchKw)}`;
+    window.open(url, '_blank');
   };
 
   return (
     <div className="flex flex-col gap-3 p-3 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-lg">
-      <div className="grid grid-cols-2 gap-2">
-        {Object.values(times).map(v => (
-          <div key={v.name} className="p-2 bg-white/20 dark:bg-black/20 rounded-xl border border-white/20">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[9px] text-gray-400 font-bold">{v.name}</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${v.isWork ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`}></span>
-            </div>
-            <div className="text-xs font-mono font-bold text-gray-700 dark:text-gray-200">{v.time}</div>
+      {/* 头部切换 */}
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[11px] font-black text-gray-500 uppercase tracking-tighter">常用工具</span>
+        <div className="flex bg-gray-200/50 dark:bg-gray-800/50 p-0.5 rounded-lg">
+          {['cbm', 'unit', 'search'].map(m => (
+            <button
+              key={m}
+              onClick={() => setCalcMode(m)}
+              className={`px-2 py-1 text-[9px] font-bold rounded-md transition-all ${
+                calcMode === m ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'
+              }`}
+            >
+              {m === 'cbm' ? '算柜' : m === 'unit' ? '换算' : '搜索'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="min-h-[40px] flex items-center">
+        {/* 算柜界面 */}
+        {calcMode === 'cbm' && (
+          <div className="grid grid-cols-4 gap-1.5 w-full">
+            {['l', 'w', 'h', 'pcs'].map(f => (
+              <input
+                key={f}
+                placeholder={f === 'pcs' ? '箱' : f.toUpperCase()}
+                className="w-full bg-white/20 dark:bg-black/20 border border-white/20 rounded-lg p-1.5 text-[10px] outline-none focus:border-blue-500/50 transition-colors"
+                value={dims[f]}
+                onChange={e => setDims({ ...dims, [f]: e.target.value })}
+              />
+            ))}
           </div>
-        ))}
+        )}
+
+        {/* 换算界面 */}
+        {calcMode === 'unit' && (
+          <div className="flex gap-2 w-full">
+            <input
+              type="number"
+              className="flex-1 bg-white/20 dark:bg-black/20 border border-white/20 rounded-lg p-1.5 text-[10px] outline-none"
+              placeholder={unitType === 'len' ? '英寸(in)' : '磅(lb)'}
+              value={unitVal}
+              onChange={e => setUnitVal(e.target.value)}
+            />
+            <div className="flex bg-gray-200/50 dark:bg-gray-800/50 p-0.5 rounded-lg">
+              <button onClick={() => setUnitType('len')} className={`px-2 py-1 text-[9px] rounded-md ${unitType === 'len' ? 'bg-white dark:bg-gray-700' : ''}`}>长</button>
+              <button onClick={() => setUnitType('wt')} className={`px-2 py-1 text-[9px] rounded-md ${unitType === 'wt' ? 'bg-white dark:bg-gray-700' : ''}`}>重</button>
+            </div>
+          </div>
+        )}
+
+        {/* 搜索界面 */}
+        {calcMode === 'search' && (
+          <div className="flex gap-1.5 w-full">
+            <input
+              className="flex-1 bg-white/20 dark:bg-black/20 border border-white/20 rounded-lg p-1.5 text-[10px] outline-none"
+              placeholder="搜索关键词..."
+              value={searchKw}
+              onChange={e => setSearchKw(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            />
+            <div className="flex bg-gray-200/50 dark:bg-gray-800/50 p-0.5 rounded-lg">
+              <button onClick={() => setSearchType('hs')} className={`px-2 py-1 text-[9px] rounded-md ${searchType === 'hs' ? 'bg-white dark:bg-gray-700' : ''}`}>HS</button>
+              <button onClick={() => setSearchType('google')} className={`px-2 py-1 text-[9px] rounded-md ${searchType === 'google' ? 'bg-white dark:bg-gray-700' : ''}`}>谷歌</button>
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="space-y-1.5">
-        <div className="flex items-center bg-white/20 dark:bg-black/20 rounded-xl border border-white/20 p-1">
-          <span className="pl-2 text-[10px] font-bold text-gray-400">$</span>
-          <input 
-            type="number" 
-            value={usd} 
-            onChange={e => setUsd(e.target.value)}
-            className="w-full bg-transparent p-1.5 text-xs font-bold outline-none dark:text-gray-100"
-          />
-        </div>
-        <div className="flex items-center justify-between px-2 py-1.5 bg-blue-500/10 rounded-xl border border-blue-500/20">
-          <span className="text-[10px] font-bold text-blue-600">¥ {(usd * rateData.val).toFixed(2)}</span>
-          <span className="text-[9px] text-blue-400 font-bold">{rateData.sync ? 'LIVE' : 'CACHE'}</span>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <input 
-          placeholder="WhatsApp 号码..." 
-          value={waPhone} 
-          onChange={e => setWaPhone(e.target.value)}
-          className="w-full bg-white/20 dark:bg-black/20 border border-white/20 rounded-xl p-2 text-[10px] outline-none dark:text-gray-100"
-        />
-        <button 
-          onClick={handleWaClick}
-          className="w-full bg-green-500 hover:bg-green-600 text-white text-[10px] font-bold py-2 rounded-xl transition-all flex items-center justify-center gap-2"
-        >
-          <i className="fab fa-whatsapp"></i>发起对话
-        </button>
+      {/* 结果显示区 */}
+      <div className="mt-1 text-center py-1.5 bg-blue-500/5 rounded-xl border border-blue-500/10">
+        <span className="text-[10px] font-bold text-blue-600 tracking-wider uppercase">
+          {calcMode === 'cbm' ? getCbmRes() : calcMode === 'unit' ? getUnitRes() : 'Ready to Search'}
+        </span>
       </div>
     </div>
   );

@@ -34,6 +34,43 @@ const ActivityCard = ({ config, isActive }) => {
   )
 }
 
+// --- 活动配置（统一管理）---
+const activityConfigs = {
+  activity1: {
+    // 使用明确的时区（北京时间 UTC+8）
+    deadline: new Date('2025-12-31T23:59:59+08:00'),
+    title: '活动一：图灵搜岁末活动',
+    productName: '外贸获客工具',
+    description: '原价 ¥2180，现仅需 ¥1600！限时：2025.12.31',
+    emoji: '🔥',
+    link: 'http://h.topeasysoft.com/20251211tls/index.html?i=BB54F6',
+    buttonText: '立即参与',
+    bgColor: 'bg-orange-50 dark:bg-orange-950/30',
+    borderColor: 'border-orange-200 dark:border-orange-800',
+    textColor: 'text-orange-600 dark:text-orange-400',
+    buttonBg: 'bg-orange-500',
+    buttonHover: 'hover:bg-orange-600',
+    icon: 'fas fa-gift',
+    animation: 'animate-bounce'
+  },
+  activity2: {
+    deadline: new Date('2025-12-31T23:59:59+08:00'),
+    title: '活动二：顶易云岁末活动',
+    productName: '高阶获客工具',
+    description: '限时赠送社媒搜索工具、138届广交会名录！限时：2025.12.31',
+    emoji: '🚀',
+    link: 'http://h.topeasysoft.com/20251211dyy/index.html?i=BB54F6',
+    buttonText: '查看详情',
+    bgColor: 'bg-blue-50 dark:bg-blue-950/30',
+    borderColor: 'border-blue-200 dark:border-blue-800',
+    textColor: 'text-blue-600 dark:text-blue-400',
+    buttonBg: 'bg-blue-500',
+    buttonHover: 'hover:bg-blue-600',
+    icon: 'fas fa-fire',
+    animation: 'animate-pulse'
+  }
+}
+
 const Announcement = ({ post, className }) => {
   const { locale } = useGlobal()
   const [activities, setActivities] = useState({
@@ -44,43 +81,6 @@ const Announcement = ({ post, className }) => {
   useEffect(() => {
     const now = new Date()
 
-    // --- 活动配置（统一管理） ---
-    const activityConfigs = {
-      activity1: {
-        // 使用明确的时区（北京时间 UTC+8）
-        deadline: new Date('2025-12-31T23:59:59+08:00'),
-        title: '活动一：图灵搜岁末活动',
-        productName: '外贸获客工具',
-        description: '原价 ¥2180，现仅需 ¥1600！限时：2025.12.31',
-        emoji: '🔥',
-        link: 'http://h.topeasysoft.com/20251211tls/index.html?i=BB54F6',
-        buttonText: '立即参与',
-        bgColor: 'bg-orange-50 dark:bg-orange-950/30',
-        borderColor: 'border-orange-200 dark:border-orange-800',
-        textColor: 'text-orange-600 dark:text-orange-400',
-        buttonBg: 'bg-orange-500',
-        buttonHover: 'hover:bg-orange-600',
-        icon: 'fas fa-gift',
-        animation: 'animate-bounce'
-      },
-      activity2: {
-        deadline: new Date('2025-12-31T23:59:59+08:00'),
-        title: '活动二：顶易云岁末活动',
-        productName: '高阶获客工具',
-        description: '限时赠送社媒搜索工具、138届广交会名录！限时：2025.12.31',
-        emoji: '🚀',
-        link: 'http://h.topeasysoft.com/20251211dyy/index.html?i=BB54F6',
-        buttonText: '查看详情',
-        bgColor: 'bg-blue-50 dark:bg-blue-950/30',
-        borderColor: 'border-blue-200 dark:border-blue-800',
-        textColor: 'text-blue-600 dark:text-blue-400',
-        buttonBg: 'bg-blue-500',
-        buttonHover: 'hover:bg-blue-600',
-        icon: 'fas fa-fire',
-        animation: 'animate-pulse'
-      }
-    }
-
     // 检查活动是否在有效期内
     const newActivities = {}
     Object.keys(activityConfigs).forEach(key => {
@@ -89,50 +89,17 @@ const Announcement = ({ post, className }) => {
     
     setActivities(newActivities)
 
-    // 可选：在控制台显示倒计时信息（开发调试用）
+    // 调试信息（开发环境）
     if (process.env.NODE_ENV === 'development') {
+      console.log('当前时间:', now)
       Object.keys(activityConfigs).forEach(key => {
         const config = activityConfigs[key]
         const timeLeft = config.deadline - now
         const daysLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24))
-        console.log(`${config.title}: ${daysLeft}天后结束`)
+        console.log(`${config.title}: ${newActivities[key] ? `还剩${daysLeft}天` : '已结束'}`)
       })
     }
   }, [])
-
-  // 活动配置（用于渲染）
-  const activityConfigs = {
-    activity1: {
-      title: '活动一：图灵搜岁末活动',
-      productName: '外贸获客工具',
-      description: '原价 ¥2180，现仅需 ¥1600！限时：2025.12.31',
-      emoji: '🔥',
-      link: 'http://h.topeasysoft.com/20251211tls/index.html?i=BB54F6',
-      buttonText: '立即参与',
-      bgColor: 'bg-orange-50 dark:bg-orange-950/30',
-      borderColor: 'border-orange-200 dark:border-orange-800',
-      textColor: 'text-orange-600 dark:text-orange-400',
-      buttonBg: 'bg-orange-500',
-      buttonHover: 'hover:bg-orange-600',
-      icon: 'fas fa-gift',
-      animation: 'animate-bounce'
-    },
-    activity2: {
-      title: '活动二：顶易云岁末活动',
-      productName: '高阶获客工具',
-      description: '限时赠送社媒搜索工具、138届广交会名录！限时：2025.12.31',
-      emoji: '🚀',
-      link: 'http://h.topeasysoft.com/20251211dyy/index.html?i=BB54F6',
-      buttonText: '查看详情',
-      bgColor: 'bg-blue-50 dark:bg-blue-950/30',
-      borderColor: 'border-blue-200 dark:border-blue-800',
-      textColor: 'text-blue-600 dark:text-blue-400',
-      buttonBg: 'bg-blue-500',
-      buttonHover: 'hover:bg-blue-600',
-      icon: 'fas fa-fire',
-      animation: 'animate-pulse'
-    }
-  }
 
   return (
     <div className={className}>

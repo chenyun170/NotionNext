@@ -153,33 +153,26 @@ function AsideLeft(props) {
           <MailChimpForm />
         </section>
 
-        {/* 7. 分类 & 标签 */}
-        <div className="space-y-8 mb-8">
-            {router.asPath !== '/category' && categoryOptions && (
-              <section className='flex flex-col'>
-                  <h3 className='text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>Categories</h3>
-                  <GroupCategory categories={categoryOptions} currentCategory={currentCategory} />
-              </section>
-            )}
-        </div>
+{/* 7. 搜索框升级 */}
+<section className='mb-8'>
+  <div className='bg-white/40 dark:bg-gray-900/40 backdrop-blur-md p-2 rounded-2xl border border-white/20 dark:border-gray-800 shadow-sm'>
+    <SearchInput {...props} />
+  </div>
+</section>
 
-        {/* 8. 页脚与系统状态 */}
-        <section className='mt-auto pt-8 border-t border-gray-50 dark:border-gray-900'>
-          <SocialButton />
-          <div className='mt-6 p-4 bg-gray-50 dark:bg-gray-900/60 rounded-2xl border border-gray-100 dark:border-gray-800'>
-            <div className='flex items-center justify-center text-[10px] text-gray-400 dark:text-gray-500 mb-2 tracking-widest uppercase font-bold'>
-              <i className='fas fa-circle text-[6px] mr-2 text-green-500 animate-pulse'></i>
-              <span>System Uptime</span>
-            </div>
-            <div className='font-mono text-[11px] text-blue-600 dark:text-blue-400 tabular-nums text-center font-bold'>
-              {runtime || 'Loading...'}
-            </div>
-          </div>
-          <div className='flex justify-center mt-6'>
-            <DarkModeButton />
-          </div>
-          <div className="mt-4 opacity-50 text-center"><SiteInfo /></div>
-        </section>
+{/* 8. 页脚系统状态升级 */}
+<section className='mt-auto pt-8 border-t border-gray-50 dark:border-gray-900'>
+  <SocialButton />
+  <div className='mt-6 p-4 bg-white/50 dark:bg-white/5 backdrop-blur-lg rounded-2xl border border-white/30 dark:border-white/10 shadow-xl'>
+    <div className='flex items-center justify-center text-[10px] text-gray-400 dark:text-gray-500 mb-2 tracking-widest uppercase font-bold'>
+      <i className='fas fa-circle text-[6px] mr-2 text-green-500 animate-pulse'></i>
+      <span>System Uptime</span>
+    </div>
+    <div className='font-mono text-[11px] text-blue-600 dark:text-blue-400 tabular-nums text-center font-bold tracking-wider'>
+      {runtime || 'Initializing...'}
+    </div>
+  </div>
+</section>
 
         {/* 目录悬浮 (仅文章页显示) */}
         {post?.toc && (

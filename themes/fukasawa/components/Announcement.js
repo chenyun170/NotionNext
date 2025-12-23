@@ -7,42 +7,49 @@ import { useState, useEffect, useRef } from 'react'
 const NotionPage = dynamic(() => import('@/components/NotionPage'))
 
 /**
- * 悬浮活动卡片组件 (修复版)
+ * 悬浮活动卡片 - 高级毛玻璃版
  */
 const FloatingActivityCard = ({ config, isActive, isVisible }) => {
   if (!isActive) return null
 
   return (
     <div 
-      className={`fixed bottom-40 right-4 z-[60] w-80 transition-all duration-500 ${
+      className={`fixed bottom-48 right-6 z-[70] w-72 transition-all duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${
         isVisible ? 'translate-x-0 opacity-100' : 'translate-x-[400px] opacity-0 pointer-events-none'
       }`}>
-      <div 
-        className={`p-4 ${config.bgColor} border-2 ${config.borderColor} rounded-xl shadow-2xl backdrop-blur-sm`}
-        role="region">
-        <div className={`flex items-center justify-between ${config.textColor} font-bold text-sm mb-2`}>
-          <div className="flex items-center">
-            <i className={`${config.icon} mr-2 ${config.animation}`} aria-hidden="true" />
-            <span>{config.title}</span>
+      
+      {/* 核心毛玻璃容器 */}
+      <div className={`relative overflow-hidden p-5 rounded-2xl border border-white/20 shadow-2xl backdrop-blur-md bg-white/70 dark:bg-[#1a1a1a]/70`}>
+        
+        {/* 装饰性背景光晕 */}
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl"></div>
+        
+        {/* 内容区域 */}
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[10px] font-black bg-orange-500 text-white px-2 py-0.5 rounded-md uppercase tracking-tighter">
+              Limited Offer
+            </span>
+            <i className="fas fa-bullhorn text-orange-500 animate-bounce text-xs"></i>
           </div>
-          <button 
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-            onClick={(e) => {
-              e.currentTarget.closest('.fixed').style.display = 'none'
-            }}>
-            <i className="fas fa-times"></i>
-          </button>
+          
+          <h3 className="text-sm font-black text-gray-800 dark:text-white mb-2 leading-tight">
+            {config.title || '活动一：图灵搜岁末活动'}
+          </h3>
+          
+          <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
+            🔥 外贸获客工具 原价 ¥2180，现仅需 <span className="text-orange-600 font-bold">¥1600!</span>
+          </p>
+          
+          <a 
+            href={config.link}
+            target='_blank'
+            rel='noopener noreferrer'
+            className="block w-full py-2.5 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-center text-xs font-bold rounded-xl shadow-lg shadow-orange-500/30 transition-all active:scale-95"
+          >
+            立即参与 <i className="fas fa-arrow-right ml-1"></i>
+          </a>
         </div>
-        <p className='text-xs text-gray-700 dark:text-gray-300 mb-3 leading-relaxed'>
-          {config.emoji} <strong>{config.productName}</strong> {config.description}
-        </p>
-        <a 
-          href={config.link} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className={`block text-center ${config.buttonBg} text-white text-xs px-4 py-2 rounded-lg ${config.buttonHover} transition-all font-medium`}>
-          {config.buttonText} →
-        </a>
       </div>
     </div>
   )

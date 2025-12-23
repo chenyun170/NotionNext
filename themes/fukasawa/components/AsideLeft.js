@@ -189,24 +189,57 @@ function AsideLeft(props) {
         )}
       </div>
 
-      <style jsx global>{`
-        .sideLeft::-webkit-scrollbar { width: 0px; }
-        .sideLeft nav a {
-          font-size: 14px;
-          padding: 10px 12px;
-          transition: all 0.2s;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          color: #4b5563;
-        }
-        .dark .sideLeft nav a { color: #9ca3af; }
-        .sideLeft nav a:hover {
-          background: rgba(59, 130, 246, 0.05);
-          color: #3b82f6 !important;
-          transform: translateX(4px);
-        }
-      `}</style>
+<style jsx global>{`
+  /* 侧边栏整体滚动条隐藏 */
+  .sideLeft::-webkit-scrollbar { width: 0px; }
+
+  /* 搜索框美化 */
+  .sideLeft input {
+    transition: all 0.3s ease;
+  }
+  .sideLeft .bg-gray-50 {
+    background-color: rgba(248, 250, 252, 0.8) !important;
+  }
+
+  /* 菜单项导航美化 */
+  .sideLeft nav a {
+    font-size: 14px;
+    padding: 10px 16px;
+    margin: 4px 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    color: #4b5563;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dark .sideLeft nav a { color: #9ca3af; }
+
+  /* 悬浮效果：增加左侧蓝色指示条 */
+  .sideLeft nav a:hover {
+    background: rgba(59, 130, 246, 0.08) !important;
+    color: #3b82f6 !important;
+    transform: translateX(6px);
+  }
+
+  .sideLeft nav a:hover::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 20%;
+    height: 60%;
+    width: 3px;
+    background: #3b82f6;
+    border-radius: 0 4px 4px 0;
+  }
+  
+  /* 针对 SidebarTools 内的输入框特殊处理 */
+  .sideLeft .sidebar-input-terminal {
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  }
+`}</style>
     </div>
   )
 }

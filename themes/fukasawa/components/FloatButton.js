@@ -56,7 +56,7 @@ const FloatButton = () => {
 
               {/* 增强功能：一键复制 */}
               <button 
-                onClick={() => copyToClipboard('YourWeChatID')}
+                onClick={() => copyToClipboard('waimao071')}
                 className="mb-3 w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-bold rounded-lg transition-colors shadow-sm"
               >
                 {copyText}

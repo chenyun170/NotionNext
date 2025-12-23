@@ -16,27 +16,17 @@ import GroupTag from './GroupTag'
 import Logo from './Logo'
 import MailChimpForm from './MailChimpForm'
 import { MenuList } from './MenuList'
-import SearchInput from './SearchInput'
+import SearchInput from './SearchInput' // 仅保留这一个导入，修复重复定义错误
 import SiteInfo from './SiteInfo'
 import SocialButton from './SocialButton'
 import Link from 'next/link'
 import SidebarTools from './SidebarTools'
 
 /**
- * 侧边栏 - 最终整合版
+ * 侧边栏 - 极致顺序优化版
  */
 function AsideLeft(props) {
-  const {
-    tagOptions,
-    currentTag,
-    categoryOptions,
-    currentCategory,
-    post,
-    slot,
-    notice,
-    latestPosts = [] 
-  } = props
-  const router = useRouter()
+  const { post, notice, latestPosts = [] } = props
   const { fullWidth } = useGlobal()
 
   // --- 实时运行时间统计 ---
@@ -59,36 +49,25 @@ function AsideLeft(props) {
   }, [])
 
   // --- 侧边栏折叠逻辑 ---
-  const FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT =
-    fullWidth || siteConfig('FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT', null, CONFIG)
-
   const [isCollapsed, setIsCollapse] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('fukasawa-sidebar-collapse') === 'true' || FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT
+      return localStorage.getItem('fukasawa-sidebar-collapse') === 'true'
     }
-    return FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT
+    return false
   })
-
-  useEffect(() => {
-    if (isBrowser) localStorage.setItem('fukasawa-sidebar-collapse', isCollapsed)
-  }, [isCollapsed])
 
   const isReverse = siteConfig('LAYOUT_SIDEBAR_REVERSE')
   const position = useMemo(() => {
     return isCollapsed ? (isReverse ? 'right-2' : 'left-2') : (isReverse ? 'right-80' : 'left-80')
   }, [isCollapsed, isReverse])
 
-  const toggleOpen = () => setIsCollapse(!isCollapsed)
-
   return (
     <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#121212] min-h-screen hidden lg:block z-20 border-r border-gray-50 dark:border-gray-900`}>
       
       {/* 折叠按钮 */}
-      {siteConfig('FUKASAWA_SIDEBAR_COLLAPSE_BUTTON', null, CONFIG) && (
-        <div className={`${position} hidden lg:block fixed top-4 cursor-pointer z-50 bg-white/80 dark:bg-black/80 backdrop-blur rounded-full shadow-lg p-2.5 hover:scale-110 duration-300 border border-gray-100 dark:border-gray-800`} onClick={toggleOpen}>
-          <i className={`fa-solid ${isCollapsed ? 'fa-indent' : 'fa-chevron-left'} text-lg dark:text-white`}></i>
-        </div>
-      )}
+      <div className={`${position} hidden lg:block fixed top-4 cursor-pointer z-50 bg-white/80 dark:bg-black/80 backdrop-blur rounded-full shadow-lg p-2.5 hover:scale-110 duration-300 border border-gray-100 dark:border-gray-800`} onClick={() => setIsCollapse(!isCollapsed)}>
+        <i className={`fa-solid ${isCollapsed ? 'fa-indent' : 'fa-chevron-left'} text-lg dark:text-white`}></i>
+      </div>
 
       <div className={`h-full ${isCollapsed ? 'hidden' : 'px-8 py-10'} flex flex-col no-scrollbar overflow-y-auto`}>
         
@@ -98,7 +77,16 @@ function AsideLeft(props) {
           {siteConfig('DESCRIPTION')}
         </section>
 
-        {/* 2. 快速搜索 (移至此处) */}
+        {/* 2. 活动一和活动二 (插播在描述和搜索中间) */}
+        <section className='mb-6 bg-orange-50/30 dark:bg-orange-950/10 rounded-xl p-2 border border-orange-100/50 dark:border-orange-900/20'>
+           <div className='flex items-center text-[10px] font-bold text-orange-600 dark:text-orange-400 tracking-widest uppercase mb-2 px-1'>
+              <i className="fas fa-bullhorn mr-2"></i>
+              <span>Special Events</span>
+           </div>
+           <Announcement post={notice} />
+        </section>
+
+        {/* 3. 快速搜索 */}
         <section className='mb-6'>
           <div className='flex items-center text-[10px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-3 px-1'>
             <span>Quick Search</span>
@@ -109,7 +97,7 @@ function AsideLeft(props) {
           </div>
         </section>
 
-        {/* 3. 外贸工具工作台 */}
+        {/* 4. 外贸工具工作台 */}
         <section className='mb-8'>
           <div className='flex items-center text-[10px] font-bold text-blue-500 dark:text-blue-400 tracking-widest uppercase mb-3 px-1'>
             <i className='fas fa-terminal mr-2 animate-pulse'></i>
@@ -118,7 +106,7 @@ function AsideLeft(props) {
           <SidebarTools />
         </section>
 
-        {/* 4. 导航菜单 */}
+        {/* 5. 导航菜单 */}
         <section className='flex flex-col mb-8'>
           <div className='flex items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>
             <span>Navigation</span>
@@ -127,7 +115,7 @@ function AsideLeft(props) {
           <MenuList {...props} />
         </section>
 
-        {/* 5. 热门文章 (最新文章排行) */}
+        {/* 6. 热门文章 */}
         {latestPosts?.length > 0 && (
             <section className='flex flex-col mb-8 text-[13px]'>
                 <div className='flex items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>
@@ -149,27 +137,26 @@ function AsideLeft(props) {
             </section>
         )}
 
-        {/* 6. 活动与订阅 */}
-        <div className='space-y-6 mb-8'>
-           <Announcement post={notice} />
+        {/* 7. 邮件订阅 */}
+        <div className='mb-8'>
            <MailChimpForm />
         </div>
 
-        {/* 7. 页脚系统状态 */}
+        {/* 8. 页脚系统状态 */}
         <section className='mt-auto pt-8 border-t border-gray-50 dark:border-gray-900'>
           <SocialButton />
-          <div className='mt-6 p-4 bg-white/50 dark:bg-white/5 backdrop-blur-lg rounded-2xl border border-white/30 dark:border-white/10 shadow-xl'>
+          <div className='mt-6 p-4 bg-white/50 dark:bg-white/5 backdrop-blur-lg rounded-2xl border border-white/30 dark:border-white/10 shadow-xl text-center'>
             <div className='flex items-center justify-center text-[10px] text-gray-400 dark:text-gray-500 mb-2 tracking-widest uppercase font-bold'>
               <i className='fas fa-circle text-[6px] mr-2 text-green-500 animate-pulse'></i>
               <span>System Uptime</span>
             </div>
-            <div className='font-mono text-[11px] text-blue-600 dark:text-blue-400 tabular-nums text-center font-bold tracking-wider'>
+            <div className='font-mono text-[11px] text-blue-600 dark:text-blue-400 tabular-nums font-bold tracking-wider'>
               {runtime || 'Initializing...'}
             </div>
           </div>
         </section>
 
-        {/* 目录悬浮 (文章页) */}
+        {/* 目录 (仅文章页) */}
         {post?.toc && (
           <section className='sticky top-4 pt-4 max-h-[70vh] overflow-y-auto no-scrollbar'>
             <Catalog toc={post.toc} />
@@ -179,12 +166,11 @@ function AsideLeft(props) {
 
       <style jsx global>{`
         .sideLeft::-webkit-scrollbar { width: 0px; }
-        .sideLeft input { transition: all 0.3s ease; }
         .sideLeft nav a {
           font-size: 14px;
           padding: 10px 16px;
           margin: 4px 0;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.3s ease;
           border-radius: 12px;
           display: flex;
           align-items: center;

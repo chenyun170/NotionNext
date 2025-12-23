@@ -19,28 +19,15 @@ import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
 import SiteInfo from './SiteInfo'
 import SocialButton from './SocialButton'
+import ForeignTradeDashboard from './ForeignTradeDashboard'
 import Link from 'next/link'
 
-/**
- * 侧边栏 - 修复版
- */
 function AsideLeft(props) {
-  const {
-    tagOptions,
-    currentTag,
-    categoryOptions,
-    currentCategory,
-    post,
-    slot,
-    notice,
-    latestPosts = [] 
-  } = props
+  const { tagOptions, currentTag, categoryOptions, currentCategory, post, slot, notice, latestPosts = [] } = props
   const router = useRouter()
   const { fullWidth } = useGlobal()
-
-  // --- 修复：运行时间统计（减少更新频率）---
   const [runtime, setRuntime] = useState('')
-  const START_TIME = '2024-05-01T00:00:00' // 修复：使用标准时间格式
+  const START_TIME = '2024-05-01T00:00:00'
 
   useEffect(() => {
     const updateRuntime = () => {
@@ -53,108 +40,29 @@ function AsideLeft(props) {
       const seconds = Math.floor((diff % (1000 * 60)) / 1000)
       setRuntime(`${days}天${hours}时${minutes}分${seconds}秒`)
     }
-    
     updateRuntime()
-    const timer = setInterval(updateRuntime, 1000) // 或改为 10000 (10秒) 节省性能
+    const timer = setInterval(updateRuntime, 1000)
     return () => clearInterval(timer)
   }, [])
 
-  const FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT =
-    fullWidth ||
-    siteConfig('FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT', null, CONFIG)
-
-  const FUKASAWA_SIDEBAR_COLLAPSE_ON_SCROLL = siteConfig(
-    'FUKASAWA_SIDEBAR_COLLAPSE_ON_SCROLL',
-    false,
-    CONFIG
-  )
-
-  const FUKASAWA_SIDEBAR_COLLAPSE_BUTTON = siteConfig(
-    'FUKASAWA_SIDEBAR_COLLAPSE_BUTTON',
-    null,
-    CONFIG
-  )
-
   const [isCollapsed, setIsCollapse] = useState(() => {
     if (typeof window !== 'undefined') {
-      return (
-        localStorage.getItem('fukasawa-sidebar-collapse') === 'true' ||
-        FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT
-      )
+      return localStorage.getItem('fukasawa-sidebar-collapse') === 'true' || fullWidth
     }
-    return FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT
+    return fullWidth
   })
 
-  useEffect(() => {
-    if (isBrowser) {
-      localStorage.setItem('fukasawa-sidebar-collapse', isCollapsed)
-    }
-  }, [isCollapsed])
-
-  const isReverse = siteConfig('LAYOUT_SIDEBAR_REVERSE')
-  const position = useMemo(() => {
-    if (isCollapsed) {
-      return isReverse ? 'right-2' : 'left-2'
-    } else {
-      return isReverse ? 'right-80' : 'left-80'
-    }
-  }, [isCollapsed, isReverse]) // 修复：添加 isReverse 依赖
-
-  const toggleOpen = () => {
-    setIsCollapse(!isCollapsed)
-  }
-
-  useEffect(() => {
-    if (!FUKASAWA_SIDEBAR_COLLAPSE_ON_SCROLL) return
-    const handleResize = debounce(() => {
-      if (window.innerWidth < 1366 || window.scrollY >= 1366) {
-        setIsCollapse(true)
-      } else {
-        setIsCollapse(false)
-      }
-    }, 100)
-
-    if (post) {
-      window.addEventListener('resize', handleResize)
-      window.addEventListener('scroll', handleResize, { passive: true })
-    }
-
-    return () => {
-      if (post) {
-        window.removeEventListener('resize', handleResize)
-        window.removeEventListener('scroll', handleResize, { passive: true })
-      }
-    }
-  }, [post, FUKASAWA_SIDEBAR_COLLAPSE_ON_SCROLL]) // 修复：添加依赖项
-
   return (
-    <div
-      className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#121212] min-h-screen hidden lg:block z-20 border-r border-gray-50 dark:border-gray-900`}>
-      
-      {FUKASAWA_SIDEBAR_COLLAPSE_BUTTON && (
-        <button
-          className={`${position} hidden lg:block fixed top-4 cursor-pointer z-50 bg-white/80 dark:bg-black/80 backdrop-blur rounded-full shadow-lg p-2.5 hover:scale-110 duration-300 dark:text-white border border-gray-100 dark:border-gray-800`}
-          onClick={toggleOpen}
-          aria-label={isCollapsed ? '展开侧边栏' : '收起侧边栏'}>
-          {isCollapsed ? (
-            <i className='fa-solid fa-indent text-lg'></i>
-          ) : (
-            <i className='fas fa-chevron-left text-lg'></i>
-          )}
-        </button>
-      )}
-
-      <div className={`h-full ${isCollapsed ? 'hidden' : 'px-9 py-10'} flex flex-col overflow-y-auto`}>
-        {/* Logo & Info */}
-        <div className="shimmer-logo-wrapper mb-2">
-            <Logo {...props} />
-        </div>
-
-        <section className='siteInfo dark:text-gray-400 text-[13px] italic opacity-70 leading-relaxed mb-8'>
-          {siteConfig('DESCRIPTION')}
+    <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#121212] min-h-screen hidden lg:block z-20 border-r border-gray-50 dark:border-gray-900`}>
+      <div className={`h-full ${isCollapsed ? 'hidden' : 'px-6 py-10'} flex flex-col overflow-y-auto`}>
+        <Logo {...props} />
+        
+        {/* 外贸工作台组件 */}
+        <section className='mb-8'>
+           <ForeignTradeDashboard />
         </section>
 
-        {/* 1. 导航菜单 */}
+        {/* 导航菜单 */}
         <section className='menu-nav-wrapper flex flex-col mb-8'>
           <div className='flex items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4'>
             <span className='mr-2'>Navigation</span>
@@ -163,152 +71,44 @@ function AsideLeft(props) {
           <MenuList {...props} />
         </section>
 
-        {/* 2. 活动公告 */}
-        {notice && (
-          <div className='announcement-wrapper mb-8 transform transition-transform hover:scale-[1.02] duration-300'>
-            <Announcement post={notice} />
+        {/* --- 活动卡片区域 --- */}
+        <section className='space-y-4 mb-8'>
+          {/* 活动一 */}
+          <div className='relative p-4 pl-5 rounded-xl border-2 border-dashed border-orange-200 bg-orange-50/20 dark:bg-orange-950/5 transition-all hover:shadow-md group'>
+            <div className='absolute left-0 top-0 bottom-0 w-1.5 bg-orange-500 rounded-l-xl' />
+            <div className='flex items-center text-orange-600 dark:text-orange-400 font-bold text-[12px] mb-2 uppercase tracking-tighter'>
+              <i className='fas fa-gift mr-2 animate-bounce'></i>
+              <span>活动一：图灵搜岁末活动</span>
+            </div>
+            <p className='text-[11px] text-gray-500 dark:text-gray-400 leading-snug mb-3'>
+              🔥 获客工具原价 <span className='line-through'>¥2180</span>，现仅需 <span className='font-bold text-orange-600'>¥1680</span>！
+            </p>
+            <button className='w-full py-2 bg-orange-500 text-white text-[11px] font-bold rounded-lg'>立即领取</button>
           </div>
-        )}
 
-        {/* 3. 热门文章 */}
-        {latestPosts && latestPosts.length > 0 && (
-            <section className='flex flex-col mb-8'>
-                <div className='flex items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4'>
-                    <i className='fas fa-fire-alt mr-2 text-orange-500'></i>
-                    <span>Trending Now</span>
-                </div>
-                <ul className='space-y-3'>
-                    {latestPosts.slice(0, 5).map((p, index) => (
-                        <li key={p.id} className="group">
-                            <Link 
-                              href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} 
-                              title={p.title}
-                              className='flex items-start text-[13px] text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-all duration-300'>
-                                <span className={`flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-md text-[10px] mr-3 font-bold transition-colors duration-300 ${index < 3 ? 'bg-orange-50 text-orange-600 dark:bg-orange-950/30' : 'bg-gray-50 text-gray-400 dark:bg-gray-800'}`}>
-                                  {index + 1}
-                                </span>
-                                <span className='line-clamp-2 leading-snug group-hover:underline decoration-orange-200 underline-offset-4'>
-                                    {p.title}
-                                </span>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </section>
-        )}
-
-        {/* 搜索 & 订阅 */}
-        <section className='space-y-6 mb-8'>
-          <div className='bg-gray-50 dark:bg-gray-900/40 p-1.5 rounded-xl border border-gray-100 dark:border-gray-800'>
-            <SearchInput {...props} />
-          </div>
-          <div className='rounded-2xl overflow-hidden shadow-sm bg-gradient-to-br from-gray-50 to-white dark:from-gray-900/40 dark:to-gray-900/20 p-2 border border-gray-100 dark:border-gray-800'>
-            <MailChimpForm />
+          {/* 活动二 */}
+          <div className='relative p-4 pl-5 rounded-xl border-2 border-dashed border-blue-200 bg-blue-50/20 dark:bg-blue-950/5 transition-all hover:shadow-md group'>
+            <div className='absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500 rounded-l-xl' />
+            <div className='flex items-center text-blue-600 dark:text-blue-400 font-bold text-[12px] mb-2 uppercase tracking-tighter'>
+              <i className='fas fa-rocket mr-2'></i>
+              <span>活动二：顶易云岁末赠送</span>
+            </div>
+            <p className='text-[11px] text-gray-500 dark:text-gray-400 leading-snug mb-3'>
+              🚀 购高阶获客工具，限时赠送 <span className='font-bold text-blue-600'>社群搜索工具</span>！
+            </p>
+            <button className='w-full py-2 bg-blue-500 text-white text-[11px] font-bold rounded-lg'>查看详情</button>
           </div>
         </section>
 
-        {/* 广告位 */}
-        <section className='mb-8 rounded-xl overflow-hidden'>
-          <AdSlot type='in-article' />
-        </section>
-
-        {/* 目录（修复：移到内容区域内） */}
-        {post?.toc && (
-          <section className='mb-8 sticky top-4 max-h-[60vh] overflow-y-auto scrollbar-thin'>
-            <Catalog toc={post.toc} />
-          </section>
-        )}
-
-        {/* 分类 & 标签 */}
-        <div className="space-y-8 mb-8">
-            {router.asPath !== '/tag' && tagOptions && tagOptions.length > 0 && (
-              <section className='flex flex-col'>
-                  <h3 className='text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>Popular Tags</h3>
-                  <GroupTag tags={tagOptions} currentTag={currentTag} />
-              </section>
-            )}
-
-            {router.asPath !== '/category' && categoryOptions && categoryOptions.length > 0 && (
-              <section className='flex flex-col'>
-                  <h3 className='text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>Categories</h3>
-                  <GroupCategory
-                    categories={categoryOptions}
-                    currentCategory={currentCategory}
-                  />
-              </section>
-            )}
-        </div>
-
-        {/* 页脚 & 运行时间 */}
         <section className='mt-auto pt-10 border-t border-gray-50 dark:border-gray-900'>
-          <SocialButton />
-          <div className="mt-4 opacity-60">
-            <SiteInfo />
+          <div className='mt-4 p-4 bg-gray-50 dark:bg-gray-900/60 rounded-2xl text-center'>
+            <div className='text-[10px] text-gray-400 font-bold mb-2 uppercase'>System Operational</div>
+            <div className='font-mono text-[11px] text-orange-600 font-bold'>{runtime || 'Initializing...'}</div>
           </div>
-          
-          <div className='mt-8 p-4 bg-gray-50 dark:bg-gray-900/60 rounded-2xl border border-gray-100 dark:border-gray-800'>
-            <div className='flex items-center justify-center text-[10px] text-gray-400 dark:text-gray-500 mb-3 tracking-tighter uppercase font-bold'>
-              <i className='fas fa-bolt mr-2 text-orange-500 animate-pulse'></i>
-              <span>System Operational Status</span>
-            </div>
-            <div className='font-mono text-[11px] text-orange-600 dark:text-orange-500 tabular-nums text-center font-bold' aria-live="polite">
-              {runtime || 'Initializing...'}
-            </div>
-          </div>
-          
-          <div className='flex justify-center mt-6'>
-            <DarkModeButton />
-          </div>
+          <div className='flex justify-center mt-6'><DarkModeButton /></div>
         </section>
-
-        {/* Slot 插槽 */}
-        {slot && <div className='mt-4'>{slot}</div>}
       </div>
-
-      <style jsx>{`
-        /* 侧边栏菜单悬浮效果 */
-        .sideLeft :global(.menu-nav-wrapper nav a) {
-          font-size: 14px;
-          padding: 8px 12px;
-          margin: 2px 0;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          color: #4b5563;
-        }
-        .dark .sideLeft :global(.menu-nav-wrapper nav a) { 
-          color: #9ca3af; 
-        }
-
-        .sideLeft :global(.menu-nav-wrapper nav a:hover) {
-          background: rgba(249, 115, 22, 0.08);
-          color: #f97316 !important;
-          transform: translateX(4px);
-        }
-        
-        .sideLeft :global(.menu-nav-wrapper nav a i) {
-          margin-right: 12px;
-          font-size: 14px;
-          width: 20px;
-          text-align: center;
-          opacity: 0.7;
-        }
-
-        /* 自定义滚动条 */
-        .scrollbar-thin::-webkit-scrollbar {
-          width: 4px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-          background: rgba(156, 163, 175, 0.3);
-          border-radius: 2px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-          background: rgba(156, 163, 175, 0.5);
-        }
-      `}</style>
     </div>
   )
 }
-
 export default AsideLeft

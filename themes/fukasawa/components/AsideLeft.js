@@ -20,6 +20,7 @@ import SearchInput from './SearchInput'
 import SiteInfo from './SiteInfo'
 import SocialButton from './SocialButton'
 import Link from 'next/link'
+import SearchInput from './SearchInput'
 import SidebarTools from './SidebarTools' // 请确保你已创建此组件
 
 /**

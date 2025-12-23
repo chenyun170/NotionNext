@@ -7,17 +7,15 @@ import { useEffect, useState } from 'react'
 import BlogCard from './BlogCard'
 import BlogPostListEmpty from './BlogListEmpty'
 import PaginationSimple from './PaginationSimple'
+import HeroSection from './HeroSection' // 确保你已创建此组件文件
 
 /**
- * 文章列表分页表格
- * 已清理旧的 ForeignTradeDashboard 引用，解决编译报错
+ * 完整整合版：包含动态 HeroSection 并清理旧报错
  */
 const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
   const { NOTION_CONFIG } = useGlobal()
   const postsPerPage = siteConfig('POSTS_PER_PAGE', null, NOTION_CONFIG)
-  const totalPage = Math.ceil(
-    postCount / postsPerPage
-  )
+  const totalPage = Math.ceil(postCount / postsPerPage)
   const showNext = page < totalPage
 
   const [columns, setColumns] = useState(calculateColumns())
@@ -31,9 +29,6 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-   /**
-    * 文章重新布局
-    */
   useEffect(() => {
     const count = posts?.length || 0;
     const rows = Math.ceil(count / columns);
@@ -41,71 +36,61 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
 
     let index = 0;
     for (let col = 0; col < columns; col++) {
-        for (let row = 0; row < rows; row++) {
+      for (let row = 0; row < rows; row++) {
         const sourceIndex = row * columns + col;
         if (sourceIndex < count) {
-            newFilterPosts[index] = deepClone(posts[sourceIndex]);
-            index++;
+          newFilterPosts[index] = deepClone(posts[sourceIndex]);
+          index++;
         }
-        }
+      }
     }
-   
     setFilterPosts(newFilterPosts);
   }, [columns, posts]);
 
   if (!filterPosts || filterPosts.length === 0) {
     return <BlogPostListEmpty />
-  } else {
-    return (
-      <div className='w-full'>
-        {/* 1. 原仪表盘位置已清空，为了视觉平衡，给顶部留出一点呼吸空间 */}
-        <div className='h-4 w-full'></div>
-
-        {/* 文章列表 */}
-        <div id='posts-wrapper' className='grid-container'>
-          {filterPosts?.map((post, index) => (
-            <div
-              key={post.id}
-              className='grid-item justify-center flex'
-              style={{ breakInside: 'avoid' }}>
-              <BlogCard
-                index={index}
-                key={post.id}
-                post={post}
-                siteInfo={siteInfo}
-              />
-            </div>
-          ))}
-          {siteConfig('ADSENSE_GOOGLE_ID') && (
-            <div className='p-3'>
-              <AdSlot type='flow' />
-            </div>
-          )}
-        </div>
-        
-        <div className='mt-8'>
-            <PaginationSimple page={page} showNext={showNext} />
-        </div>
-      </div>
-    )
   }
+
+  return (
+    <div className='w-full'>
+      {/* 1. 顶部插入：动态天气 Slogan + 搜索框 */}
+      {/* 只有在第一页才显示 HeroSection，避免翻页后重复显示 */}
+      {page === 1 && <HeroSection />}
+
+      {/* 2. 文章列表区域 */}
+      <div id='posts-wrapper' className='grid-container mt-4'>
+        {filterPosts?.map((post, index) => (
+          <div
+            key={post.id}
+            className='grid-item justify-center flex'
+            style={{ breakInside: 'avoid' }}>
+            <BlogCard
+              index={index}
+              key={post.id}
+              post={post}
+              siteInfo={siteInfo}
+            />
+          </div>
+        ))}
+        {siteConfig('ADSENSE_GOOGLE_ID') && (
+          <div className='p-3'>
+            <AdSlot type='flow' />
+          </div>
+        )}
+      </div>
+      
+      <div className='mt-12'>
+        <PaginationSimple page={page} showNext={showNext} />
+      </div>
+    </div>
+  )
 }
 
-/**
- * 计算文章列数
- */
 const calculateColumns = () => {
-  if (!isBrowser) {
-    return 3
-  } else {
-    if (window.innerWidth >= 1024) {
-      return 3
-    } else if (window.innerWidth >= 640) {
-      return 2
-    } else {
-      return 1
-    }
-  }
+  if (!isBrowser) return 3
+  if (window.innerWidth >= 1024) return 3
+  if (window.innerWidth >= 640) return 2
+  return 1
 }
 
 export default BlogListPage

@@ -29,7 +29,7 @@ const FloatButton = () => {
   }
 
   return (
-    <div className="fixed bottom-8 right-6 md:right-10 flex flex-col items-center space-y-6" style={{ zIndex: 9999 }}>
+    <div className="fixed bottom-20 right-6 md:right-10 flex flex-col items-center space-y-6" style={{ zIndex: 9999 }}>  
       
       {/* 1. 返回顶部按钮 */}
       <div 
@@ -44,7 +44,7 @@ const FloatButton = () => {
         {showPopup && (
           <div className="absolute bottom-16 right-0 w-56 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-2xl border border-white/20 dark:border-gray-800 p-5 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
             <div className="text-center">
-              <h3 className="font-black text-slate-800 dark:text-white text-sm tracking-tight">情报局长私域</h3>
+              <h3 className="font-black text-slate-800 dark:text-white text-sm tracking-tight">情报局长助手</h3>
               <p className="text-gray-500 dark:text-gray-400 text-[10px] mt-1 mb-3 leading-relaxed">
                 扫码添加微信或点击下方按钮<br/>
                 备注<span className="text-orange-600 font-black italic">“获客”</span>领资料包

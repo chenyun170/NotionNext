@@ -10,6 +10,13 @@ const SidebarTools = () => {
   const [rateData, setRateData] = useState({ val: 7.23, sync: false });
   const [waPhone, setWaPhone] = useState('');
   const [times, setTimes] = useState({});
+    return (
+    <div className="flex flex-col gap-4 p-4 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-lg">
+      {/* 内部组件样式保持一致 */}
+      {/* 建议将内部的小卡片也设为 bg-white/20 或 bg-black/20 */}
+    </div>
+  )
+}
 
   // --- 核心逻辑：时钟与工作状态 ---
   useEffect(() => {

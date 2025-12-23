@@ -2,6 +2,8 @@ import React from 'react'
 import { siteConfig } from '@/lib/config'
 import BlogCard from './BlogCard'
 import PaginationSimple from './PaginationSimple'
+// 【必须添加】导入侧边栏工具组件，确保文件名大小写一致
+import SidebarTools from './SidebarTools' 
 
 const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
   // 1. 逻辑分层：热门文章取前3篇，剩余的作为普通列表
@@ -29,11 +31,11 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
         </section>
       )}
 
-      {/* B. 主内容区：使用 Flex 布局分离列表与侧边栏 */}
+      {/* B. 主内容区：使用 Flex 布局将列表与侧边栏左右对齐 */}
       <div className='flex flex-col lg:flex-row gap-8'>
         
         {/* 左侧：文章主列表 */}
-        <div className='flex-grow'>
+        <div className='flex-grow min-w-0'>
           <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-2 gap-6'>
             {mainPosts?.map((post, index) => (
               <BlogCard key={post.id} post={post} siteInfo={siteInfo} index={index} />
@@ -49,6 +51,7 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
         {/* 右侧：侧边栏工具栏 */}
         <aside className='w-full lg:w-80 flex-shrink-0'>
           <div className='sticky top-20'>
+            {/* 调用 SidebarTools 组件 */}
             <SidebarTools />
           </div>
         </aside>

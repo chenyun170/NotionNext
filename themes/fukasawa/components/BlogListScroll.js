@@ -4,6 +4,7 @@ import throttle from 'lodash.throttle';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import BlogCard from './BlogCard';
 import BlogPostListEmpty from './BlogListEmpty';
+import SidebarTools from './SidebarTools';
 
 const BlogListScroll = ({ posts }) => {
   const { locale, NOTION_CONFIG } = useGlobal();

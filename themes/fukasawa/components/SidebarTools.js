@@ -14,10 +14,10 @@ const SidebarTools = () => {
   const EX_API_URL = "https://v6.exchangerate-api.com/v6/08bd067e490fdc5d9ccac3bd/latest/USD";
 
   useEffect(() => {
-    // 1. 时间刷新逻辑
+    // 1. 时间刷新逻辑 - 增加了 work 时间判定
     const updateTime = () => {
       const zones = [
-        { k: 'BJ', t: 'Asia/Shanghai', n: '京' },
+        { k: 'BJ', t: 'Asia/Shanghai', n: '中' },
         { k: 'LD', t: 'Europe/London', n: '伦' },
         { k: 'NY', t: 'America/New_York', n: '纽' },
         { k: 'LS', t: 'America/Los_Angeles', n: '洛' }
@@ -25,9 +25,12 @@ const SidebarTools = () => {
       const res = {};
       zones.forEach(z => {
         const date = new Date(new Date().toLocaleString("en-US", { timeZone: z.t }));
+        const hour = date.getHours();
         res[z.k] = { 
           time: date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }), 
-          n: z.n 
+          n: z.n,
+          // 判定逻辑：当地时间 9点 到 18点 为工作时间
+          work: hour >= 9 && hour < 18 
         };
       });
       setTimes(res);
@@ -81,11 +84,15 @@ const SidebarTools = () => {
         <span className="text-emerald-600 dark:text-emerald-400 font-mono">USD/CNY {realRate}</span>
       </div>
 
-      {/* 核心时间网格 */}
+      {/* 核心时间网格 - 关键修改点：呼吸色字体 */}
       <div className="grid grid-cols-4 gap-1">
         {Object.values(times).map(v => (
           <div key={v.n} className="flex flex-col items-center py-0.5 bg-gray-100/50 dark:bg-white/5 rounded border border-black/5">
-            <span className="text-[8px] text-gray-400 scale-90">{v.n}</span>
+            {/* 京、伦、纽、洛 字体变色与呼吸动画 */}
+            <span className={`text-[9px] font-black scale-90 leading-none transition-colors duration-1000 
+              ${v.work ? 'text-emerald-500 animate-breath-green' : 'text-rose-500 animate-breath-red'}`}>
+              {v.n}
+            </span>
             <span className="font-mono font-bold text-[10px] leading-none mt-0.5">{v.time}</span>
           </div>
         ))}
@@ -94,13 +101,13 @@ const SidebarTools = () => {
       {/* 工具切换 */}
       <div className="flex bg-gray-200/50 dark:bg-gray-800 p-0.5 rounded">
         {['cbm', 'ex', 'search'].map(m => (
-          <button key={m} onClick={() => setCalcMode(m)} className={`flex-1 py-0.5 text-[9px] font-bold rounded transition-all ${calcMode === m ? 'bg-white dark:bg-gray-600 text-blue-600' : 'text-gray-400'}`}>
+          <button key={m} onClick={() => setCalcMode(m)} className={`flex-1 py-0.5 text-[9px] font-bold rounded transition-all ${calcMode === m ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-xs' : 'text-gray-400'}`}>
             {m === 'cbm' ? '算柜' : m === 'ex' ? '汇率' : '搜索'}
           </button>
         ))}
       </div>
 
-      {/* 操作区：高度精简 */}
+      {/* 操作区 */}
       <div className="h-6 mt-0.5 flex items-center">
         {calcMode === 'cbm' && (
           <div className="flex gap-1 items-center w-full">
@@ -131,6 +138,24 @@ const SidebarTools = () => {
           </div>
         )}
       </div>
+
+      {/* 自定义呼吸动画 */}
+      <style jsx>{`
+        .animate-breath-green {
+          animation: breath-green 3s ease-in-out infinite;
+        }
+        .animate-breath-red {
+          animation: breath-red 3s ease-in-out infinite;
+        }
+        @keyframes breath-green {
+          0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(16, 185, 129, 0.3); }
+          50% { opacity: 0.4; text-shadow: 0 0 0px rgba(16, 185, 129, 0); }
+        }
+        @keyframes breath-red {
+          0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(244, 63, 94, 0.3); }
+          50% { opacity: 0.4; text-shadow: 0 0 0px rgba(244, 63, 94, 0); }
+        }
+      `}</style>
     </div>
   );
 };

@@ -38,7 +38,17 @@ export const getServerSideProps = async ctx => {
 }
 
 function generateLocalesSitemap(link, allPages, locale) {
-  // 确保链接不以斜杠结尾
+  // 核心修复：确保使用 https 且包含 www (如果这是你的主域名)
+  if (link && !link.startsWith('https://')) {
+    link = link.replace('http://', 'https://');
+  }
+  
+  // 确保 link 与 GSC 中验证的资源完全一致
+  // 如果你在 GSC 验证的是 www.123170.xyz，这里必须包含 www
+  if (link && !link.includes('www.')) {
+     link = link.replace('://', '://www.');
+  }
+
   if (link && link.endsWith('/')) {
     link = link.slice(0, -1)
   }

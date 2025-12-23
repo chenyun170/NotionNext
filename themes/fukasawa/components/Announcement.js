@@ -14,7 +14,7 @@ const FloatingActivityCard = ({ config, isActive, isVisible }) => {
 
   return (
     <div 
-      className={`fixed bottom-24 right-4 z-[60] w-80 transition-all duration-500 ${
+      className={`fixed bottom-40 right-4 z-[60] w-80 transition-all duration-500 ${
         isVisible ? 'translate-x-0 opacity-100' : 'translate-x-[400px] opacity-0 pointer-events-none'
       }`}>
       <div 

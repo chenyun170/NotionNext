@@ -10,11 +10,7 @@ import PaginationSimple from './PaginationSimple'
 
 /**
  * 文章列表分页表格
- * @param page 当前页
- * @param posts 所有文章
- * @param tags 所有标签
- * @returns {JSX.Element}
- * @constructor
+ * 已清理旧的 ForeignTradeDashboard 引用，解决编译报错
  */
 const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
   const { NOTION_CONFIG } = useGlobal()
@@ -36,7 +32,7 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
   }, [])
 
    /**
-    * 文章重新布局，使纵向排列看起来是横向排列
+    * 文章重新布局
     */
   useEffect(() => {
     const count = posts?.length || 0;
@@ -61,9 +57,9 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
     return <BlogPostListEmpty />
   } else {
     return (
-      <div>
-        {/* 2. 在这里插入外贸仪表盘 (在文章列表之上) */}
-        <ForeignTradeDashboard />
+      <div className='w-full'>
+        {/* 1. 原仪表盘位置已清空，为了视觉平衡，给顶部留出一点呼吸空间 */}
+        <div className='h-4 w-full'></div>
 
         {/* 文章列表 */}
         <div id='posts-wrapper' className='grid-container'>
@@ -86,7 +82,10 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
             </div>
           )}
         </div>
-        <PaginationSimple page={page} showNext={showNext} />
+        
+        <div className='mt-8'>
+            <PaginationSimple page={page} showNext={showNext} />
+        </div>
       </div>
     )
   }
@@ -94,7 +93,6 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
 
 /**
  * 计算文章列数
- * @returns
  */
 const calculateColumns = () => {
   if (!isBrowser) {

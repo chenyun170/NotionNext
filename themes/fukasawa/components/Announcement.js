@@ -149,54 +149,64 @@ const Announcement = ({ post, className }) => {
     const handleScroll = () => {
       if (!announcementRef.current) return
 
-      const sidebar = document.querySelector('.sideLeft')
-      if (!sidebar) return
-
-      const sidebarRect = sidebar.getBoundingClientRect()
       const announcementRect = announcementRef.current.getBoundingClientRect()
       
-      // 侧边栏滚动到底部（出现空白区域）且活动卡片不在可视区域内时，显示悬浮卡片
-      const sidebarScrolledToBottom = sidebarRect.bottom > window.innerHeight + 200
-      const announcementNotVisible = announcementRect.bottom < 0 || announcementRect.top > window.innerHeight
+      // 简化逻辑：当侧边栏内的活动卡片滚出屏幕顶部时，显示悬浮卡片
+      const announcementScrolledOut = announcementRect.bottom < 100
       
-      // 检测是否遮挡主内容区域
+      // 检测是否遮挡主内容区域（主内容宽度超过一定值时才检测）
       const mainContent = document.querySelector('main') || document.querySelector('article')
       let isBlockingContent = false
       
       if (mainContent) {
         const contentRect = mainContent.getBoundingClientRect()
-        const floatingCardRight = window.innerWidth - 16 // right-4 = 1rem = 16px
-        const floatingCardLeft = floatingCardRight - 320 // w-80 = 20rem = 320px
-        
-        // 如果悬浮卡片会遮挡主内容，则隐藏
-        isBlockingContent = (
-          contentRect.right > floatingCardLeft && 
-          contentRect.left < floatingCardRight
-        )
+        // 只在屏幕宽度 > 1280px 且主内容延伸到右侧时才隐藏
+        if (window.innerWidth > 1280) {
+          const floatingCardLeft = window.innerWidth - 336 // right-4(16px) + w-80(320px)
+          isBlockingContent = contentRect.right > floatingCardLeft
+        }
       }
 
-      setFloatingVisible(
-        (sidebarScrolledToBottom || announcementNotVisible) && 
-        !isBlockingContent &&
-        (activities.activity1 || activities.activity2)
-      )
+      const shouldShow = announcementScrolledOut && 
+                        !isBlockingContent &&
+                        (activities.activity1 || activities.activity2)
+      
+      setFloatingVisible(shouldShow)
+
+      // 调试信息
+      if (process.env.NODE_ENV === 'development') {
+        console.log('悬浮卡片状态:', {
+          announcementScrolledOut,
+          isBlockingContent,
+          shouldShow,
+          announcementBottom: announcementRect.bottom
+        })
+      }
     }
 
-    // 添加滚动监听（包括侧边栏和主窗口）
+    // 添加滚动监听
     window.addEventListener('scroll', handleScroll, { passive: true })
     
     const sidebar = document.querySelector('.sideLeft')
+    const sidebarContent = sidebar?.querySelector('div')
+    
     if (sidebar) {
       sidebar.addEventListener('scroll', handleScroll, { passive: true })
     }
+    if (sidebarContent) {
+      sidebarContent.addEventListener('scroll', handleScroll, { passive: true })
+    }
 
-    // 初始检查
-    handleScroll()
+    // 初始检查（延迟执行确保DOM加载完成）
+    setTimeout(handleScroll, 500)
 
     return () => {
       window.removeEventListener('scroll', handleScroll)
       if (sidebar) {
         sidebar.removeEventListener('scroll', handleScroll)
+      }
+      if (sidebarContent) {
+        sidebarContent.removeEventListener('scroll', handleScroll)
       }
     }
   }, [activities])
@@ -235,12 +245,12 @@ const Announcement = ({ post, className }) => {
         </section>
       </div>
 
-      {/* 悬浮活动卡片（只显示活动1，可改为轮播） */}
+      {/* 悬浮活动卡片（测试：始终显示） */}
       {activities.activity1 && (
         <FloatingActivityCard 
           config={activityConfigs.activity1} 
           isActive={activities.activity1}
-          isVisible={floatingVisible}
+          isVisible={true} // 临时改为 true 测试
         />
       )}
     </>

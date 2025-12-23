@@ -22,7 +22,7 @@ import SocialButton from './SocialButton'
 import Link from 'next/link'
 
 /**
- * 侧边栏 - 精致重构版
+ * 侧边栏 - 修复版
  */
 function AsideLeft(props) {
   const {
@@ -38,12 +38,12 @@ function AsideLeft(props) {
   const router = useRouter()
   const { fullWidth } = useGlobal()
 
-  // --- 实时运行时间统计 ---
+  // --- 修复：运行时间统计（减少更新频率）---
   const [runtime, setRuntime] = useState('')
-  const START_TIME = '2024-05-01'
+  const START_TIME = '2024-05-01T00:00:00' // 修复：使用标准时间格式
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const updateRuntime = () => {
       const start = new Date(START_TIME)
       const now = new Date()
       const diff = now.getTime() - start.getTime()
@@ -52,7 +52,10 @@ function AsideLeft(props) {
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
       const seconds = Math.floor((diff % (1000 * 60)) / 1000)
       setRuntime(`${days}天${hours}时${minutes}分${seconds}秒`)
-    }, 1000)
+    }
+    
+    updateRuntime()
+    const timer = setInterval(updateRuntime, 1000) // 或改为 10000 (10秒) 节省性能
     return () => clearInterval(timer)
   }, [])
 
@@ -95,7 +98,7 @@ function AsideLeft(props) {
     } else {
       return isReverse ? 'right-80' : 'left-80'
     }
-  }, [isCollapsed])
+  }, [isCollapsed, isReverse]) // 修复：添加 isReverse 依赖
 
   const toggleOpen = () => {
     setIsCollapse(!isCollapsed)
@@ -122,25 +125,26 @@ function AsideLeft(props) {
         window.removeEventListener('scroll', handleResize, { passive: true })
       }
     }
-  }, [])
+  }, [post, FUKASAWA_SIDEBAR_COLLAPSE_ON_SCROLL]) // 修复：添加依赖项
 
   return (
     <div
       className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#121212] min-h-screen hidden lg:block z-20 border-r border-gray-50 dark:border-gray-900`}>
       
       {FUKASAWA_SIDEBAR_COLLAPSE_BUTTON && (
-        <div
+        <button
           className={`${position} hidden lg:block fixed top-4 cursor-pointer z-50 bg-white/80 dark:bg-black/80 backdrop-blur rounded-full shadow-lg p-2.5 hover:scale-110 duration-300 dark:text-white border border-gray-100 dark:border-gray-800`}
-          onClick={toggleOpen}>
+          onClick={toggleOpen}
+          aria-label={isCollapsed ? '展开侧边栏' : '收起侧边栏'}>
           {isCollapsed ? (
             <i className='fa-solid fa-indent text-lg'></i>
           ) : (
             <i className='fas fa-chevron-left text-lg'></i>
           )}
-        </div>
+        </button>
       )}
 
-      <div className={`h-full ${isCollapsed ? 'hidden' : 'px-9 py-10'} flex flex-col`}>
+      <div className={`h-full ${isCollapsed ? 'hidden' : 'px-9 py-10'} flex flex-col overflow-y-auto`}>
         {/* Logo & Info */}
         <div className="shimmer-logo-wrapper mb-2">
             <Logo {...props} />
@@ -150,7 +154,7 @@ function AsideLeft(props) {
           {siteConfig('DESCRIPTION')}
         </section>
 
-        {/* 1. 导航菜单 (精致化) */}
+        {/* 1. 导航菜单 */}
         <section className='menu-nav-wrapper flex flex-col mb-8'>
           <div className='flex items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4'>
             <span className='mr-2'>Navigation</span>
@@ -159,12 +163,14 @@ function AsideLeft(props) {
           <MenuList {...props} />
         </section>
 
-        {/* 2. 活动公告 (圆角卡片化) */}
-        <div className='announcement-wrapper mb-8 transform transition-transform hover:scale-[1.02] duration-300'>
-           <Announcement post={notice} />
-        </div>
+        {/* 2. 活动公告 */}
+        {notice && (
+          <div className='announcement-wrapper mb-8 transform transition-transform hover:scale-[1.02] duration-300'>
+            <Announcement post={notice} />
+          </div>
+        )}
 
-        {/* 3. 热门文章 (胶囊排行版) */}
+        {/* 3. 热门文章 */}
         {latestPosts && latestPosts.length > 0 && (
             <section className='flex flex-col mb-8'>
                 <div className='flex items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4'>
@@ -174,15 +180,16 @@ function AsideLeft(props) {
                 <ul className='space-y-3'>
                     {latestPosts.slice(0, 5).map((p, index) => (
                         <li key={p.id} className="group">
-                            <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} passHref legacyBehavior>
-                                <a className='flex items-start text-[13px] text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-all duration-300'>
-                                    <span className={`flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-md text-[10px] mr-3 font-bold transition-colors duration-300 ${index < 3 ? 'bg-orange-50 text-orange-600 dark:bg-orange-950/30' : 'bg-gray-50 text-gray-400 dark:bg-gray-800'}`}>
-                                      {index + 1}
-                                    </span>
-                                    <span className='line-clamp-2 leading-snug group-hover:underline decoration-orange-200 underline-offset-4'>
-                                        {p.title}
-                                    </span>
-                                </a>
+                            <Link 
+                              href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} 
+                              title={p.title}
+                              className='flex items-start text-[13px] text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-all duration-300'>
+                                <span className={`flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-md text-[10px] mr-3 font-bold transition-colors duration-300 ${index < 3 ? 'bg-orange-50 text-orange-600 dark:bg-orange-950/30' : 'bg-gray-50 text-gray-400 dark:bg-gray-800'}`}>
+                                  {index + 1}
+                                </span>
+                                <span className='line-clamp-2 leading-snug group-hover:underline decoration-orange-200 underline-offset-4'>
+                                    {p.title}
+                                </span>
                             </Link>
                         </li>
                     ))}
@@ -205,23 +212,30 @@ function AsideLeft(props) {
           <AdSlot type='in-article' />
         </section>
 
-        {/* 分类 & 标签 (胶囊列表) */}
-        <div className="space-y-8">
-            {router.asPath !== '/tag' && (
-            <section className='flex flex-col'>
-                <h3 className='text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>Popular Tags</h3>
-                <GroupTag tags={tagOptions} currentTag={currentTag} />
-            </section>
+        {/* 目录（修复：移到内容区域内） */}
+        {post?.toc && (
+          <section className='mb-8 sticky top-4 max-h-[60vh] overflow-y-auto scrollbar-thin'>
+            <Catalog toc={post.toc} />
+          </section>
+        )}
+
+        {/* 分类 & 标签 */}
+        <div className="space-y-8 mb-8">
+            {router.asPath !== '/tag' && tagOptions && tagOptions.length > 0 && (
+              <section className='flex flex-col'>
+                  <h3 className='text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>Popular Tags</h3>
+                  <GroupTag tags={tagOptions} currentTag={currentTag} />
+              </section>
             )}
 
-            {router.asPath !== '/category' && (
-            <section className='flex flex-col'>
-                <h3 className='text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>Categories</h3>
-                <GroupCategory
-                categories={categoryOptions}
-                currentCategory={currentCategory}
-                />
-            </section>
+            {router.asPath !== '/category' && categoryOptions && categoryOptions.length > 0 && (
+              <section className='flex flex-col'>
+                  <h3 className='text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>Categories</h3>
+                  <GroupCategory
+                    categories={categoryOptions}
+                    currentCategory={currentCategory}
+                  />
+              </section>
             )}
         </div>
 
@@ -237,7 +251,7 @@ function AsideLeft(props) {
               <i className='fas fa-bolt mr-2 text-orange-500 animate-pulse'></i>
               <span>System Operational Status</span>
             </div>
-            <div className='font-mono text-[11px] text-orange-600 dark:text-orange-500 tabular-nums text-center font-bold'>
+            <div className='font-mono text-[11px] text-orange-600 dark:text-orange-500 tabular-nums text-center font-bold' aria-live="polite">
               {runtime || 'Initializing...'}
             </div>
           </div>
@@ -247,16 +261,13 @@ function AsideLeft(props) {
           </div>
         </section>
 
-        {/* 目录悬浮 */}
-        <section className='sticky top-4 pt-4 flex flex-col max-h-[80vh] overflow-y-auto no-scrollbar'>
-          <Catalog toc={post?.toc} />
-          <div className='mt-4'>{slot}</div>
-        </section>
+        {/* Slot 插槽 */}
+        {slot && <div className='mt-4'>{slot}</div>}
       </div>
 
-      <style jsx global>{`
-        /* 全局美化：侧边栏菜单 Link 悬浮效果 */
-        .sideLeft .menu-nav-wrapper nav a {
+      <style jsx>{`
+        /* 侧边栏菜单悬浮效果 */
+        .sideLeft :global(.menu-nav-wrapper nav a) {
           font-size: 14px;
           padding: 8px 12px;
           margin: 2px 0;
@@ -266,15 +277,17 @@ function AsideLeft(props) {
           align-items: center;
           color: #4b5563;
         }
-        .dark .sideLeft .menu-nav-wrapper nav a { color: #9ca3af; }
+        .dark .sideLeft :global(.menu-nav-wrapper nav a) { 
+          color: #9ca3af; 
+        }
 
-        .sideLeft .menu-nav-wrapper nav a:hover {
+        .sideLeft :global(.menu-nav-wrapper nav a:hover) {
           background: rgba(249, 115, 22, 0.08);
           color: #f97316 !important;
           transform: translateX(4px);
         }
         
-        .sideLeft .menu-nav-wrapper nav a i {
+        .sideLeft :global(.menu-nav-wrapper nav a i) {
           margin-right: 12px;
           font-size: 14px;
           width: 20px;
@@ -282,16 +295,17 @@ function AsideLeft(props) {
           opacity: 0.7;
         }
 
-        /* 极简星空粒子背景 */
-        body::before {
-          background-image: radial-gradient(1px 1px at 20px 30px, #eee, rgba(0,0,0,0));
-          opacity: 0.05;
+        /* 自定义滚动条 */
+        .scrollbar-thin::-webkit-scrollbar {
+          width: 4px;
         }
-        .dark body::before { opacity: 0.15; }
-
-        /* 隐藏滚动条 */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+          background: rgba(156, 163, 175, 0.3);
+          border-radius: 2px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+          background: rgba(156, 163, 175, 0.5);
+        }
       `}</style>
     </div>
   )

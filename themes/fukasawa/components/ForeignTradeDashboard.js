@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ForeignTradeDashboard = () => {
   // 核心函数：WA跳转与搜索
@@ -21,7 +21,6 @@ const ForeignTradeDashboard = () => {
   const [weather, setWeather] = useState({ city: '定位中', temp: '', info: '' });
   const [ipInfo, setIpInfo] = useState({ country: '检测中', code: '', ip: '' });
   
-  // --- 请确保你的高德 KEY 在这里正确配置 ---
   const AMAP_KEY = "41151e8e6a20ccd713ae595cd3236735";
 
   const usePersistentState = (key, defaultValue) => {
@@ -33,7 +32,9 @@ const ForeignTradeDashboard = () => {
       return defaultValue;
     });
     useEffect(() => {
-      if (typeof window !== 'undefined') localStorage.setItem(key, JSON.stringify(state));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(key, JSON.stringify(state));
+      }
     }, [key, state]);
     return [state, setState];
   };
@@ -46,36 +47,36 @@ const ForeignTradeDashboard = () => {
   const [unitType, setUnitType] = useState('len');
   const [searchKw, setSearchKw] = useState('');
   const [searchType, setSearchType] = useState('hs');
-  const [copyTip, setCopyTip] = useState('');
 
-  // 1. IP、国旗与天气 KEY 功能加固
+  // IP、国旗与天气功能
   useEffect(() => {
     const fetchEnv = async () => {
       try {
-        // 先通过高德 API 获取精准经纬度和城市编码
+        let adcode = "110000";
+        
         const amapIpRes = await fetch(`https://restapi.amap.com/v3/ip?key=${AMAP_KEY}`);
         const amapIpData = await amapIpRes.json();
         
-        let adcode = "110000"; // 默认北京
-        if (amapIpData.status === '1') {
+        if (amapIpData.status === '1' && amapIpData.adcode && typeof amapIpData.adcode === 'string') {
           adcode = amapIpData.adcode;
           setIpInfo({ country: `${amapIpData.province}${amapIpData.city}`, code: 'cn', ip: amapIpData.ip });
         } else {
-          // 备用：国际 IP 接口
           const res = await fetch('https://ipapi.co/json/');
           const data = await res.json();
           setIpInfo({ country: data.country_name, code: data.country_code?.toLowerCase(), ip: data.ip });
         }
 
-        // 获取高德天气实时数据
         const wRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?key=${AMAP_KEY}&city=${adcode}`);
         const wData = await wRes.json();
         if (wData.status === '1' && wData.lives?.length > 0) {
           const L = wData.lives[0];
           setWeather({ city: L.city, temp: L.temperature, info: L.weather });
+        } else {
+          setWeather({ city: '定位完成', temp: '-', info: '暂无天气' });
         }
       } catch (e) {
-        setIpInfo({ country: '检测超时', flag: '⚠️', code: '' });
+        setIpInfo({ country: '检测超时', code: '', ip: '' });
+        setWeather({ city: '获取失败', temp: '', info: '' });
       }
     };
     fetchEnv();
@@ -95,16 +96,23 @@ const ForeignTradeDashboard = () => {
             setRateData({ val: r, cached: false, sync: true });
             localStorage.setItem(CACHE_KEY, JSON.stringify({ rate: r, ts: now }));
           }
-        } catch (e) { setRateData({ val: 7.05, cached: true, sync: false }); }
+        } catch (e) { 
+          setRateData({ val: 7.05, cached: true, sync: false }); 
+        }
       }
     };
     fetchRate();
   }, []);
 
-  // 2. 时钟更新 (秒显)
+  // 时钟更新
   useEffect(() => {
     const update = () => {
-      const zones = [{k:'cn',t:'Asia/Shanghai',n:'北京'},{k:'uk',t:'Europe/London',n:'伦敦'},{k:'us',t:'America/New_York',n:'纽约'},{k:'la',t:'America/Los_Angeles',n:'加州'}];
+      const zones = [
+        {k:'cn',t:'Asia/Shanghai',n:'北京'},
+        {k:'uk',t:'Europe/London',n:'伦敦'},
+        {k:'us',t:'America/New_York',n:'纽约'},
+        {k:'la',t:'America/Los_Angeles',n:'加州'}
+      ];
       const res = {};
       zones.forEach(z => {
         const date = new Date(new Date().toLocaleString("en-US", {timeZone: z.t}));
@@ -113,15 +121,19 @@ const ForeignTradeDashboard = () => {
         const isWork = d !== 0 && d !== 6 && h >= 9 && h < 18;
         res[z.k] = { 
           time: date.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'}), 
-          name: z.n, status: isWork ? '工作' : '休市', isWork
+          name: z.n, 
+          status: isWork ? '工作' : '休市', 
+          isWork
         };
       });
       setTimes(res);
     };
-    const t = setInterval(update, 1000); update(); return () => clearInterval(t);
+    const t = setInterval(update, 1000); 
+    update(); 
+    return () => clearInterval(t);
   }, []);
 
-  // 3. 算柜建议逻辑
+  // 算柜建议逻辑
   const getCbmRes = () => {
     const { l, w, h, pcs } = dims;
     if (l && w && h && pcs) {
@@ -137,14 +149,20 @@ const ForeignTradeDashboard = () => {
 
   return (
     <div className="ft-dashboard-container">
-      <style jsx>{`
+      <style>{`
         .ft-dashboard-container { margin-bottom: 5px; font-family: system-ui, sans-serif; color: #334155; }
-        .clock-row { display: flex; gap: 4px; margin-bottom: 5px; flex-wrap: wrap; }
-        .clock-item { flex: 1; min-width: 140px; background: #fff; border-radius: 6px; padding: 2px 6px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+        
+        .clock-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 5px; }
+        @media (max-width: 640px) {
+          .clock-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .clock-item { background: #fff; border-radius: 6px; padding: 2px 6px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
         .c-time { font-size: 0.8rem; font-weight: 700; font-family: monospace; }
         .c-status { font-size: 0.55rem; padding: 0px 3px; border-radius: 3px; margin-left: 3px; }
         .pulse { animation: glow 2s infinite; }
         @keyframes glow { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+        
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .dash-card { background: #fff; border-radius: 8px; padding: 6px 8px; border: 1px solid #f1f5f9; position: relative; min-height: 85px; }
         .header-title { font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
@@ -155,16 +173,12 @@ const ForeignTradeDashboard = () => {
         .wa-btn { background: #25d366; color: white; border: none; padding: 4px 10px; border-radius: 5px; font-weight: 600; cursor: pointer; font-size: 0.75rem; }
         .card-footer { position: absolute; bottom: 3px; width: calc(100% - 16px); display: flex; justify-content: space-between; align-items: center; font-size: 0.55rem; color: #94a3b8; }
         
-        /* 手机端适配：彻底解决重叠 */
         @media (max-width: 640px) {
           .main-grid { grid-template-columns: 1fr; }
-          .clock-item { min-width: 45%; } 
           .dash-card { min-height: 100px; padding-bottom: 25px; }
-          .card-footer { font-size: 0.5rem; }
         }
       `}</style>
 
-      {/* 1. 时钟区 */}
       <div className="clock-row">
         {['cn','uk','us','la'].map(k => (
           <div className="clock-item" key={k}>
@@ -172,7 +186,7 @@ const ForeignTradeDashboard = () => {
             <div style={{display:'flex', alignItems:'center'}}>
               <span className="c-time">{times[k]?.time||'--:--:--'}</span>
               <span className={`c-status ${times[k]?.isWork?'pulse':''}`} style={{color:times[k]?.isWork?'#059669':'#94a3b8', background:times[k]?.isWork?'#ecfdf5':'#f1f5f9'}}>
-                {times[k]?.status}
+                {times[k]?.status || '休市'}
               </span>
             </div>
           </div>
@@ -192,7 +206,7 @@ const ForeignTradeDashboard = () => {
             </div>
           </div>
           <div className="dash-card">
-            <div className="header-title">WhatsApp 直连</div>
+            <div className="header-title">WhatsApp 直连（科学上网）</div>
             <div style={{display:'flex', alignItems:'center', gap:4}}>
                <input className="std-input" placeholder="8613..." value={waPhone} onChange={e=>setWaPhone(e.target.value)} />
                <button className="wa-btn" onClick={() => handleWaClick(waPhone)}>对话</button>
@@ -220,14 +234,20 @@ const ForeignTradeDashboard = () => {
           {calcMode === 'unit' && (
             <div style={{display:'flex', alignItems:'center', gap:4}}>
                <input type="number" className="std-input" placeholder={unitType==='len'?'英寸(in)':'磅(lb)'} value={unitVal} onChange={e=>setUnitVal(e.target.value)} />
-               <div style={{display:'flex', gap:2}}><button className={`tab-btn ${unitType==='len'?'active':''}`} onClick={()=>setUnitType('len')}>长</button><button className={`tab-btn ${unitType==='wt'?'active':''}`} onClick={()=>setUnitType('wt')}>重</button></div>
+               <div style={{display:'flex', gap:2}}>
+                 <button className={`tab-btn ${unitType==='len'?'active':''}`} onClick={()=>setUnitType('len')}>长</button>
+                 <button className={`tab-btn ${unitType==='wt'?'active':''}`} onClick={()=>setUnitType('wt')}>重</button>
+               </div>
             </div>
           )}
 
           {calcMode === 'search' && (
             <div style={{display:'flex', alignItems:'center', gap:4}}>
                <input className="std-input" placeholder="搜索关键词" value={searchKw} onChange={e=>setSearchKw(e.target.value)} onKeyPress={(e)=>e.key==='Enter'&&handleSearch(searchKw, searchType)}/>
-               <div style={{display:'flex', gap:2}}><button className={`tab-btn ${searchType==='hs'?'active':''}`} onClick={()=>setSearchType('hs')}>HS</button><button className={`tab-btn ${searchType==='google'?'active':''}`} onClick={()=>setSearchType('google')}>谷歌</button></div>
+               <div style={{display:'flex', gap:2}}>
+                 <button className={`tab-btn ${searchType==='hs'?'active':''}`} onClick={()=>setSearchType('hs')}>HS</button>
+                 <button className={`tab-btn ${searchType==='google'?'active':''}`} onClick={()=>setSearchType('google')}>谷歌</button>
+               </div>
                <button className="wa-btn" style={{background:'#3b82f6'}} onClick={()=>handleSearch(searchKw, searchType)}>GO</button>
             </div>
           )}

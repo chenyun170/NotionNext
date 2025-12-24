@@ -75,7 +75,7 @@ function AsideLeft(props) {
               
               {showFestive && (
                 <>
-                  {/* 中层：极致微型圣诞帽 (w-3.5 约 14px) */}
+                  {/* 中层：极致微型圣诞帽 (w-2 约 8px) */}
                   <img
                     src="https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png"
                     className="absolute -top-1 left-[18px] w-3.5 z-20 pointer-events-none rotate-[10deg] drop-shadow-sm"

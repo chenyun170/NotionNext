@@ -83,19 +83,24 @@ function AsideLeft(props) {
 
           {/* ====================== Logo 区域（尺寸锁定） ====================== */}
           <div className="flex flex-col items-start px-1 overflow-visible mb-10">
-            <div className="relative w-[140px]">
+            <div className="relative w-[140px] h-[140px] flex items-center justify-center">
               <Logo className="block w-full h-auto" {...props} />
+
               {/* 圣诞帽 */}
-              <img
-                src="https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png"
-                className="absolute -top-3 -right-4 w-8 pointer-events-none"
-                alt="Christmas Hat"
-              />
+              {showChristmas && (
+                <img
+                  src="https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png"
+                  className="absolute -top-3 -right-4 w-8 pointer-events-none"
+                  alt="Christmas Hat"
+                />
+              )}
             </div>
 
             {/* 站点描述 */}
-            <section className="siteInfo relative pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 
-              mb-8 font-light text-[11px] italic text-zinc-400 leading-relaxed opacity-80">
+            <section
+              className="siteInfo relative pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 
+              mb-8 font-light text-[11px] italic text-zinc-400 leading-relaxed opacity-80"
+            >
               {siteConfig('DESCRIPTION')}
             </section>
           </div>

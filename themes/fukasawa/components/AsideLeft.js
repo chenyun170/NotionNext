@@ -1,210 +1,197 @@
 'use client'
 
-import DarkModeButton from '@/components/DarkModeButton'
-import { AdSlot } from '@/components/GoogleAdsense'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
-import { isBrowser } from '@/lib/utils'
-import CONFIG from '@/themes/fukasawa/config'
-import { debounce } from 'lodash'
-import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import Announcement from './Announcement'
 import Catalog from './Catalog'
-import GroupCategory from './GroupCategory'
-import GroupTag from './GroupTag'
 import Logo from './Logo'
 import MailChimpForm from './MailChimpForm'
 import { MenuList } from './MenuList'
-import SearchInput from './SearchInput' // 仅保留这一个导入，修复重复定义错误
-import SiteInfo from './SiteInfo'
+import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
-import Link from 'next/link'
 import SidebarTools from './SidebarTools'
 
 /**
- * 侧边栏 - 极致顺序优化版
- */
+ * AsideLeft - 活动功能增强与悬浮动效版
+ */
 function AsideLeft(props) {
-  const { post, notice, latestPosts = [] } = props
-  const { fullWidth } = useGlobal()
+  const { post, notice, latestPosts = [] } = props
+  const { fullWidth } = useGlobal()
 
-  // --- 实时运行时间统计 ---
-  const [runtime, setRuntime] = useState('')
-  const START_TIME = '2024-05-01'
+  // --- 实时运行时间统计 ---
+  const [runtime, setRuntime] = useState('')
+  const START_TIME = '2024-05-01'
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const start = new Date(START_TIME)
-      const now = new Date()
-      const diff = now.getTime() - start.getTime()
-      if (diff < 0) return
-      const days = Math.floor(diff / 86400000)
-      const hours = Math.floor((diff % 86400000) / 3600000)
-      const minutes = Math.floor((diff % 3600000) / 60000)
-      const seconds = Math.floor((diff % 60000) / 1000)
-      setRuntime(`${days}天 ${hours}时 ${minutes}分 ${seconds}秒`)
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const start = new Date(START_TIME)
+      const now = new Date()
+      const diff = now.getTime() - start.getTime()
+      if (diff < 0) return
+      const days = Math.floor(diff / 86400000)
+      const hours = Math.floor((diff % 86400000) / 3600000)
+      const minutes = Math.floor((diff % 3600000) / 60000)
+      const seconds = Math.floor((diff % 60000) / 1000)
+      setRuntime(`${days}天 ${hours}时 ${minutes}分 ${seconds}秒`)
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
 
-  // --- 侧边栏折叠逻辑 ---
-  const [isCollapsed, setIsCollapse] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('fukasawa-sidebar-collapse') === 'true'
-    }
-    return false
-  })
+  // --- 侧边栏折叠逻辑 ---
+  const [isCollapsed, setIsCollapse] = useState(false)
+  
+  useEffect(() => {
+    const saved = localStorage.getItem('fukasawa-sidebar-collapse') === 'true'
+    setIsCollapse(saved)
+  }, [])
 
-  const isReverse = siteConfig('LAYOUT_SIDEBAR_REVERSE')
-  const position = useMemo(() => {
-    return isCollapsed ? (isReverse ? 'right-2' : 'left-2') : (isReverse ? 'right-80' : 'left-80')
-  }, [isCollapsed, isReverse])
+  const toggleCollapse = () => {
+    const newState = !isCollapsed
+    setIsCollapse(newState)
+    localStorage.setItem('fukasawa-sidebar-collapse', newState)
+  }
 
-  return (
-    <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#121212] min-h-screen hidden lg:block z-20 border-r border-gray-50 dark:border-gray-900`}>
-      
-      {/* 折叠按钮 */}
-      <div className={`${position} hidden lg:block fixed top-4 cursor-pointer z-50 bg-white/80 dark:bg-black/80 backdrop-blur rounded-full shadow-lg p-2.5 hover:scale-110 duration-300 border border-gray-100 dark:border-gray-800`} onClick={() => setIsCollapse(!isCollapsed)}>
-        <i className={`fa-solid ${isCollapsed ? 'fa-indent' : 'fa-chevron-left'} text-lg dark:text-white`}></i>
-      </div>
+  const isReverse = siteConfig('LAYOUT_SIDEBAR_REVERSE')
+  const btnPosition = isCollapsed 
+    ? (isReverse ? 'right-4' : 'left-4') 
+    : (isReverse ? 'right-[18.5rem]' : 'left-[18.5rem]')
 
-      <div className={`h-full ${isCollapsed ? 'hidden' : 'px-8 py-10'} flex flex-col no-scrollbar overflow-y-auto`}>
-        
-         {/* 1. Logo & 描述 */}
-        <div className="mb-2"><Logo {...props} /></div>
-        <section className='siteInfo dark:text-gray-400 text-[12px] italic opacity-70 leading-relaxed mb-6'>
-          {siteConfig('DESCRIPTION')}
-        </section>
+  return (
+    <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#09090b] min-h-screen hidden lg:block z-30 border-r border-gray-100 dark:border-zinc-900 shadow-2xl`}>
+      
+      {/* 折叠按钮：悬浮显示逻辑 */}
+      <button 
+        onClick={toggleCollapse}
+        className={`${btnPosition} fixed top-6 z-50 p-2.5 rounded-xl bg-white/90 dark:bg-zinc-800/90 backdrop-blur-md shadow-lg border border-gray-200 dark:border-zinc-700 transition-all duration-500 hover:scale-110 active:scale-95 group`}
+      >
+        <i className={`fa-solid ${isCollapsed ? 'fa-indent text-blue-500' : 'fa-chevron-left text-gray-400'} text-sm group-hover:text-blue-500 transition-colors`}></i>
+      </button>
 
-        {/* 2. 活动一和活动二 (插播在描述和搜索中间) */}
-        <section className='mb-6 bg-orange-50/30 dark:bg-orange-950/10 rounded-xl p-2 border border-orange-100/50 dark:border-orange-900/20'>
-           <div className='flex items-center text-[10px] font-bold text-orange-600 dark:text-orange-400 tracking-widest uppercase mb-2 px-1'>
-              <i className="fas fa-bullhorn mr-2"></i>
-              <span>Special Events</span>
-           </div>
-           <Announcement post={notice} />
-        </section>
+      {/* 主内容容器：通过透明度控制悬浮/隐藏切换 */}
+      <div className={`h-full no-scrollbar overflow-y-auto flex flex-col transition-all duration-500 ${isCollapsed ? 'opacity-0 invisible pointer-events-none' : 'opacity-100 px-8 py-10'}`}>
+        
+        {/* 1. Logo & 描述：Logo 支持悬浮微缩放 */}
+        <div className="mb-4 transform hover:scale-105 origin-left transition-transform duration-500 ease-out cursor-pointer">
+          <Logo {...props} />
+        </div>
+        <section className='siteInfo relative pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 mb-8 font-light text-[12px] italic text-zinc-400 leading-relaxed opacity-80'>
+          {siteConfig('DESCRIPTION')}
+        </section>
 
-        {/* 3. 快速搜索 */}
-        <section className='mb-6'>
-          <div className='flex items-center text-[10px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-3 px-1'>
-            <span>Quick Search</span>
-            <div className='flex-grow border-b border-gray-100 dark:border-gray-800 ml-3 opacity-30' />
-          </div>
-          <div className='bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-100 dark:border-white/5'>
-            <SearchInput {...props} />
-          </div>
-        </section>
+        {/* 2. 活动功能区：活动一和活动二保留并强化视觉 */}
+        <section className='mb-8 bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-amber-950/20 dark:to-transparent rounded-2xl p-4 border border-amber-100/50 dark:border-amber-900/30 shadow-sm'>
+           <div className='flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1'>
+              <i className="fas fa-bullhorn mr-2 animate-bounce"></i>
+              <span>活动公告 / Special Events</span>
+           </div>
+           {/* 这里对应活动一和活动二的内容逻辑 */}
+           <Announcement post={notice} />
+        </section>
 
-        {/* 4. 外贸工具工作台 */}
-        <section className='mb-8'>
-          <div className='flex items-center text-[10px] font-bold text-blue-500 dark:text-blue-400 tracking-widest uppercase mb-3 px-1'>
-            <i className='fas fa-terminal mr-2 animate-pulse'></i>
-            <span>Trade Terminal</span>
-          </div>
-          <SidebarTools />
-        </section>
+        {/* 3. 快速搜索：悬浮变色逻辑 */}
+        <section className='mb-8 group'>
+          <div className='flex items-center text-[10px] font-bold text-zinc-400 dark:text-zinc-600 tracking-[0.2em] uppercase mb-4 px-1 group-hover:text-blue-500 transition-colors'>
+            <span>Quick Access</span>
+            <div className='flex-grow border-b border-zinc-100 dark:border-zinc-800 ml-4 opacity-30' />
+          </div>
+          <div className='bg-zinc-50 dark:bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 focus-within:ring-2 ring-blue-500/20 transition-all'>
+            <SearchInput {...props} />
+          </div>
+        </section>
 
-        {/* 5. 导航菜单 */}
-        <section className='flex flex-col mb-8'>
-          <div className='flex items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>
-            <span>Navigation</span>
-            <div className='flex-grow border-b border-gray-50 dark:border-gray-800 ml-4 opacity-50' />
-          </div>
-          <MenuList {...props} />
-        </section>
+        {/* 4. 外贸工具工作台 */}
+        <section className='mb-10'>
+          <div className='flex items-center text-[10px] font-bold text-blue-600 dark:text-blue-400 tracking-[0.2em] uppercase mb-5 px-1'>
+            <i className='fas fa-terminal mr-2 opacity-50 animate-pulse'></i>
+            <span>Trade Terminal</span>
+          </div>
+          <SidebarTools />
+        </section>
 
-        {/* 6. 热门文章 */}
-        {latestPosts?.length > 0 && (
-            <section className='flex flex-col mb-8 text-[13px]'>
-                <div className='flex items-center text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-4 px-1'>
-                    <i className='fas fa-fire-alt mr-2 text-orange-500'></i>
-                    <span>Trending Now</span>
-                </div>
-                <ul className='space-y-3'>
-                    {latestPosts.slice(0, 5).map((p, index) => (
-                        <li key={p.id} className="group flex items-start">
-                            <span className={`flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-[10px] mr-3 font-bold ${index < 3 ? 'bg-orange-50 text-orange-600 dark:bg-orange-950/30' : 'bg-gray-50 text-gray-400 dark:bg-gray-800'}`}>
-                              {index + 1}
-                            </span>
-                            <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} className='text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-all line-clamp-2 leading-snug'>
-                                {p.title}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </section>
-        )}
+        {/* 5. 导航菜单：悬浮位移与高亮 */}
+        <section className='flex flex-col mb-10'>
+          <div className='flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1'>
+            <span>Navigation</span>
+          </div>
+          <MenuList {...props} />
+        </section>
 
-        {/* 7. 邮件订阅 */}
-        <div className='mb-8'>
-           <MailChimpForm />
-        </div>
+        {/* 6. 热门文章：榜单悬浮感 */}
+        {latestPosts?.length > 0 && (
+            <section className='flex flex-col mb-10'>
+                <div className='flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1'>
+                    <i className='fas fa-fire-alt mr-2 text-orange-500 opacity-50'></i>
+                    <span>Trending Now</span>
+                </div>
+                <ul className='space-y-5'>
+                    {latestPosts.slice(0, 5).map((p, index) => (
+                        <li key={p.id} className="group flex items-start cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900/50 p-2 rounded-xl transition-all">
+                            <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-lg text-[10px] mr-4 font-mono transition-all group-hover:scale-110 ${index < 3 ? 'bg-blue-600 text-white shadow-lg' : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800'}`}>
+                              0{index + 1}
+                            </span>
+                            <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} className='text-[13px] text-zinc-600 dark:text-zinc-400 group-hover:text-blue-600 transition-all line-clamp-2 leading-snug'>
+                                {p.title}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </section>
+        )}
 
-        {/* 8. 页脚系统状态 */}
-        <section className='mt-auto pt-8 border-t border-gray-50 dark:border-gray-900'>
-          <SocialButton />
-          <div className='mt-6 p-4 bg-white/50 dark:bg-white/5 backdrop-blur-lg rounded-2xl border border-white/30 dark:border-white/10 shadow-xl text-center'>
-            <div className='flex items-center justify-center text-[10px] text-gray-400 dark:text-gray-500 mb-2 tracking-widest uppercase font-bold'>
-              <i className='fas fa-circle text-[6px] mr-2 text-green-500 animate-pulse'></i>
-              <span>System Uptime</span>
-            </div>
-            <div className='font-mono text-[11px] text-blue-600 dark:text-blue-400 tabular-nums font-bold tracking-wider'>
-              {runtime || 'Initializing...'}
-            </div>
-          </div>
-        </section>
+        {/* 7. 邮件订阅 */}
+        <div className='mb-10'>
+            <MailChimpForm />
+        </div>
 
-        {/* 目录 (仅文章页) */}
-        {post?.toc && (
-          <section className='sticky top-4 pt-4 max-h-[70vh] overflow-y-auto no-scrollbar'>
-            <Catalog toc={post.toc} />
-          </section>
-        )}
-      </div>
+        {/* 8. 页脚系统状态：悬浮呼吸灯效果 */}
+        <section className='mt-auto pt-10 border-t border-zinc-100 dark:border-zinc-900'>
+          <SocialButton />
+          <div className='mt-8 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm text-center relative overflow-hidden group hover:shadow-md transition-all'>
+            <div className='flex items-center justify-center text-[9px] text-zinc-400 mb-3 tracking-widest uppercase font-black'>
+              <span className="flex h-1.5 w-1.5 rounded-full bg-green-500 mr-2 animate-ping" />
+              <span>System Online</span>
+            </div>
+            <div className='font-mono text-[12px] text-zinc-800 dark:text-zinc-200 font-bold tracking-tighter'>
+              {runtime || 'SYNCING...'}
+            </div>
+          </div>
+        </section>
 
-      <style jsx global>{`
-        .sideLeft::-webkit-scrollbar { width: 0px; }
-        .sideLeft nav a {
-          font-size: 14px;
-          padding: 10px 16px;
-          margin: 4px 0;
-          transition: all 0.3s ease;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          color: #4b5563;
-        }
-        .dark .sideLeft nav a { color: #9ca3af; }
-        .sideLeft nav a:hover {
-          background: rgba(59, 130, 246, 0.08) !important;
-          color: #3b82f6 !important;
-          transform: translateX(6px);
-        }
-        /* 优化侧边栏滚动条体验 */
-.sideLeft .overflow-y-auto {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.05) transparent;
-}
+        {/* 目录 (仅阅读页显示) */}
+        {post?.toc && (
+          <section className='sticky top-6 mt-8 pt-6 max-h-[60vh] overflow-y-auto no-scrollbar'>
+            <Catalog toc={post.toc} />
+          </section>
+        )}
+      </div>
 
-/* 侧边栏工具/热门文章的小图标动画 */
-.sideLeft section i {
-  transition: transform 0.3s ease;
-}
-.sideLeft section:hover i {
-  transform: scale(1.2) rotate(5deg);
-}
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* 热门文章列表的悬停背景 */
-.sideLeft ul li:hover {
-  background: rgba(255, 165, 0, 0.03);
-  border-radius: 8px;
-  padding-left: 4px;
-}
-      `}</style>
-    </div>
-  )
+        /* 侧边栏悬浮核心样式 */
+        .sideLeft nav a {
+          font-size: 13.5px !important;
+          padding: 12px 18px !important;
+          margin: 6px 0 !important;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+          border-radius: 14px !important;
+          color: #71717a !important;
+        }
+
+        .dark .sideLeft nav a { color: #a1a1aa !important; }
+
+        .sideLeft nav a:hover {
+          background: #3b82f6 !important;
+          color: white !important;
+          transform: translateX(8px) scale(1.02);
+          box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.3);
+        }
+      `}</style>
+    </div>
+  )
 }
 
 export default AsideLeft

@@ -1,51 +1,46 @@
 /* eslint-disable react/no-unknown-property */
 /**
- * Fukasawa 主题专用样式
- * 包含响应式分栏逻辑与视觉美化
+ * Fukasawa 主题专用样式优化版
+ * 修复了注释语法，增强了图片可见性和卡片动效
  */
 const Style = () => {
   return <style jsx global>{`
-    /* 基础底色美化 */
+    /* 基础背景与平滑滚动 */
     body {
         background-color: #f6f6f6;
         scroll-behavior: smooth;
         -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
     }
     .dark body {
         background-color: #111111;
     }
     
-    /* 瀑布流/响应式分栏核心逻辑 */
+    /* 瀑布流响应式布局核心 */
     #theme-fukasawa .grid-item {
         height: auto;
         break-inside: avoid-column;
-        margin-bottom: 1rem;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    /* 悬停微动效：卡片轻微浮起 */
+    /* 悬停微动效 */
     #theme-fukasawa .grid-item:hover {
-        transform: translateY(-4px);
+        transform: translateY(-5px);
     }
     
-    /* 大屏幕（宽度≥1024px）下显示 3 列 */
+    /* 响应式分栏逻辑 */
     @media (min-width: 1024px) {
         #theme-fukasawa .grid-container {
             column-count: 3;
-            column-gap: 1rem;
+            column-gap: 1.5rem;
         }
     }
-    
-    /* 中等屏幕（宽度介于 640px 到 1023px）下显示 2 列 */
     @media (min-width: 640px) and (max-width: 1023px) {
         #theme-fukasawa .grid-container {
             column-count: 2;
-            column-gap: 0.8rem;
+            column-gap: 1rem;
         }
     }
-    
-    /* 移动端下显示 1 列 */
     @media (max-width: 639px) {
         #theme-fukasawa .grid-container {
             column-count: 1;
@@ -53,19 +48,24 @@ const Style = () => {
         }
     }
 
-    /* 图片圆角与阴影美化 */
+    /* 强制图片显示修复 */
     #theme-fukasawa img {
         border-radius: 8px;
-        box-shadow: 0 4px 20px -5px rgba(0,0,0,0.1);
+        opacity: 1 !important;
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
     }
 
-    .container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 15px;
-        padding: 15px;
+    /* 文章摘要截断优化 */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
   `}</style>
 }
 
-export { Style }
+/* 必须使用命名导出，以匹配 index.js 中的 import { Style } */
+export { Style } 

@@ -72,10 +72,16 @@ function AsideLeft(props) {
       <div className={`h-full ${isCollapsed ? 'hidden' : 'px-8 py-10'} flex flex-col no-scrollbar overflow-y-auto`}>
         
         {/* 1. Logo & 描述 */}
-        <div className="mb-2"><Logo {...props} /></div>
-        <section className='siteInfo dark:text-gray-400 text-[12px] italic opacity-70 leading-relaxed mb-6'>
-          {siteConfig('DESCRIPTION')}
-        </section>
+<div className="mb-4 flex flex-col items-center justify-center">
+  {/* 限制 Logo 整体容器的宽度为 120px (w-30) */}
+  <div className="w-30 h-30 md:w-28 md:h-28 relative overflow-visible site-logo-wrapper">
+    <Logo {...props} />
+  </div>
+</div>
+
+<section className='siteInfo text-center dark:text-gray-400 text-[12px] italic opacity-70 leading-relaxed mb-6 px-2'>
+  {siteConfig('DESCRIPTION')}
+</section>
 
         {/* 2. 活动一和活动二 (插播在描述和搜索中间) */}
         <section className='mb-6 bg-orange-50/30 dark:bg-orange-950/10 rounded-xl p-2 border border-orange-100/50 dark:border-orange-900/20'>
@@ -201,6 +207,25 @@ function AsideLeft(props) {
   background: rgba(255, 165, 0, 0.03);
   border-radius: 8px;
   padding-left: 4px;
+}
+/* 缩小 LOGO 图片本体 */
+.site-logo-wrapper :global(img) {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 110px !important; /* 强制缩到 110px 以内 */
+  max-height: 110px !important;
+  object-fit: contain;
+}
+
+/* 专门针对圣诞帽的缩小补丁 */
+/* 这里的 selector 需根据你 Logo 组件内的圣诞帽 class 调整，通常是 .christmas-hat */
+.site-logo-wrapper :global(.christmas-hat), 
+.site-logo-wrapper :global(img[src*="hat"]) { 
+  width: 45px !important;  /* 圣诞帽缩小到 45 像素 */
+  height: auto !important;
+  top: -10px !important;   /* 向上微调位置，不遮挡脸部 */
+  left: -5px !important;
+  z-index: 20;
 }
       `}</style>
     </div>

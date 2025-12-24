@@ -51,22 +51,33 @@ const Logo = props => {
       <SmartLink href='/' className='flex flex-col items-center lg:items-start group cursor-pointer'>
         <div className='christmas-container'>
           
-          {/* 1. 圣诞帽 (在图片前方) */}
-          {showChristmas && (
-            <img 
-              src='https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png' 
-              className='santa-hat' 
-              style={{ top: '-18px', left: '35px', width: '12px', transform: 'rotate(25deg)' }}
-              alt='Christmas Hat' 
-            />
-          )}
+     {/* 1. 圣诞帽：针对 24px 的 Logo 重新计算坐标 */}
+{showChristmas && (
+  <img 
+    src='https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png' 
+    className='santa-hat' 
+    style={{ 
+      top: '-10px',    /* 向上偏移减小 */
+      left: '12px',   /* 对于 24px 宽的 Logo，12px 刚好是中心偏右 */
+      width: '14px',  /* 帽子也要等比例缩小，比 Logo 宽度略小 */
+      transform: 'rotate(20deg)',
+      position: 'absolute',
+      zIndex: 30
+    }}
+    alt='Christmas Hat' 
+  />
+)}
 
-          {/* 2. Logo 图片 (在底层) */}
-          <img 
-            src='/logo.png' 
-            className='w-6 h-6 mb-3 object-contain relative z-10' 
-            alt={siteConfig('TITLE')} 
-          />
+{/* 2. Logo 图片：强制锁定物理尺寸，防止被 AsideLeft 的布局拉伸 */}
+<img 
+  src='/logo.png' 
+  className='w-6 h-6 mb-2 object-contain relative z-10' 
+  style={{ 
+    minWidth: '24px', /* 增加硬性限制，防止 Flex 布局拉伸 */
+    minHeight: '24px' 
+  }}
+  alt={siteConfig('TITLE')} 
+/>
 
           {/* 3. 雪花层 (在最前端) */}
           {showChristmas && (

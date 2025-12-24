@@ -64,7 +64,6 @@ const Logo = props => {
 
       <SmartLink href='/' className='flex flex-col items-center lg:items-start group cursor-pointer'>
         <div className='christmas-container'>
-          
           {/* 1. 圣诞帽：适配极小 Logo (w-6) 的黄金坐标 */}
           {showChristmas && (
             <img 
@@ -75,8 +74,8 @@ const Logo = props => {
                 top: '-9px', 
                 left: '11px', 
                 width: '18px', 
-                zIndex: 30,
-                pointerEvents: 'none'
+                zIndex: 30, /* 确保帽子在 Logo 上方显示 */
+                pointerEvents: 'none' 
               }}
               alt='Christmas Hat' 
             />
@@ -100,7 +99,7 @@ const Logo = props => {
           )}
         </div>
 
-        {/* 文字标题：排版比例升级 */}
+        {/* 文字标题部分 */}
         <div className='text-center lg:text-left relative z-20 mt-0.5'>
             <div className='text-base font-black tracking-tight text-slate-800 dark:text-gray-100 flex items-center'>
               <span className='relative'>

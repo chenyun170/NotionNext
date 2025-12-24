@@ -14,7 +14,7 @@ import SocialButton from './SocialButton'
 import SidebarTools from './SidebarTools'
 
 /**
- * 侧边栏 - 修复语法错误版本
+ * 侧边栏 - 极致缩小 & 悬浮功能保留版
  */
 function AsideLeft(props) {
   const { post, notice, latestPosts = [] } = props
@@ -44,7 +44,7 @@ function AsideLeft(props) {
 
   return (
     <>
-      {/* 1. 折叠按钮 - 独立于侧边栏，修复 JSX 根元素报错 */}
+      {/* 1. 折叠按钮 - 修复并置报错 */}
       <button 
         onClick={toggleCollapse}
         className={`${btnPosition} fixed top-6 z-50 p-2.5 rounded-xl bg-white/90 dark:bg-zinc-800/90 backdrop-blur-md shadow-lg border border-gray-200 dark:border-zinc-700 transition-all duration-500 hover:scale-110 active:scale-95 group`}
@@ -52,12 +52,12 @@ function AsideLeft(props) {
         <i className={`fa-solid ${isCollapsed ? 'fa-indent text-blue-500' : 'fa-chevron-left text-gray-400'} text-sm group-hover:text-blue-500 transition-colors`}></i>
       </button>
 
-      {/* 2. 侧边栏本体 */}
+      {/* 2. 侧边栏主体 */}
       <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#09090b] min-h-screen hidden lg:block z-30 border-r border-gray-100 dark:border-zinc-900 shadow-2xl`}>
         
         <div className={`h-full no-scrollbar overflow-y-auto flex flex-col transition-all duration-500 ${isCollapsed ? 'opacity-0 invisible pointer-events-none' : 'opacity-100 px-8 py-10'}`}>
           
-          {/* Logo 区块 - 限制缩小 */}
+          {/* Logo 区块 - 整体缩放 90% */}
           <div className="mb-4 transform scale-90 origin-left transition-transform duration-500">
             <Logo {...props} />
           </div>
@@ -66,12 +66,13 @@ function AsideLeft(props) {
             {siteConfig('DESCRIPTION')}
           </section>
 
-          {/* 活动功能区 - 已移除喇叭 animate-bounce */}
+          {/* 活动功能区：活动一和活动二 (悬浮弹出功能在此组件内) */}
           <section className='mb-8 bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-amber-950/20 rounded-2xl p-4 border border-amber-100/50 dark:border-amber-900/30 shadow-sm'>
              <div className='flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1'>
                 <i className="fas fa-bullhorn mr-2"></i> 
                 <span>活动公告 / SPECIAL EVENTS</span>
              </div>
+             {/* 核心：保留弹出功能的公告组件 */}
              <Announcement post={notice} />
           </section>
 
@@ -81,7 +82,7 @@ function AsideLeft(props) {
               <span>Quick Search</span>
               <div className='flex-grow border-b border-zinc-100 dark:border-zinc-800 ml-4 opacity-30' />
             </div>
-            <div className='bg-zinc-50 dark:bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-100 dark:border-zinc-800 focus-within:ring-2 ring-blue-500/20 transition-all'>
+            <div className='bg-zinc-50 dark:bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 focus-within:ring-2 ring-blue-500/20 transition-all'>
               <SearchInput {...props} />
             </div>
           </section>
@@ -95,12 +96,12 @@ function AsideLeft(props) {
             <SidebarTools />
           </section>
 
-          {/* 菜单 */}
+          {/* 菜单导航 */}
           <section className='flex flex-col mb-10'>
             <MenuList {...props} />
           </section>
 
-          {/* 底部系统状态 */}
+          {/* 系统运行状态 */}
           <section className='mt-auto pt-10 border-t border-zinc-100 dark:border-zinc-900'>
             <SocialButton />
             <div className='mt-8 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm text-center'>
@@ -108,14 +109,15 @@ function AsideLeft(props) {
                 <span className="flex h-1.5 w-1.5 rounded-full bg-green-500 mr-2 animate-ping" />
                 <span>System Online</span>
               </div>
-              <div className='font-mono text-[11px] text-zinc-800 dark:text-zinc-200 font-bold'>
+              <div className='font-mono text-[11px] text-zinc-800 dark:text-zinc-200 font-bold tracking-tighter'>
                 {runtime || 'SYNCING...'}
               </div>
             </div>
           </section>
 
+          {/* 目录 (仅阅读页显示) */}
           {post?.toc && (
-            <section className='sticky top-6 mt-8 pt-6 max-h-[60vh] overflow-y-auto no-scrollbar border-t dark:border-zinc-800'>
+            <section className='sticky top-6 mt-8 pt-6 max-h-[60vh] overflow-y-auto no-scrollbar'>
               <Catalog toc={post.toc} />
             </section>
           )}

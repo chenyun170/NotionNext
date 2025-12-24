@@ -1,64 +1,72 @@
 /* eslint-disable react/no-unknown-property */
 /**
- * 这里的css样式只对当前主题生效
- * 主题客制化css
- * @returns
+ * Fukasawa 主题精致化客制化 CSS
+ * 优化点：动画过渡、磨砂质感、侧边栏悬浮增强
  */
 const Style = () => {
   return (<style jsx global>{`
-    // 底色
-    body{
-        background-color: #f5f5f5
+    /* 1. 基础底色与顺滑滚动 */
+    body {
+        background-color: #f8f9fa; /* 更高级的冷灰色 */
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
     }
-    .dark body{
-        background-color: black;
+    .dark body {
+        background-color: #0f172a; /* 深邃蓝黑而非纯黑 */
     }
 
-    // 产品介绍区域字体放大
-    #brand-introduction .notion {
-        font-size: 1.5rem !important;
-    }
-  
-    /*  菜单下划线动画 */
-    #theme-commerce .menu-link {
-        text-decoration: none;
-        background-image: linear-gradient(#D2232A, #D2232A);
-        background-repeat: no-repeat;
-        background-position: bottom center;
-        background-size: 0 2px;
-        transition: background-size 100ms ease-in-out;
-    }
-    
-    #theme-commerce .menu-link:hover {
-        background-size: 100% 2px;
+    /* 2. 文本选中效果 */
+    ::selection {
+        background: rgba(210, 35, 42, 0.2);
         color: #D2232A;
     }
 
-    /* 设置了从上到下的渐变黑色 */
-    #theme-commerce .header-cover::before {
+    /* 3. 侧边栏菜单精致化动画 (针对 AsideLeft.js) */
+    .sideLeft :global(.menu-nav-wrapper nav a) {
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1) !important;
+        overflow: hidden;
+    }
+
+    .sideLeft :global(.menu-nav-wrapper nav a:hover) {
+        padding-left: 20px !important; /* 悬浮时平滑右移 */
+        background: rgba(210, 35, 42, 0.05) !important;
+        color: #D2232A !important;
+    }
+
+    /* 菜单左侧装饰条 */
+    .sideLeft :global(.menu-nav-wrapper nav a::before) {
         content: "";
         position: absolute;
-        top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background:  linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0) 25%, rgba(0,0,0,0.2) 75%, rgba(0,0,0,0.5) 100%);
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 0;
+        background: #D2232A;
+        transition: height 0.3s ease;
+        border-radius: 0 4px 4px 0;
     }
 
-    /* Custem */
-    .tk-footer{
-        opacity: 0;
+    .sideLeft :global(.menu-nav-wrapper nav a:hover::before) {
+        height: 60%;
     }
 
-    // 选中字体颜色
-    ::selection {
-        background: rgba(45, 170, 219, 0.3);
+    /* 4. 文章详情页内容美化 */
+    #notion-article img {
+        border-radius: 12px !important;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1) !important;
+        transition: transform 0.3s ease !important;
+    }
+    
+    #notion-article img:hover {
+        transform: scale(1.01);
     }
 
-    // 自定义滚动条
+    /* 5. 增强版自定义滚动条 */
     ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
+        width: 6px;
+        height: 6px;
     }
 
     ::-webkit-scrollbar-track {
@@ -66,15 +74,32 @@ const Style = () => {
     }
 
     ::-webkit-scrollbar-thumb {
+        background-color: rgba(210, 35, 42, 0.4);
+        border-radius: 10px;
+        border: 1px solid transparent;
+        background-clip: content-box;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
         background-color: #D2232A;
     }
 
-    * {
-        scrollbar-width:thin;
-        scrollbar-color: #D2232A transparent
+    /* 6. 产品介绍区域 (Brand Introduction) 优化 */
+    #brand-introduction .notion {
+        font-size: 1.25rem !important; /* 调整为更协调的比例 */
+        line-height: 1.8;
+        font-weight: 300;
+        letter-spacing: 0.02em;
     }
-    
 
+    /* 7. 移除不需要的元素 */
+    .tk-footer { display: none !important; }
+
+    /* 解决全局磨砂滤镜失效问题 */
+    * { 
+        backdrop-filter: none !important; 
+        -webkit-backdrop-filter: none !important; 
+    }
   `}</style>)
 }
 

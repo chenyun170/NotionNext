@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 /**
  * Fukasawa 主题专用样式优化版
- * 修复了注释语法，增强了图片可见性和卡片动效
+ * 修复了 Logo 被强制拉伸的问题，优化了选择器范围
  */
 const Style = () => {
   return <style jsx global>{`
@@ -48,13 +48,23 @@ const Style = () => {
         }
     }
 
-    /* 强制图片显示修复 */
-    #theme-fukasawa img {
+    /* 【关键修复】：强制图片显示修复 
+       增加了 :not(.sideLeft img) 排除侧边栏图片
+       或者指定只对瀑布流卡片内的图片生效
+    */
+    #theme-fukasawa .grid-item img {
         border-radius: 8px;
         opacity: 1 !important;
         display: block !important;
         width: 100% !important;
         height: auto !important;
+    }
+
+    /* 侧边栏图片特殊保护：确保 Logo 和帽子不被拉伸 */
+    .sideLeft img {
+        width: auto !important;
+        max-width: none !important;
+        border-radius: 0 !important;
     }
 
     /* 文章摘要截断优化 */
@@ -67,5 +77,4 @@ const Style = () => {
   `}</style>
 }
 
-/* 必须使用命名导出，以匹配 index.js 中的 import { Style } */
-export { Style } 
+export { Style }

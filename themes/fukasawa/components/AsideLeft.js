@@ -87,7 +87,7 @@ function AsideLeft(props) {
                   {/* 精致圣诞帽：精确调整尺寸和位置 */}
                   <img
                     src="https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png"
-                    className="absolute -top-1 left-5 w-5 z-20 pointer-events-none rotate-[10deg] drop-shadow-sm"
+                    className="absolute -top-1 left-5 w-0.5 z-20 pointer-events-none rotate-[10deg] drop-shadow-sm"
                     alt="Christmas Hat"
                   />
                   

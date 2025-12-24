@@ -77,14 +77,15 @@ function AsideLeft(props) {
                         position: 'absolute',
                         top: '-4px', 
                         left: '18px', 
-                        width: '45px !important', 
-                        maxWidth: '45px !important',
+                        width: '60px !important', 
+                        maxWidth: '60px !important',
                         zIndex: 100,
                         pointerEvents: 'none',
                         transform: 'rotate(0deg)',
-                        display: 'block'
-                    }}
-                    alt="Micro Hat"
+                        mixBlendMode: 'multiply', 
+                       filter: 'contrast(110%) brightness(105%)' // 增强对比度确保白边滤得更干净
+                       }}
+                        alt="Christmas Hat"
                   />
                   
                   {/* 最顶层：雪花容器 (z-index 设为最高) */}

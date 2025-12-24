@@ -44,7 +44,7 @@ const Logo = props => {
           transform: translateY(-2px) scale(1.02);
         }
 
-        /* 磨砂感雪花效果 - 调整 z-index 让其处于最前面 */
+        /* 磨砂感雪花效果 */
         .snowflake {
           position: absolute; 
           color: #fff; 

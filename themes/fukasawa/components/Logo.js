@@ -60,7 +60,7 @@ const Logo = props => {
       top: '-10px',    /* 向上偏移减小 */
       left: '12px',   /* 对于 24px 宽的 Logo，12px 刚好是中心偏右 */
       width: '14px',  /* 帽子也要等比例缩小，比 Logo 宽度略小 */
-      transform: 'rotate(20deg)',
+      transform: 'rotate(25deg)',
       position: 'absolute',
       zIndex: 30
     }}

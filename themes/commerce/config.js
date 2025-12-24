@@ -1,18 +1,23 @@
 const CONFIG = {
-  FUKASAWA_MAILCHIMP_FORM: false, // 邮件订阅表单
+  // 封面大图
+  COMMERCE_HOME_BANNER_ENABLE: true,
 
-  FUKASAWA_POST_LIST_COVER: true, // 文章列表显示图片封面
-  FUKASAWA_POST_LIST_COVER_FORCE: false, // 即使没有封面也将站点背景图设置为封面
-  FUKASAWA_POST_LIST_PREVIEW: false, // 显示文章预览
-  FUKASAWA_POST_LIST_ANIMATION: true, // 博客列表淡入动画
+  COMMERCE_TEXT_CENTER_TITLE: 'Product Center', // 中间产品区块标题
+  COMMERCE_TEXT_CENTER_DESCRIPTION:
+    'The vision of NotionNext is to help you effortlessly and seamlessly build your own website, amplifying the value of your brand.', // 中间产品区块文字描述
+  COMMERCE_TEXT_CENTER_CATEGORY_TITLE: 'Product Categories', // 左侧产品分类标题
+  COMMERCE_TEXT_FOOTER_TITLE: 'Contact US', // COMMERCE主题页脚文案标题；按Shift+Enter键可以换行
+  COMMERCE_TEXT_FOOTER_MENU_1: 'Product Center', // COMMERCE主题页脚左侧菜单标题1
+  COMMERCE_TEXT_FOOTER_MENU_2: 'About US', // COMMERCE主题页脚左侧菜单标题2
 
-  // 菜单
-  FUKASAWA_MENU_CATEGORY: true, // 显示分类
-  FUKASAWA_MENU_TAG: true, // 显示标签
-  FUKASAWA_MENU_ARCHIVE: true, // 显示归档
+  COMMERCE_FOOTER_RIGHT_IMG_URL: null, // 显示页脚右侧的图片，通常放二维码
+  COMMERCE_FOOTER_RIGHT_TEXT: null, // 页脚右侧图片下的文字描述
 
-  FUKASAWA_SIDEBAR_COLLAPSE_BUTTON: true, // 侧边栏折叠按钮
-  FUKASAWA_SIDEBAR_COLLAPSE_SATUS_DEFAULT: false, // 侧边栏默认折叠收起
-  FUKASAWA_SIDEBAR_COLLAPSE_ON_SCROLL: false // 侧边栏滚动时折叠 仅文章阅读页有效
+  COMMERCE_HOME_POSTS_COUNT: 9, // 首页展示商品数
+  COMMERCE_CONTACT_WHATSAPP_SHOW: true, // 是否展示whatsapp联系按钮 请配置 CONTACT_WHATSAPP
+  COMMERCE_CONTACT_TELEGRAM_SHOW: true, // 联系栏展示telegram按钮 请配置 CONTACT_TELEGRAM
+
+  COMMERCE_ARTICLE_COPYRIGHT: true, // 文章版权声明
+  COMMERCE_ARTICLE_NOT_BY_AI: false // 显示非AI写作
 }
 export default CONFIG

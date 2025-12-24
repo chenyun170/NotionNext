@@ -182,6 +182,26 @@ function AsideLeft(props) {
           color: #3b82f6 !important;
           transform: translateX(6px);
         }
+        /* 优化侧边栏滚动条体验 */
+.sideLeft .overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.05) transparent;
+}
+
+/* 侧边栏工具/热门文章的小图标动画 */
+.sideLeft section i {
+  transition: transform 0.3s ease;
+}
+.sideLeft section:hover i {
+  transform: scale(1.2) rotate(5deg);
+}
+
+/* 热门文章列表的悬停背景 */
+.sideLeft ul li:hover {
+  background: rgba(255, 165, 0, 0.03);
+  border-radius: 8px;
+  padding-left: 4px;
+}
       `}</style>
     </div>
   )

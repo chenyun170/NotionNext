@@ -75,10 +75,10 @@ function AsideLeft(props) {
                     className="festive-hat-fixed"
                     style={{ 
                         position: 'absolute',
-                        top: '0px', 
+                        top: '-12px', 
                         left: '42px', 
-                        width: '80px !important', 
-                        maxWidth: '80px !important',
+                        width: '50px !important', 
+                        maxWidth: '50px !important',
                         zIndex: 100,
                         pointerEvents: 'none',
                         transform: 'rotate(25deg)',

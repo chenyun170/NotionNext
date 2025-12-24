@@ -1,198 +1,190 @@
-'use client'
+// themes/fukasawa/index.js
+// 首页主文件 - 集成所有升级组件 (已修复)
 
-import AlgoliaSearchModal from '@/components/AlgoliaSearchModal'
-import { AdSlot } from '@/components/GoogleAdsense'
-import replaceSearchResult from '@/components/Mark'
-import WWAds from '@/components/WWAds'
+import BLOG from '@/blog.config'
 import { siteConfig } from '@/lib/config'
+import { getGlobalData } from '@/lib/notion/getNotionData'
 import { useGlobal } from '@/lib/global'
-import { isBrowser } from '@/lib/utils'
-import { Transition } from '@headlessui/react'
-import dynamic from 'next/dynamic'
-import SmartLink from '@/components/SmartLink'
-import { useRouter } from 'next/router'
-import { createContext, useContext, useEffect, useRef } from 'react'
-import ArticleDetail from './components/ArticleDetail'
-import ArticleLock from './components/ArticleLock'
-import AsideLeft from './components/AsideLeft'
-import BlogListPage from './components/BlogListPage'
-import BlogListScroll from './components/BlogListScroll'
-import BlogArchiveItem from './components/BlogPostArchive'
-import Header from './components/Header'
-import TagItemMini from './components/TagItemMini'
-import FloatButton from './components/FloatButton'
+import Head from 'next/head'
+import React from 'react'
+
+// 导入组件
+import HeroSection from './components/HeroSection'
+// 修复：导入正确的 BlogCard 组件，而不是不存在的 ArticleGrid
+import BlogCard from './components/BlogCard' 
 import CONFIG from './config'
 import { Style } from './style'
+import { useRouter } from 'next/router'
 
-const Live2D = dynamic(() => import('@/components/Live2D'))
+/**
+ * Fukasawa 首页
+ * @param {*} props
+ * @returns
+ */
+const Index = (props) => {
+  const { siteInfo } = props
+  const router = useRouter()
 
-const ThemeGlobalFukasawa = createContext()
-export const useFukasawaGlobal = () => useContext(ThemeGlobalFukasawa)
-
-const LayoutBase = props => {
-  const { children, headerSlot } = props
-  const leftAreaSlot = <Live2D />
-  const { onLoading, fullWidth } = useGlobal()
-  const searchModal = useRef(null)
-
-  // --- 新增：阅读进度条逻辑 ---
-  useEffect(() => {
-    const handleScroll = () => {
-      const progressBar = document.getElementById('scroll-progress')
-      if (progressBar) {
-        const scrollHeight = document.documentElement.scrollHeight
-        const clientHeight = document.documentElement.clientHeight
-        const scrollTop = window.scrollY || document.documentElement.scrollTop
-        const percent = Math.min((scrollTop / (scrollHeight - clientHeight)) * 100, 100)
-        progressBar.style.width = `${percent}%`
-      }
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  return (
-    <ThemeGlobalFukasawa.Provider value={{ searchModal }}>
-      <div id='theme-fukasawa' className={`${siteConfig('FONT_STYLE')} dark:bg-black scroll-smooth`}>
-        <Style />
-        
-        {/* --- 新增：阅读进度条组件 (置顶并高于Header) --- */}
-        <div className='fixed top-0 left-0 w-full h-1 z-[110] pointer-events-none'>
-            <div id='scroll-progress' className='h-full bg-orange-600 transition-all duration-150 shadow-[0_0_10px_rgba(234,88,12,0.5)]' style={{ width: '0%' }}></div>
-        </div>
-
-        <Header {...props} />
-        <div className={(JSON.parse(siteConfig('LAYOUT_SIDEBAR_REVERSE')) ? 'flex-row-reverse' : '') + ' flex'}>
-          <AsideLeft {...props} slot={leftAreaSlot} />
-          <main id='wrapper' className='relative flex w-full py-8 justify-center bg-day dark:bg-night'>
-            <div id='container-inner' className={`${fullWidth ? '' : '2xl:max-w-6xl md:max-w-4xl'} w-full relative z-10`}>
-              <Transition
-                show={!onLoading}
-                appear={true}
-                className='w-full'
-                enter='transition ease-in-out duration-700 transform order-first'
-                enterFrom='opacity-0 translate-y-16'
-                enterTo='opacity-100'
-                leave='transition ease-in-out duration-300 transform'
-                leaveFrom='opacity-100 translate-y-0'
-                leaveTo='opacity-0 -translate-y-16'
-                unmount={false}>
-                <div> {headerSlot} </div>
-                <div> {children} </div>
-              </Transition>
-              <div className='mt-2'><AdSlot type='native' /></div>
-            </div>
-          </main>
-        </div>
-        <AlgoliaSearchModal cRef={searchModal} {...props} />
-        <FloatButton />
-      </div>
-    </ThemeGlobalFukasawa.Provider>
-  )
-}
-
-const LayoutIndex = props => { return <LayoutPostList {...props} /> }
-
-const LayoutPostList = props => {
-  const POST_LIST_STYLE = siteConfig('POST_LIST_STYLE')
   return (
     <>
-      <div className='w-full p-2'><WWAds className='w-full' orientation='horizontal' /></div>
-      {POST_LIST_STYLE === 'page' ? <BlogListPage {...props} /> : <BlogListScroll {...props} />}
+      <Head>
+        <title>{`${siteInfo?.title} | ${siteInfo?.description}`}</title>
+        <meta name="description" content={siteInfo?.description} />
+      </Head>
+
+      <Style />
+
+      {/* Hero 区域 */}
+      <HeroSection />
+
+      {/* 主内容区 */}
+      <div className="container mx-auto px-6 py-16">
+        {/* 热门文章区域 */}
+        <section className="mb-20">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                <span className="text-4xl">🔥</span>
+                热门文章
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400">
+                最受欢迎的外贸实战技巧和工具推荐
+              </p>
+            </div>
+            <button 
+              onClick={() => router.push('/archive')}
+              className="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:gap-3 transition-all font-medium"
+            >
+              查看全部
+              <i className="fas fa-arrow-right"></i>
+            </button>
+          </div>
+
+          {/* 修复：使用循环渲染 BlogCard 替代不存在的 ArticleGrid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {props.posts?.slice(0, 6).map(post => (
+              <BlogCard key={post.id} post={post} showSummary={true} />
+            ))}
+          </div>
+        </section>
+
+        {/* 最新文章区域（紧凑样式） */}
+        <section className="mb-20">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <i className="fas fa-clock text-blue-500"></i>
+              最新发布
+            </h2>
+          </div>
+
+          {/* 修复：使用循环渲染 BlogCard 替代不存在的 ArticleGrid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {props.posts?.slice(6, 12).map(post => (
+              <BlogCard key={post.id} post={post} showSummary={false} />
+            ))}
+          </div>
+        </section>
+
+        {/* 工具推荐区域 */}
+        <section className="mb-20">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+            <i className="fas fa-tools text-orange-500"></i>
+            推荐工具
+          </h2>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { 
+                icon: '🔍', 
+                name: '图灵搜', 
+                desc: '谷歌地图获客', 
+                link: '/links',
+                color: 'blue' 
+              },
+              { 
+                icon: '📊', 
+                name: '海关数据', 
+                desc: '全球贸易数据', 
+                link: '/links',
+                color: 'green' 
+              },
+              { 
+                icon: '🤖', 
+                name: 'AI助手', 
+                desc: '智能邮件生成', 
+                link: '/links',
+                color: 'purple' 
+              },
+              { 
+                icon: '💬', 
+                name: 'WhatsApp', 
+                desc: '客户直连工具', 
+                link: '/links',
+                color: 'orange' 
+              }
+            ].map((tool, i) => (
+              <a
+                key={i}
+                href={tool.link}
+                className="group bg-white dark:bg-gray-900 rounded-xl p-6 border border-gray-100 dark:border-gray-800 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer text-center"
+              >
+                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
+                  {tool.icon}
+                </div>
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+                  {tool.name}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {tool.desc}
+                </p>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA 区域 */}
+        <section className="relative overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl p-12 text-center text-white">
+          <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+          <div className="relative z-10">
+            <h2 className="text-4xl font-bold mb-4">
+              准备好开始外贸获客了吗？
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              加入 10,000+ 外贸人，使用我们的工具和方法，让客户开发变得更简单
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-bold hover:shadow-xl hover:scale-105 transition-all">
+                免费领取资料包 🎁
+              </button>
+              <button className="bg-white/20 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white/30 transition-all">
+                了解更多
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
     </>
   )
 }
 
-const LayoutSlug = props => {
-  const { post, lock, validPassword } = props
-  const router = useRouter()
-  const waiting404 = siteConfig('POST_WAITING_TIME_FOR_404') * 1000
-  useEffect(() => {
-    if (!post) {
-      setTimeout(() => {
-        if (isBrowser) {
-          const article = document.querySelector('#article-wrapper #notion-article')
-          if (!article) { router.push('/404') }
-        }
-      }, waiting404)
-    }
-  }, [post])
-  return (<>{lock ? <ArticleLock validPassword={validPassword} /> : post && <ArticleDetail {...props} />}</>)
-}
-
-const LayoutSearch = props => {
-  const { keyword } = props
-  const router = useRouter()
-  useEffect(() => {
-    if (isBrowser) {
-      replaceSearchResult({ doms: document.getElementById('posts-wrapper'), search: keyword, target: { element: 'span', className: 'text-red-500 border-b border-dashed' } })
-    }
-  }, [router])
-  return <LayoutPostList {...props} />
-}
-
-const LayoutArchive = props => {
-  const { archivePosts } = props
-  return (
-    <div className='mb-10 pb-20 bg-white md:p-12 p-3 dark:bg-gray-800 shadow-md min-h-full'>
-      {Object.keys(archivePosts).map(archiveTitle => (
-        <BlogArchiveItem key={archiveTitle} posts={archivePosts[archiveTitle]} archiveTitle={archiveTitle} />
-      ))}
-    </div>
+/**
+ * 服务端获取数据
+ */
+export async function getStaticProps() {
+  const from = 'index'
+  const props = await getGlobalData({ from })
+  
+  // 排序和过滤
+  props.posts = props.allPages?.filter(
+    page => page.type === 'Post' && page.status === 'Published'
   )
+  
+  delete props.allPages
+  
+  return {
+    props,
+    revalidate: parseInt(BLOG.NEXT_REVALIDATE_SECOND)
+  }
 }
 
-const Layout404 = props => {
-  const router = useRouter()
-  const { locale } = useGlobal()
-  useEffect(() => {
-    setTimeout(() => {
-      const article = isBrowser && document.getElementById('article-wrapper')
-      if (!article) { router.push('/') }
-    }, 3000)
-  }, [])
-  return (
-    <div className='md:-mt-20 text-black w-full h-screen text-center justify-center content-center items-center flex flex-col'>
-      <div className='dark:text-gray-200'>
-        <h2 className='inline-block border-r-2 border-gray-600 mr-2 px-3 py-2 align-top'><i className='mr-2 fas fa-spinner animate-spin' />404</h2>
-        <div className='inline-block text-left h-32 leading-10 items-center'><h2 className='m-0 p-0'>{locale.NAV.PAGE_NOT_FOUND_REDIRECT}</h2></div>
-      </div>
-    </div>
-  )
-}
-
-const LayoutCategoryIndex = props => {
-  const { locale } = useGlobal()
-  const { categoryOptions } = props
-  return (
-    <div className='bg-white dark:bg-gray-700 px-10 py-10 shadow'>
-      <div className='dark:text-gray-200 mb-5'><i className='mr-4 fas fa-th' />{locale.COMMON.CATEGORY}:</div>
-      <div id='category-list' className='duration-200 flex flex-wrap'>
-        {categoryOptions?.map(category => (
-          <SmartLink key={category.name} href={`/category/${category.name}`} passHref legacyBehavior>
-            <div className='hover:text-black dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-600 px-5 cursor-pointer py-2 hover:bg-gray-100'>
-              <i className='mr-4 fas fa-folder' />{category.name}({category.count})
-            </div>
-          </SmartLink>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-const LayoutTagIndex = props => {
-  const { locale } = useGlobal()
-  const { tagOptions } = props
-  return (
-    <div className='bg-white dark:bg-gray-700 px-10 py-10 shadow'>
-      <div className='dark:text-gray-200 mb-5'><i className='mr-4 fas fa-tag' />{locale.COMMON.TAGS}:</div>
-      <div id='tags-list' className='duration-200 flex flex-wrap ml-8'>
-        {tagOptions.map(tag => (
-          <div key={tag.name} className='p-2'><TagItemMini key={tag.name} tag={tag} /></div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-export { Layout404, LayoutArchive, LayoutBase, LayoutCategoryIndex, LayoutIndex, LayoutPostList, LayoutSearch, LayoutSlug, LayoutTagIndex, CONFIG as THEME_CONFIG }
+export default Index

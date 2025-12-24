@@ -14,7 +14,7 @@ import SocialButton from './SocialButton'
 import SidebarTools from './SidebarTools'
 
 /**
- * 侧边栏 - 优化版（功能完整保留，UI/UX提升，响应式增强，Logo与帽子尺寸锁定）
+ * 侧边栏 - 优化版（Logo 尺寸锁定，避免影响排版）
  */
 function AsideLeft(props) {
   const { post, notice, latestPosts = [] } = props
@@ -83,13 +83,13 @@ function AsideLeft(props) {
 
           {/* ====================== Logo 区域（尺寸锁定） ====================== */}
           <div className="flex flex-col items-start px-1 overflow-visible mb-10">
-            <div className="relative w-[140px]"> {/* 固定宽度容器 */}
+            <div className="relative w-[50px]">
               <Logo className="block w-full h-auto" {...props} />
               {/* 圣诞帽 */}
               <img
-                src="/hat.png"
-                alt=""
+                src="https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png"
                 className="absolute -top-3 -right-4 w-8 pointer-events-none"
+                alt="Christmas Hat"
               />
             </div>
 
@@ -102,7 +102,7 @@ function AsideLeft(props) {
 
           {/* ====================== 活动公告 / Special Events ====================== */}
           <section className="mb-8 bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-amber-950/20 rounded-2xl 
-            p-4 border border-amber-100/50 dark:border-amber-900/30 shadow-sm">
+            p-4 border border-amber-100/50 dark:border-amber-900/30">
             <div className="flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1">
               <i className="fas fa-bullhorn mr-2"></i>
               <span>活动公告 / SPECIAL EVENTS</span>
@@ -147,11 +147,23 @@ function AsideLeft(props) {
               </div>
               <ul className="space-y-5">
                 {latestPosts.slice(0, 5).map((p, index) => (
-                  <li key={p.id} className="group flex items-start cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900/50 p-2 rounded-xl transition-all">
-                    <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-lg text-[10px] mr-4 font-mono transition-all group-hover:scale-110 ${index < 3 ? 'bg-blue-600 text-white shadow-lg' : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800'}`}>
+                  <li
+                    key={p.id}
+                    className="group flex items-start cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900/50 p-2 rounded-xl transition-all"
+                  >
+                    <span
+                      className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-lg text-[10px] mr-4 font-mono transition-all group-hover:scale-110 ${
+                        index < 3
+                          ? 'bg-blue-600 text-white shadow-lg'
+                          : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800'
+                      }`}
+                    >
                       0{index + 1}
                     </span>
-                    <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} className="text-[13px] text-zinc-600 dark:text-zinc-400 group-hover:text-blue-600 transition-all line-clamp-2 leading-snug">
+                    <Link
+                      href={`${siteConfig('SUB_PATH', '')}/${p.slug}`}
+                      className="text-[13px] text-zinc-600 dark:text-zinc-400 group-hover:text-blue-600 transition-all line-clamp-2 leading-snug"
+                    >
                       {p.title}
                     </Link>
                   </li>

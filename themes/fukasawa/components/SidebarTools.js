@@ -155,6 +155,13 @@ const SidebarTools = () => {
           0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(244, 63, 94, 0.3); }
           50% { opacity: 0.4; text-shadow: 0 0 0px rgba(244, 63, 94, 0); }
         }
+        /* 增加工具栏卡片的精致感 */
+.sideLeft :global(.sidebar-tools-container) {
+    background: rgba(59, 130, 246, 0.03);
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px border-blue-100/50;
+}
       `}</style>
     </div>
   );

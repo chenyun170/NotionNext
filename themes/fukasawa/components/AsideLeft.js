@@ -90,7 +90,7 @@ function AsideLeft(props) {
         {/* 2. 活动功能区：活动一和活动二保留并强化视觉 */}
         <section className='mb-8 bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-amber-950/20 dark:to-transparent rounded-2xl p-4 border border-amber-100/50 dark:border-amber-900/30 shadow-sm'>
            <div className='flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1'>
-              <i className="fas fa-bullhorn mr-2 animate-bounce"></i>
+              <i className="fas fa-bullhorn mr-2"></i>
               <span>活动公告 / Special Events</span>
            </div>
            {/* 这里对应活动一和活动二的内容逻辑 */}

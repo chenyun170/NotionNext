@@ -83,7 +83,7 @@ function AsideLeft(props) {
 
           {/* ====================== Logo 区域（尺寸锁定） ====================== */}
           <div className="flex flex-col items-start px-1 overflow-visible mb-10">
-            <div className="relative w-[50px]">
+            <div className="relative w-[140px]">
               <Logo className="block w-full h-auto" {...props} />
               {/* 圣诞帽 */}
               <img
@@ -100,7 +100,7 @@ function AsideLeft(props) {
             </section>
           </div>
 
-          {/* ====================== 活动公告 / Special Events ====================== */}
+          {/* ====================== 活动公告/Special Events ====================== */}
           <section className="mb-8 bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-amber-950/20 rounded-2xl 
             p-4 border border-amber-100/50 dark:border-amber-900/30">
             <div className="flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1">

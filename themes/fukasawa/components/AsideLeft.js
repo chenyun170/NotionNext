@@ -71,17 +71,17 @@ function AsideLeft(props) {
                 <>
                   {/* 中层：极致微型圣诞帽 - 使用 !important 内联样式击败 Style.js */}
                   <img
-                    src="https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png"
+                    src="https://cloudflare-imgbed-aa9.pages.dev/file/1766591515499_hat.png"
                     className="festive-hat-fixed"
                     style={{ 
                         position: 'absolute',
-                        top: '-12px', 
-                        left: '40px', 
+                        top: '-4px', 
+                        left: '18px', 
                         width: '45px !important', 
                         maxWidth: '45px !important',
                         zIndex: 100,
                         pointerEvents: 'none',
-                        transform: 'rotate(30deg)',
+                        transform: 'rotate(0deg)',
                         display: 'block'
                     }}
                     alt="Micro Hat"

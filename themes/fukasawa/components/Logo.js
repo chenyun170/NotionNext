@@ -2,7 +2,7 @@ import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
 
 const Logo = props => {
-  // 自动化时间逻辑：11月至次年2月开启装饰
+  // 核心逻辑保留：自动化时间逻辑，11月至次年2月开启装饰
   const now = new Date()
   const month = now.getMonth() + 1
   const showChristmas = month >= 11 || month <= 2
@@ -10,92 +10,106 @@ const Logo = props => {
   return (
     <section className='flex justify-center lg:justify-start overflow-visible'>
       <style jsx>{`
+        /* 金属流光动画 */
+        .shimmer-text {
+          background: linear-gradient(90deg, transparent 0%, #ff8c00 50%, transparent 100%);
+          background-size: 200% 100%;
+          background-clip: text;
+          animation: shimmer 3s infinite linear;
+        }
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+
+        /* 圣诞帽物理摆动律动 */
+        .santa-hat-animated {
+          animation: hat-swing 3s ease-in-out infinite;
+          transform-origin: bottom left;
+        }
+        @keyframes hat-swing {
+          0%, 100% { transform: rotate(25deg) scale(1); }
+          50% { transform: rotate(28deg) scale(1.05); }
+        }
+
         .christmas-container { 
           position: relative; 
           display: inline-block; 
           z-index: 10;
+          transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        /* 圣诞帽层级 */
-        .santa-hat {
-          position: absolute; 
-          z-index: 30; 
-          pointer-events: none;
-          background: transparent !important; /* 确保背景透明 */
+        .christmas-container:hover {
+          transform: translateY(-2px) scale(1.02);
         }
-        /* 雪花容器：z-index 设为最高，确保在图片最前端 */
-        .snow-wrapper { 
-          position: absolute; 
-          top: 0; 
-          left: 0; 
-          width: 100%; 
-          height: 100%; 
-          pointer-events: none; 
-          z-index: 50; 
-        }
-        /* 雪花样式 */
+
+        /* 磨砂感雪花效果 */
         .snowflake {
           position: absolute; 
           color: #fff; 
-          font-size: 14px; 
-          text-shadow: 0 0 5px rgba(0,0,0,0.2);
+          font-size: 12px;
+          filter: blur(0.4px); 
+          text-shadow: 0 0 8px rgba(255,255,255,0.8);
           animation: fall linear infinite;
         }
         @keyframes fall {
           0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(60px) rotate(360deg); opacity: 0; }
+          20% { opacity: 0.8; }
+          80% { opacity: 0.8; }
+          100% { transform: translateY(45px) rotate(360deg); opacity: 0; }
         }
       `}</style>
 
       <SmartLink href='/' className='flex flex-col items-center lg:items-start group cursor-pointer'>
         <div className='christmas-container'>
           
-     {/* 1. 圣诞帽：针对 24px 的 Logo 重新计算坐标 */}
-{showChristmas && (
-  <img 
-    src='https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png' 
-    className='santa-hat' 
-    style={{ 
-      top: '-10px',    /* 向上偏移减小 */
-      left: '12px',   /* 对于 24px 宽的 Logo，12px 刚好是中心偏右 */
-      width: '14px',  /* 帽子也要等比例缩小，比 Logo 宽度略小 */
-      transform: 'rotate(25deg)',
-      position: 'absolute',
-      zIndex: 30
-    }}
-    alt='Christmas Hat' 
-  />
-)}
-
-{/* 2. Logo 图片：强制锁定物理尺寸，防止被 AsideLeft 的布局拉伸 */}
-<img 
-  src='/logo.png' 
-  className='w-6 h-6 mb-2 object-contain relative z-10' 
-  style={{ 
-    minWidth: '24px', /* 增加硬性限制，防止 Flex 布局拉伸 */
-    minHeight: '24px' 
-  }}
-  alt={siteConfig('TITLE')} 
-/>
-
-          {/* 3. 雪花层 (在最前端) */}
+          {/* 1. 圣诞帽：适配极小 Logo (w-6) 的黄金坐标 */}
           {showChristmas && (
-            <div className='snow-wrapper'>
-              <span className='snowflake' style={{left: '10%', animationDuration: '2.5s'}}>❄</span>
-              <span className='snowflake' style={{left: '40%', animationDuration: '3.5s', animationDelay: '1s'}}>❅</span>
-              <span className='snowflake' style={{left: '70%', animationDuration: '3s', animationDelay: '0.5s'}}>❆</span>
-              <span className='snowflake' style={{left: '90%', animationDuration: '4.5s', animationDelay: '2s'}}>❄</span>
+            <img 
+              src='https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png' 
+              className='santa-hat-animated' 
+              style={{ 
+                position: 'absolute',
+                top: '-9px', 
+                left: '11px', 
+                width: '15px', 
+                zIndex: 30,
+                pointerEvents: 'none'
+              }}
+              alt='Christmas Hat' 
+            />
+          )}
+
+          {/* 2. Logo 图片：锁定 w-6 (24px) 极致比例 */}
+          <img 
+            src='/logo.png' 
+            className='w-6 h-6 mb-2 object-contain relative z-10 transition-all duration-500 group-hover:brightness-110 group-hover:drop-shadow-md' 
+            style={{ minWidth: '24px', minHeight: '24px' }}
+            alt={siteConfig('TITLE')} 
+          />
+
+          {/* 3. 雪花层 */}
+          {showChristmas && (
+            <div className='absolute top-0 left-0 w-full h-full pointer-events-none z-50 overflow-visible'>
+              <span className='snowflake' style={{left: '5%', animationDuration: '2.8s'}}>❄</span>
+              <span className='snowflake' style={{left: '45%', animationDuration: '3.8s', animationDelay: '0.5s'}}>❅</span>
+              <span className='snowflake' style={{left: '85%', animationDuration: '3.2s', animationDelay: '1.2s'}}>❆</span>
             </div>
           )}
         </div>
 
-        {/* 文字标题 */}
-        <div className='text-center lg:text-left relative z-20'>
-            <div className='text-xl font-black tracking-tighter text-slate-800 dark:text-gray-200 border-b-4 border-orange-500 inline-block pb-1'>
-                外贸获客<span className='text-orange-600'>情报局</span>
+        {/* 文字标题：排版比例升级 */}
+        <div className='text-center lg:text-left relative z-20 mt-0.5'>
+            <div className='text-base font-black tracking-tight text-slate-800 dark:text-gray-100 flex items-center'>
+              <span className='relative'>
+                外贸获客
+                {/* 悬浮线条平滑展开 */}
+                <div className='absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left'></div>
+              </span>
+              <span className='text-orange-600 shimmer-text ml-0.5'>情报局</span>
             </div>
-            <div className='text-[10px] font-medium text-gray-400 mt-1 uppercase tracking-widest'>
+            
+            {/* 副标题：字间距增加，提升品牌质感 */}
+            <div className='text-[8px] font-bold text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-[0.22em] transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-400'>
                 Trade Intelligence Bureau
             </div>
         </div>

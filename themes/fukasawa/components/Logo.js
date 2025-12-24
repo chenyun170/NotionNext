@@ -26,7 +26,7 @@ const Logo = props => {
           <img 
             src='/logo.png' 
             className='w-4 h-4 mb-2 object-contain transition-all duration-500 group-hover:brightness-110 group-hover:drop-shadow-md' 
-            style={{ minWidth: '32px', minHeight: '32px' }}
+            style={{ minWidth: '16px', minHeight: '16px' }}
             alt={siteConfig('TITLE')} 
           />
         </div>

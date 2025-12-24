@@ -67,6 +67,16 @@ const Style = () => {
         border-radius: 0 !important;
     }
 
+    /* ============ 新增：圣诞帽专用物理锁 ============ */
+    .sideLeft .festive-hat-fixed {
+        width: 12px !important;      /* 这里控制帽子大小，12px 约 Logo 的 1/3 */
+        max-width: 12px !important;
+        height: auto !important;
+        display: block !important;
+        z-index: 100 !important;
+    }
+    /* ============================================= */
+
     /* 文章摘要截断优化 */
     .line-clamp-2 {
         display: -webkit-box;

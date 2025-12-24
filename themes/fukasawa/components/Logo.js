@@ -1,3 +1,5 @@
+'use client'
+
 import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
 
@@ -42,7 +44,7 @@ const Logo = props => {
           transform: translateY(-2px) scale(1.02);
         }
 
-        /* 磨砂感雪花效果 */
+        /* 磨砂感雪花效果 - 调整 z-index 让其处于最前面 */
         .snowflake {
           position: absolute; 
           color: #fff; 
@@ -50,6 +52,7 @@ const Logo = props => {
           filter: blur(0.4px); 
           text-shadow: 0 0 8px rgba(255,255,255,0.8);
           animation: fall linear infinite;
+          z-index: 100; /* 设置较高的 z-index，确保雪花在最前面 */
         }
         @keyframes fall {
           0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
@@ -71,7 +74,7 @@ const Logo = props => {
                 position: 'absolute',
                 top: '-9px', 
                 left: '11px', 
-                width: '15px', 
+                width: '18px', 
                 zIndex: 30,
                 pointerEvents: 'none'
               }}
@@ -79,11 +82,11 @@ const Logo = props => {
             />
           )}
 
-          {/* 2. Logo 图片：锁定 w-6 (24px) 极致比例 */}
+          {/* 2. Logo 图片：锁定 w-8 (32px) 适应比例 */}
           <img 
             src='/logo.png' 
-            className='w-6 h-6 mb-2 object-contain relative z-10 transition-all duration-500 group-hover:brightness-110 group-hover:drop-shadow-md' 
-            style={{ minWidth: '24px', minHeight: '24px' }}
+            className='w-8 h-8 mb-2 object-contain relative z-10 transition-all duration-500 group-hover:brightness-110 group-hover:drop-shadow-md' 
+            style={{ minWidth: '32px', minHeight: '32px' }}
             alt={siteConfig('TITLE')} 
           />
 

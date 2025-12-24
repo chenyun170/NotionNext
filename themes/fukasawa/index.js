@@ -22,7 +22,7 @@ import Header from './components/Header'
 import TagItemMini from './components/TagItemMini'
 import CONFIG from './config'
 import { Style } from './style'
-import RightFloatArea from './components/FloatButton'
+import FloatButton from './components/FloatButton'
 
 const Live2D = dynamic(() => import('@/components/Live2D'))
 

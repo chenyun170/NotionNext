@@ -16,21 +16,21 @@ import GroupTag from './GroupTag'
 import Logo from './Logo'
 import MailChimpForm from './MailChimpForm'
 import { MenuList } from './MenuList'
-import SearchInput from './SearchInput' // 仅保留这一个导入，修复重复定义错误
+import SearchInput from './SearchInput'
 import SiteInfo from './SiteInfo'
 import SocialButton from './SocialButton'
 import Link from 'next/link'
 import SidebarTools from './SidebarTools'
 
 /**
- * 侧边栏 - 极致顺序优化版
+ * 侧边栏 - 极致顺序优化版（Logo 尺寸修复版）
  */
 function AsideLeft(props) {
   const { post, notice, latestPosts = [] } = props
   const { fullWidth } = useGlobal()
 
   // --- 实时运行时间统计 ---
-  const [runtime, setRuntime] = useState('')
+  const [runtime, setRuntime] = useState('Initializing...')
   const START_TIME = '2024-05-01'
 
   useEffect(() => {
@@ -71,13 +71,18 @@ function AsideLeft(props) {
 
       <div className={`h-full ${isCollapsed ? 'hidden' : 'px-8 py-10'} flex flex-col no-scrollbar overflow-y-auto`}>
         
-         {/* 1. Logo & 描述 */}
-        <div className="mb-2"><Logo {...props} /></div>
-        <section className='siteInfo dark:text-gray-400 text-[12px] italic opacity-70 leading-relaxed mb-6'>
+        {/* 1. Logo & 描述 - 修复尺寸控制 */}
+        <div className="mb-4 flex justify-center w-full">
+            <div className="w-28 h-28 relative site-logo-wrapper flex justify-center items-center">
+                <Logo {...props} />
+            </div>
+        </div>
+        
+        <section className='siteInfo text-center dark:text-gray-400 text-[12px] italic opacity-70 leading-relaxed mb-6 px-2'>
           {siteConfig('DESCRIPTION')}
         </section>
 
-        {/* 2. 活动一和活动二 (插播在描述和搜索中间) */}
+        {/* 2. 特色活动区 */}
         <section className='mb-6 bg-orange-50/30 dark:bg-orange-950/10 rounded-xl p-2 border border-orange-100/50 dark:border-orange-900/20'>
            <div className='flex items-center text-[10px] font-bold text-orange-600 dark:text-orange-400 tracking-widest uppercase mb-2 px-1'>
               <i className="fas fa-bullhorn mr-2"></i>
@@ -182,26 +187,38 @@ function AsideLeft(props) {
           color: #3b82f6 !important;
           transform: translateX(6px);
         }
-        /* 优化侧边栏滚动条体验 */
-.sideLeft .overflow-y-auto {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.05) transparent;
-}
+        
+        /* 侧边栏滚动条 */
+        .sideLeft .overflow-y-auto {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(0,0,0,0.05) transparent;
+        }
 
-/* 侧边栏工具/热门文章的小图标动画 */
-.sideLeft section i {
-  transition: transform 0.3s ease;
-}
-.sideLeft section:hover i {
-  transform: scale(1.2) rotate(5deg);
-}
+        /* LOGO 尺寸强制缩减补丁 */
+        .site-logo-wrapper :global(img) {
+          max-width: 100% !important;
+          height: auto !important;
+          object-fit: contain;
+        }
+        
+        /* 圣诞帽缩放补丁 */
+        .site-logo-wrapper :global(img[src*="hat"]),
+        .site-logo-wrapper :global(.christmas-hat) {
+          width: 40px !important;
+          height: auto !important;
+          top: -10px !important;
+          left: -5px !important;
+          z-index: 30;
+        }
 
-/* 热门文章列表的悬停背景 */
-.sideLeft ul li:hover {
-  background: rgba(255, 165, 0, 0.03);
-  border-radius: 8px;
-  padding-left: 4px;
-}
+        /* 动画与悬停 */
+        .sideLeft section i { transition: transform 0.3s ease; }
+        .sideLeft section:hover i { transform: scale(1.2) rotate(5deg); }
+        .sideLeft ul li:hover {
+          background: rgba(255, 165, 0, 0.03);
+          border-radius: 8px;
+          padding-left: 4px;
+        }
       `}</style>
     </div>
   )

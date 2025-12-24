@@ -72,13 +72,20 @@ function AsideLeft(props) {
       {/* 主内容容器：通过透明度控制悬浮/隐藏切换 */}
       <div className={`h-full no-scrollbar overflow-y-auto flex flex-col transition-all duration-500 ${isCollapsed ? 'opacity-0 invisible pointer-events-none' : 'opacity-100 px-8 py-10'}`}>
         
-        {/* 1. Logo & 描述：Logo 支持悬浮微缩放 */}
-        <div className="mb-4 transform hover:scale-105 origin-left transition-transform duration-500 ease-out cursor-pointer">
-          <Logo {...props} />
-        </div>
-        <section className='siteInfo relative pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 mb-8 font-light text-[12px] italic text-zinc-400 leading-relaxed opacity-80'>
-          {siteConfig('DESCRIPTION')}
-        </section>
+{/* 1. Logo & 描述区域 - 增加严格的宽度和缩放限制 */}
+<div className="flex flex-col items-start px-2 overflow-visible">
+    {/* 重点：增加 w-full 并配合 scale 控制，origin-left 确保缩放后不靠中 */}
+    <div className="mb-4 transform scale-75 origin-left w-full transition-transform duration-500 hover:scale-[0.8]">
+        <Logo {...props} />
+    </div>
+
+    {/* 站点简介 - 保持小字号以适配缩小的 Logo */}
+    <section className='siteInfo relative pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 mb-8'>
+        <p className='dark:text-zinc-500 text-zinc-400 text-[11px] italic leading-relaxed opacity-80'>
+            {siteConfig('DESCRIPTION')}
+        </p>
+    </section>
+</div>
 
         {/* 2. 活动功能区：活动一和活动二保留并强化视觉 */}
         <section className='mb-8 bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-amber-950/20 dark:to-transparent rounded-2xl p-4 border border-amber-100/50 dark:border-amber-900/30 shadow-sm'>

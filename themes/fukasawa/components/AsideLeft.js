@@ -72,12 +72,13 @@ function AsideLeft(props) {
       {/* 主内容容器：通过透明度控制悬浮/隐藏切换 */}
       <div className={`h-full no-scrollbar overflow-y-auto flex flex-col transition-all duration-500 ${isCollapsed ? 'opacity-0 invisible pointer-events-none' : 'opacity-100 px-8 py-10'}`}>
         
-{/* 1. Logo & 描述区域 - 增加严格的宽度和缩放限制 */}
+      {/* 确保使用了 items-start，否则内容会被拉伸得很大 */}
 <div className="flex flex-col items-start px-2 overflow-visible">
-    {/* 重点：增加 w-full 并配合 scale 控制，origin-left 确保缩放后不靠中 */}
-    <div className="mb-4 transform scale-75 origin-left w-full transition-transform duration-500 hover:scale-[0.8]">
+    {/* 移除 w-full，避免容器强制撑开内容 */}
+    <div className="mb-4 transform origin-left transition-transform duration-500">
         <Logo {...props} />
     </div>
+</div>
 
     {/* 站点简介 - 保持小字号以适配缩小的 Logo */}
     <section className='siteInfo relative pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 mb-8'>

@@ -56,7 +56,7 @@ const Logo = props => {
             <img 
               src='https://cloudflare-imgbed-aa9.pages.dev/file/1766208503664_hat.png' 
               className='santa-hat' 
-              style={{ top: '-18px', left: '35px', width: '42px', transform: 'rotate(25deg)' }}
+              style={{ top: '-18px', left: '35px', width: '20px', transform: 'rotate(25deg)' }}
               alt='Christmas Hat' 
             />
           )}
@@ -64,7 +64,7 @@ const Logo = props => {
           {/* 2. Logo 图片 (在底层) */}
           <img 
             src='/logo.png' 
-            className='w-16 h-16 mb-3 object-contain relative z-10' 
+            className='w-10 h-10 mb-3 object-contain relative z-10' 
             alt={siteConfig('TITLE')} 
           />
 

@@ -1,129 +1,169 @@
-import CONFIG from './config'
-import LazyImage from '@/components/LazyImage'
+'use client'
+
+import AlgoliaSearchModal from '@/components/AlgoliaSearchModal'
+import { AdSlot } from '@/components/GoogleAdsense'
 import replaceSearchResult from '@/components/Mark'
-import NotionPage from '@/components/NotionPage'
+import WWAds from '@/components/WWAds'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
-import { isBrowser, scanAndConvertToLinks } from '@/lib/utils'
+import { isBrowser } from '@/lib/utils'
 import { Transition } from '@headlessui/react'
+import dynamic from 'next/dynamic'
 import SmartLink from '@/components/SmartLink'
 import { useRouter } from 'next/router'
-import { useEffect, useRef } from 'react'
-
-// 根据你的 components 目录图片修正导入
-import { ArticleLock } from './components/ArticleLock'
-import BlogPostArchive from './components/BlogPostArchive'
+import { createContext, useContext, useEffect, useRef } from 'react'
+import ArticleDetail from './components/ArticleDetail'
+import ArticleLock from './components/ArticleLock'
+import AsideLeft from './components/AsideLeft'
 import BlogListPage from './components/BlogListPage'
 import BlogListScroll from './components/BlogListScroll'
-import Card from './components/Card'
-import Footer from './components/Footer' // 如果目录中有此文件
+import BlogArchiveItem from './components/BlogPostArchive'
 import Header from './components/Header'
-import Hero from './components/HeroSection' // 图片中为 HeroSection.js
-import PostHeader from './components/ArticleDetail' // 图片中 ArticleDetail 对应详情头部
-import ProductCategories from './components/GroupCategory' // 图片中为 GroupCategory.js
-import ProductCenter from './components/BlogCard' // 将 BlogCard 作为产品展示核心
-import RightFloatArea from './components/FloatButton' // 图片中为 FloatButton.js
-import SearchNav from './components/AsideLeft' // 将 AsideLeft 用于搜索导航
-import TagItemMini from './components/GroupTag' // 图片中为 GroupTag.js
-import TocDrawer from './components/Catalog' // 图片中为 Catalog.js
+import TagItemMini from './components/TagItemMini'
+import CONFIG from './config'
 import { Style } from './style'
 
+const Live2D = dynamic(() => import('@/components/Live2D'))
+
+// 主题全局状态
+const ThemeGlobalFukasawa = createContext()
+export const useFukasawaGlobal = () => useContext(ThemeGlobalFukasawa)
+
 /**
- * 基础布局
+ * 基础布局 采用左右两侧布局，移动端使用顶部导航栏
+ * @param children
+ * @param layout
+ * @param tags
+ * @param meta
+ * @param post
+ * @param currentSearch
+ * @param currentCategory
+ * @param currentTag
+ * @param categories
+ * @returns {JSX.Element}
+ * @constructor
  */
 const LayoutBase = props => {
-  const { children, post, floatSlot, slotTop, className } = props
-  const { onLoading } = useGlobal()
-  const router = useRouter()
-
-  useEffect(() => {
-    scanAndConvertToLinks(document.getElementById('theme-commerce'))
-  }, [router])
-
-  const slotRight = router.route !== '/' && !post && (
-    <div className="sticky top-24">
-      <ProductCategories {...props} />
-    </div>
-  )
-
-  let headerSlot = null
-  if (router.route === '/' && !post) {
-    headerSlot = JSON.parse(siteConfig('COMMERCE_HOME_BANNER_ENABLE', true)) ? (
-      <Hero {...props} />
-    ) : null
-  } else if (post) {
-    headerSlot = <PostHeader {...props} />
-  }
-
+  const { children, headerSlot } = props
+  const leftAreaSlot = <Live2D />
+  const { onLoading, fullWidth } = useGlobal()
+  const searchModal = useRef(null)
   return (
-    <div id='theme-commerce' className='flex flex-col min-h-screen justify-between bg-slate-50 dark:bg-zinc-950 transition-colors duration-500'>
-      <Style />
-      <Header {...props} />
-      <div className="relative z-20">{headerSlot}</div>
+    <ThemeGlobalFukasawa.Provider value={{ searchModal }}>
+      <div
+        id='theme-fukasawa'
+        className={`${siteConfig('FONT_STYLE')} dark:bg-black scroll-smooth`}>
+        <Style />
+        {/* 页头导航，此主题只在移动端生效 */}
+        <Header {...props} />
 
-      <main id='wrapper' className={`${CONFIG.HOME_BANNER_ENABLE ? '' : 'pt-20'} w-full py-12 md:px-8 lg:px-24 relative`}>
-        <div id='container-inner' className={`${siteConfig('LAYOUT_SIDEBAR_REVERSE') ? 'flex-row-reverse' : ''} w-full mx-auto lg:flex lg:space-x-8 justify-center relative z-10`}>
-          
-          <div className={`${className || ''} w-full h-full max-w-5xl overflow-hidden`}>
-            <Transition
-              show={!onLoading}
-              appear={true}
-              enter='transition ease-out duration-700 transform'
-              enterFrom='opacity-0 translate-y-12'
-              enterTo='opacity-100 translate-y-0'
-              leave='transition ease-in duration-300 transform'
-              leaveFrom='opacity-100'
-              leaveTo='opacity-0 -translate-y-12'
-              unmount={false}>
-              {slotTop}
-              <div className="rounded-2xl shadow-sm">{children}</div>
-            </Transition>
-          </div>
+        <div
+          className={
+            (JSON.parse(siteConfig('LAYOUT_SIDEBAR_REVERSE'))
+              ? 'flex-row-reverse'
+              : '') + ' flex'
+          }>
+          {/* 侧边抽屉 */}
+          <AsideLeft {...props} slot={leftAreaSlot} />
 
-          {slotRight && <aside className="hidden lg:block w-72 flex-shrink-0">{slotRight}</aside>}
+          <main
+            id='wrapper'
+            className='relative flex w-full py-8 justify-center bg-day dark:bg-night'>
+            <div
+              id='container-inner'
+              className={`${fullWidth ? '' : '2xl:max-w-6xl md:max-w-4xl'} w-full relative z-10`}>
+              <Transition
+                show={!onLoading}
+                appear={true}
+                className='w-full'
+                enter='transition ease-in-out duration-700 transform order-first'
+                enterFrom='opacity-0 translate-y-16'
+                enterTo='opacity-100'
+                leave='transition ease-in-out duration-300 transform'
+                leaveFrom='opacity-100 translate-y-0'
+                leaveTo='opacity-0 -translate-y-16'
+                unmount={false}>
+                <div> {headerSlot} </div>
+                <div> {children} </div>
+              </Transition>
+
+              <div className='mt-2'>
+                <AdSlot type='native' />
+              </div>
+            </div>
+          </main>
         </div>
-      </main>
 
-      <RightFloatArea floatSlot={floatSlot} />
-      <Footer {...props} />
-    </div>
+        <AlgoliaSearchModal cRef={searchModal} {...props} />
+      </div>
+    </ThemeGlobalFukasawa.Provider>
   )
 }
 
 /**
  * 首页
+ * @param {*} props notion数据
+ * @returns 首页就是一个博客列表
  */
 const LayoutIndex = props => {
-  const { notice } = props
-  return (
-    <div className="space-y-12">
-      <ProductCenter {...props} />
-      {notice && (
-        <div id='brand-introduction' className='w-full px-6 py-16 bg-white dark:bg-zinc-900 rounded-3xl shadow-xl border border-gray-100 dark:border-zinc-800'>
-          <div className='max-w-4xl mx-auto text-center'>
-            <div className='text-4xl md:text-5xl font-black mb-8 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-orange-500'>
-              {notice.title}
-            </div>
-            <NotionPage post={notice} className='text-xl leading-relaxed text-gray-600 dark:text-gray-300' />
-          </div>
-        </div>
-      )}
-    </div>
-  )
+  return <LayoutPostList {...props} />
 }
 
 /**
- * 列表页
+ * 博客列表
+ * @param {*} props
  */
 const LayoutPostList = props => {
+  const POST_LIST_STYLE = siteConfig('POST_LIST_STYLE')
   return (
-    <div className='bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border-t-4 border-[#D2232A] p-6'>
-      {siteConfig('POST_LIST_STYLE') === 'page' ? (
+    <>
+      <div className='w-full p-2'>
+        <WWAds className='w-full' orientation='horizontal' />
+      </div>
+      { POST_LIST_STYLE=== 'page' ? (
         <BlogListPage {...props} />
       ) : (
         <BlogListScroll {...props} />
       )}
-    </div>
+    </>
+  )
+}
+
+/**
+ * 文章详情
+ * @param {*} props
+ * @returns
+ */
+const LayoutSlug = props => {
+  const { post, lock, validPassword } = props
+  const router = useRouter()
+  const waiting404 = siteConfig('POST_WAITING_TIME_FOR_404') * 1000
+  useEffect(() => {
+    // 404
+    if (!post) {
+      setTimeout(
+        () => {
+          if (isBrowser) {
+            const article = document.querySelector('#article-wrapper #notion-article')
+            if (!article) {
+              router.push('/404').then(() => {
+                console.warn('找不到页面', router.asPath)
+              })
+            }
+          }
+        },
+        waiting404
+      )
+    }
+  }, [post])
+  return (
+    <>
+      {lock ? (
+        <ArticleLock validPassword={validPassword} />
+      ) : post && (
+        <ArticleDetail {...props} />
+      )}
+    </>
   )
 }
 
@@ -133,71 +173,150 @@ const LayoutPostList = props => {
 const LayoutSearch = props => {
   const { keyword } = props
   const router = useRouter()
-  const currentSearch = keyword || router?.query?.s
-
   useEffect(() => {
-    if (currentSearch) {
+    if (isBrowser) {
       replaceSearchResult({
-        doms: document.getElementsByClassName('replace'),
+        doms: document.getElementById('posts-wrapper'),
         search: keyword,
-        target: { element: 'span', className: 'text-red-600 font-bold bg-red-50 px-1 rounded' }
+        target: {
+          element: 'span',
+          className: 'text-red-500 border-b border-dashed'
+        }
       })
     }
-  }, [currentSearch, keyword])
+  }, [router])
+  return <LayoutPostList {...props} />
+}
 
+/**
+ * 归档页面
+ */
+const LayoutArchive = props => {
+  const { archivePosts } = props
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-900 p-6 rounded-2xl">
-      {!currentSearch ? <SearchNav {...props} /> : (
-        siteConfig('POST_LIST_STYLE') === 'page' ? <BlogListPage {...props} /> : <BlogListScroll {...props} />
-      )}
-    </div>
+    <>
+      <div className='mb-10 pb-20 bg-white md:p-12 p-3 dark:bg-gray-800 shadow-md min-h-full'>
+        {Object.keys(archivePosts).map(archiveTitle => (
+          <BlogArchiveItem
+            key={archiveTitle}
+            posts={archivePosts[archiveTitle]}
+            archiveTitle={archiveTitle}
+          />
+        ))}
+      </div>
+    </>
   )
 }
 
 /**
- * 文章详情
+ * 404
+ * @param {*} props
+ * @returns
  */
-const LayoutSlug = props => {
-  const { post, lock, validPassword } = props
-  const drawerRight = useRef(null)
-  const targetRef = isBrowser ? document.getElementById('article-wrapper') : null
-  const headerImage = post?.pageCover || siteConfig('HOME_BANNER_IMAGE')
+const Layout404 = props => {
+  const router = useRouter()
+  const { locale } = useGlobal()
+  useEffect(() => {
+    // 延时3秒如果加载失败就返回首页
+    setTimeout(() => {
+      const article = isBrowser && document.getElementById('article-wrapper')
+      if (!article) {
+        router.push('/').then(() => {
+          // console.log('找不到页面', router.asPath)
+        })
+      }
+    }, 3000)
+  }, [])
 
+  return <>
+        <div className='md:-mt-20 text-black w-full h-screen text-center justify-center content-center items-center flex flex-col'>
+            <div className='dark:text-gray-200'>
+                <h2 className='inline-block border-r-2 border-gray-600 mr-2 px-3 py-2 align-top'><i className='mr-2 fas fa-spinner animate-spin' />404</h2>
+                <div className='inline-block text-left h-32 leading-10 items-center'>
+                    <h2 className='m-0 p-0'>{locale.NAV.PAGE_NOT_FOUND_REDIRECT}</h2>
+                </div>
+            </div>
+        </div>
+    </>
+}
+
+/**
+ * 分类列表
+ * @param {*} props
+ * @returns
+ */
+const LayoutCategoryIndex = props => {
+  const { locale } = useGlobal()
+  const { categoryOptions } = props
   return (
     <>
-      <div className='w-full max-w-5xl mx-auto bg-white dark:bg-zinc-900 shadow-2xl rounded-3xl overflow-hidden border border-gray-100 dark:border-zinc-800'>
-        {lock && <ArticleLock validPassword={validPassword} />}
-        {!lock && post && (
-          <div id='article-wrapper' className='flex-grow'>
-            {post?.type === 'Post' && (
-              <div className='flex flex-col md:flex-row w-full bg-gradient-to-br from-gray-50 to-white dark:from-zinc-800 dark:to-zinc-900'>
-                <div className='md:w-5/12 overflow-hidden relative'>
-                  <LazyImage src={headerImage} className='w-full h-full aspect-square object-cover' />
+      <div className='bg-white dark:bg-gray-700 px-10 py-10 shadow'>
+        <div className='dark:text-gray-200 mb-5'>
+          <i className='mr-4 fas fa-th' />
+          {locale.COMMON.CATEGORY}:
+        </div>
+        <div id='category-list' className='duration-200 flex flex-wrap'>
+          {categoryOptions?.map(category => {
+            return (
+              <SmartLink
+                key={category.name}
+                href={`/category/${category.name}`}
+                passHref
+                legacyBehavior>
+                <div
+                  className={
+                    'hover:text-black dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-600 px-5 cursor-pointer py-2 hover:bg-gray-100'
+                  }>
+                  <i className='mr-4 fas fa-folder' />
+                  {category.name}({category.count})
                 </div>
-                <div className='md:w-7/12 p-8 md:p-12 flex flex-col justify-center'>
-                  <h1 className='text-3xl md:text-4xl font-extrabold mb-6 text-gray-800 dark:text-white leading-tight'>{post?.title}</h1>
-                  <div className='text-gray-500 italic border-l-4 border-red-500 pl-4' dangerouslySetInnerHTML={{ __html: post?.summary }} />
-                </div>
-              </div>
-            )}
-            <article className='p-6 md:p-12 prose prose-red dark:prose-invert max-w-none'>
-              <NotionPage post={post} />
-            </article>
-          </div>
-        )}
+              </SmartLink>
+            )
+          })}
+        </div>
       </div>
-      <div className='block lg:hidden'><TocDrawer post={post} cRef={drawerRight} targetRef={targetRef} /></div>
+    </>
+  )
+}
+
+/**
+ * 标签列表
+ * @param {*} props
+ * @returns
+ */
+const LayoutTagIndex = props => {
+  const { locale } = useGlobal()
+  const { tagOptions } = props
+  return (
+    <>
+      <div className='bg-white dark:bg-gray-700 px-10 py-10 shadow'>
+        <div className='dark:text-gray-200 mb-5'>
+          <i className='mr-4 fas fa-tag' />
+          {locale.COMMON.TAGS}:
+        </div>
+        <div id='tags-list' className='duration-200 flex flex-wrap ml-8'>
+          {tagOptions.map(tag => {
+            return (
+              <div key={tag.name} className='p-2'>
+                <TagItemMini key={tag.name} tag={tag} />
+              </div>
+            )
+          })}
+        </div>
+      </div>
     </>
   )
 }
 
 export {
+  Layout404,
+  LayoutArchive,
   LayoutBase,
+  LayoutCategoryIndex,
   LayoutIndex,
   LayoutPostList,
   LayoutSearch,
   LayoutSlug,
-  LayoutArchive: LayoutArchive, // 保持原样
-  Layout404: Layout404, // 保持原样
+  LayoutTagIndex,
   CONFIG as THEME_CONFIG
 }

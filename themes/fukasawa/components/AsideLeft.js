@@ -76,12 +76,12 @@ function AsideLeft(props) {
                     style={{ 
                         position: 'absolute',
                         top: '-12px', 
-                        left: '42px', 
-                        width: '50px !important', 
-                        maxWidth: '50px !important',
+                        left: '40px', 
+                        width: '45px !important', 
+                        maxWidth: '45px !important',
                         zIndex: 100,
                         pointerEvents: 'none',
-                        transform: 'rotate(25deg)',
+                        transform: 'rotate(30deg)',
                         display: 'block'
                     }}
                     alt="Micro Hat"

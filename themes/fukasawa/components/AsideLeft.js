@@ -11,14 +11,14 @@ import MailChimpForm from './MailChimpForm'
 import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
-import SidebarTools from './SidebarTools' // 确保导入工具组件
+import SidebarTools from './SidebarTools'
 
 function AsideLeft(props) {
   const { post, notice, latestPosts = [] } = props
   const [runtime, setRuntime] = useState('')
   const [isCollapsed, setIsCollapse] = useState(false)
 
-  // 11月至2月自动化装饰逻辑
+  // 圣诞氛围逻辑
   const now = new Date()
   const month = now.getMonth() + 1
   const showFestive = month >= 11 || month <= 2
@@ -58,18 +58,15 @@ function AsideLeft(props) {
       <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#09090b] min-h-screen hidden lg:block z-30 border-r border-gray-100 dark:border-zinc-900 shadow-2xl`}>
         <div className={`h-full no-scrollbar overflow-y-auto flex flex-col transition-all duration-500 ${isCollapsed ? 'opacity-0 invisible' : 'opacity-100 px-8 py-10'}`}>
 
-          {/* Logo 区域：物理锁定容器 */}
+          {/* Logo 区域 */}
           <div className="flex flex-col items-start px-1 overflow-visible mb-10">
             <div className="relative overflow-visible" style={{ width: '140px', minWidth: '140px' }}>
-              
-              {/* 底层：Logo */}
               <div className="relative z-10">
                  <Logo {...props} />
               </div>
               
               {showFestive && (
                 <>
-                  {/* 中层：圣诞帽 - 通过 mixBlendMode 去除白边，物理尺寸锁定 */}
                   <img
                     src="https://cloudflare-imgbed-aa9.pages.dev/file/1766591515499_hat.png"
                     className="festive-hat-fixed"
@@ -81,60 +78,58 @@ function AsideLeft(props) {
                         maxWidth: '65px !important',
                         zIndex: 100,
                         pointerEvents: 'none',
-                        transform: 'rotate(10deg)',
+                        transform: 'rotate(0deg)',
                         display: 'block',
-                        mixBlendMode: 'multiply', /* 滤除白边的核心代码 */
+                        mixBlendMode: 'multiply',
                         filter: 'contrast(110%) brightness(105%)'
                     }}
                     alt="Christmas Hat"
                   />
-                  
-                  {/* 最顶层：雪花容器 */}
                   <div className="absolute top-0 left-0 w-full h-12 pointer-events-none overflow-visible" style={{ zIndex: 120 }}>
                     <span className="snowflake-anim text-[10px] absolute left-1">❄</span>
                     <span className="snowflake-anim text-[8px] absolute left-6" style={{animationDelay:'1.5s'}}>❅</span>
-                    <span className="snowflake-anim text-[9px] absolute left-12" style={{animationDelay:'2.5s'}}>❆</span>
                   </div>
                 </>
               )}
             </div>
-
             <section className="siteInfo relative pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 mt-5 font-light text-[11px] italic text-zinc-400 leading-relaxed opacity-80">
               {siteConfig('DESCRIPTION')}
             </section>
           </div>
 
-          {/* A. 活动公告板块 (包含悬浮弹出功能) */}
-          <section className="mb-8 bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-amber-950/20 rounded-2xl p-4 border border-amber-100/50 dark:border-amber-900/30 shadow-sm">
-            <div className="flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1">
-              <i className="fas fa-bullhorn mr-2"></i>
-              <span>活动公告 / SPECIAL EVENTS</span>
-            </div>
-            <Announcement post={notice} />
-          </section>
+          {/* ================= 活动公告：跑马灯边框效果 ================= */}
+          <div className="marquee-border-container mb-10 p-[2px] rounded-2xl overflow-hidden relative">
+             <div className="relative z-10 bg-[#fffcf5] dark:bg-[#1a1610] rounded-2xl p-4">
+                <div className="flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1">
+                <i className="fas fa-bullhorn mr-2 animate-bounce"></i>
+                <span>活动公告 / SPECIAL EVENTS</span>
+                </div>
+                <Announcement post={notice} />
+             </div>
+          </div>
 
-          {/* B. 常用工具台 (Trade Terminal) - 刚才漏掉的部分 */}
+          {/* 常用工具台 */}
           <section className="mb-10">
             <div className="flex items-center text-[10px] font-bold text-blue-600 dark:text-blue-400 tracking-[0.2em] uppercase mb-5 px-1">
               <i className="fas fa-terminal mr-2 opacity-50 animate-pulse"></i>
-              <span>Trade Terminal / 常用工具</span>
+              <span>Trade Terminal</span>
             </div>
             <SidebarTools />
           </section>
 
-          {/* C. 快速搜索 */}
+          {/* 快速搜索 */}
           <section className="mb-8">
             <div className="bg-zinc-50 dark:bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 focus-within:ring-2 ring-blue-500/20 transition-all">
               <SearchInput {...props} />
             </div>
           </section>
 
-          {/* D. 导航菜单 */}
+          {/* 导航菜单 */}
           <section className="flex flex-col mb-10">
             <MenuList {...props} />
           </section>
 
-          {/* E. 热门文章 */}
+          {/* 热门文章 */}
           {latestPosts?.length > 0 && (
             <section className="flex flex-col mb-10">
               <div className="flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1">
@@ -156,11 +151,11 @@ function AsideLeft(props) {
             </section>
           )}
 
-          {/* F. 系统状态与统计 */}
-          <section className="mt-auto pt-10 border-t border-zinc-100 dark:border-zinc-900 text-center">
+          {/* 系统状态 */}
+          <section className="mt-auto pt-10 border-t border-zinc-100 dark:border-zinc-900">
             <SocialButton />
-            <div className="mt-8 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800">
-              <div className="text-[9px] text-zinc-400 uppercase mb-2 tracking-widest font-black tracking-widest">System Online</div>
+            <div className="mt-8 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-center relative overflow-hidden">
+              <div className="text-[9px] text-zinc-400 uppercase mb-2 tracking-widest font-black">System Online</div>
               <div className="font-mono text-xs font-bold text-zinc-700 dark:text-zinc-300">{runtime}</div>
             </div>
           </section>
@@ -172,10 +167,34 @@ function AsideLeft(props) {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* 强制锁定物理尺寸，防止被全局 img 样式拉伸 */
+        /* 1. 跑马灯流光边框动画核心 */
+        .marquee-border-container::before {
+          content: "";
+          position: absolute;
+          width: 150%;
+          height: 150%;
+          background: conic-gradient(
+            transparent, 
+            #fbbf24, /* 琥珀色 */
+            #f97316, /* 橙色 */
+            #fbbf24, 
+            transparent 30%
+          );
+          top: -25%;
+          left: -25%;
+          animation: rotate-marquee 4s linear infinite;
+          z-index: 0;
+        }
+
+        @keyframes rotate-marquee {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        /* 2. 圣诞装饰相关 */
         .sideLeft .festive-hat-fixed {
-            width: 14px !important;
-            max-width: 14px !important;
+            width: 45px !important;
+            max-width: 45px !important;
             height: auto !important;
             border-radius: 0 !important;
             display: block !important;

@@ -11,7 +11,7 @@ import MailChimpForm from './MailChimpForm'
 import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
-import SidebarTools from './SidebarTools'
+import SidebarTools from './SidebarTools' // 确保导入工具组件
 
 function AsideLeft(props) {
   const { post, notice, latestPosts = [] } = props
@@ -69,26 +69,27 @@ function AsideLeft(props) {
               
               {showFestive && (
                 <>
-                  {/* 中层：极致微型圣诞帽 - 使用 !important 内联样式击败 Style.js */}
+                  {/* 中层：圣诞帽 - 通过 mixBlendMode 去除白边，物理尺寸锁定 */}
                   <img
                     src="https://cloudflare-imgbed-aa9.pages.dev/file/1766591515499_hat.png"
                     className="festive-hat-fixed"
                     style={{ 
                         position: 'absolute',
-                        top: '-30px', 
+                        top: '-29px', 
                         left: '5px', 
-                        width: '60px !important', 
-                        maxWidth: '60px !important',
+                        width: '65px !important', 
+                        maxWidth: '65px !important',
                         zIndex: 100,
                         pointerEvents: 'none',
-                        transform: 'rotate(0deg)',
-                        mixBlendMode: 'multiply', 
-                       filter: 'contrast(110%) brightness(105%)' // 增强对比度确保白边滤得更干净
-                       }}
-                        alt="Christmas Hat"
+                        transform: 'rotate(10deg)',
+                        display: 'block',
+                        mixBlendMode: 'multiply', /* 滤除白边的核心代码 */
+                        filter: 'contrast(110%) brightness(105%)'
+                    }}
+                    alt="Christmas Hat"
                   />
                   
-                  {/* 最顶层：雪花容器 (z-index 设为最高) */}
+                  {/* 最顶层：雪花容器 */}
                   <div className="absolute top-0 left-0 w-full h-12 pointer-events-none overflow-visible" style={{ zIndex: 120 }}>
                     <span className="snowflake-anim text-[10px] absolute left-1">❄</span>
                     <span className="snowflake-anim text-[8px] absolute left-6" style={{animationDelay:'1.5s'}}>❅</span>
@@ -103,8 +104,8 @@ function AsideLeft(props) {
             </section>
           </div>
 
-          {/* 活动公告：保留活动一、二悬浮弹出功能 */}
-          <section className="mb-8 bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-amber-950/20 rounded-2xl p-4 border border-amber-100/50 dark:border-amber-900/30">
+          {/* A. 活动公告板块 (包含悬浮弹出功能) */}
+          <section className="mb-8 bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-amber-950/20 rounded-2xl p-4 border border-amber-100/50 dark:border-amber-900/30 shadow-sm">
             <div className="flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1">
               <i className="fas fa-bullhorn mr-2"></i>
               <span>活动公告 / SPECIAL EVENTS</span>
@@ -112,17 +113,28 @@ function AsideLeft(props) {
             <Announcement post={notice} />
           </section>
 
-          {/* 搜索 */}
-          <section className="mb-8">
-            <SearchInput {...props} />
+          {/* B. 常用工具台 (Trade Terminal) - 刚才漏掉的部分 */}
+          <section className="mb-10">
+            <div className="flex items-center text-[10px] font-bold text-blue-600 dark:text-blue-400 tracking-[0.2em] uppercase mb-5 px-1">
+              <i className="fas fa-terminal mr-2 opacity-50 animate-pulse"></i>
+              <span>Trade Terminal / 常用工具</span>
+            </div>
+            <SidebarTools />
           </section>
 
-          {/* 导航菜单 */}
+          {/* C. 快速搜索 */}
+          <section className="mb-8">
+            <div className="bg-zinc-50 dark:bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 focus-within:ring-2 ring-blue-500/20 transition-all">
+              <SearchInput {...props} />
+            </div>
+          </section>
+
+          {/* D. 导航菜单 */}
           <section className="flex flex-col mb-10">
             <MenuList {...props} />
           </section>
 
-          {/* 热门文章 */}
+          {/* E. 热门文章 */}
           {latestPosts?.length > 0 && (
             <section className="flex flex-col mb-10">
               <div className="flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1">
@@ -135,7 +147,7 @@ function AsideLeft(props) {
                     <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-lg text-[10px] mr-4 font-mono ${index < 3 ? 'bg-blue-600 text-white shadow-lg' : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800'}`}>
                       0{index + 1}
                     </span>
-                    <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} className="text-[13px] line-clamp-2 leading-snug">
+                    <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} className="text-[13px] text-zinc-600 dark:text-zinc-400 group-hover:text-blue-600 transition-all line-clamp-2 leading-snug">
                       {p.title}
                     </Link>
                   </li>
@@ -144,11 +156,11 @@ function AsideLeft(props) {
             </section>
           )}
 
-          {/* 系统状态统计 */}
-          <section className="mt-auto pt-10 border-t border-zinc-100 dark:border-zinc-900">
+          {/* F. 系统状态与统计 */}
+          <section className="mt-auto pt-10 border-t border-zinc-100 dark:border-zinc-900 text-center">
             <SocialButton />
-            <div className="mt-8 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-center">
-              <div className="text-[9px] text-zinc-400 uppercase mb-2 tracking-widest">System Online</div>
+            <div className="mt-8 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+              <div className="text-[9px] text-zinc-400 uppercase mb-2 tracking-widest font-black tracking-widest">System Online</div>
               <div className="font-mono text-xs font-bold text-zinc-700 dark:text-zinc-300">{runtime}</div>
             </div>
           </section>
@@ -160,7 +172,7 @@ function AsideLeft(props) {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* 强制覆盖 Style.js 的全局图片限制 */
+        /* 强制锁定物理尺寸，防止被全局 img 样式拉伸 */
         .sideLeft .festive-hat-fixed {
             width: 14px !important;
             max-width: 14px !important;

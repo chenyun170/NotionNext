@@ -14,6 +14,9 @@ const SidebarTools = () => {
   const [convVal, setConvVal] = useState('');
   const [convType, setConvType] = useState('inch-cm'); 
 
+  // HS 搜索模式：true 为专业库，false 为 Google
+  const [hsToGoogle, setHsToGoogle] = useState(false);
+
   const AMAP_KEY = "41151e8e6a20ccd713ae595cd3236735";
   const EX_API_URL = "https://v6.exchangerate-api.com/v6/08bd067e490fdc5d9ccac3bd/latest/USD";
 
@@ -71,8 +74,8 @@ const SidebarTools = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // 计算逻辑
   const totalCBM = ((dims.l * dims.w * dims.h * (dims.pcs || 1)) / 1000000).toFixed(3);
+  
   const loadingSuggestion = () => {
     if (totalCBM <= 0) return "";
     if (totalCBM <= 28) return `(20GP:${(totalCBM/28*100).toFixed(0)}%)`;
@@ -80,11 +83,16 @@ const SidebarTools = () => {
     return "(超量)";
   };
 
-  const handleSearch = (type = 'google') => {
+  const handleSearch = () => {
     if (!searchQuery) return;
-    const url = type === 'hs' 
-      ? `https://www.hsbianma.com/Search?keywords=${encodeURIComponent(searchQuery)}`
-      : `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+    let url = "";
+    if (calcMode === 'hs') {
+      url = hsToGoogle 
+        ? `https://www.google.com/search?q=HS+CODE+${encodeURIComponent(searchQuery)}`
+        : `https://www.hsbianma.com/Search?keywords=${encodeURIComponent(searchQuery)}`;
+    } else {
+      url = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+    }
     window.open(url, '_blank');
   };
 
@@ -118,17 +126,30 @@ const SidebarTools = () => {
         ))}
       </div>
 
-      {/* 操作区 - 恢复至 h-6 高度 */}
+      {/* 操作区 - 严格 h-6 高度 */}
       <div className="h-6 mt-0.5 flex items-center">
         {calcMode === 'cbm' && (
-          <div className="flex gap-1 items-center w-full">
+          <div className="flex gap-1 items-center w-full relative">
             <div className="grid grid-cols-4 gap-0.5 flex-grow">
               {['l', 'w', 'h', 'pcs'].map(f => (
                 <input key={f} type="number" placeholder={f.toUpperCase()} className="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded px-1 h-5 text-[9px] outline-none focus:border-blue-400" value={dims[f]} onChange={e => setDims({...dims, [f]: e.target.value})}/>
               ))}
             </div>
-            <div className="text-[9px] font-black text-blue-600 min-w-[65px] text-right truncate">
-              {totalCBM}m³ <span className="text-[7px] opacity-60 font-normal">{loadingSuggestion()}</span>
+            <div className="group relative text-[9px] font-black text-blue-600 min-w-[65px] text-right cursor-help py-1">
+              <span className="truncate">
+                {totalCBM}m³ <span className="text-[7px] opacity-60 font-normal">{loadingSuggestion()}</span>
+              </span>
+              <div className="absolute bottom-full right-0 mb-2 w-36 hidden group-hover:block z-[100]">
+                <div className="bg-white dark:bg-gray-800 border border-blue-100 dark:border-blue-900 rounded-lg shadow-xl p-2 text-left animate-in fade-in slide-in-from-bottom-1">
+                  <div className="text-[9px] text-blue-600 font-bold mb-1 border-b border-blue-50 dark:border-gray-700 pb-1">📦 装载容积参考</div>
+                  <div className="space-y-1 text-[8px] text-gray-600 dark:text-gray-300">
+                    <div className="flex justify-between"><span>20GP (28m³):</span><span className={totalCBM > 28 ? 'text-rose-500' : 'text-emerald-500'}>{(totalCBM / 28 * 100).toFixed(1)}%</span></div>
+                    <div className="flex justify-between"><span>40GP (58m³):</span><span className={totalCBM > 58 ? 'text-rose-500' : 'text-emerald-500'}>{(totalCBM / 58 * 100).toFixed(1)}%</span></div>
+                    <div className="flex justify-between"><span>40HQ (68m³):</span><span className={totalCBM > 68 ? 'text-rose-500' : 'text-emerald-500'}>{(totalCBM / 68 * 100).toFixed(1)}%</span></div>
+                  </div>
+                  <div className="absolute top-full right-3 w-2 h-2 bg-white dark:bg-gray-800 border-r border-b border-blue-100 dark:border-blue-900 rotate-45 -translate-y-1"></div>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -136,29 +157,32 @@ const SidebarTools = () => {
         {calcMode === 'ex' && (
           <div className="flex gap-2 items-center w-full">
             <input type="number" className="w-1/2 bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded px-1 h-5 outline-none text-[9px]" placeholder="USD$" value={exVal} onChange={e=>setExVal(e.target.value)}/>
-            <div className="flex-1 text-center font-black text-emerald-600 text-[10px]">
-              ≈ ¥ {(exVal * realRate).toFixed(2)}
-            </div>
+            <div className="flex-1 text-center font-black text-emerald-600 text-[10px]">≈ ¥ {(exVal * realRate).toFixed(2)}</div>
           </div>
         )}
 
         {calcMode === 'conv' && (
           <div className="flex gap-1 w-full items-center">
             <select value={convType} onChange={e => setConvType(e.target.value)} className="bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded h-5 text-[8px] outline-none">
-              <option value="inch-cm">吋➔厘</option>
-              <option value="lb-kg">磅➔斤</option>
+              <option value="inch-cm">吋➔厘</option><option value="lb-kg">磅➔斤</option>
             </select>
-            <input type="number" className="w-12 bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded px-1 h-5 outline-none text-[9px]" value={convVal} onChange={e => setConvVal(e.target.value)} placeholder="值"/>
-            <div className="flex-1 text-right font-black text-blue-500 text-[9px] truncate">
-              {(parseFloat(convVal) * (convType === 'inch-cm' ? 2.54 : 0.4536) || 0).toFixed(2)}
-            </div>
+            <input type="number" className="w-10 bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded px-1 h-5 outline-none text-[9px]" value={convVal} onChange={e => setConvVal(e.target.value)} placeholder="值"/>
+            <div className="flex-1 text-right font-black text-blue-500 text-[9px] truncate">{(parseFloat(convVal) * (convType === 'inch-cm' ? 2.54 : 0.4536) || 0).toFixed(2)}</div>
           </div>
         )}
 
         {calcMode === 'hs' && (
-          <div className="flex gap-1 w-full">
-            <input className="flex-1 bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded px-1 h-5 outline-none text-[9px]" placeholder="产品名/编码..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch('hs')}/>
-            <button onClick={() => handleSearch('hs')} className="px-1.5 bg-blue-600 text-white rounded h-5 text-[8px] font-bold">HS查</button>
+          <div className="flex gap-1 w-full items-center">
+            <input className="flex-1 bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded px-1 h-5 outline-none text-[9px]" placeholder={hsToGoogle ? "Google HS..." : "HS编码/产品..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()}/>
+            {/* 切换开关：蓝色为专业库，橙色为Google */}
+            <button 
+              onClick={() => setHsToGoogle(!hsToGoogle)} 
+              className={`w-5 h-5 rounded flex items-center justify-center transition-colors ${hsToGoogle ? 'bg-orange-500 text-white' : 'bg-blue-100 text-blue-600'}`}
+              title={hsToGoogle ? "切换到专业库查询" : "切换到Google搜索"}
+            >
+              <i className={`fab ${hsToGoogle ? 'fa-google' : 'fa-searchengin'} text-[8px]`}></i>
+            </button>
+            <button onClick={handleSearch} className="px-1.5 bg-blue-600 text-white rounded h-5 text-[8px] font-bold">查询</button>
           </div>
         )}
       </div>
@@ -166,14 +190,8 @@ const SidebarTools = () => {
       <style jsx>{`
         .animate-breath-green { animation: breath-green 3s ease-in-out infinite; }
         .animate-breath-red { animation: breath-red 3s ease-in-out infinite; }
-        @keyframes breath-green {
-          0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(16, 185, 129, 0.3); }
-          50% { opacity: 0.4; text-shadow: 0 0 0px rgba(16, 185, 129, 0); }
-        }
-        @keyframes breath-red {
-          0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(244, 63, 94, 0.3); }
-          50% { opacity: 0.4; text-shadow: 0 0 0px rgba(244, 63, 94, 0); }
-        }
+        @keyframes breath-green { 0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(16, 185, 129, 0.3); } 50% { opacity: 0.4; text-shadow: 0 0 0px rgba(16, 185, 129, 0); } }
+        @keyframes breath-red { 0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(244, 63, 94, 0.3); } 50% { opacity: 0.4; text-shadow: 0 0 0px rgba(244, 63, 94, 0); } }
       `}</style>
     </div>
   );

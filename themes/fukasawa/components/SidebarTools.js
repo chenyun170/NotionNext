@@ -14,7 +14,7 @@ const SidebarTools = () => {
   const [convVal, setConvVal] = useState('');
   const [convType, setConvType] = useState('inch-cm'); 
 
-  // HS 搜索模式：true 为专业库，false 为 Google
+  // HS 搜索切换：false 为专业库，true 为 Google
   const [hsToGoogle, setHsToGoogle] = useState(false);
 
   const AMAP_KEY = "41151e8e6a20ccd713ae595cd3236735";
@@ -74,8 +74,8 @@ const SidebarTools = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // 计算逻辑
   const totalCBM = ((dims.l * dims.w * dims.h * (dims.pcs || 1)) / 1000000).toFixed(3);
-  
   const loadingSuggestion = () => {
     if (totalCBM <= 0) return "";
     if (totalCBM <= 28) return `(20GP:${(totalCBM/28*100).toFixed(0)}%)`;
@@ -99,13 +99,13 @@ const SidebarTools = () => {
   return (
     <div className="flex flex-col gap-1.5 p-2 rounded-lg bg-white/60 dark:bg-black/20 backdrop-blur-sm border border-white/20 shadow-sm text-[10px]">
       
-      {/* 顶部状态 */}
+      {/* 顶部状态：天气与汇率 */}
       <div className="flex justify-between items-center px-1 text-[9px] font-bold border-b border-gray-100 dark:border-gray-800 pb-1 text-gray-500">
         <span className="text-blue-600 dark:text-blue-400">📍{weather.city} {weather.text} {weather.temp}°</span>
         <span className="text-emerald-600 dark:text-emerald-400 font-mono">USD/CNY {realRate}</span>
       </div>
 
-      {/* 世界时间 */}
+      {/* 核心时间网格 */}
       <div className="grid grid-cols-4 gap-1">
         {Object.values(times).map(v => (
           <div key={v.n} className="flex flex-col items-center py-0.5 bg-gray-100/50 dark:bg-white/5 rounded border border-black/5">
@@ -117,7 +117,7 @@ const SidebarTools = () => {
         ))}
       </div>
 
-      {/* 工具切换 */}
+      {/* 功能切换栏 */}
       <div className="flex bg-gray-200/50 dark:bg-gray-800 p-0.5 rounded">
         {['cbm', 'ex', 'conv', 'hs'].map(m => (
           <button key={m} onClick={() => setCalcMode(m)} className={`flex-1 py-0.5 text-[9px] font-bold rounded transition-all ${calcMode === m ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-xs' : 'text-gray-400'}`}>
@@ -126,7 +126,7 @@ const SidebarTools = () => {
         ))}
       </div>
 
-      {/* 操作区 - 严格 h-6 高度 */}
+      {/* 操作区 - 严格控制 h-6 高度 */}
       <div className="h-6 mt-0.5 flex items-center">
         {calcMode === 'cbm' && (
           <div className="flex gap-1 items-center w-full relative">
@@ -135,18 +135,23 @@ const SidebarTools = () => {
                 <input key={f} type="number" placeholder={f.toUpperCase()} className="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded px-1 h-5 text-[9px] outline-none focus:border-blue-400" value={dims[f]} onChange={e => setDims({...dims, [f]: e.target.value})}/>
               ))}
             </div>
-            <div className="group relative text-[9px] font-black text-blue-600 min-w-[65px] text-right cursor-help py-1">
+            
+            {/* 体积结果与 Tooltip 详情提示 */}
+            <div className="group relative text-[9px] font-black text-blue-600 min-w-[68px] text-right cursor-help">
               <span className="truncate">
                 {totalCBM}m³ <span className="text-[7px] opacity-60 font-normal">{loadingSuggestion()}</span>
               </span>
-              <div className="absolute bottom-full right-0 mb-2 w-36 hidden group-hover:block z-[100]">
-                <div className="bg-white dark:bg-gray-800 border border-blue-100 dark:border-blue-900 rounded-lg shadow-xl p-2 text-left animate-in fade-in slide-in-from-bottom-1">
-                  <div className="text-[9px] text-blue-600 font-bold mb-1 border-b border-blue-50 dark:border-gray-700 pb-1">📦 装载容积参考</div>
-                  <div className="space-y-1 text-[8px] text-gray-600 dark:text-gray-300">
+
+              {/* 悬停弹出的装箱建议卡片 */}
+              <div className="absolute bottom-full right-0 mb-2 w-36 hidden group-hover:block z-[100] animate-in fade-in slide-in-from-bottom-1">
+                <div className="bg-white dark:bg-gray-800 border border-blue-100 dark:border-blue-900 rounded-lg shadow-xl p-2 text-left">
+                  <div className="text-[9px] text-blue-600 font-bold mb-1 border-b border-blue-50 dark:border-gray-700 pb-1">装载容量参考</div>
+                  <div className="space-y-1 text-[8px] text-gray-600 dark:text-gray-300 font-medium">
                     <div className="flex justify-between"><span>20GP (28m³):</span><span className={totalCBM > 28 ? 'text-rose-500' : 'text-emerald-500'}>{(totalCBM / 28 * 100).toFixed(1)}%</span></div>
                     <div className="flex justify-between"><span>40GP (58m³):</span><span className={totalCBM > 58 ? 'text-rose-500' : 'text-emerald-500'}>{(totalCBM / 58 * 100).toFixed(1)}%</span></div>
                     <div className="flex justify-between"><span>40HQ (68m³):</span><span className={totalCBM > 68 ? 'text-rose-500' : 'text-emerald-500'}>{(totalCBM / 68 * 100).toFixed(1)}%</span></div>
                   </div>
+                  {/* 小三角 */}
                   <div className="absolute top-full right-3 w-2 h-2 bg-white dark:bg-gray-800 border-r border-b border-blue-100 dark:border-blue-900 rotate-45 -translate-y-1"></div>
                 </div>
               </div>
@@ -173,16 +178,16 @@ const SidebarTools = () => {
 
         {calcMode === 'hs' && (
           <div className="flex gap-1 w-full items-center">
-            <input className="flex-1 bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded px-1 h-5 outline-none text-[9px]" placeholder={hsToGoogle ? "Google HS..." : "HS编码/产品..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()}/>
-            {/* 切换开关：蓝色为专业库，橙色为Google */}
+            <input className="flex-1 bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded px-1 h-5 outline-none text-[9px]" placeholder={hsToGoogle ? "Google Code..." : "编码/产品名..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()}/>
+            {/* HS/Google 引擎切换开关 */}
             <button 
               onClick={() => setHsToGoogle(!hsToGoogle)} 
-              className={`w-5 h-5 rounded flex items-center justify-center transition-colors ${hsToGoogle ? 'bg-orange-500 text-white' : 'bg-blue-100 text-blue-600'}`}
+              className={`w-5 h-5 rounded flex items-center justify-center transition-colors shadow-sm ${hsToGoogle ? 'bg-orange-500 text-white' : 'bg-blue-100 text-blue-600 hover:bg-blue-200'}`}
               title={hsToGoogle ? "切换到专业库查询" : "切换到Google搜索"}
             >
-              <i className={`fab ${hsToGoogle ? 'fa-google' : 'fa-searchengin'} text-[8px]`}></i>
+              <span className="text-[8px] font-bold uppercase">{hsToGoogle ? 'G' : 'HS'}</span>
             </button>
-            <button onClick={handleSearch} className="px-1.5 bg-blue-600 text-white rounded h-5 text-[8px] font-bold">查询</button>
+            <button onClick={handleSearch} className="px-1.5 bg-blue-600 text-white rounded h-5 text-[8px] font-bold active:scale-95 transition-transform">GO</button>
           </div>
         )}
       </div>

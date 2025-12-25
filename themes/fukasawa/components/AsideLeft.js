@@ -61,7 +61,7 @@ function AsideLeft(props) {
           {/* Logo 区域 */}
           <div className="flex flex-col items-start px-1 overflow-visible mb-10">
             <div className="relative overflow-visible" style={{ width: '140px', minWidth: '140px' }}>
-              <div className="relative z-10">
+              <div className="relative z-10 transition-transform hover:scale-105 duration-300">
                  <Logo {...props} />
               </div>
               
@@ -78,7 +78,6 @@ function AsideLeft(props) {
                         maxWidth: '65px !important',
                         zIndex: 100,
                         pointerEvents: 'none',
-                        transform: 'rotate(0deg)',
                         display: 'block',
                         mixBlendMode: 'multiply',
                         filter: 'contrast(110%) brightness(105%)'
@@ -97,18 +96,19 @@ function AsideLeft(props) {
             </section>
           </div>
 
-          {/* ================= 活动公告：跑马灯边框效果 ================= */}
-          <div className="marquee-border-container mb-10 p-[2px] rounded-2xl overflow-hidden relative">
+          {/* ================= 活动公告：静态图标版本 ================= */}
+          <div className="marquee-border-container mb-10 p-[2px] rounded-2xl overflow-hidden relative shadow-sm">
              <div className="relative z-10 bg-[#fffcf5] dark:bg-[#1a1610] rounded-2xl p-4">
                 <div className="flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1">
-                <i className="fas fa-bullhorn mr-2 animate-bounce"></i>
-                <span>活动公告 / SPECIAL EVENTS</span>
+                  {/* 这里：删除了 animate-bounce，确保图标静止在左侧 */}
+                  <i className="fas fa-bullhorn mr-2 opacity-80"></i>
+                  <span>活动公告 / SPECIAL EVENTS</span>
                 </div>
                 <Announcement post={notice} />
              </div>
           </div>
 
-          {/* 常用工具台 */}
+          {/* 工具台 */}
           <section className="mb-10">
             <div className="flex items-center text-[10px] font-bold text-blue-600 dark:text-blue-400 tracking-[0.2em] uppercase mb-5 px-1">
               <i className="fas fa-terminal mr-2 opacity-50 animate-pulse"></i>
@@ -117,19 +117,19 @@ function AsideLeft(props) {
             <SidebarTools />
           </section>
 
-          {/* 快速搜索 */}
+          {/* 搜索 */}
           <section className="mb-8">
-            <div className="bg-zinc-50 dark:bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 focus-within:ring-2 ring-blue-500/20 transition-all">
+            <div className="bg-zinc-50 dark:bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800">
               <SearchInput {...props} />
             </div>
           </section>
 
-          {/* 导航菜单 */}
+          {/* 菜单 */}
           <section className="flex flex-col mb-10">
             <MenuList {...props} />
           </section>
 
-          {/* 热门文章 */}
+          {/* 热门 */}
           {latestPosts?.length > 0 && (
             <section className="flex flex-col mb-10">
               <div className="flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1">
@@ -138,11 +138,11 @@ function AsideLeft(props) {
               </div>
               <ul className="space-y-5">
                 {latestPosts.slice(0, 5).map((p, index) => (
-                  <li key={p.id} className="group flex items-start cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900/50 p-2 rounded-xl transition-all">
+                  <li key={p.id} className="group flex items-start p-2 rounded-xl transition-all">
                     <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-lg text-[10px] mr-4 font-mono ${index < 3 ? 'bg-blue-600 text-white shadow-lg' : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800'}`}>
                       0{index + 1}
                     </span>
-                    <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} className="text-[13px] text-zinc-600 dark:text-zinc-400 group-hover:text-blue-600 transition-all line-clamp-2 leading-snug">
+                    <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} className="text-[13px] line-clamp-2">
                       {p.title}
                     </Link>
                   </li>
@@ -151,10 +151,10 @@ function AsideLeft(props) {
             </section>
           )}
 
-          {/* 系统状态 */}
+          {/* 运行状态 */}
           <section className="mt-auto pt-10 border-t border-zinc-100 dark:border-zinc-900">
             <SocialButton />
-            <div className="mt-8 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-center relative overflow-hidden">
+            <div className="mt-8 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-center">
               <div className="text-[9px] text-zinc-400 uppercase mb-2 tracking-widest font-black">System Online</div>
               <div className="font-mono text-xs font-bold text-zinc-700 dark:text-zinc-300">{runtime}</div>
             </div>
@@ -167,31 +167,20 @@ function AsideLeft(props) {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* 1. 跑马灯流光边框动画核心 */
         .marquee-border-container::before {
           content: "";
           position: absolute;
           width: 150%;
           height: 150%;
-          background: conic-gradient(
-            transparent, 
-            #fbbf24, /* 琥珀色 */
-            #f97316, /* 橙色 */
-            #fbbf24, 
-            transparent 30%
-          );
-          top: -25%;
-          left: -25%;
+          background: conic-gradient(transparent, #fbbf24, #f97316, #fbbf24, transparent 30%);
+          top: -25%; left: -25%;
           animation: rotate-marquee 4s linear infinite;
-          z-index: 0;
         }
-
         @keyframes rotate-marquee {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
 
-        /* 2. 圣诞装饰相关 */
         .sideLeft .festive-hat-fixed {
             width: 45px !important;
             max-width: 45px !important;

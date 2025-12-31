@@ -2,7 +2,7 @@
 
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import Announcement from './Announcement'
 import Catalog from './Catalog'
@@ -13,10 +13,103 @@ import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
 import SidebarTools from './SidebarTools'
 
+// ========== 烟花组件 ==========
+const Fireworks = ({ isVisible }) => {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    if (!isVisible || !canvasRef.current) return
+
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    
+    canvas.width = canvas.offsetWidth
+    canvas.height = canvas.offsetHeight
+
+    let particles = []
+    let animationId
+
+    class Particle {
+      constructor(x, y) {
+        this.x = x
+        this.y = y
+        this.vx = (Math.random() - 0.5) * 8
+        this.vy = (Math.random() - 0.5) * 8 - 2
+        this.life = 1
+        this.size = Math.random() * 3 + 2
+        
+        const colors = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#FF6B9D', '#FFA500']
+        this.color = colors[Math.floor(Math.random() * colors.length)]
+      }
+
+      update() {
+        this.x += this.vx
+        this.y += this.vy
+        this.vy += 0.1
+        this.life -= 0.015
+      }
+
+      draw() {
+        ctx.save()
+        ctx.globalAlpha = this.life
+        ctx.fillStyle = this.color
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
+      }
+    }
+
+    const createExplosion = (x, y) => {
+      for (let i = 0; i < 30; i++) {
+        particles.push(new Particle(x, y))
+      }
+    }
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      particles.forEach((p, idx) => {
+        p.update()
+        p.draw()
+        if (p.life <= 0) particles.splice(idx, 1)
+      })
+
+      if (particles.length > 0) {
+        animationId = requestAnimationFrame(animate)
+      }
+    }
+
+    const fireworkInterval = setInterval(() => {
+      const x = Math.random() * canvas.width
+      const y = Math.random() * canvas.height * 0.6
+      createExplosion(x, y)
+    }, 400)
+
+    animate()
+
+    return () => {
+      clearInterval(fireworkInterval)
+      cancelAnimationFrame(animationId)
+    }
+  }, [isVisible])
+
+  if (!isVisible) return null
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      style={{ zIndex: 5 }}
+    />
+  )
+}
+
 function AsideLeft(props) {
   const { post, notice, latestPosts = [] } = props
   const [runtime, setRuntime] = useState('')
   const [isCollapsed, setIsCollapse] = useState(false)
+  const [showFireworks, setShowFireworks] = useState(false)
 
   // 圣诞氛围逻辑
   const now = new Date()
@@ -30,6 +123,29 @@ function AsideLeft(props) {
       if (diff < 0) return
       setRuntime(`${Math.floor(diff / 86400000)}天 ${Math.floor((diff % 86400000) / 3600000)}时`)
     }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  // 检查是否显示喜迎2026烟花
+  useEffect(() => {
+    const checkNewYear = () => {
+      const now = new Date()
+      const year = now.getFullYear()
+      const month = now.getMonth() + 1
+      const date = now.getDate()
+
+      // 2026-01-01 至 2026-01-03 显示
+      const isNewYearPeriod = 
+        (year === 2026 && month === 1 && date <= 3)
+
+      setShowFireworks(isNewYearPeriod)
+    }
+
+    checkNewYear()
+
+    // 每小时检查一次
+    const timer = setInterval(checkNewYear, 3600000)
+
     return () => clearInterval(timer)
   }, [])
 
@@ -64,7 +180,26 @@ function AsideLeft(props) {
               <div className="relative z-10 transition-transform hover:scale-105 duration-300">
                  <Logo {...props} />
               </div>
+
+              {/* 喜迎 2026 烟花效果 */}
+              {showFireworks && (
+                <div className="absolute -top-12 right-0 z-20 pointer-events-none w-48 h-32">
+                  {/* 烟花 Canvas */}
+                  <Fireworks isVisible={showFireworks} />
+
+                  {/* 喜迎 2026 文字 */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
+                    <div className="text-sm font-black bg-gradient-to-r from-red-500 via-yellow-500 to-red-500 bg-clip-text text-transparent drop-shadow-lg animate-bounce">
+                      喜迎2026
+                    </div>
+                    <div className="text-xs text-red-600 font-bold mt-0.5 drop-shadow-md animate-pulse">
+                      新年快乐
+                    </div>
+                  </div>
+                </div>
+              )}
               
+              {/* 圣诞装饰 */}
               {showFestive && (
                 <>
                   <img

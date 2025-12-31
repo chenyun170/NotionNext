@@ -129,24 +129,79 @@ function AsideLeft(props) {
             <MenuList {...props} />
           </section>
 
-          {/* 热门 */}
+          {/* 热门 - 升级版 */}
           {latestPosts?.length > 0 && (
             <section className="flex flex-col mb-10">
               <div className="flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1">
                 <i className="fas fa-fire-alt mr-2 text-orange-500 opacity-50"></i>
                 <span>Trending Now</span>
               </div>
-              <ul className="space-y-5">
-                {latestPosts.slice(0, 5).map((p, index) => (
-                  <li key={p.id} className="group flex items-start p-2 rounded-xl transition-all">
-                    <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-lg text-[10px] mr-4 font-mono ${index < 3 ? 'bg-blue-600 text-white shadow-lg' : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800'}`}>
-                      0{index + 1}
-                    </span>
-                    <Link href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} className="text-[13px] line-clamp-2">
-                      {p.title}
-                    </Link>
-                  </li>
-                ))}
+              <ul className="space-y-3">
+                {latestPosts.slice(0, 5).map((p, index) => {
+                  const isTopThree = index < 3;
+                  return (
+                    <li 
+                      key={p.id} 
+                      className={`group relative overflow-hidden rounded-full transition-all duration-300 ${
+                        isTopThree 
+                          ? 'bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 border border-blue-200 dark:border-blue-800/50 shadow-md hover:shadow-lg hover:scale-105' 
+                          : 'bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
+                      }`}
+                    >
+                      {/* 前3篇的动态背景光效 */}
+                      {isTopThree && (
+                        <>
+                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-bl from-blue-400/20 to-transparent rounded-full blur-3xl animate-pulse"></div>
+                          </div>
+                          <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-blue-500 via-cyan-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </>
+                      )}
+
+                      {/* 内容容器 */}
+                      <div className="relative z-10 flex items-center px-4 py-3 gap-3">
+                        {/* 排名徽章 */}
+                        <span className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-[11px] font-mono font-bold transition-all duration-300 ${
+                          isTopThree 
+                            ? `bg-gradient-to-br ${
+                                index === 0 
+                                  ? 'from-yellow-400 to-orange-500 text-white shadow-lg group-hover:scale-110 animate-bounce' 
+                                  : index === 1 
+                                  ? 'from-gray-300 to-gray-400 text-white shadow-lg group-hover:scale-105' 
+                                  : 'from-orange-300 to-amber-400 text-white shadow-lg group-hover:scale-105'
+                              }` 
+                            : 'bg-zinc-200 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300'
+                        }`}>
+                          {index === 0 ? '🏆' : index === 1 ? '🥈' : index === 2 ? '🥉' : `0${index + 1}`}
+                        </span>
+
+                        {/* 文本内容 */}
+                        <Link 
+                          href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} 
+                          className={`flex-1 text-[13px] line-clamp-2 font-medium transition-all duration-300 ${
+                            isTopThree
+                              ? 'text-blue-700 dark:text-blue-300 group-hover:text-blue-600 dark:group-hover:text-blue-200 group-hover:translate-x-0.5'
+                              : 'text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100'
+                          }`}
+                        >
+                          {p.title}
+                        </Link>
+
+                        {/* 前3篇的热度指示 */}
+                        {isTopThree && (
+                          <div className="flex-shrink-0 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            {[...Array(index + 1)].map((_, i) => (
+                              <div 
+                                key={i}
+                                className="w-1.5 h-4 bg-gradient-to-t from-orange-500 to-red-500 rounded-sm opacity-75 hover:opacity-100"
+                              ></div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           )}

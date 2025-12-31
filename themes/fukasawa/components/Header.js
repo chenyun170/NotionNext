@@ -168,7 +168,7 @@ const Header = props => {
         {/* 4. 折叠菜单 */}
         <Collapse type='vertical' isOpen={isOpen} collapseRef={collapseRef}>
           <div className='py-1 px-5 bg-white dark:bg-black'>
-            <MenuInput
+            <MenuList
               {...props}
               onHeightChange={param =>
                 collapseRef.current?.updateCollapseHeight(param)

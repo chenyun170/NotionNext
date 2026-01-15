@@ -1,83 +1,74 @@
 /* eslint-disable react/no-unknown-property */
-/**
- * Fukasawa 主题专用样式优化版
- * 修复了 Logo 被强制拉伸的问题，优化了选择器范围
- */
 const Style = () => {
   return <style jsx global>{`
-    /* 基础背景与平滑滚动 */
+    :root {
+        --fuka-bg: #f8f8f8;
+        --fuka-dark-bg: #0d0d0d;
+        --fuka-item-gap: 1.5rem;
+        --fuka-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     body {
-        background-color: #f6f6f6;
+        background-color: var(--fuka-bg);
         scroll-behavior: smooth;
         -webkit-font-smoothing: antialiased;
+        transition: background-color 0.3s ease;
     }
+
     .dark body {
-        background-color: #111111;
+        background-color: var(--fuka-dark-bg);
     }
-    
-    /* 瀑布流响应式布局核心 */
+
+    /* 瀑布流优化 */
+    #theme-fukasawa .grid-container {
+        column-fill: balance;
+    }
+
     #theme-fukasawa .grid-item {
+        display: inline-block; /* 核心修复：防止内容跨列截断 */
+        width: 100%;
         height: auto;
-        break-inside: avoid-column;
-        margin-bottom: 1.5rem;
-        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        break-inside: avoid;
+        margin-bottom: var(--fuka-item-gap);
+        transition: var(--fuka-transition);
+        will-change: transform;
     }
 
-    /* 悬停微动效 */
     #theme-fukasawa .grid-item:hover {
-        transform: translateY(-5px);
-    }
-    
-    /* 响应式分栏逻辑 */
-    @media (min-width: 1024px) {
-        #theme-fukasawa .grid-container {
-            column-count: 3;
-            column-gap: 1.5rem;
-        }
-    }
-    @media (min-width: 640px) and (max-width: 1023px) {
-        #theme-fukasawa .grid-container {
-            column-count: 2;
-            column-gap: 1rem;
-        }
-    }
-    @media (max-width: 639px) {
-        #theme-fukasawa .grid-container {
-            column-count: 1;
-            column-gap: 0;
-        }
+        transform: translateY(-6px);
     }
 
-    /* 【关键修复】：强制图片显示修复 
-       增加了 :not(.sideLeft img) 排除侧边栏图片
-       或者指定只对瀑布流卡片内的图片生效
-    */
+    /* 响应式断点精修 */
+    @media (min-width: 1536px) { #theme-fukasawa .grid-container { column-count: 4; column-gap: var(--fuka-item-gap); } }
+    @media (min-width: 1024px) and (max-width: 1535px) { #theme-fukasawa .grid-container { column-count: 3; column-gap: var(--fuka-item-gap); } }
+    @media (min-width: 768px) and (max-width: 1023px) { #theme-fukasawa .grid-container { column-count: 2; column-gap: 1rem; } }
+    @media (max-width: 767px) { #theme-fukasawa .grid-container { column-count: 1; column-gap: 0; } }
+
+    /* 图片保护 */
     #theme-fukasawa .grid-item img {
-        border-radius: 8px;
+        border-radius: 10px;
         opacity: 1 !important;
         display: block !important;
         width: 100% !important;
         height: auto !important;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
     }
 
-    /* 侧边栏图片特殊保护：确保 Logo 和帽子不被拉伸 */
+    /* 侧边栏/装饰物锁定 */
     .sideLeft img {
         width: auto !important;
-        max-width: none !important;
+        max-width: fit-content !important;
         border-radius: 0 !important;
+        box-shadow: none !important;
     }
 
-    /* ============ 新增：圣诞帽专用物理锁 ============ */
     .sideLeft .festive-hat-fixed {
-        width: 12px !important;      /* 这里控制帽子大小，12px 约 Logo 的 1/3 */
-        max-width: 12px !important;
+        width: 14px !important;
         height: auto !important;
-        display: block !important;
-        z-index: 100 !important;
+        z-index: 50;
+        pointer-events: none; /* 防止遮挡下方Logo点击 */
     }
-    /* ============================================= */
 
-    /* 文章摘要截断优化 */
     .line-clamp-2 {
         display: -webkit-box;
         -webkit-line-clamp: 2;

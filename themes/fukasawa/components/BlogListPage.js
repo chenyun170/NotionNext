@@ -1,51 +1,47 @@
+'use client'
+
 import { AdSlot } from '@/components/GoogleAdsense'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
-import { deepClone, isBrowser } from '@/lib/utils'
+import { isBrowser } from '@/lib/utils'
 import { debounce } from 'lodash'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import BlogCard from './BlogCard'
 import BlogPostListEmpty from './BlogListEmpty'
 import PaginationSimple from './PaginationSimple'
 
-/**
- * 优化动态版：保留行列重排逻辑，增加渐显动画与布局优化
- */
 const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
   const { NOTION_CONFIG } = useGlobal()
-  const postsPerPage = siteConfig('POSTS_PER_PAGE', null, NOTION_CONFIG)
+  const postsPerPage = siteConfig('POSTS_PER_PAGE', 12, NOTION_CONFIG)
   const totalPage = Math.ceil(postCount / postsPerPage)
   const showNext = page < totalPage
 
   const [columns, setColumns] = useState(calculateColumns())
-  const [filterPosts, setFilterPosts] = useState([])
 
-  // 1. 响应式监听
+  // 1. 响应式监听优化
   useEffect(() => {
-    const handleResize = debounce(() => {
-      setColumns(calculateColumns())
-    }, 200)
+    const handleResize = debounce(() => setColumns(calculateColumns()), 200)
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // 2. 核心算法：行列重组逻辑 (保持原有逻辑)
-  useEffect(() => {
+  // 2. 核心算法优化：改用 useMemo，移除冗余的 deepClone
+  const filterPosts = useMemo(() => {
     const count = posts?.length || 0
+    if (count === 0) return []
+    
     const rows = Math.ceil(count / columns)
-    const newFilterPosts = new Array(count)
+    const rearranged = []
 
-    let index = 0
     for (let col = 0; col < columns; col++) {
       for (let row = 0; row < rows; row++) {
         const sourceIndex = row * columns + col
         if (sourceIndex < count) {
-          newFilterPosts[index] = deepClone(posts[sourceIndex])
-          index++
+          rearranged.push(posts[sourceIndex])
         }
       }
     }
-    setFilterPosts(newFilterPosts)
+    return rearranged
   }, [columns, posts])
 
   if (!filterPosts || filterPosts.length === 0) {
@@ -54,52 +50,44 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
 
   return (
     <div className='w-full'>
-      {/* 文章列表容器：使用响应式 Grid 布局 */}
+      {/* 调整为 column 布局以支持原生瀑布流 (Fukasawa 风格) */}
       <div 
         id='posts-wrapper' 
-        className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full'
+        className='w-full gap-8'
+        style={{
+          columnCount: columns,
+          columnGap: '2rem'
+        }}
       >
-        {filterPosts?.map((post, index) => (
+        {filterPosts.map((post, index) => (
           <div
             key={post.id}
-            className='opacity-0 animate-fade-in-up'
+            className='opacity-0 animate-fade-in-up mb-8'
             style={{ 
-              animationDelay: `${(index % 6) * 100}ms`, // 错开入场时间
-              animationFillMode: 'forwards' 
+              animationDelay: `${(index % 6) * 100}ms`,
+              animationFillMode: 'forwards',
+              breakInside: 'avoid' // 防止卡片被跨列截断
             }}
           >
-            <BlogCard
-              index={index}
-              post={post}
-              siteInfo={siteInfo}
-            />
+            <BlogCard index={index} post={post} siteInfo={siteInfo} />
           </div>
         ))}
 
-        {/* 广告位 */}
         {siteConfig('ADSENSE_GOOGLE_ID') && (
-          <div className='col-span-full p-3'>
+          <div className='w-full p-3' style={{ breakInside: 'avoid' }}>
             <AdSlot type='flow' />
           </div>
         )}
       </div>
 
-      {/* 分页按钮容器 */}
       <div className='py-12 flex justify-center'>
         <PaginationSimple page={page} showNext={showNext} />
       </div>
 
-      {/* 原生动画样式注入 */}
       <style jsx>{`
         @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in-up {
           animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -109,13 +97,10 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
   )
 }
 
-/**
- * 计算文章列数
- */
 const calculateColumns = () => {
   if (!isBrowser) return 3
-  if (window.innerWidth >= 1024) return 3
-  if (window.innerWidth >= 640) return 2
+  if (window.innerWidth >= 1280) return 3
+  if (window.innerWidth >= 768) return 2
   return 1
 }
 

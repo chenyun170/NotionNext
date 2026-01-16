@@ -75,6 +75,7 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
       <div 
         id='theme-fukasawa' 
         className={`${siteConfig('FONT_STYLE')} dark:bg-black scroll-smooth antialiased`}
+        {onLoading && <LoadingCover />}
       >
         <Style />
         <Header {...props} />

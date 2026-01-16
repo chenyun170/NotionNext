@@ -1,8 +1,7 @@
 import SmartLink from '@/components/SmartLink'
 
 /**
- * Fukasawa 主题适配版 - 极简胶囊标签 V2.1
- * 改进：优化了色调，增加了悬停位移，更符合瀑布流极简风
+ * Fukasawa 瀑布流专用 - 高级质感标签组件
  */
 const TagItemMini = ({ tag, selected = false }) => {
   if (!tag) return null
@@ -12,19 +11,18 @@ const TagItemMini = ({ tag, selected = false }) => {
       key={tag.name}
       href={selected ? '/' : `/tag/${encodeURIComponent(tag.name)}`}
       passHref
-      className={`cursor-pointer inline-flex items-center rounded-md transition-all duration-300
-        mr-3 mb-2 py-1 px-3 text-[11px] font-medium whitespace-nowrap tracking-widest uppercase
+      className={`group cursor-pointer inline-flex items-center transition-all duration-300
+        mr-3 mb-3 py-1.5 px-4 rounded-md text-[11px] tracking-widest uppercase font-medium
         ${selected
-          ? 'text-white bg-black dark:bg-white dark:text-black shadow-lg transform -translate-y-0.5'
-          : `text-gray-600 dark:text-gray-400 bg-white dark:bg-hexonight border border-gray-100 dark:border-gray-800 
-             hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md hover:-translate-y-0.5`
-        }`}
+          ? 'bg-black text-white shadow-lg transform -translate-y-0.5' 
+          : 'bg-white text-gray-500 border border-gray-100 hover:border-black hover:text-black hover:shadow-md hover:-translate-y-0.5'
+        } dark:bg-hexonight dark:border-gray-800 dark:text-gray-400`}
     >
       <div className='flex items-center'>
-        {selected && <i className='mr-2 fas fa-tag text-[9px]' />}
-        <span className="leading-none">{tag.name}</span>
+        {selected && <i className='mr-2 fas fa-tag text-[9px] animate-pulse' />}
+        <span>{tag.name}</span>
         {tag.count && (
-          <span className={`ml-1.5 opacity-50 font-light ${selected ? 'text-gray-300 dark:text-gray-600' : ''}`}>
+          <span className={`ml-2 text-[9px] opacity-40 group-hover:opacity-100 transition-opacity`}>
             {tag.count}
           </span>
         )}

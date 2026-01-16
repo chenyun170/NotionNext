@@ -37,6 +37,7 @@ import BlogListScroll from './components/BlogListScroll'
 import BlogArchiveItem from './components/BlogPostArchive'
 import Header from './components/Header'
 import TagItemMini from './components/TagItemMini'
+import LoadingCover from './components/LoadingCover'
 import CONFIG from './config'
 import { Style } from './style'
 

@@ -12,9 +12,11 @@ import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
 import SidebarTools from './SidebarTools'
+import TagItemMini from './TagItemMini' // 1. 引入标签组件
 
 function AsideLeft(props) {
-  const { post, notice, latestPosts = [] } = props
+  // 2. 从 props 中解构出 tagOptions 数据
+  const { post, notice, latestPosts = [], tagOptions = [] } = props 
   const [runtime, setRuntime] = useState('')
   const [isCollapsed, setIsCollapse] = useState(false)
 
@@ -96,11 +98,10 @@ function AsideLeft(props) {
             </section>
           </div>
 
-          {/* ================= 活动公告：静态图标版本 ================= */}
+          {/* 活动公告 */}
           <div className="marquee-border-container mb-10 p-[2px] rounded-2xl overflow-hidden relative shadow-sm">
              <div className="relative z-10 bg-[#fffcf5] dark:bg-[#1a1610] rounded-2xl p-4">
                 <div className="flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1">
-                  {/* 这里：删除了 animate-bounce，确保图标静止在左侧 */}
                   <i className="fas fa-bullhorn mr-2 opacity-80"></i>
                   <span>活动公告 / SPECIAL EVENTS</span>
                 </div>
@@ -129,7 +130,28 @@ function AsideLeft(props) {
             <MenuList {...props} />
           </section>
 
-          {/* 热门 - 升级版 */}
+          {/* === 3. 新增：侧边栏热度标签云 === */}
+          {tagOptions?.length > 0 && (
+            <section className="flex flex-col mb-10">
+              <div className="flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1">
+                <i className="fas fa-tags mr-2 text-indigo-500 opacity-50"></i>
+                <span>Hot Tags</span>
+              </div>
+              <div className="flex flex-wrap gap-1 pl-1">
+                {/* 限制侧边栏展示前12个标签，避免高度失控 */}
+                {tagOptions.slice(0, 12).map(tag => (
+                  <TagItemMini key={tag.name} tag={tag} />
+                ))}
+                {tagOptions.length > 12 && (
+                    <Link href='/tag' className='text-[10px] text-zinc-400 hover:text-blue-500 transition-colors mt-2 ml-1 italic'>
+                        More Tags...
+                    </Link>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* 热门文章 */}
           {latestPosts?.length > 0 && (
             <section className="flex flex-col mb-10">
               <div className="flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1">
@@ -148,7 +170,6 @@ function AsideLeft(props) {
                           : 'bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
                       }`}
                     >
-                      {/* 前3篇的动态背景光效 */}
                       {isTopThree && (
                         <>
                           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -158,9 +179,7 @@ function AsideLeft(props) {
                         </>
                       )}
 
-                      {/* 内容容器 */}
                       <div className="relative z-10 flex items-center px-4 py-3 gap-3">
-                        {/* 排名徽章 */}
                         <span className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-[11px] font-mono font-bold transition-all duration-300 ${
                           isTopThree 
                             ? `bg-gradient-to-br ${
@@ -175,7 +194,6 @@ function AsideLeft(props) {
                           {index === 0 ? '🏆' : index === 1 ? '🥈' : index === 2 ? '🥉' : `0${index + 1}`}
                         </span>
 
-                        {/* 文本内容 */}
                         <Link 
                           href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} 
                           className={`flex-1 text-[13px] line-clamp-2 font-medium transition-all duration-300 ${
@@ -186,18 +204,6 @@ function AsideLeft(props) {
                         >
                           {p.title}
                         </Link>
-
-                        {/* 前3篇的热度指示 */}
-                        {isTopThree && (
-                          <div className="flex-shrink-0 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            {[...Array(index + 1)].map((_, i) => (
-                              <div 
-                                key={i}
-                                className="w-1.5 h-4 bg-gradient-to-t from-orange-500 to-red-500 rounded-sm opacity-75 hover:opacity-100"
-                              ></div>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     </li>
                   );

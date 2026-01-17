@@ -41,21 +41,30 @@ const SidebarTools = () => {
       setTimes(res);
     };
 
-    const initLocationWeather = async () => {
-      try {
-        const ipRes = await fetch(`https://restapi.amap.com/v3/ip?key=${AMAP_KEY}`);
-        const ipData = await ipRes.json();
-        const adcode = ipData.adcode || "110000";
-        const cityName = ipData.city || "北京";
+const initLocationWeather = async () => {
+  try {
+    // 直接固定南昌市的 adcode (360100)
+    const adcode = "360100";
+    const cityName = "南昌";
 
-        const wRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?city=${adcode}&key=${AMAP_KEY}`);
-        const wData = await wRes.json();
-        if (wData.lives?.length > 0) {
-          const live = wData.lives[0];
-          setWeather({ temp: live.temperature, text: live.weather, city: cityName.replace('市', '') });
-        }
-      } catch (e) { console.error("Weather Error"); }
-    };
+    // 请求实时天气
+    const wRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?city=${adcode}&key=${AMAP_KEY}`);
+    const wData = await wRes.json();
+    
+    if (wData.lives?.length > 0) {
+      const live = wData.lives[0];
+      setWeather({ 
+        temp: live.temperature, 
+        text: live.weather, 
+        city: cityName // 固定显示南昌
+      });
+    }
+  } catch (e) { 
+    console.error("Weather Error", e); 
+    // 错误时显示默认值
+    setWeather({ temp: '20', text: '多云', city: '南昌' });
+  }
+};
 
     const fetchRate = async () => {
       try {

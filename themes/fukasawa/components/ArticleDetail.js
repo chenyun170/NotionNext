@@ -29,15 +29,18 @@ export default function ArticleDetail(props) {
     <div
       id='container'
       className={`${fullWidth ? 'px-10' : 'max-w-5xl '} overflow-x-auto flex-grow mx-auto w-screen md:w-full`}>
-      {post?.type && !post?.type !== 'Page' && post?.pageCover && (
-        <div className='w-full relative md:flex-shrink-0 overflow-hidden'>
-          <LazyImage
-            alt={post.title}
-            src={post?.pageCover}
-            className='object-cover max-h-[60vh] w-full'
-          />
-        </div>
-      )}
+{/* 修改后的文章封面部分 */}
+{post?.type && post?.type !== 'Page' && post?.pageCover && (
+  <div className='w-full relative md:flex-shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-orange-500/20'>
+    <LazyImage
+      alt={post.title}
+      src={post?.pageCover}
+      className='object-cover max-h-[60vh] w-full'
+    />
+    {/* 增加一个内部光泽效果，提升立体感 */}
+    <div className='absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl'></div>
+  </div>
+)}
 
       <article
         itemScope

@@ -61,10 +61,13 @@ const Logo = props => {
 
       <SmartLink href='/' className='flex flex-col items-center lg:items-start group cursor-pointer'>
         {/* Logo 图标 - 保持不变 */}
+        <SmartLink href='/' className='flex flex-col items-center lg:items-start group cursor-pointer'>
+        {/* Logo 图标 - 增加顺时针旋转效果 */}
         <div className='relative'>
           <img 
             src='/logo.png' 
-            className='w-16 h-16 mb-2 object-contain transition-all duration-500 group-hover:brightness-110 group-hover:drop-shadow-md' 
+            // 💡 关键修改：添加了 group-hover:rotate-12 (顺时针旋转12度)
+            className='w-16 h-16 mb-2 object-contain transition-all duration-500 ease-in-out group-hover:rotate-12' 
             style={{ minWidth: '72px', minHeight: '72px' }}
             alt={siteConfig('TITLE')} 
           />

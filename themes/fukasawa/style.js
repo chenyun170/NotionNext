@@ -19,6 +19,20 @@ const Style = () => {
         background-color: var(--fuka-dark-bg);
     }
 
+/* 1. 给 Logo 图片增加基础过渡属性 */
+.sideLeft img, 
+img[alt="外贸获客情报局"] {
+    transition: transform 0.5s ease-in-out !important;
+    display: inline-block !important;
+}
+
+/* 2. 强制触发旋转：当鼠标指向左侧栏或 Logo 本身时 */
+.sideLeft:hover img,
+.group:hover img[alt="外贸获客情报局"],
+img[alt="外贸获客情报局"]:hover {
+    transform: rotate(12deg) !important;
+}
+
     /* 瀑布流优化 */
     #theme-fukasawa .grid-container {
         column-fill: balance;

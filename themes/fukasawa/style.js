@@ -19,13 +19,13 @@ const Style = () => {
         background-color: var(--fuka-dark-bg);
     }
 
-    /* --- 瀑布流列表优化 --- */
+    /* 瀑布流优化 */
     #theme-fukasawa .grid-container {
         column-fill: balance;
     }
 
     #theme-fukasawa .grid-item {
-        display: inline-block; 
+        display: inline-block; /* 核心修复：防止内容跨列截断 */
         width: 100%;
         height: auto;
         break-inside: avoid;
@@ -44,7 +44,7 @@ const Style = () => {
     @media (min-width: 768px) and (max-width: 1023px) { #theme-fukasawa .grid-container { column-count: 2; column-gap: 1rem; } }
     @media (max-width: 767px) { #theme-fukasawa .grid-container { column-count: 1; column-gap: 0; } }
 
-    /* --- 图片立体倒角效果 (首页+文章页) --- */
+    /* 图片保护与立体倒角增强 */
     #theme-fukasawa .grid-item img,
     #article-wrapper img {
         border-radius: 16px !important; 
@@ -52,7 +52,6 @@ const Style = () => {
         display: block !important;
         width: 100% !important;
         height: auto !important;
-        /* 深度立体投影 */
         box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
         transition: all 0.3s ease !important;
         border: 1px solid rgba(0,0,0,0.05);
@@ -70,33 +69,22 @@ const Style = () => {
         border-color: rgba(255,255,255,0.1);
     }
 
-    /* --- 标签尺寸精修 (解决标签过大问题) --- */
-    
-    /* 1. 统一缩小首页卡片和文章详情页的标签 */
-    #theme-fukasawa .grid-item .flex-wrap a, 
+    /* 💡 标签项 (TagItemMini) 尺寸精修 - 解决“whatsapp找客户”等显示过大的问题 */
     #article-wrapper .flex-nowrap a,
+    .subpixel-antialiased .flex-nowrap a,
     .tag-item-mini {
-        padding: 2px 6px !important;    /* 极简内边距 */
-        font-size: 10px !important;     /* 缩小字体使其精致 */
-        min-width: fit-content !important; 
+        padding: 2px 8px !important;    /* 缩小上下左右边距 */
+        font-size: 11px !important;     /* 减小字体大小 */
+        min-width: fit-content !important; /* 防止固定宽度撑大 */
         height: auto !important;
-        line-height: 1.2 !important;
-        border-radius: 4px !important;
-        margin: 2px !important;
+        line-height: 1.4 !important;
+        border-radius: 4px !important;   /* 配合小尺寸使用更小的倒角 */
+        margin: 2px !important;         /* 标签之间的间距 */
         display: inline-flex !important;
         align-items: center !important;
-        border: 1px solid rgba(0,0,0,0.05) !important;
-        background-color: rgba(0,0,0,0.02) !important;
     }
 
-    /* 2. 针对暗黑模式标签背景微调 */
-    .dark #theme-fukasawa .grid-item .flex-wrap a,
-    .dark #article-wrapper .flex-nowrap a {
-        background-color: rgba(255,255,255,0.05) !important;
-        border-color: rgba(255,255,255,0.1) !important;
-    }
-
-    /* --- 其他装饰物与功能锁定 --- */
+    /* 侧边栏/装饰物锁定 (保持原样) */
     .sideLeft img {
         width: auto !important;
         max-width: fit-content !important;
@@ -109,7 +97,7 @@ const Style = () => {
         width: 14px !important;
         height: auto !important;
         z-index: 50;
-        pointer-events: none;
+        pointer-events: none; 
     }
 
     .line-clamp-2 {

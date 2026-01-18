@@ -44,22 +44,41 @@ const Style = () => {
     @media (min-width: 768px) and (max-width: 1023px) { #theme-fukasawa .grid-container { column-count: 2; column-gap: 1rem; } }
     @media (max-width: 767px) { #theme-fukasawa .grid-container { column-count: 1; column-gap: 0; } }
 
-    /* 图片保护 */
-    #theme-fukasawa .grid-item img {
-        border-radius: 10px;
+    /* 💡 图片保护与立体倒角增强 */
+    #theme-fukasawa .grid-item img,
+    #article-wrapper img {
+        border-radius: 16px !important; /* 增加倒角弧度 */
         opacity: 1 !important;
         display: block !important;
         width: 100% !important;
         height: auto !important;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+        /* 增加立体投影 */
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+        transition: all 0.3s ease !important;
+        border: 1px solid rgba(0,0,0,0.05);
     }
 
-    /* 侧边栏/装饰物锁定 */
+    /* 鼠标悬停时的立体感增强 */
+    #theme-fukasawa .grid-item:hover img,
+    #article-wrapper img:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+    }
+
+    /* 暗黑模式适配 */
+    .dark #theme-fukasawa .grid-item img,
+    .dark #article-wrapper img {
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.5) !important;
+        border-color: rgba(255,255,255,0.1);
+    }
+
+    /* 侧边栏/装饰物锁定 (保持原样) */
     .sideLeft img {
         width: auto !important;
         max-width: fit-content !important;
         border-radius: 0 !important;
         box-shadow: none !important;
+        transform: none !important;
     }
 
     .sideLeft .festive-hat-fixed {

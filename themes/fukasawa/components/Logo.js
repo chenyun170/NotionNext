@@ -63,14 +63,16 @@ const Logo = props => {
       <SmartLink href='/' className='flex flex-col items-center lg:items-start group cursor-pointer'>
         
         {/* Logo 图标 - 顺时针旋转效果 */}
-        <div className='relative'>
-          <img 
-            src='/logo.png' 
-            className='w-16 h-16 mb-2 object-contain transition-all duration-500 ease-in-out group-hover:rotate-12' 
-            style={{ minWidth: '72px', minHeight: '72px' }}
-            alt={siteConfig('TITLE')} 
-          />
-        </div>
+<div className='relative group/logo'> 
+  <img 
+    src='/logo.png' 
+    // 💡 优化点 1: 显式声明 transform 以确保动画起始点
+    // 💡 优化点 2: 增加 hover: 直接作用，防止 group 信号失效
+    className='w-16 h-16 mb-2 object-contain transform transition-all duration-500 ease-in-out group-hover:rotate-12 hover:rotate-12' 
+    style={{ minWidth: '72px', minHeight: '72px' }}
+    alt={siteConfig('TITLE')} 
+  />
+</div>
 
         {/* 文字标题 - 忍者特效 */}
         <div className='text-center lg:text-left relative z-20 mt-1'>

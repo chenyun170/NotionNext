@@ -62,13 +62,13 @@ const Logo = props => {
       {/* 💡 修复点：确保 SmartLink 只有一个开口和一个闭口 */}
       <SmartLink href='/' className='flex flex-col items-center lg:items-start group cursor-pointer'>
         
-        {/* Logo 图标 - 顺时针旋转效果 */}
-<div className='relative group/logo'> 
+{/* Logo 图标容器 */}
+<div className='relative'> 
   <img 
     src='/logo.png' 
-    // 💡 优化点 1: 显式声明 transform 以确保动画起始点
-    // 💡 优化点 2: 增加 hover: 直接作用，防止 group 信号失效
-    className='w-16 h-16 mb-2 object-contain transform transition-all duration-500 ease-in-out group-hover:rotate-12 hover:rotate-12' 
+    // 💡 关键点 1：使用 hover:rotate-12 直接驱动，不依赖父级 group
+    // 💡 关键点 2：添加 transform 和 inline-block 确保 CSS 变换生效
+    className='w-16 h-16 mb-2 object-contain transition-all duration-500 ease-in-out transform hover:rotate-12 inline-block' 
     style={{ minWidth: '72px', minHeight: '72px' }}
     alt={siteConfig('TITLE')} 
   />

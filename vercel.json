@@ -1,9 +1,7 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "headers": []
-}
-{
+  "headers": [],
   "rewrites": [
     {
       "source": "/api/(.*)",

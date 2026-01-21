@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     // 3. 调用 AI 模型
     const completion = await client.chat.completions.create({
-      model: "emini-1.5-flash", // 截图中的免费模型名称
+      model: "gemini-1.5-flash", // 截图中的免费模型名称
       messages: [
         { role: "system", content: "你是一个乐于助人的 AI 助手。" },
         { role: "user", content: message } // 使用前端传来的消息

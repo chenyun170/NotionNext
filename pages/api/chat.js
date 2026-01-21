@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   // 2. 初始化 OpenAI，但用的是 Poixe 的地址
   // 注意：API Key 放在服务器端，用户看不到
   const client = new OpenAI({
-    apiKey: "sk-isgnjnduhyvhluqemioibanygqdfodlfxqladoyqvwldcgp", // 建议以后放在环境变量里
+    apiKey: "sk-isgnjnduhyvhluqemioibanygqdfodlfxqladoyqvwldcgpz", // 建议以后放在环境变量里
     baseURL: "https://api.siliconflow.cn/v1",
   });
 

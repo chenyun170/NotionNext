@@ -13,7 +13,7 @@ export default function SidebarChatWidget() {
     setReply(''); 
 
     try {
-      const response = await fetch('/public/chat', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: input }),

@@ -14,8 +14,8 @@ export default function SidebarChatWidget() {
     setReply(''); // 清空旧回复
 
     try {
-      // ✅ 这里请确保您已经配置好了后端的 /api/chat
-      const response = await fetch('/api/chat', {
+      // ✅ 这里请确保您已经配置好了后端的 /public/chat
+      const response = await fetch('/public/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: input }),

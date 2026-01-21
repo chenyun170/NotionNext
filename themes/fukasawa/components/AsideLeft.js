@@ -12,10 +12,11 @@ import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
 import SidebarTools from './SidebarTools'
-import TagItemMini from './TagItemMini' // 1. 引入标签组件
+import TagItemMini from './TagItemMini' 
+// ✅ 引入组件
+import SidebarChatWidget from '../components/SidebarChatWidget';
 
 function AsideLeft(props) {
-  // 2. 从 props 中解构出 tagOptions 数据
   const { post, notice, latestPosts = [], tagOptions = [] } = props 
   const [runtime, setRuntime] = useState('')
   const [isCollapsed, setIsCollapse] = useState(false)
@@ -48,7 +49,7 @@ function AsideLeft(props) {
 
   return (
     <div className="flex">
-      {/* 1. 折叠按钮 */}
+      {/* 折叠按钮 */}
       <button
         onClick={toggleCollapse}
         className={`${btnPosition} fixed top-6 z-50 p-2.5 rounded-xl bg-white/90 dark:bg-zinc-800/90 backdrop-blur-md shadow-lg border border-gray-200 dark:border-zinc-700 transition-all duration-500 hover:scale-110 active:scale-95 group`}
@@ -56,7 +57,7 @@ function AsideLeft(props) {
         <i className={`fa-solid ${isCollapsed ? 'fa-indent text-blue-500' : 'fa-chevron-left text-gray-400'} text-sm group-hover:text-blue-500 transition-colors`}></i>
       </button>
 
-      {/* 2. 侧边栏主体 */}
+      {/* 侧边栏主体 */}
       <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#09090b] min-h-screen hidden lg:block z-30 border-r border-gray-100 dark:border-zinc-900 shadow-2xl`}>
         <div className={`h-full no-scrollbar overflow-y-auto flex flex-col transition-all duration-500 ${isCollapsed ? 'opacity-0 invisible' : 'opacity-100 px-8 py-10'}`}>
 
@@ -130,7 +131,7 @@ function AsideLeft(props) {
             <MenuList {...props} />
           </section>
 
-          {/* === 3. 新增：侧边栏热度标签云 === */}
+          {/* 侧边栏热度标签云 */}
           {tagOptions?.length > 0 && (
             <section className="flex flex-col mb-10">
               <div className="flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1">
@@ -138,7 +139,6 @@ function AsideLeft(props) {
                 <span>Hot Tags</span>
               </div>
               <div className="flex flex-wrap gap-1 pl-1">
-                {/* 限制侧边栏展示前12个标签，避免高度失控 */}
                 {tagOptions.slice(0, 12).map(tag => (
                   <TagItemMini key={tag.name} tag={tag} />
                 ))}
@@ -151,7 +151,7 @@ function AsideLeft(props) {
             </section>
           )}
 
-          {/* 热门文章 */}
+          {/* 热门文章 (Trending Now) */}
           {latestPosts?.length > 0 && (
             <section className="flex flex-col mb-10">
               <div className="flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1">
@@ -159,6 +159,7 @@ function AsideLeft(props) {
                 <span>Trending Now</span>
               </div>
               <ul className="space-y-3">
+                {/* 渲染前 5 篇文章 */}
                 {latestPosts.slice(0, 5).map((p, index) => {
                   const isTopThree = index < 3;
                   return (
@@ -209,6 +210,12 @@ function AsideLeft(props) {
                   );
                 })}
               </ul>
+
+              {/* 🔥🔥🔥 新增：AI 助手组件 (紧跟在热门文章列表下方) 🔥🔥🔥 */}
+              <div className="mt-4">
+                  <SidebarChatWidget />
+              </div>
+
             </section>
           )}
 

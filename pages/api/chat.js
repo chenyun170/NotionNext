@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   // 注意：API Key 放在服务器端，用户看不到
   const client = new OpenAI({
     apiKey: "sk-9e2e8315827f2df74e171b06cb781d51", // 建议以后放在环境变量里
-    baseURL: "https://api.siliconflow.cn/v1",
+    baseURL: "https://apis.iflow.cn/v1",
   });
 
   try {

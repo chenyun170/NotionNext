@@ -13,12 +13,15 @@ import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
 import SidebarTools from './SidebarTools'
 import TagItemMini from './TagItemMini' 
+// ✅ 引入组件
 import SidebarChatWidget from '../components/SidebarChatWidget';
 
 function AsideLeft(props) {
   const { post, notice, latestPosts = [], tagOptions = [] } = props 
   const [runtime, setRuntime] = useState('')
   const [isCollapsed, setIsCollapse] = useState(false)
+  // ✅ 新增：控制手机端 AI 助手的展开/收起状态
+  const [isAiOpen, setIsAiOpen] = useState(false)
 
   // 圣诞氛围逻辑
   const now = new Date()
@@ -48,12 +51,39 @@ function AsideLeft(props) {
 
   return (
     <div className="flex">
-      {/* 🚀 逻辑 1：手机端专用的 AI 助手 - 定位在屏幕左侧中间 */}
-      {/* 使用 lg:hidden 确保它在电脑端完全不渲染，避免干扰 */}
-      <div className="lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[60] flex items-center">
-        <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-1 rounded-r-2xl shadow-2xl border-y border-r border-gray-200 dark:border-zinc-800 transition-transform active:scale-95">
-          <SidebarChatWidget />
-        </div>
+      {/* 🚀 逻辑 1：手机端专用 AI 助手 - 定位在屏幕左侧中间，支持点击展开和内部滚动 */}
+      <div className={`lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[70] transition-all duration-300 ${isAiOpen ? 'w-[85vw] left-2' : 'w-auto'}`}>
+        {!isAiOpen ? (
+          /* 收起状态：显示精致的悬浮胶囊 */
+          <button 
+            onClick={() => setIsAiOpen(true)}
+            className="flex items-center gap-2 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md p-2 rounded-r-2xl shadow-2xl border-y border-r border-blue-500/30 active:scale-95 transition-all"
+          >
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg animate-pulse">
+              <i className="fas fa-robot text-lg"></i>
+            </div>
+            <div className="pr-2 text-left">
+              <p className="text-[11px] font-bold text-blue-600 dark:text-blue-400">AI 参谋</p>
+              <p className="text-[9px] text-zinc-400">点击咨询</p>
+            </div>
+          </button>
+        ) : (
+          /* 展开状态：显示带滚动条的聊天窗口，解决长文看不了的问题 */
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-left-4 duration-300">
+             <div className="bg-zinc-100 dark:bg-zinc-800 px-4 py-3 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-700">
+                <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 flex items-center gap-2">
+                  <i className="fas fa-comment-dots text-blue-500"></i> 情报局 AI 助手
+                </span>
+                <button onClick={() => setIsAiOpen(false)} className="text-zinc-400 hover:text-red-500 transition-colors p-1">
+                  <i className="fas fa-times"></i>
+                </button>
+             </div>
+             {/* ✅ 内部滚动容器：解决长文观看问题 */}
+             <div className="p-4 overflow-y-auto max-h-[60vh] no-scrollbar">
+                <SidebarChatWidget />
+             </div>
+          </div>
+        )}
       </div>
 
       {/* 折叠按钮 */}
@@ -217,8 +247,7 @@ function AsideLeft(props) {
                 })}
               </ul>
 
-              {/* 🚀 逻辑 2：电脑端显示的 AI 助手 - 位于热门文章下方 */}
-              {/* 使用 hidden lg:block 确保它在手机端不重复出现 */}
+              {/* 🚀 逻辑 2：电脑端保持在热门文章列表下方 */}
               <div className="mt-4 hidden lg:block">
                   <SidebarChatWidget />
               </div>

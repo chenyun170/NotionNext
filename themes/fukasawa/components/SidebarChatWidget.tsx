@@ -1,5 +1,6 @@
 import { useState } from 'react';
-// ❌ 删除原来的 import { Sparkles ... } from 'lucide-react';
+// ✅ 1. 引入 Markdown 渲染组件
+import ReactMarkdown from 'react-markdown';
 
 export default function SidebarChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +35,6 @@ export default function SidebarChatWidget() {
         className="bg-white dark:bg-zinc-900 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-transparent hover:border-blue-100 group mt-4"
       >
         <div className="flex items-start gap-3">
-          {/* ✅ 图标换成了 FontAwesome (fas fa-robot) */}
           <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
             <i className="fas fa-robot text-sm"></i>
           </div>
@@ -56,19 +56,30 @@ export default function SidebarChatWidget() {
     <div className="bg-white dark:bg-zinc-900 rounded-2xl p-4 shadow-lg border border-blue-100 dark:border-zinc-700 relative mt-4">
       <div className="flex justify-between items-center mb-3 pb-2 border-b border-slate-100 dark:border-zinc-800">
         <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm">
-          {/* ✅ 图标换成了 FontAwesome */}
           <i className="fas fa-robot"></i>
           <span>AI 助手在线</span>
         </div>
         <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-          {/* ✅ 图标换成了 FontAwesome (fas fa-times) */}
           <i className="fas fa-times"></i>
         </button>
       </div>
 
       {reply && (
         <div className="bg-slate-50 dark:bg-zinc-800 p-3 rounded-lg text-xs text-slate-700 dark:text-slate-300 mb-3 leading-relaxed border border-slate-100 dark:border-zinc-700 max-h-40 overflow-y-auto">
-          {reply}
+          {/* ✅ 2. 这里修改了：用 ReactMarkdown 包裹住 reply */}
+          {/* 为了让排版更好看，我们还可以给 strong 加点样式 */}
+          <ReactMarkdown 
+            components={{
+              // 让加粗字体颜色深一点
+              strong: ({node, ...props}) => <span className="font-bold text-slate-900 dark:text-white" {...props} />,
+              // 让列表有点缩进
+              ul: ({node, ...props}) => <ul className="list-disc list-inside my-1" {...props} />,
+              // 段落之间稍微空一点
+              p: ({node, ...props}) => <p className="mb-1 last:mb-0" {...props} />
+            }}
+          >
+            {reply}
+          </ReactMarkdown>
         </div>
       )}
 

@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     const stream = await client.chat.completions.create({
       // ⚠️ 重点：模型名字。建议先填截图示例里的 "gpt-4.1-mini" 试试
       // 如果报错 404，就改成 "glm-4" 或 "[Z] GLM-4.7"
-      model: "[Z] GLM-4.7", 
+      model: "glm-4.7", 
       
       messages: [
         { role: "system", content: "你是一个乐于助人的 AI 助手。" },

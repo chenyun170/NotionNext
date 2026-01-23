@@ -22,6 +22,8 @@ function AsideLeft(props) {
   const [isCollapsed, setIsCollapse] = useState(false)
   // ✅ 新增：控制手机端 AI 助手的展开/收起状态
   const [isAiOpen, setIsAiOpen] = useState(false)
+  // ✅ 引入全局主题控制
+  const { isDarkMode, updateDarkMode } = useGlobal()
 
   // 圣诞氛围逻辑
   const now = new Date()
@@ -44,29 +46,45 @@ function AsideLeft(props) {
     localStorage.setItem('fukasawa-sidebar-collapse', String(next))
   }
 
+  // ✅ 切换模式函数
+  const handleChangeDarkMode = () => {
+    updateDarkMode(!isDarkMode)
+  }
+
   const isReverse = siteConfig('LAYOUT_SIDEBAR_REVERSE')
   const btnPosition = isCollapsed 
     ? (isReverse ? 'right-4' : 'left-4') 
     : (isReverse ? 'right-[18.5rem]' : 'left-[18.5rem]')
 
-   return (
+  return (
     <div className="flex">
-      {/* 🚀 手机端专用 AI 助手 */}
-      <div className={`lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[70] transition-all duration-300 ${isAiOpen ? 'w-[85vw] left-2' : 'w-auto'}`}>
+      {/* 🚀 手机端专用 AI 助手 & 模式切换 - 定位在屏幕左侧中间 */}
+      <div className={`lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[70] transition-all duration-300 flex flex-col gap-3 ${isAiOpen ? 'w-[85vw] left-2' : 'w-auto'}`}>
         {!isAiOpen ? (
-          <button 
-            onClick={() => setIsAiOpen(true)}
-            className="flex items-center gap-1 bg-white/20 dark:bg-zinc-800/40 backdrop-blur-xl p-1 rounded-r-2xl shadow-2xl border border-white/40 ring-1 ring-white/20 active:scale-95 transition-all"
-          >
-            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-              <i className="fas fa-robot text-sm"></i>
-            </div>
-            <div className="pr-1">
-              <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 leading-none">AI 参谋</p>
-            </div>
-          </button>
+          <>
+            {/* AI 参谋按钮 */}
+            <button 
+              onClick={() => setIsAiOpen(true)}
+              className="flex items-center gap-1 bg-white/40 dark:bg-zinc-800/40 backdrop-blur-xl p-1 rounded-r-2xl shadow-2xl border border-white/40 ring-1 ring-white/20 active:scale-95 transition-all"
+            >
+              <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                <i className="fas fa-robot text-sm"></i>
+              </div>
+              <div className="pr-1">
+                <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 leading-none">AI 参谋</p>
+              </div>
+            </button>
+
+            {/* ✅ 模式切换按钮：放在 AI 参谋下面 */}
+            <button 
+              onClick={handleChangeDarkMode}
+              className="flex items-center justify-center w-11 h-11 bg-white/40 dark:bg-zinc-800/40 backdrop-blur-xl rounded-r-xl shadow-xl border border-white/40 ring-1 ring-white/20 active:scale-90 transition-all text-zinc-600 dark:text-zinc-300"
+            >
+              <i className={`fas ${isDarkMode ? 'fa-sun text-yellow-500' : 'fa-moon text-indigo-600'} text-lg`}></i>
+            </button>
+          </>
         ) : (
-          /* 展开状态：显示带滚动条的聊天窗口，解决长文看不了的问题 */
+          /* 展开状态：显示聊天窗口 */
           <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-left-4 duration-300">
              <div className="bg-zinc-100 dark:bg-zinc-800 px-4 py-3 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-700">
                 <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 flex items-center gap-2">
@@ -76,7 +94,6 @@ function AsideLeft(props) {
                   <i className="fas fa-times"></i>
                 </button>
              </div>
-             {/* ✅ 内部滚动容器：解决长文观看问题 */}
              <div className="p-4 overflow-y-auto max-h-[60vh] no-scrollbar">
                 <SidebarChatWidget />
              </div>

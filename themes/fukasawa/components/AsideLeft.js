@@ -56,7 +56,7 @@ function AsideLeft(props) {
         {!isAiOpen ? (
           <button 
             onClick={() => setIsAiOpen(true)}
-            className="flex items-center gap-1 bg-white/40 dark:bg-zinc-800/40 backdrop-blur-xl p-1 rounded-r-2xl shadow-2xl border border-white/40 ring-1 ring-white/20 active:scale-95 transition-all"
+            className="flex items-center gap-1 bg-white/20 dark:bg-zinc-800/40 backdrop-blur-xl p-1 rounded-r-2xl shadow-2xl border border-white/40 ring-1 ring-white/20 active:scale-95 transition-all"
           >
             <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
               <i className="fas fa-robot text-sm"></i>

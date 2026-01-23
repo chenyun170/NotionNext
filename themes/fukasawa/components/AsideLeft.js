@@ -22,7 +22,7 @@ function AsideLeft(props) {
   const [isCollapsed, setIsCollapse] = useState(false)
   // ✅ 新增：控制手机端 AI 助手的展开/收起状态
   const [isAiOpen, setIsAiOpen] = useState(false)
-  // ✅ 引入全局主题控制
+  // ✅ 保持全局状态引入，以便其他地方使用
   const { isDarkMode, updateDarkMode } = useGlobal()
 
   // 圣诞氛围逻辑
@@ -46,7 +46,7 @@ function AsideLeft(props) {
     localStorage.setItem('fukasawa-sidebar-collapse', String(next))
   }
 
-  // ✅ 切换模式函数
+  // ✅ 切换模式函数（保留函数体，但不再被按钮调用）
   const handleChangeDarkMode = () => {
     updateDarkMode(!isDarkMode)
   }
@@ -58,7 +58,7 @@ function AsideLeft(props) {
 
   return (
     <div className="flex">
-      {/* 🚀 手机端专用 AI 助手 & 模式切换 - 定位在屏幕左侧中间 */}
+      {/* 🚀 手机端专用 AI 助手 - 已移除模式切换按钮 */}
       <div className={`lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[70] transition-all duration-300 flex flex-col gap-3 ${isAiOpen ? 'w-[85vw] left-2' : 'w-auto'}`}>
         {!isAiOpen ? (
           <>
@@ -74,14 +74,7 @@ function AsideLeft(props) {
                 <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 leading-none">AI 参谋</p>
               </div>
             </button>
-
-            {/* ✅ 模式切换按钮：放在 AI 参谋下面 */}
-            <button 
-              onClick={handleChangeDarkMode}
-              className="flex items-center justify-center w-11 h-11 bg-white/40 dark:bg-zinc-800/40 backdrop-blur-xl rounded-r-xl shadow-xl border border-white/40 ring-1 ring-white/20 active:scale-90 transition-all text-zinc-600 dark:text-zinc-300"
-            >
-              <i className={`fas ${isDarkMode ? 'fa-sun text-yellow-500' : 'fa-moon text-indigo-600'} text-lg`}></i>
-            </button>
+            {/* ✅ 这里原本的太阳月亮切换按钮已被移除 */}
           </>
         ) : (
           /* 展开状态：显示聊天窗口 */

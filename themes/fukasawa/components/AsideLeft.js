@@ -55,18 +55,24 @@ function AsideLeft(props) {
       <div className={`lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[70] transition-all duration-300 ${isAiOpen ? 'w-[85vw] left-2' : 'w-auto'}`}>
         {!isAiOpen ? (
           /* 收起状态：显示精致的悬浮胶囊 */
-          <button 
-            onClick={() => setIsAiOpen(true)}
-            className="flex items-center gap-2 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md p-2 rounded-r-2xl shadow-2xl border-y border-r border-blue-500/30 active:scale-95 transition-all"
-          >
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg animate-pulse">
-              <i className="fas fa-robot text-lg"></i>
-            </div>
-            <div className="pr-2 text-left">
-              <p className="text-[11px] font-bold text-blue-600 dark:text-blue-400">AI 参谋</p>
-              <p className="text-[9px] text-zinc-400">点击咨询</p>
-            </div>
-          </button>
+/* 💡 修改后的代码 */
+<button 
+  onClick={() => setIsAiOpen(true)}
+  // 关键修改：
+  // 1. bg-white/40 (降低到 40% 不透明度) 
+  // 2. backdrop-blur-xl (增强模糊感)
+  // 3. border-white/40 (白光边缘感)
+  // 4. ring-1 ring-white/20 (增加质感)
+  className="flex items-center gap-2 bg-white/40 dark:bg-zinc-800/40 backdrop-blur-xl p-2 rounded-r-2xl shadow-2xl border border-white/40 dark:border-zinc-700/40 ring-1 ring-white/20 active:scale-95 transition-all"
+>
+  <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg animate-pulse">
+    <i className="fas fa-robot text-lg"></i>
+  </div>
+  <div className="pr-2 text-left">
+    <p className="text-[11px] font-bold text-blue-600 dark:text-blue-400">AI 参谋</p>
+    <p className="text-[9px] text-zinc-500">点击咨询</p>
+  </div>
+</button>
         ) : (
           /* 展开状态：显示带滚动条的聊天窗口，解决长文看不了的问题 */
           <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-left-4 duration-300">

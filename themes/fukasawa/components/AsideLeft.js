@@ -13,7 +13,6 @@ import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
 import SidebarTools from './SidebarTools'
 import TagItemMini from './TagItemMini' 
-// ✅ 引入组件
 import SidebarChatWidget from '../components/SidebarChatWidget';
 
 function AsideLeft(props) {
@@ -49,6 +48,13 @@ function AsideLeft(props) {
 
   return (
     <div className="flex">
+      {/* 🚀 新增：手机端专用的 AI 助手 - 定位在左侧中间 */}
+      <div className="lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[60] flex items-center">
+        <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-1 rounded-r-2xl shadow-2xl border-y border-r border-gray-200 dark:border-zinc-800 transition-transform active:scale-95">
+          <SidebarChatWidget />
+        </div>
+      </div>
+
       {/* 折叠按钮 */}
       <button
         onClick={toggleCollapse}
@@ -159,7 +165,6 @@ function AsideLeft(props) {
                 <span>Trending Now</span>
               </div>
               <ul className="space-y-3">
-                {/* 渲染前 5 篇文章 */}
                 {latestPosts.slice(0, 5).map((p, index) => {
                   const isTopThree = index < 3;
                   return (
@@ -211,7 +216,6 @@ function AsideLeft(props) {
                 })}
               </ul>
 
-              {/* 🔥🔥🔥 新增：AI 助手组件 (紧跟在热门文章列表下方) 🔥🔥🔥 */}
               <div className="mt-4">
                   <SidebarChatWidget />
               </div>

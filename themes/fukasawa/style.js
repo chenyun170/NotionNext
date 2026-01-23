@@ -3,35 +3,44 @@ const Style = () => {
   return <style jsx global>{`
     :root {
         --fuka-bg: #f8f8f8;
-        --fuka-dark-bg: #0d0d0d;
+        --fuka-dark-bg: #111111; /* 稍微调深一点，更有质感 */
         --fuka-item-gap: 1.5rem;
         --fuka-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    /* 💡 修复点 1：确保 body 背景在两种模式下都有正确的过渡和初始色 */
     body {
-        background-color: var(--fuka-bg);
+        background-color: var(--fuka-bg) !important;
         scroll-behavior: smooth;
         -webkit-font-smoothing: antialiased;
         transition: background-color 0.3s ease;
     }
 
-    .dark body {
-        background-color: var(--fuka-dark-bg);
+    /* 💡 修复点 2：增强黑夜模式选择器优先级，确保首页背景变黑 */
+    .dark body, 
+    [data-theme='dark'] body {
+        background-color: var(--fuka-dark-bg) !important;
     }
 
-/* 1. 给 Logo 图片增加基础过渡属性 */
-.sideLeft img, 
-img[alt="外贸获客情报局"] {
-    transition: transform 0.5s ease-in-out !important;
-    display: inline-block !important;
-}
+    /* 💡 修复点 3：移除首页容器可能的白色背景遮挡 */
+    .dark #theme-fukasawa,
+    .dark #container {
+        background-color: transparent !important;
+    }
 
-/* 2. 强制触发旋转：当鼠标指向左侧栏或 Logo 本身时 */
-.sideLeft:hover img,
-.group:hover img[alt="外贸获客情报局"],
-img[alt="外贸获客情报局"]:hover {
-    transform: rotate(12deg) !important;
-}
+    /* 1. 给 Logo 图片增加基础过渡属性 */
+    .sideLeft img, 
+    img[alt="外贸获客情报局"] {
+        transition: transform 0.5s ease-in-out !important;
+        display: inline-block !important;
+    }
+
+    /* 2. 强制触发旋转：当鼠标指向左侧栏或 Logo 本身时 */
+    .sideLeft:hover img,
+    .group:hover img[alt="外贸获客情报局"],
+    img[alt="外贸获客情报局"]:hover {
+        transform: rotate(12deg) !important;
+    }
 
     /* 瀑布流优化 */
     #theme-fukasawa .grid-container {
@@ -46,6 +55,11 @@ img[alt="外贸获客情报局"]:hover {
         margin-bottom: var(--fuka-item-gap);
         transition: var(--fuka-transition);
         will-change: transform;
+    }
+
+    /* 💡 修复点 4：列表卡片在暗黑模式下的底色适配 */
+    .dark #theme-fukasawa .grid-item {
+        background-color: #1a1a1a !important;
     }
 
     #theme-fukasawa .grid-item:hover {
@@ -83,22 +97,22 @@ img[alt="外贸获客情报局"]:hover {
         border-color: rgba(255,255,255,0.1);
     }
 
-    /* 💡 标签项 (TagItemMini) 尺寸精修 - 解决“whatsapp找客户”等显示过大的问题 */
+    /* 💡 标签项 (TagItemMini) 尺寸精修 */
     #article-wrapper .flex-nowrap a,
     .subpixel-antialiased .flex-nowrap a,
     .tag-item-mini {
-        padding: 2px 8px !important;    /* 缩小上下左右边距 */
-        font-size: 11px !important;     /* 减小字体大小 */
-        min-width: fit-content !important; /* 防止固定宽度撑大 */
+        padding: 2px 8px !important;    
+        font-size: 11px !important;     
+        min-width: fit-content !important; 
         height: auto !important;
         line-height: 1.4 !important;
-        border-radius: 4px !important;   /* 配合小尺寸使用更小的倒角 */
-        margin: 2px !important;         /* 标签之间的间距 */
+        border-radius: 4px !important;   
+        margin: 2px !important;         
         display: inline-flex !important;
         align-items: center !important;
     }
 
-    /* 侧边栏/装饰物锁定 (保持原样) */
+    /* 侧边栏/装饰物锁定 */
     .sideLeft img {
         width: auto !important;
         max-width: fit-content !important;

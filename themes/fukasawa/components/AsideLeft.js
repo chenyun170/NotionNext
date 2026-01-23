@@ -48,7 +48,8 @@ function AsideLeft(props) {
 
   return (
     <div className="flex">
-      {/* 🚀 新增：手机端专用的 AI 助手 - 定位在左侧中间 */}
+      {/* 🚀 逻辑 1：手机端专用的 AI 助手 - 定位在屏幕左侧中间 */}
+      {/* 使用 lg:hidden 确保它在电脑端完全不渲染，避免干扰 */}
       <div className="lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[60] flex items-center">
         <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-1 rounded-r-2xl shadow-2xl border-y border-r border-gray-200 dark:border-zinc-800 transition-transform active:scale-95">
           <SidebarChatWidget />
@@ -216,7 +217,9 @@ function AsideLeft(props) {
                 })}
               </ul>
 
-              <div className="mt-4">
+              {/* 🚀 逻辑 2：电脑端显示的 AI 助手 - 位于热门文章下方 */}
+              {/* 使用 hidden lg:block 确保它在手机端不重复出现 */}
+              <div className="mt-4 hidden lg:block">
                   <SidebarChatWidget />
               </div>
 

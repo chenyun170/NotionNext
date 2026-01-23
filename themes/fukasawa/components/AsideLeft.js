@@ -54,17 +54,17 @@ function AsideLeft(props) {
       {/* 🚀 逻辑 1：手机端专用 AI 助手 - 定位在屏幕左侧中间，支持点击展开和内部滚动 */}
       <div className={`lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[70] transition-all duration-300 ${isAiOpen ? 'w-[85vw] left-2' : 'w-auto'}`}>
         {!isAiOpen ? (
-<button 
+       <button 
   onClick={() => setIsAiOpen(true)}
-  // 💡 关键修改：w-12 限制初始宽度，hover:w-32 实现悬停展开
-  className="flex items-center w-12 hover:w-32 overflow-hidden bg-white/40 dark:bg-zinc-800/40 backdrop-blur-xl p-1 rounded-r-2xl shadow-2xl border border-white/40 ring-1 ring-white/20 active:scale-95 transition-all duration-300"
+  // 💡 关键修改：将 p-2 改为 p-1，减少横向空隙
+  className="flex items-center gap-1 bg-white/40 dark:bg-zinc-800/40 backdrop-blur-xl p-1 rounded-r-2xl shadow-2xl border border-white/40 ring-1 ring-white/20 active:scale-95 transition-all"
 >
-  <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg animate-pulse">
-    <i className="fas fa-robot text-lg"></i>
+  <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+    <i className="fas fa-robot text-sm"></i>
   </div>
-  {/* 文字部分增加 opacity-0，悬停才显示 */}
-  <div className="pl-2 text-left opacity-0 group-hover:opacity-100 transition-opacity">
-    <p className="text-[11px] font-bold text-blue-600 whitespace-nowrap">AI 参谋</p>
+  {/* 只保留标题，且去掉右边距 */}
+  <div className="pr-1">
+    <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 leading-none">AI 参谋</p>
   </div>
 </button>
         ) : (

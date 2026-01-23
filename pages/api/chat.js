@@ -50,6 +50,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error("API调用失败:", error);
-    res.status(500).json({ error: '接口调用失败，请检查模型名称或Token' });
+    res.status(500).json({ error: error.message || error.toString() });
   }
 }

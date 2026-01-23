@@ -49,24 +49,22 @@ function AsideLeft(props) {
     ? (isReverse ? 'right-4' : 'left-4') 
     : (isReverse ? 'right-[18.5rem]' : 'left-[18.5rem]')
 
-  return (
+   return (
     <div className="flex">
-      {/* 🚀 逻辑 1：手机端专用 AI 助手 - 定位在屏幕左侧中间，支持点击展开和内部滚动 */}
+      {/* 🚀 手机端专用 AI 助手 */}
       <div className={`lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[70] transition-all duration-300 ${isAiOpen ? 'w-[85vw] left-2' : 'w-auto'}`}>
         {!isAiOpen ? (
-       <button 
-  onClick={() => setIsAiOpen(true)}
-  // 💡 关键修改：将 p-2 改为 p-1，减少横向空隙
-  className="flex items-center gap-1 bg-white/40 dark:bg-zinc-800/40 backdrop-blur-xl p-1 rounded-r-2xl shadow-2xl border border-white/40 ring-1 ring-white/20 active:scale-95 transition-all"
->
-  <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-    <i className="fas fa-robot text-sm"></i>
-  </div>
-  {/* 只保留标题，且去掉右边距 */}
-  <div className="pr-1">
-    <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 leading-none">AI 参谋</p>
-  </div>
-</button>
+          <button 
+            onClick={() => setIsAiOpen(true)}
+            className="flex items-center gap-1 bg-white/40 dark:bg-zinc-800/40 backdrop-blur-xl p-1 rounded-r-2xl shadow-2xl border border-white/40 ring-1 ring-white/20 active:scale-95 transition-all"
+          >
+            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+              <i className="fas fa-robot text-sm"></i>
+            </div>
+            <div className="pr-1">
+              <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 leading-none">AI 参谋</p>
+            </div>
+          </button>
         ) : (
           /* 展开状态：显示带滚动条的聊天窗口，解决长文看不了的问题 */
           <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-left-4 duration-300">

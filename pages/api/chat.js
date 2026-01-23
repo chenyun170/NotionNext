@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   // 2. 配置新的接口地址 (从你的DevTools截图提取)
   const client = new OpenAI({
     apiKey: "ilove4n0n4me", // 对应截图里的 API Token
-    baseURL: "https://worldof.onrender.com/v1", // ✅ 截图3里的真实地址
+    baseURL: "https://worldof.onrender.com/v1/chat/completions", // ✅ 截图3里的真实地址
   });
 
   try {

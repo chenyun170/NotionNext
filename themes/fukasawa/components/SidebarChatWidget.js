@@ -11,7 +11,7 @@ export default function SidebarChatWidget() {
   const knownMsgIds = useRef(new Set())
 
   // API 基础地址 - 请确保你的 FastAPI 后端已启动
-  const API_BASE = 'http://127.0.0.1:8000' 
+  const API_BASE = 'http://node67.lunes.host:3079' 
 
   useEffect(() => {
     // 1. 初始化 SessionID

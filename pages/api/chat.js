@@ -9,8 +9,8 @@ export default async function handler(req, res) {
 
   // 2. 配置新的接口地址 (从你的DevTools截图提取)
   const client = new OpenAI({
-    apiKey: "ilove4n0n4me", // 对应截图里的 API Token
-    baseURL: "https://worldof.onrender.com/v1", // ✅ 截图3里的真实地址
+    apiKey: "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", // 对应截图里的 API Token
+    baseURL: "https://api.openai.com/v1", // ✅ 截图3里的真实地址
   });
 
   try {
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     const stream = await client.chat.completions.create({
       // ⚠️ 重点：模型名字。建议先填截图示例里的 "gpt-4.1-mini" 试试
       // 如果报错 404，就改成 "glm-4" 或 "[Z] GLM-4.7"
-      model: "glm-4.7", 
+      model: "gpt-4o", 
       
       messages: [
         { role: "system", content: "你是一个乐于助人的 AI 助手。" },

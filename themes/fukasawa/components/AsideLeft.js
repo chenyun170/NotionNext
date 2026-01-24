@@ -15,7 +15,6 @@ import SidebarTools from './SidebarTools'
 import TagItemMini from './TagItemMini' 
 // ✅ 引入组件
 import SidebarChatWidget from '../components/SidebarChatWidget';
-{% include 'chat_widget.html' %}
 
 function AsideLeft(props) {
   const { post, notice, latestPosts = [], tagOptions = [] } = props 

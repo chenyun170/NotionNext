@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   // 2. 配置新的接口地址 (从你的DevTools截图提取)
   const client = new OpenAI({
     apiKey: "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", // 对应截图里的 API Token
-    baseURL: "https://api.openai.com", // ✅ 截图3里的真实地址
+    baseURL: "https://api-proxy.de/openai/v1", // ✅ 截图3里的真实地址
   });
 
   try {

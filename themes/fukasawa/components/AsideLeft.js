@@ -15,10 +15,6 @@ import SidebarTools from './SidebarTools'
 import TagItemMini from './TagItemMini' 
 // ✅ 引入组件
 import SidebarChatWidget from '../components/SidebarChatWidget';
-import dynamic from 'next/dynamic'
-
-// 使用 dynamic 引入，避免服务端渲染 (SSR) 时找不到浏览器 API
-const SidebarChatWidget = dynamic(() => import('./SidebarChatWidget'), { ssr: false })
 
 function AsideLeft(props) {
   const { post, notice, latestPosts = [], tagOptions = [] } = props 

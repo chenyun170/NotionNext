@@ -1,7 +1,7 @@
 // pages/sitemap.xml.js
 import BLOG from '@/blog.config'
 import { siteConfig } from '@/lib/config'
-import { getGlobalData } from '@/lib/db/getSiteData'
+import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { extractLangId, extractLangPrefix } from '@/lib/utils/pageId'
 import { getServerSideSitemap } from 'next-sitemap'
 
@@ -14,7 +14,7 @@ export const getServerSideProps = async ctx => {
     const id = extractLangId(siteId)
     const locale = extractLangPrefix(siteId)
     // 第一个id站点默认语言
-    const siteData = await getGlobalData({
+    const siteData = await fetchGlobalAllData({
       pageId: id,
       from: 'sitemap.xml'
     })
@@ -38,17 +38,7 @@ export const getServerSideProps = async ctx => {
 }
 
 function generateLocalesSitemap(link, allPages, locale) {
-  // 核心修复：确保使用 https 且包含 www (如果这是你的主域名)
-  if (link && !link.startsWith('https://')) {
-    link = link.replace('http://', 'https://');
-  }
-  
-  // 确保 link 与 GSC 中验证的资源完全一致
-  // 如果你在 GSC 验证的是 www.123170.xyz，这里必须包含 www
-  if (link && !link.includes('www.')) {
-     link = link.replace('://', '://www.');
-  }
-
+  // 确保链接不以斜杠结尾
   if (link && link.endsWith('/')) {
     link = link.slice(0, -1)
   }
@@ -62,13 +52,13 @@ function generateLocalesSitemap(link, allPages, locale) {
       loc: `${link}${locale}`,
       lastmod: dateNow,
       changefreq: 'daily',
-      priority: '1.0'
+      priority: '0.7'
     },
     {
       loc: `${link}${locale}/archive`,
       lastmod: dateNow,
       changefreq: 'daily',
-      priority: '0.8'
+      priority: '0.7'
     },
     {
       loc: `${link}${locale}/category`,

@@ -1,5 +1,5 @@
 // pages/sitemap.xml.js
-import { fetchGlobalAllData } from '@/lib/db/getSiteData'
+import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'

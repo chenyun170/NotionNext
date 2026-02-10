@@ -5,11 +5,26 @@ import { idToUuid } from 'notion-utils'
 import BLOG from './blog.config'
 
 /**
+ * ✅ 明确放行的静态/公共文件（避免被 i18n / rewrite / auth 误处理）
+ */
+function isPublicFile(pathname: string) {
+  return (
+    pathname === '/robots.txt' ||
+    pathname === '/sitemap.xml' ||
+    pathname === '/redirect.json' ||
+    pathname === '/favicon.ico' ||
+    pathname.startsWith('/_next/')
+  )
+}
+
+/**
  * Clerk 身份验证中间件
  */
 export const config = {
-  // 这里设置白名单，防止静态资源被拦截
-  matcher: ['/((?!.*\\..*|_next|/sign-in|/auth).*)', '/', '/(api|trpc)(.*)']
+  // ✅ 只对“页面路由”生效，排除 robots/sitemap 等公共文件
+  matcher: [
+    '/((?!robots\\.txt|sitemap\\.xml|redirect\\.json|favicon\\.ico|_next/).*)'
+  ]
 }
 
 // 限制登录访问的路由
@@ -28,13 +43,12 @@ const isTenantAdminRoute = createRouteMatcher([
 
 /**
  * 没有配置权限相关功能的返回
- * @param req
- * @param ev
- * @returns
  */
 // eslint-disable-next-line @typescript-eslint/require-await, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const noAuthMiddleware = async (req: NextRequest, ev: any) => {
-  // 如果没有配置 Clerk 相关环境变量，返回一个默认响应或者继续处理请求
+  // ✅ 再保险：公共文件直接放行
+  if (isPublicFile(req.nextUrl.pathname)) return NextResponse.next()
+
   if (BLOG['UUID_REDIRECT']) {
     let redirectJson: Record<string, string> = {}
     try {
@@ -52,26 +66,27 @@ const noAuthMiddleware = async (req: NextRequest, ev: any) => {
     if (lastPart && redirectJson[lastPart]) {
       const redirectToUrl = req.nextUrl.clone()
       redirectToUrl.pathname = '/' + redirectJson[lastPart]
-      console.log(
-        `redirect from ${req.nextUrl.pathname} to ${redirectToUrl.pathname}`
-      )
       return NextResponse.redirect(redirectToUrl, 308)
     }
   }
   return NextResponse.next()
 }
+
 /**
  * 鉴权中间件
  */
 const authMiddleware = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
   ? clerkMiddleware((auth, req) => {
+      // ✅ 再保险：公共文件直接放行
+      if (isPublicFile(req.nextUrl.pathname)) return NextResponse.next()
+
       const { userId } = auth()
+
       // 处理 /dashboard 路由的登录保护
       if (isTenantRoute(req)) {
         if (!userId) {
-          // 用户未登录，重定向到 /sign-in
           const url = new URL('/sign-in', req.url)
-          url.searchParams.set('redirectTo', req.url) // 保存重定向目标
+          url.searchParams.set('redirectTo', req.url)
           return NextResponse.redirect(url)
         }
       }
@@ -86,7 +101,6 @@ const authMiddleware = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
         })
       }
 
-      // 默认继续处理请求
       return NextResponse.next()
     })
   : noAuthMiddleware

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "checkJs": false,
     "paths": {
       "@/*": ["./*"],
       "@/blog.config": ["./blog.config"],
@@ -49,11 +50,6 @@
   "exclude": [
     "node_modules",
     "public"
-  ],
-  {
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": false
-  }
+  ]
 }
 

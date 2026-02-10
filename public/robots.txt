@@ -1,8 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow:
 
-# 核心：确保 Sitemap 链接包含 www 且地址完整
-Sitemap: https://123170.xyz/sitemap.xml
+Sitemap: https://www.123170.xyz/sitemap.xml

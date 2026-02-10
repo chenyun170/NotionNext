@@ -63,8 +63,6 @@ export async function getStaticProps(req) {
     try {
       // 使用 Promise.allSettled 确保任务并行执行且互不干扰
       await Promise.allSettled([
-        generateRobotsTxt(props),
-        generateRss(props),
         checkDataFromAlgolia(props)
       ])
       

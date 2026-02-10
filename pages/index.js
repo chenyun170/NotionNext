@@ -67,13 +67,11 @@ export async function getStaticProps(req) {
       await Promise.allSettled([
         generateRobotsTxt(props),
         generateRss(props),
-        generateSitemapXml(props),
         checkDataFromAlgolia(props)
       ])
       
       // UUID 重定向 JSON 保持同步执行确保准确性
       if (siteConfig('UUID_REDIRECT', false, NOTION_CONFIG)) {
-        generateRedirectJson(props)
       }
     } catch (error) {
       console.error('Production static assets generation failed:', error)

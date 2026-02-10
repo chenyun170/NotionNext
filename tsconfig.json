@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "checkJs": false,
     "paths": {
       "@/*": ["./*"],
       "@/blog.config": ["./blog.config"],
@@ -15,6 +14,7 @@
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
+    "checkJs": false,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -47,9 +47,5 @@
     "**/*.jsx",
     ".eslintrc.js"
   ],
-  "exclude": [
-    "node_modules",
-    "public"
-  ]
+  "exclude": ["node_modules", "public"]
 }
-

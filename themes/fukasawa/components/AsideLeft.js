@@ -28,7 +28,7 @@ function AsideLeft(props) {
   // 圣诞氛围逻辑
   const now = new Date()
   const month = now.getMonth() + 1
-  const showFestive = month >= 11 || month <= 2
+  const showFestive = month >= 11 || month <= 1
 
   useEffect(() => {
     setIsCollapse(localStorage.getItem('fukasawa-sidebar-collapse') === 'true')

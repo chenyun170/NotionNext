@@ -1,58 +1,39 @@
 // /api/chat.js
+import OpenAI from "openai";
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-
-  const { message } = req.body;
+  // ✅ 换成 4w4.dpdns.org 的接口
+  const client = new OpenAI({
+    apiKey: "12345asd",        // 改成 4w4.dpdns.org 要求的 Token
+    baseURL: "https://2pi.dyy.gv.uy/v1", // OpenAI 兼容接口标准路径
+  });
 
   try {
-    const upstream = await fetch("https://4w4.dpdns.org/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt: message,
-        stream_type: "sse",
-      }),
+    const { message } = req.body;
+
+    const stream = await client.chat.completions.create({
+      model: "grok-4.1-fast",  // ⚠️ 关键：改成文档里列出的模型名
+      messages: [
+        { role: "system", content: "你是一个乐于助人的 AI 助手。" },
+        { role: "user", content: message }
+      ],
+      stream: true,
     });
 
-    if (!upstream.ok) {
-      res.write(`data: ${JSON.stringify({ error: "上游请求失败" })}\n\n`);
-      res.end();
-      return;
+    let fullContent = "";
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || "";
+      fullContent += content;
     }
 
-    const reader = upstream.body.getReader();
-    const decoder = new TextDecoder();
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      for (const line of decoder.decode(value).split('\n')) {
-        if (!line.startsWith('data:')) continue;
-
-        const text = line.slice(5).trim();
-        if (text === '[DONE]' || !text) continue;
-
-        try {
-          const data = JSON.parse(text);
-          const content = data.content ?? data.response ?? "";
-          if (content) res.write(`data: ${JSON.stringify({ content })}\n\n`);
-        } catch {
-          res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
-        }
-      }
-    }
+    res.status(200).json({ result: fullContent });
 
   } catch (error) {
-    res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+    console.error("API调用失败:", error);
+    res.status(500).json({ error: error.message || error.toString() });
   }
-
-  res.write(`data: [DONE]\n\n`);
-  res.end();
 }

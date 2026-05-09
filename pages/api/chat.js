@@ -1,54 +1,39 @@
 // /api/chat.js
+import OpenAI from "openai";
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // ✅ 换成 4w4.dpdns.org 的接口
+  const client = new OpenAI({
+    apiKey: "12345asd",        // 改成 4w4.dpdns.org 要求的 Token
+    baseURL: "https://2pi.dyy.gv.uy/v1", // OpenAI 兼容接口标准路径
+  });
+
   try {
     const { message } = req.body;
 
-    if (!message) {
-      return res.status(400).json({ error: '消息不能为空' });
-    }
-
-    console.log("正在调用API，消息:", message.substring(0, 50) + "...");
-
-    const response = await fetch('https://4w4.dpdns.org/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (compatible; YourApp/1.0)',  // 模拟浏览器
-      },
-      body: JSON.stringify({
-        prompt: message,
-        model_type: "default",        // 用 default 最稳定
-        thinking_enabled: false,      // 先关闭思考
-        stream_type: "text"
-      }),
-      // 增加超时时间
-      signal: AbortSignal.timeout(30000),   // 30秒超时
+    const stream = await client.chat.completions.create({
+      model: "grok-4.1-fast",  // ⚠️ 关键：改成文档里列出的模型名
+      messages: [
+        { role: "system", content: "你是一个乐于助人的 AI 助手。" },
+        { role: "user", content: message }
+      ],
+      stream: true,
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("API错误:", response.status, errorText);
-      throw new Error(`HTTP ${response.status}`);
+    let fullContent = "";
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || "";
+      fullContent += content;
     }
 
-    const data = await response.json();
-
-    const resultText = data.response || data.content || data.result || 
-                      (typeof data === 'string' ? data : JSON.stringify(data));
-
-    res.status(200).json({ 
-      result: resultText 
-    });
+    res.status(200).json({ result: fullContent });
 
   } catch (error) {
-    console.error("调用4w4 API失败:", error.message);
-    
-    res.status(200).json({ 
-      result: "AI助手暂时无法连接，请稍后重试～" 
-    });
+    console.error("API调用失败:", error);
+    res.status(500).json({ error: error.message || error.toString() });
   }
 }

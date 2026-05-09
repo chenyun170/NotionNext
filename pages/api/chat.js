@@ -1,64 +1,54 @@
-import requests
-import time
-import json
+// /api/chat.js
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-def chat_stream(prompt, model_type="default", thinking=False, max_retries=3):
-    url = "https://4w4.dpdns.org/chat"
-    
-    payload = {
-        "prompt": prompt,
-        "model_type": model_type,
-        "thinking_enabled": thinking,
-        "stream_type": "text",      # 改成 "sse" 可能更流畅，但先用 text
-        "include_thinking": False
+  try {
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ error: '消息不能为空' });
     }
 
-    for attempt in range(max_retries):
-        try:
-            response = requests.post(url, json=payload, timeout=40, stream=True)
-            
-            if response.status_code == 200:
-                print("🤖 开始流式输出：\n")
-                full_response = ""
-                
-                for chunk in response.iter_lines():
-                    if chunk:
-                        try:
-                            # 尝试解析
-                            text = chunk.decode('utf-8')
-                            if text.strip():
-                                # 有些接口会直接返回纯文本，有些是 JSON
-                                if text.startswith('{'):
-                                    data = json.loads(text)
-                                    delta = data.get('response') or data.get('content') or text
-                                else:
-                                    delta = text
-                                
-                                print(delta, end="", flush=True)
-                                full_response += delta
-                        except:
-                            # 如果解析失败，直接打印原始内容
-                            print(chunk.decode('utf-8'), end="", flush=True)
-                
-                print("\n\n✅ 输出完成")
-                return full_response
-                
-            else:
-                print(f"状态码错误: {response.status_code}")
-                
-        except Exception as e:
-            print(f"第 {attempt+1} 次尝试失败: {e}")
-        
-        if attempt < max_retries - 1:
-            wait = 2 ** attempt
-            print(f"{wait}秒后重试...")
-            time.sleep(wait)
+    console.log("正在调用API，消息:", message.substring(0, 50) + "...");
+
+    const response = await fetch('https://4w4.dpdns.org/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (compatible; YourApp/1.0)',  // 模拟浏览器
+      },
+      body: JSON.stringify({
+        prompt: message,
+        model_type: "default",        // 用 default 最稳定
+        thinking_enabled: false,      // 先关闭思考
+        stream_type: "text"
+      }),
+      // 增加超时时间
+      signal: AbortSignal.timeout(30000),   // 30秒超时
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API错误:", response.status, errorText);
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    const resultText = data.response || data.content || data.result || 
+                      (typeof data === 'string' ? data : JSON.stringify(data));
+
+    res.status(200).json({ 
+      result: resultText 
+    });
+
+  } catch (error) {
+    console.error("调用4w4 API失败:", error.message);
     
-    print("❌ 接口暂时无法连接，请稍后再试或更换API")
-    return None
-
-
-# ==================== 使用示例 ====================
-if __name__ == "__main__":
-    user_input = input("请输入你的问题: ")
-    chat_stream(user_input, model_type="expert", thinking=False)
+    res.status(200).json({ 
+      result: "AI助手暂时无法连接，请稍后重试～" 
+    });
+  }
+}

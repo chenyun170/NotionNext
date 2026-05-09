@@ -8,25 +8,50 @@ export default function SidebarChatWidget() {
   const [reply, setReply] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    setLoading(true);
-    setReply(''); 
+const handleSend = async () => {
+  if (!input.trim()) return;
+  setLoading(true);
+  setReply('');
 
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
-      });
-      const data = await response.json();
-      setReply(data.result || "抱歉，我暂时无法回答。");
-    } catch (e) {
-      setReply("请求出错，请稍后再试。");
-    } finally {
-      setLoading(false);
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: input }),
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const raw = decoder.decode(value);
+
+      for (const line of raw.split('\n')) {
+        if (!line.startsWith('data:')) continue;
+
+        const text = line.slice(5).trim();
+        if (text === '[DONE]') break;
+        if (!text) continue;
+
+        try {
+          const { content } = JSON.parse(text);
+          if (content) {
+            // ✅ 每收到一块就追加，打字机效果
+            setReply(prev => prev + content);
+          }
+        } catch {}
+      }
     }
-  };
+
+  } catch (e) {
+    setReply("请求出错，请稍后再试。");
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (!isOpen) {
     return (

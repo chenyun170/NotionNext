@@ -4,24 +4,32 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // ✅ SSE 响应头
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
   try {
-    const { message } = req.body;
+    const {
+      message,
+      model_type = "expert",       // default / expert / vision
+      thinking_enabled = false,     // 是否开启深度思考
+      search_enabled = true,        // 是否联网搜索
+      session_id,                   // 传入可保持上下文
+      files = [],                   // 识图时传 base64 图片
+    } = req.body;
 
-    // ✅ 换成 4w4 的接口格式（对应 Python 版的 payload）
     const upstream = await fetch("https://4w4.dpdns.org/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         prompt: message,
-        model_type: "expert",
-        thinking_enabled: false,
-        stream_type: "sse",
+        model_type,
+        thinking_enabled,
+        search_enabled,
+        stream_type: "sse",         // ✅ 用 SSE 流式
         include_thinking: false,
+        ...(session_id && { session_id }),
+        ...(files.length && { files }),
       }),
     });
 
@@ -39,11 +47,10 @@ export default async function handler(req, res) {
       if (done) break;
 
       const raw = decoder.decode(value);
-      const lines = raw.split('\n');
 
-      for (const line of lines) {
-        // 剥掉 "data: " 前缀
+      for (const line of raw.split('\n')) {
         if (!line.startsWith('data:')) continue;
+
         const text = line.slice(5).trim();
 
         if (text === '[DONE]') {
@@ -54,16 +61,13 @@ export default async function handler(req, res) {
 
         if (!text) continue;
 
-        // 解析上游 JSON，提取 content
         try {
           const data = JSON.parse(text);
-          const content =
-            data.content ?? data.response ?? data.delta ?? "";
+          const content = data.content ?? data.response ?? data.delta ?? "";
           if (content) {
             res.write(`data: ${JSON.stringify({ content })}\n\n`);
           }
         } catch {
-          // 纯文本直接转发
           res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
         }
       }
@@ -73,7 +77,6 @@ export default async function handler(req, res) {
     res.end();
 
   } catch (error) {
-    console.error("调用失败:", error);
     res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
     res.end();
   }

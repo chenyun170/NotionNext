@@ -12,6 +12,7 @@ export default function SidebarChatWidget() {
     if (!input.trim()) return;
     setLoading(true);
     setReply('');
+    setInput('');
 
     try {
       const response = await fetch('/api/chat', {
@@ -115,7 +116,7 @@ export default function SidebarChatWidget() {
           placeholder="请输入您的问题..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }}}
+          onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey && !loading) { e.preventDefault(); handleSend(); }}}
         />
         <button 
           onClick={handleSend}

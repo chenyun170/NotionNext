@@ -1,17 +1,10 @@
 // /api/chat.js
-import OpenAI from "openai";
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const client = new OpenAI({
-    apiKey: "12345asd",
-    baseURL: "https://2pi.dyy.gv.uy/v1",
-  });
-
-  // ✅ 改1：设置 SSE 响应头
+  // ✅ SSE 响应头
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
@@ -19,29 +12,68 @@ export default async function handler(req, res) {
   try {
     const { message } = req.body;
 
-    const stream = await client.chat.completions.create({
-      model: "grok-4.1-fast",
-      messages: [
-        { role: "system", content: "你是一个乐于助人的 AI 助手。" },
-        { role: "user", content: message }
-      ],
-      stream: true,
+    // ✅ 换成 4w4 的接口格式（对应 Python 版的 payload）
+    const upstream = await fetch("https://4w4.dpdns.org/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: message,
+        model_type: "expert",
+        thinking_enabled: false,
+        stream_type: "sse",
+        include_thinking: false,
+      }),
     });
 
-    // ✅ 改2：每块立即推出去，不再拼接等待
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content || "";
-      if (content) {
-        res.write(`data: ${JSON.stringify({ content })}\n\n`);
+    if (!upstream.ok) {
+      res.write(`data: ${JSON.stringify({ error: `上游错误 ${upstream.status}` })}\n\n`);
+      res.end();
+      return;
+    }
+
+    const reader = upstream.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const raw = decoder.decode(value);
+      const lines = raw.split('\n');
+
+      for (const line of lines) {
+        // 剥掉 "data: " 前缀
+        if (!line.startsWith('data:')) continue;
+        const text = line.slice(5).trim();
+
+        if (text === '[DONE]') {
+          res.write(`data: [DONE]\n\n`);
+          res.end();
+          return;
+        }
+
+        if (!text) continue;
+
+        // 解析上游 JSON，提取 content
+        try {
+          const data = JSON.parse(text);
+          const content =
+            data.content ?? data.response ?? data.delta ?? "";
+          if (content) {
+            res.write(`data: ${JSON.stringify({ content })}\n\n`);
+          }
+        } catch {
+          // 纯文本直接转发
+          res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
+        }
       }
     }
 
-    // ✅ 改3：发结束信号
     res.write(`data: [DONE]\n\n`);
     res.end();
 
   } catch (error) {
-    console.error("API调用失败:", error);
+    console.error("调用失败:", error);
     res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
     res.end();
   }

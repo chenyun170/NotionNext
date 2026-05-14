@@ -86,12 +86,12 @@ const InlineActivityCard = ({ config, isActive }) => {
 // --- 活动配置 (统一管理) ---
 const activityConfigs = {
   activity1: {
-    deadline: new Date('2025-12-31T23:59:59+08:00'),
-    title: '活动一：图灵搜岁末活动',
+    deadline: new Date('2026-5-31T23:59:59+08:00'),
+    title: '139届全球采购商数据新鲜出炉',
     productName: '外贸获客工具',
-    description: '原价 ¥2180，现仅需 ¥1600！',
+    description: '¥300/行业，¥600/3个行业！',
     emoji: '🔥',
-    link: 'http://h.topeasysoft.com/20251211tls/index.html?i=BB54F6',
+    link: 'https://h.topeasysoft.com/20260511gjh/index.html?i=BB54F6',
     buttonText: '立即参与',
     bgColor: 'bg-orange-50/95 dark:bg-orange-950/80',
     borderColor: 'border-orange-200 dark:border-orange-800',

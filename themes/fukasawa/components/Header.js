@@ -13,13 +13,8 @@ import SearchInput from './SearchInput'
 const ACTIVITIES = [
   {
     icon: '🔥',
-    text: '图灵搜岁末活动，限时 1600 元！',
-    link: 'http://h.topeasysoft.com/20251211tls/index.html?i=BB54F6'
-  },
-  {
-    icon: '🚀',
-    text: '顶易云岁末活动，限时赠送社群工具！',
-    link: 'http://h.topeasysoft.com/20251211dyy/index.html?i=BB54F6'
+    text: '139届全球采购商数据新鲜出炉！¥300/行业，¥600/3个行业！',
+    link: 'https://h.topeasysoft.com/20260511gjh/index.html?i=BB54F6'
   }
 ]
 
@@ -41,7 +36,7 @@ const Header = props => {
   useEffect(() => {
     const checkDeadline = () => {
       const now = new Date()
-      const deadline = new Date('2025-12-31 23:59:59')
+      const deadline = new Date('2026-05-31 23:59:59')
       
       if (now > deadline) {
         setShowMarquee(false)

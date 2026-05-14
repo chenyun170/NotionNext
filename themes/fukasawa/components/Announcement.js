@@ -34,11 +34,11 @@ const FloatingActivityCard = ({ config, isActive, isVisible }) => {
           </div>
           
           <h3 className="text-sm font-black text-gray-800 dark:text-white mb-2 leading-tight">
-            {config.title || '活动一：图灵搜岁末活动'}
+            {config.title || '139届全球采购商数据新鲜出炉'}
           </h3>
           
           <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
-            🔥 外贸获客工具 原价 ¥2180，现仅需 <span className="text-orange-600 font-bold">¥1600!</span>
+            🔥 外贸获客工具 ¥300/1个行业， <span className="text-orange-600 font-bold">¥600/3个行业!</span>
           </p>
           
           <a 

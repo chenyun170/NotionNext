@@ -86,7 +86,7 @@ const InlineActivityCard = ({ config, isActive }) => {
 // --- 活动配置 (统一管理) ---
 const activityConfigs = {
   activity1: {
-    deadline: new Date('2026-5-31T23:59:59+08:00'),
+    deadline: new Date('2026-05-31T23:59:59+08:00'),
     title: '139届全球采购商数据新鲜出炉',
     productName: '外贸获客工具',
     description: '¥300/行业，¥600/3个行业！',

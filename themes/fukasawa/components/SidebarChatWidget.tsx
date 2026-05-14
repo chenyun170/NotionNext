@@ -1,5 +1,4 @@
 import { useState } from 'react';
-// ✅ 1. 引入 Markdown 渲染组件
 import ReactMarkdown from 'react-markdown';
 
 export default function SidebarChatWidget() {
@@ -10,6 +9,7 @@ export default function SidebarChatWidget() {
 
   const handleSend = async () => {
     if (!input.trim()) return;
+
     setLoading(true);
     setReply('');
     setInput('');
@@ -20,6 +20,16 @@ export default function SidebarChatWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: input }),
       });
+
+      // 新增：响应状态检查
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // ✅ 修复 TypeScript 错误：response.body 可能为 null
+      if (!response.body) {
+        throw new Error('Response body is null');
+      }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -40,14 +50,15 @@ export default function SidebarChatWidget() {
           try {
             const { content } = JSON.parse(text);
             if (content) {
-              // ✅ 每收到一块就追加，打字机效果
               setReply(prev => prev + content);
             }
-          } catch {}
+          } catch (e) {
+            // 解析失败时跳过
+          }
         }
       }
-
     } catch (e) {
+      console.error(e);
       setReply("请求出错，请稍后再试。");
     } finally {
       setLoading(false);
@@ -85,22 +96,20 @@ export default function SidebarChatWidget() {
           <i className="fas fa-robot"></i>
           <span>AI 助手在线</span>
         </div>
-        <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+        <button 
+          onClick={() => setIsOpen(false)} 
+          className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+        >
           <i className="fas fa-times"></i>
         </button>
       </div>
 
       {reply && (
         <div className="bg-slate-50 dark:bg-zinc-800 p-3 rounded-lg text-xs text-slate-700 dark:text-slate-300 mb-3 leading-relaxed border border-slate-100 dark:border-zinc-700 max-h-40 overflow-y-auto">
-          {/* ✅ 2. 这里修改了：用 ReactMarkdown 包裹住 reply */}
-          {/* 为了让排版更好看，我们还可以给 strong 加点样式 */}
           <ReactMarkdown 
             components={{
-              // 让加粗字体颜色深一点
               strong: ({node, ...props}) => <span className="font-bold text-slate-900 dark:text-white" {...props} />,
-              // 让列表有点缩进
               ul: ({node, ...props}) => <ul className="list-disc list-inside my-1" {...props} />,
-              // 段落之间稍微空一点
               p: ({node, ...props}) => <p className="mb-1 last:mb-0" {...props} />
             }}
           >
@@ -116,7 +125,12 @@ export default function SidebarChatWidget() {
           placeholder="请输入您的问题..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey && !loading) { e.preventDefault(); handleSend(); }}}
+          onKeyDown={(e) => { 
+            if (e.key === 'Enter' && !e.shiftKey && !loading) { 
+              e.preventDefault(); 
+              handleSend(); 
+            }
+          }}
         />
         <button 
           onClick={handleSend}

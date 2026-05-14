@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from 'react'
 const NotionPage = dynamic(() => import('@/components/NotionPage'))
 
 /**
- * 悬浮活动卡片 - 高级毛玻璃版
+ * 悬浮活动卡片 - 毛玻璃版
  */
 const FloatingActivityCard = ({ config, isActive, isVisible }) => {
   if (!isActive) return null

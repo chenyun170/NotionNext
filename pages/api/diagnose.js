@@ -35,7 +35,8 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.BLAZEAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'grok-4.1-fast',
+        model: 'fast-general',
+        stream: false,
         max_tokens: 2000,
         messages: [
           { role: 'system', content: '只输出纯JSON，不要有任何多余文字或markdown格式。' },

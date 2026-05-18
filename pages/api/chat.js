@@ -8,15 +8,15 @@ export default async function handler(req, res) {
 
   // ✅ 换成 4w4.dpdns.org 的接口
   const client = new OpenAI({
-    apiKey: "12345asd",        // 改成 4w4.dpdns.org 要求的 Token
-    baseURL: "https://2pi.dyy.gv.uy/v1", // OpenAI 兼容接口标准路径
+    apiKey: "",        // 改成 4w4.dpdns.org 要求的 Token
+    baseURL: "https://fufu.iqach.top/v1", // OpenAI 兼容接口标准路径
   });
 
   try {
     const { message } = req.body;
 
     const stream = await client.chat.completions.create({
-      model: "grok-4.1-fast",  // ⚠️ 关键：改成文档里列出的模型名
+      model: "mimo-v2-flash",  // ⚠️ 关键：改成文档里列出的模型名
       messages: [
         { role: "system", content: "你是一个乐于助人的 AI 助手。" },
         { role: "user", content: message }

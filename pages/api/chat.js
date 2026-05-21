@@ -6,34 +6,35 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // ✅ 换成 4w4.dpdns.org 的接口
-  const client = new OpenAI({
-    apiKey: "sk-NYShgZ3c6GuXvxUyDv8H7OZLZr7mtjss9BfdnLoM3sLk0YBo",        // 改成 4w4.dpdns.org 要求的 Token
-    baseURL: "https://newapi.lingrana.top/v1", // OpenAI 兼容接口标准路径
-  });
-
   try {
     const { message } = req.body;
+    
+    // 简化测试：先不用 stream
+    const client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY || "sk-NYShgZ3c6GuXvxUyDv8H7OZLZr7mtjss9BfdnLoM3sLk0YBo",
+      baseURL: "https://newapi.lingrana.top/v1",
+    });
 
-    const stream = await client.chat.completions.create({
-      model: "mimo-v2.5-pro",  // ⚠️ 关键：改成文档里列出的模型名
+    const completion = await client.chat.completions.create({
+      model: "mimo-v2.5-pro",
       messages: [
         { role: "system", content: "你是一个乐于助人的 AI 助手。" },
         { role: "user", content: message }
       ],
-      stream: true,
+      // 暂时去掉 stream: true
     });
 
-    let fullContent = "";
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content || "";
-      fullContent += content;
-    }
-
-    res.status(200).json({ result: fullContent });
+    res.status(200).json({ 
+      result: completion.choices[0].message.content 
+    });
 
   } catch (error) {
-    console.error("API调用失败:", error);
-    res.status(500).json({ error: error.message || error.toString() });
+    // 打印详细错误
+    console.error("完整错误:", JSON.stringify(error, null, 2));
+    res.status(500).json({ 
+      error: error.message,
+      code: error.code,
+      type: error.type 
+    });
   }
 }

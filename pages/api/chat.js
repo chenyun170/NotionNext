@@ -6,38 +6,34 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // 不要 hardcode key，只用环境变量
-  if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({ error: 'API key not configured' });
-  }
+  // ✅ 换成 4w4.dpdns.org 的接口
+  const client = new OpenAI({
+    apiKey: "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",        // 改成 要求的 Token
+    baseURL: "https://integrate.api.nvidia.com/v1", // OpenAI 兼容接口标准路径
+  });
 
   try {
     const { message } = req.body;
-    if (!message) {
-      return res.status(400).json({ error: 'Missing message' });
-    }
 
-    const client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      baseURL: "https://newapi.lingrana.top/v1",
-    });
-
-    const completion = await client.chat.completions.create({
-      model: "mimo-v2.5-pro",
+    const stream = await client.chat.completions.create({
+      model: "openai/gpt-oss-120b",  // ⚠️ 关键：改成文档里列出的模型名
       messages: [
         { role: "system", content: "你是一个乐于助人的 AI 助手。" },
         { role: "user", content: message }
       ],
+      stream: true,
     });
 
-    res.status(200).json({ 
-      result: completion.choices[0].message.content 
-    });
+    let fullContent = "";
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || "";
+      fullContent += content;
+    }
+
+    res.status(200).json({ result: fullContent });
+
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ 
-      error: error.message,
-      status: error.status
-    });
+    console.error("API调用失败:", error);
+    res.status(500).json({ error: error.message || error.toString() });
   }
 }

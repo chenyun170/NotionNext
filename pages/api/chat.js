@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
     const stream = await client.chat.completions.create({
-      model: "nvidia/llama-3.1-nemotron-70b-instruct", // ⚠️ 改成你实际有权限的模型名
+      model: "openai/gpt-oss-120b", // ⚠️ 改成你实际有权限的模型名
       messages: [
         { role: "system", content: "你是一个乐于助人的 AI 助手。" },
         { role: "user", content: message }

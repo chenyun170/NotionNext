@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 export default function SidebarChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([]); // ✅ 改为多轮对话历史
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]); // ✅ 改为多轮对话历史
   const [loading, setLoading] = useState(false);
   const replyRef = useRef<HTMLDivElement>(null);
   // ✅ 自动滚动到底部

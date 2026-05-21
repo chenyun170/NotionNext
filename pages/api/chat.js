@@ -6,12 +6,19 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // 不要 hardcode key，只用环境变量
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(500).json({ error: 'API key not configured' });
+  }
+
   try {
     const { message } = req.body;
-    
-    // 简化测试：先不用 stream
+    if (!message) {
+      return res.status(400).json({ error: 'Missing message' });
+    }
+
     const client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY || "sk-NYShgZ3c6GuXvxUyDv8H7OZLZr7mtjss9BfdnLoM3sLk0YBo",
+      apiKey: process.env.OPENAI_API_KEY,
       baseURL: "https://newapi.lingrana.top/v1",
     });
 
@@ -21,20 +28,16 @@ export default async function handler(req, res) {
         { role: "system", content: "你是一个乐于助人的 AI 助手。" },
         { role: "user", content: message }
       ],
-      // 暂时去掉 stream: true
     });
 
     res.status(200).json({ 
       result: completion.choices[0].message.content 
     });
-
   } catch (error) {
-    // 打印详细错误
-    console.error("完整错误:", JSON.stringify(error, null, 2));
+    console.error("Error:", error);
     res.status(500).json({ 
       error: error.message,
-      code: error.code,
-      type: error.type 
+      status: error.status
     });
   }
 }

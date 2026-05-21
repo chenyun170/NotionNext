@@ -6,8 +6,7 @@ export default function SidebarChatWidget() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]); // ✅ 改为多轮对话历史
   const [loading, setLoading] = useState(false);
-  const replyRef = useRef(null);
-
+  const replyRef = useRef<HTMLDivElement>(null);
   // ✅ 自动滚动到底部
   useEffect(() => {
     if (replyRef.current) {

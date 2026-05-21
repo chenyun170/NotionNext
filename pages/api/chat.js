@@ -8,15 +8,15 @@ export default async function handler(req, res) {
 
   // ✅ 换成 4w4.dpdns.org 的接口
   const client = new OpenAI({
-    apiKey: "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",        // 改成 4w4.dpdns.org 要求的 Token
-    baseURL: "https://integrate.api.nvidia.com/v1", // OpenAI 兼容接口标准路径
+    apiKey: "sk-NYShgZ3c6GuXvxUyDv8H7OZLZr7mtjss9BfdnLoM3sLk0YBo",        // 改成 4w4.dpdns.org 要求的 Token
+    baseURL: "https://newapi.lingrana.top/v1", // OpenAI 兼容接口标准路径
   });
 
   try {
     const { message } = req.body;
 
     const stream = await client.chat.completions.create({
-      model: "openai/gpt-oss-120b",  // ⚠️ 关键：改成文档里列出的模型名
+      model: "mimo-v2.5-pro",  // ⚠️ 关键：改成文档里列出的模型名
       messages: [
         { role: "system", content: "你是一个乐于助人的 AI 助手。" },
         { role: "user", content: message }

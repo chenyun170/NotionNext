@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   // ✅ 换成 4w4.dpdns.org 的接口
   const client = new OpenAI({
-    apiKey: "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",        // 改成 要求的 Token
+    apiKey: process.env.OPENAI_API_KEY,        // 改成 要求的 Token
     baseURL: "https://integrate.api.nvidia.com/v1", // OpenAI 兼容接口标准路径
   });
 

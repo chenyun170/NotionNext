@@ -703,6 +703,11 @@ svg.notion-page-icon {
 
 .notion-asset-wrapper-image {
   max-width: 100%;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: rgba(244, 244, 245, 0.75);
+  content-visibility: auto;
+  contain-intrinsic-size: 720px 405px;
 }
 
 .notion-asset-wrapper-image > div {
@@ -719,6 +724,7 @@ svg.notion-page-icon {
   height: auto !important;
   max-height: 100%;
   margin: auto;
+  background: rgba(244, 244, 245, 0.75);
 }
 
 .notion-asset-wrapper iframe {

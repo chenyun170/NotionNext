@@ -22,7 +22,8 @@ import { useEffect, useState } from 'react'
 const Slug = props => {
   const { post } = props
   const router = useRouter()
-  const { locale } = useGlobal()
+  const global = useGlobal()
+  const { locale } = global
 
   // 文章锁🔐
   const [lock, setLock] = useState(post?.password && post?.password !== '')
@@ -82,7 +83,10 @@ const Slug = props => {
   }, [router, lock])
 
   props = { ...props, lock, validPassword }
-  const theme = siteConfig('THEME', BLOG.THEME, props.NOTION_CONFIG)
+  const theme =
+    props?.NOTION_CONFIG?.THEME ||
+    global?.NOTION_CONFIG?.THEME ||
+    BLOG.THEME
   return (
     <>
       {/* 文章布局 */}

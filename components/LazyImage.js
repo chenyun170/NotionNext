@@ -140,9 +140,10 @@ export default function LazyImage({
     onLoad: handleThumbnailLoaded,
     onError: handleImageError,
     className: `${className || ''} lazy-image-placeholder`,
-    style,
-    width: width || 'auto',
-    height: height || 'auto',
+    style: {
+      backgroundColor: 'rgba(244, 244, 245, 0.85)',
+      ...style
+    },
     onClick,
     // 性能优化属性
     loading: priority ? 'eager' : 'lazy',
@@ -154,6 +155,8 @@ export default function LazyImage({
 
   if (id) imgProps.id = id
   if (title) imgProps.title = title
+  if (width) imgProps.width = width
+  if (height) imgProps.height = height
 
   if (!src) {
     return null

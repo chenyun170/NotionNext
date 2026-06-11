@@ -1,17 +1,54 @@
-import Comment from '@/components/Comment'
-import { AdSlot } from '@/components/GoogleAdsense'
+import dynamic from 'next/dynamic'
 import LazyImage from '@/components/LazyImage'
 import NotionIcon from '@/components/NotionIcon'
 import NotionPage from '@/components/NotionPage'
-import ShareBar from '@/components/ShareBar'
 import WWAds from '@/components/WWAds'
-import { siteConfig } from '@/lib/config'
+import BLOG from '@/blog.config'
 import { useGlobal } from '@/lib/global'
 import { formatDateFmt } from '@/lib/utils/formatDate'
 import SmartLink from '@/components/SmartLink'
-import ArticleAround from './ArticleAround'
+import ArticleInsightPanel from './ArticleInsightPanel'
+import ArticleQuickNav from './ArticleQuickNav'
+import ArticleReadingProgress from './ArticleReadingProgress'
 import TagItemMini from './TagItemMini'
 import { isBrowser } from '@/lib/utils' // 确保引入 isBrowser 用于复制功能
+
+const Comment = dynamic(() => import('@/components/Comment'), {
+  ssr: false,
+  loading: () => (
+    <div className='rounded-xl border border-dashed border-zinc-200 p-6 text-sm text-zinc-400 dark:border-zinc-800'>
+      Comment area loading...
+    </div>
+  )
+})
+
+const AdSlot = dynamic(
+  () => import('@/components/GoogleAdsense').then(module => module.AdSlot),
+  {
+    ssr: false,
+    loading: () => null
+  }
+)
+
+const ArticleFAQ = dynamic(() => import('./ArticleFAQ'), {
+  ssr: false,
+  loading: () => null
+})
+
+const ArticleRelatedPosts = dynamic(() => import('./ArticleRelatedPosts'), {
+  ssr: false,
+  loading: () => null
+})
+
+const ArticleAround = dynamic(() => import('./ArticleAround'), {
+  ssr: false,
+  loading: () => null
+})
+
+const ShareBar = dynamic(() => import('@/components/ShareBar'), {
+  ssr: false,
+  loading: () => null
+})
 
 /**
  * Fukasawa 文章详情页 - 顶尖情报局名片网格版
@@ -19,8 +56,12 @@ import { isBrowser } from '@/lib/utils' // 确保引入 isBrowser 用于复制�
  * @returns
  */
 export default function ArticleDetail(props) {
-  const { post, prev, next } = props
-  const { locale, fullWidth } = useGlobal()
+  const { post, prev, next, recommendPosts = [] } = props
+  const global = useGlobal()
+  const { locale, fullWidth } = global
+  const showTitleIcon = parseConfigBoolean(
+    getConfigValue(global, props?.NOTION_CONFIG, 'POST_TITLE_ICON', true)
+  )
 
   if (!post) {
     return <></>
@@ -29,13 +70,16 @@ export default function ArticleDetail(props) {
     <div
       id='container'
       className={`${fullWidth ? 'px-10' : 'max-w-5xl '} overflow-x-auto flex-grow mx-auto w-screen md:w-full`}>
+      <ArticleReadingProgress />
 {/* 修改后的文章封面部分 */}
 {post?.type && post?.type !== 'Page' && post?.pageCover && (
-  <div className='w-full relative md:flex-shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-orange-500/20'>
+  <div className='w-full relative aspect-[16/9] md:aspect-[21/9] max-h-[60vh] bg-zinc-100 dark:bg-zinc-900 md:flex-shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-orange-500/20'>
     <LazyImage
       alt={post.title}
       src={post?.pageCover}
-      className='object-cover max-h-[60vh] w-full'
+      width={1200}
+      height={675}
+      className='absolute inset-0 h-full w-full object-cover'
     />
     {/* 增加一个内部光泽效果，提升立体感 */}
     <div className='absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl'></div>
@@ -44,16 +88,18 @@ export default function ArticleDetail(props) {
 
       <article
         itemScope
-        itemType='https://schema.org/Movie'
+        itemType='https://schema.org/BlogPosting'
         className='subpixel-antialiased overflow-y-hidden py-10 px-5 lg:pt-24 md:px-32  dark:border-gray-700 bg-white dark:bg-hexo-black-gray'>
+        <meta itemProp='datePublished' content={post?.publishDate} />
+        <meta itemProp='dateModified' content={post?.lastEditedDate || post?.publishDate} />
         <header>
           {/* 文章Title */}
-          <div className='font-bold text-4xl text-black dark:text-white'>
-            {siteConfig('POST_TITLE_ICON') && (
+          <h1 itemProp='headline' className='font-bold text-4xl text-black dark:text-white'>
+            {showTitleIcon && (
               <NotionIcon icon={post?.pageIcon} />
             )}
             {post.title}
-          </div>
+          </h1>
 
           <section className='flex-wrap flex mt-2 text-gray-400 dark:text-gray-400 font-light leading-8'>
             <div>
@@ -100,10 +146,16 @@ export default function ArticleDetail(props) {
           <WWAds className='w-full' orientation='horizontal' />
         </header>
 
+        <ArticleInsightPanel post={post} />
+        <ArticleQuickNav post={post} />
+
         {/* Notion文章主体 */}
-        <section id='article-wrapper'>
+        <section id='article-wrapper' itemProp='articleBody'>
           {post && <NotionPage post={post} />}
         </section>
+
+        <ArticleFAQ post={post} />
+        <ArticleRelatedPosts posts={recommendPosts} />
 
         {/* --- 名片化网格版权声明 --- */}
         <div className="mt-14 group print:hidden">
@@ -186,6 +238,90 @@ export default function ArticleDetail(props) {
       <div className='duration-200 shadow py-6 px-12 w-screen md:w-full overflow-x-auto dark:border-gray-700 bg-white dark:bg-hexo-black-gray'>
         <Comment frontMatter={post} />
       </div>
+
+      <style jsx global>{`
+        #article-wrapper #notion-article {
+          color: rgb(39 39 42);
+          font-size: 16px;
+          line-height: 1.9;
+          overflow-wrap: anywhere;
+        }
+
+        .dark #article-wrapper #notion-article,
+        .dark-mode #article-wrapper #notion-article {
+          color: rgb(212 212 216);
+        }
+
+        #article-wrapper .notion-text {
+          margin: 0.72rem 0;
+          line-height: 1.95;
+        }
+
+        #article-wrapper .notion-h {
+          scroll-margin-top: 96px;
+          letter-spacing: 0;
+        }
+
+        #article-wrapper .notion-quote {
+          margin: 1.25rem 0;
+          border-left-width: 4px;
+          border-left-color: rgb(37 99 235);
+          border-radius: 0 0.75rem 0.75rem 0;
+          background: rgba(37, 99, 235, 0.06);
+          padding: 0.85rem 1rem;
+        }
+
+        #article-wrapper .notion-table {
+          display: block;
+          max-width: 100%;
+          overflow-x: auto;
+          border-radius: 0.75rem;
+        }
+
+        #article-wrapper .notion-link {
+          word-break: break-word;
+          text-decoration-thickness: 1px;
+          text-underline-offset: 3px;
+        }
+
+        #article-wrapper .notion-code {
+          border-radius: 0.75rem;
+          font-size: 0.92rem;
+        }
+
+        @media (max-width: 640px) {
+          #article-wrapper #notion-article {
+            font-size: 15.5px;
+            line-height: 1.86;
+          }
+
+          #article-wrapper .notion-text {
+            margin: 0.68rem 0;
+          }
+        }
+      `}</style>
     </div>
   )
+}
+
+const getConfigValue = (global, notionConfig, key, defaultValue) => {
+  return (
+    notionConfig?.[key] ??
+    global?.NOTION_CONFIG?.[key] ??
+    global?.THEME_CONFIG?.[key] ??
+    BLOG?.[key] ??
+    defaultValue
+  )
+}
+
+const parseConfigBoolean = value => {
+  if (typeof value === 'boolean') {
+    return value
+  }
+
+  if (typeof value === 'string') {
+    return value === 'true'
+  }
+
+  return Boolean(value)
 }

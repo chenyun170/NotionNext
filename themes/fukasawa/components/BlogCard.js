@@ -12,12 +12,14 @@ import TagItemMini from './TagItemMini'
 const BlogCard = ({ showAnimate, post, showSummary }) => {
   const { siteInfo } = useGlobal()
   const showPreview = siteConfig('FUKASAWA_POST_LIST_PREVIEW', null, CONFIG) && post.blockMap
-  
-  // 强制显示封面图逻辑
-  if (siteConfig('FUKASAWA_POST_LIST_COVER_FORCE', null, CONFIG) && post && !post.pageCover) {
-    post.pageCoverThumbnail = siteInfo?.pageCover
-  }
-  const showPageCover = siteConfig('FUKASAWA_POST_LIST_COVER', null, CONFIG) && post?.pageCoverThumbnail
+  const pageCoverThumbnail =
+    siteConfig('FUKASAWA_POST_LIST_COVER_FORCE', null, CONFIG) &&
+    post &&
+    !post.pageCover
+      ? siteInfo?.pageCover
+      : post?.pageCoverThumbnail
+  const showPageCover =
+    siteConfig('FUKASAWA_POST_LIST_COVER', null, CONFIG) && pageCoverThumbnail
     
   const FUKASAWA_POST_LIST_ANIMATION = siteConfig('FUKASAWA_POST_LIST_ANIMATION', null, CONFIG) || showAnimate 
 
@@ -42,8 +44,10 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
           <SmartLink href={post?.href} passHref legacyBehavior>
             <div className='relative w-full pt-[62.5%] cursor-pointer overflow-hidden'>
               <LazyImage
-                src={post?.pageCoverThumbnail}
+                src={pageCoverThumbnail}
                 alt={post?.title || siteConfig('TITLE')}
+                width={640}
+                height={400}
                 className='absolute top-0 left-0 object-cover w-full h-full group-hover:scale-110 transition-transform duration-700 ease-in-out'
               />
               {/* 图片遮罩：暗色模式下降低亮度 */}

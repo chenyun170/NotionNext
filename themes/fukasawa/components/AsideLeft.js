@@ -1,7 +1,8 @@
 'use client'
 
-import { siteConfig } from '@/lib/config'
+import BLOG from '@/blog.config'
 import { useGlobal } from '@/lib/global'
+import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Announcement from './Announcement'
@@ -11,10 +12,23 @@ import MailChimpForm from './MailChimpForm'
 import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
-import SidebarTools from './SidebarTools'
 import TagItemMini from './TagItemMini' 
 // ✅ 引入组件
-import SidebarChatWidget from '../components/SidebarChatWidget';
+const SidebarTools = dynamic(() => import('./SidebarTools'), {
+  ssr: false,
+  loading: () => (
+    <div className='h-40 rounded-2xl border border-dashed border-zinc-200 bg-zinc-50/70 dark:border-zinc-800 dark:bg-zinc-900/40' />
+  )
+})
+
+const SidebarChatWidget = dynamic(() => import('./SidebarChatWidget'), {
+  ssr: false,
+  loading: () => (
+    <div className='rounded-2xl border border-dashed border-zinc-200 bg-zinc-50 p-4 text-xs text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900/40'>
+      AI assistant loading...
+    </div>
+  )
+})
 
 function AsideLeft(props) {
   const { post, notice, latestPosts = [], tagOptions = [] } = props 
@@ -23,7 +37,12 @@ function AsideLeft(props) {
   // ✅ 新增：控制手机端 AI 助手的展开/收起状态
   const [isAiOpen, setIsAiOpen] = useState(false)
   // ✅ 保持全局状态引入，以便其他地方使用
-  const { isDarkMode, updateDarkMode } = useGlobal()
+  const global = useGlobal()
+  const { isDarkMode, updateDarkMode, siteInfo } = global
+  const isReverse = getConfigValue(global, 'LAYOUT_SIDEBAR_REVERSE', false)
+  const sidebarDescription =
+    siteInfo?.description || getConfigValue(global, 'DESCRIPTION', '')
+  const subPath = getConfigValue(global, 'SUB_PATH', '')
 
   // 圣诞氛围逻辑
   const now = new Date()
@@ -51,7 +70,6 @@ function AsideLeft(props) {
     updateDarkMode(!isDarkMode)
   }
 
-  const isReverse = siteConfig('LAYOUT_SIDEBAR_REVERSE')
   const btnPosition = isCollapsed 
     ? (isReverse ? 'right-4' : 'left-4') 
     : (isReverse ? 'right-[18.5rem]' : 'left-[18.5rem]')
@@ -59,18 +77,18 @@ function AsideLeft(props) {
   return (
     <div className="flex">
       {/* 🚀 手机端专用 AI 助手 - 已移除模式切换按钮 */}
-      <div className={`lg:hidden fixed left-0 top-1/2 -translate-y-1/2 z-[70] transition-all duration-300 flex flex-col gap-3 ${isAiOpen ? 'w-[85vw] left-2' : 'w-auto'}`}>
+      <div className={`lg:hidden fixed z-[70] transition-all duration-300 ${isAiOpen ? 'inset-x-3 bottom-4' : 'left-3 bottom-4'}`}>
         {!isAiOpen ? (
           <>
             {/* AI 参谋按钮 */}
             <button 
               onClick={() => setIsAiOpen(true)}
-              className="flex items-center gap-1 bg-white/40 dark:bg-zinc-800/40 backdrop-blur-xl p-1 rounded-r-2xl shadow-2xl border border-white/40 ring-1 ring-white/20 active:scale-95 transition-all"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-blue-600 shadow-lg ring-1 ring-zinc-200/70 backdrop-blur-xl active:scale-95 dark:border-zinc-700 dark:bg-zinc-900/85 dark:text-blue-300 dark:ring-zinc-800"
             >
-              <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+              <div className="flex items-center justify-center">
                 <i className="fas fa-robot text-sm"></i>
               </div>
-              <div className="pr-1">
+              <div className="sr-only">
                 <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 leading-none">AI 参谋</p>
               </div>
             </button>
@@ -78,8 +96,8 @@ function AsideLeft(props) {
           </>
         ) : (
           /* 展开状态：显示聊天窗口 */
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-left-4 duration-300">
-             <div className="bg-zinc-100 dark:bg-zinc-800 px-4 py-3 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-700">
+          <div className="bg-white/95 dark:bg-zinc-900/95 rounded-2xl shadow-[0_16px_44px_rgba(0,0,0,0.24)] border border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden backdrop-blur-xl animate-in fade-in slide-in-from-bottom-3 duration-300">
+             <div className="bg-zinc-50 dark:bg-zinc-800 px-4 py-3 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-700">
                 <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 flex items-center gap-2">
                   <i className="fas fa-comment-dots text-blue-500"></i> 情报局 AI 助手
                 </span>
@@ -87,7 +105,7 @@ function AsideLeft(props) {
                   <i className="fas fa-times"></i>
                 </button>
              </div>
-             <div className="p-4 overflow-y-auto max-h-[60vh] no-scrollbar">
+             <div className="p-3 overflow-y-auto max-h-[52vh] no-scrollbar">
                 <SidebarChatWidget />
              </div>
           </div>
@@ -103,11 +121,11 @@ function AsideLeft(props) {
       </button>
 
       {/* 侧边栏主体 */}
-      <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-white dark:bg-[#09090b] min-h-screen hidden lg:block z-30 border-r border-gray-100 dark:border-zinc-900 shadow-2xl`}>
-        <div className={`h-full no-scrollbar overflow-y-auto flex flex-col transition-all duration-500 ${isCollapsed ? 'opacity-0 invisible' : 'opacity-100 px-8 py-10'}`}>
+      <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-[#fbfbfb] dark:bg-[#09090b] min-h-screen hidden lg:block z-30 border-r border-zinc-200/80 dark:border-zinc-900 shadow-[8px_0_28px_rgba(15,23,42,0.06)] dark:shadow-[8px_0_28px_rgba(0,0,0,0.24)]`}>
+        <div className={`h-full no-scrollbar overflow-y-auto flex flex-col transition-all duration-500 ${isCollapsed ? 'opacity-0 invisible' : 'opacity-100 px-6 py-8'}`}>
 
           {/* Logo 区域 */}
-          <div className="flex flex-col items-start px-1 overflow-visible mb-10">
+          <div className="flex flex-col items-start px-1 overflow-visible mb-8">
             <div className="relative overflow-visible" style={{ width: '140px', minWidth: '140px' }}>
               <div className="relative z-10 transition-transform hover:scale-105 duration-300">
                  <Logo {...props} />
@@ -140,13 +158,13 @@ function AsideLeft(props) {
               )}
             </div>
             <section className="siteInfo relative pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 mt-5 font-light text-[11px] italic text-zinc-400 leading-relaxed opacity-80">
-              {siteConfig('DESCRIPTION')}
+              {sidebarDescription}
             </section>
           </div>
 
           {/* 活动公告 */}
-          <div className="marquee-border-container mb-10 p-[2px] rounded-2xl overflow-hidden relative shadow-sm">
-             <div className="relative z-10 bg-[#fffcf5] dark:bg-[#1a1610] rounded-2xl p-4">
+          <div className="marquee-border-container mb-8 p-px rounded-2xl overflow-hidden relative">
+             <div className="relative z-10 bg-amber-50/85 dark:bg-[#16130d] rounded-2xl p-4 border border-amber-100/80 dark:border-amber-900/50">
                 <div className="flex items-center text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.2em] uppercase mb-3 px-1">
                   <i className="fas fa-bullhorn mr-2 opacity-80"></i>
                   <span>活动公告 / SPECIAL EVENTS</span>
@@ -156,30 +174,34 @@ function AsideLeft(props) {
           </div>
 
           {/* 工具台 */}
-          <section className="mb-10">
-            <div className="flex items-center text-[10px] font-bold text-blue-600 dark:text-blue-400 tracking-[0.2em] uppercase mb-5 px-1">
-              <i className="fas fa-terminal mr-2 opacity-50 animate-pulse"></i>
+          <section className="mb-8 rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
+            <div className="flex items-center text-[10px] font-bold text-blue-600 dark:text-blue-400 tracking-[0.2em] uppercase mb-4 px-1">
+              <i className="fas fa-terminal mr-2 opacity-60"></i>
               <span>Trade Terminal</span>
             </div>
             <SidebarTools />
           </section>
 
           {/* 搜索 */}
-          <section className="mb-8">
+          <section className="mb-8 rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
+            <div className="mb-4 flex items-center text-[10px] font-bold text-zinc-500 dark:text-zinc-400 tracking-[0.2em] uppercase px-1">
+              <i className="fas fa-compass mr-2 text-cyan-500 opacity-70"></i>
+              <span>Content Navigation</span>
+            </div>
             <div className="bg-zinc-50 dark:bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800">
               <SearchInput {...props} />
             </div>
-          </section>
 
           {/* 菜单 */}
-          <section className="flex flex-col mb-10">
+          <div className="mt-4 flex flex-col border-t border-dashed border-zinc-200 pt-4 dark:border-zinc-800">
             <MenuList {...props} />
+          </div>
           </section>
 
           {/* 侧边栏热度标签云 */}
           {tagOptions?.length > 0 && (
-            <section className="flex flex-col mb-10">
-              <div className="flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1">
+            <section className="flex flex-col mb-8 rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
+              <div className="flex items-center text-[10px] font-bold text-zinc-500 dark:text-zinc-400 tracking-[0.2em] uppercase mb-4 px-1">
                 <i className="fas fa-tags mr-2 text-indigo-500 opacity-50"></i>
                 <span>Hot Tags</span>
               </div>
@@ -198,8 +220,8 @@ function AsideLeft(props) {
 
           {/* 热门文章 (Trending Now) */}
           {latestPosts?.length > 0 && (
-            <section className="flex flex-col mb-10">
-              <div className="flex items-center text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase mb-6 px-1">
+            <section className="flex flex-col mb-8 rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
+              <div className="flex items-center text-[10px] font-bold text-zinc-500 dark:text-zinc-400 tracking-[0.2em] uppercase mb-4 px-1">
                 <i className="fas fa-fire-alt mr-2 text-orange-500 opacity-50"></i>
                 <span>Trending Now</span>
               </div>
@@ -209,9 +231,9 @@ function AsideLeft(props) {
                   return (
                     <li 
                       key={p.id} 
-                      className={`group relative overflow-hidden rounded-full transition-all duration-300 ${
+                      className={`group relative overflow-hidden rounded-xl transition-all duration-300 ${
                         isTopThree 
-                          ? 'bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 border border-blue-200 dark:border-blue-800/50 shadow-md hover:shadow-lg hover:scale-105' 
+                          ? 'bg-blue-50/80 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 hover:border-blue-200 dark:hover:border-blue-800'
                           : 'bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
                       }`}
                     >
@@ -229,10 +251,10 @@ function AsideLeft(props) {
                           isTopThree 
                             ? `bg-gradient-to-br ${
                                 index === 0 
-                                  ? 'from-yellow-400 to-orange-500 text-white shadow-lg group-hover:scale-110 animate-bounce' 
+                                  ? 'from-yellow-400 to-orange-500 text-white shadow-sm group-hover:scale-105'
                                   : index === 1 
-                                  ? 'from-gray-300 to-gray-400 text-white shadow-lg group-hover:scale-105' 
-                                  : 'from-orange-300 to-amber-400 text-white shadow-lg group-hover:scale-105'
+                                  ? 'from-gray-300 to-gray-400 text-white shadow-sm group-hover:scale-105'
+                                  : 'from-orange-300 to-amber-400 text-white shadow-sm group-hover:scale-105'
                               }` 
                             : 'bg-zinc-200 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300'
                         }`}>
@@ -240,7 +262,7 @@ function AsideLeft(props) {
                         </span>
 
                         <Link 
-                          href={`${siteConfig('SUB_PATH', '')}/${p.slug}`} 
+                          href={`${subPath}/${p.slug}`}
                           className={`flex-1 text-[13px] line-clamp-2 font-medium transition-all duration-300 ${
                             isTopThree
                               ? 'text-blue-700 dark:text-blue-300 group-hover:text-blue-600 dark:group-hover:text-blue-200 group-hover:translate-x-0.5'
@@ -256,7 +278,11 @@ function AsideLeft(props) {
               </ul>
 
               {/* 🚀 逻辑 2：电脑端保持在热门文章列表下方 */}
-              <div className="mt-4 hidden lg:block">
+              <div className="mt-5 hidden rounded-2xl border border-dashed border-zinc-200 bg-zinc-50/70 p-3 dark:border-zinc-800 dark:bg-zinc-900/40 lg:block">
+                  <div className="mb-3 flex items-center text-[10px] font-bold text-zinc-500 dark:text-zinc-400 tracking-[0.18em] uppercase">
+                    <i className="fas fa-robot mr-2 text-blue-500 opacity-70"></i>
+                    <span>AI Assistant</span>
+                  </div>
                   <SidebarChatWidget />
               </div>
 
@@ -284,9 +310,9 @@ function AsideLeft(props) {
           position: absolute;
           width: 150%;
           height: 150%;
-          background: conic-gradient(transparent, #fbbf24, #f97316, #fbbf24, transparent 30%);
+          background: conic-gradient(transparent, rgba(251,191,36,0.35), rgba(249,115,22,0.45), rgba(251,191,36,0.35), transparent 32%);
           top: -25%; left: -25%;
-          animation: rotate-marquee 4s linear infinite;
+          animation: rotate-marquee 14s linear infinite;
         }
         @keyframes rotate-marquee {
           from { transform: rotate(0deg); }
@@ -315,6 +341,15 @@ function AsideLeft(props) {
         }
       `}</style>
     </div>
+  )
+}
+
+const getConfigValue = (global, key, defaultValue) => {
+  return (
+    global?.NOTION_CONFIG?.[key] ??
+    global?.THEME_CONFIG?.[key] ??
+    BLOG?.[key] ??
+    defaultValue
   )
 }
 

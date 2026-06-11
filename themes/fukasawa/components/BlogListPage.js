@@ -4,7 +4,6 @@ import { AdSlot } from '@/components/GoogleAdsense'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
 import { isBrowser } from '@/lib/utils'
-import { debounce } from 'lodash'
 import { useEffect, useState, useMemo } from 'react'
 import BlogCard from './BlogCard'
 import BlogPostListEmpty from './BlogListEmpty'
@@ -22,7 +21,10 @@ const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
   useEffect(() => {
     const handleResize = debounce(() => setColumns(calculateColumns()), 200)
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      handleResize.cancel()
+    }
   }, [])
 
   // 2. 核心算法优化：改用 useMemo，移除冗余的 deepClone
@@ -102,6 +104,16 @@ const calculateColumns = () => {
   if (window.innerWidth >= 1280) return 3
   if (window.innerWidth >= 768) return 2
   return 1
+}
+
+const debounce = (handler, delay = 200) => {
+  let timer
+  const debounced = (...args) => {
+    window.clearTimeout(timer)
+    timer = window.setTimeout(() => handler(...args), delay)
+  }
+  debounced.cancel = () => window.clearTimeout(timer)
+  return debounced
 }
 
 export default BlogListPage

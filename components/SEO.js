@@ -1,5 +1,6 @@
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
+import { buildArticleFAQs } from '@/lib/utils/articleFAQ'
 import { loadExternalResource } from '@/lib/utils'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -12,11 +13,11 @@ import { useEffect } from 'react'
  */
 const SEO = props => {
   const { children, siteInfo, post, NOTION_CONFIG } = props
-  const PATH = siteConfig('PATH')
   const LINK = siteConfig('LINK')
   const SUB_PATH = siteConfig('SUB_PATH', '')
-  let url = PATH?.length ? `${LINK}/${SUB_PATH}` : LINK
-  let image
+  const siteBaseUrl = buildCanonicalUrl(LINK, SUB_PATH)
+  let url = siteBaseUrl
+  let image = toAbsoluteUrl('/bg_image.jpg', siteBaseUrl)
   const router = useRouter()
   const meta = getSEOMeta(props, router, useGlobal()?.locale)
   const webFontUrl = siteConfig('FONT_URL')
@@ -47,13 +48,15 @@ const SEO = props => {
     keywords = post?.tags?.join(',')
   }
   if (meta) {
-    url = `${url}/${meta.slug}`
-    image = meta.image || '/bg_image.jpg'
+    url = buildCanonicalUrl(siteBaseUrl, meta.slug)
+    image = toAbsoluteUrl(meta.image || '/bg_image.jpg', siteBaseUrl)
   }
   const TITLE = siteConfig('TITLE')
   const title = meta?.title || TITLE
   const description = meta?.description || `${siteInfo?.description}`
-  const type = meta?.type || 'website'
+  const rawType = meta?.type || 'website'
+  const isArticle = rawType === 'Post' || rawType === 'article'
+  const type = isArticle ? 'article' : 'website'
   const lang = siteConfig('LANG').replace('-', '_') // Facebook OpenGraph 要 zh_CN 這樣的格式才抓得到語言
   const category = meta?.category || KEYWORDS // section 主要是像是 category 這樣的分類，Facebook 用這個來抓連結的分類
   const favicon = siteConfig('BLOG_FAVICON')
@@ -134,6 +137,19 @@ const SEO = props => {
       <meta name='description' content={description} />
       <meta name='author' content={AUTHOR} />
       <meta name='generator' content='NotionNext' />
+      <link rel='canonical' href={url} />
+      <link
+        rel='alternate'
+        type='application/rss+xml'
+        title={`${siteConfig('TITLE')} RSS`}
+        href={buildCanonicalUrl(siteBaseUrl, 'rss/feed.xml')}
+      />
+      <link
+        rel='alternate'
+        type='text/plain'
+        title={`${siteConfig('TITLE')} llms.txt`}
+        href={buildCanonicalUrl(siteBaseUrl, 'llms.txt')}
+      />
 
       {/* 语言和地区 */}
       <meta httpEquiv='content-language' content={siteConfig('LANG')} />
@@ -145,6 +161,7 @@ const SEO = props => {
       <meta property='og:description' content={description} />
       <meta property='og:url' content={url} />
       <meta property='og:image' content={image} />
+      <meta property='og:image:secure_url' content={image} />
       <meta property='og:image:width' content='1200' />
       <meta property='og:image:height' content='630' />
       <meta property='og:image:alt' content={title} />
@@ -157,6 +174,7 @@ const SEO = props => {
       <meta name='twitter:creator' content={siteConfig('TWITTER_CREATOR', '@NotionNext')} />
       <meta name='twitter:title' content={title} />
       <meta name='twitter:description' content={description} />
+      <meta name='twitter:url' content={url} />
       <meta name='twitter:image' content={image} />
       <meta name='twitter:image:alt' content={title} />
 
@@ -182,13 +200,15 @@ const SEO = props => {
         <meta name='referrer' content='no-referrer-when-downgrade' />
       )}
       {/* 文章特定元数据 */}
-      {meta?.type === 'Post' && (
+      {isArticle && (
         <>
           <meta property='article:published_time' content={meta.publishDay} />
           <meta property='article:modified_time' content={meta.lastEditedDay} />
           <meta property='article:author' content={AUTHOR} />
           <meta property='article:section' content={category} />
-          <meta property='article:tag' content={keywords} />
+          {meta?.tags?.map(tag => (
+            <meta key={tag} property='article:tag' content={tag} />
+          ))}
           <meta property='article:publisher' content={FACEBOOK_PAGE} />
         </>
       )}
@@ -215,6 +235,24 @@ const SEO = props => {
   )
 }
 
+const trimSlashes = value => `${value || ''}`.replace(/^\/+|\/+$/g, '')
+
+const buildCanonicalUrl = (baseUrl, ...paths) => {
+  const normalizedBase = `${baseUrl || ''}`.replace(/\/+$/, '')
+  const normalizedPath = paths.map(trimSlashes).filter(Boolean).join('/')
+  return normalizedPath ? `${normalizedBase}/${normalizedPath}` : normalizedBase
+}
+
+const toAbsoluteUrl = (value, baseUrl) => {
+  if (!value) {
+    return undefined
+  }
+  if (/^(https?:)?\/\//i.test(value)) {
+    return value.startsWith('//') ? `https:${value}` : value
+  }
+  return buildCanonicalUrl(baseUrl, value)
+}
+
 /**
  * 生成结构化数据
  * @param {*} meta
@@ -225,23 +263,46 @@ const SEO = props => {
  * @returns
  */
 const generateStructuredData = (meta, siteInfo, url, image, author) => {
-  const baseData = {
-    '@context': 'https://schema.org',
+  const siteUrl = buildCanonicalUrl(siteConfig('LINK'))
+  const publisherId = `${siteUrl}/#publisher`
+  const websiteId = `${siteUrl}/#website`
+  const inLanguage = siteConfig('LANG')
+  const publisher = {
     '@type': 'WebSite',
+    '@id': websiteId,
     name: siteInfo?.title,
     description: siteInfo?.description,
-    url: siteConfig('LINK'),
-    author: {
-      '@type': 'Person',
-      name: author
-    },
+    url: siteUrl,
+    inLanguage,
     publisher: {
-      '@type': 'Organization',
-      name: siteInfo?.title,
-      logo: {
-        '@type': 'ImageObject',
-        url: siteInfo?.icon
-      }
+      '@id': publisherId
+    },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${siteUrl}/search?s={search_term_string}`,
+      'query-input': 'required name=search_term_string'
+    }
+  }
+  const authorData = {
+    '@type': 'Person',
+    '@id': publisherId,
+    name: author,
+    url: siteUrl,
+    image: siteInfo?.icon
+  }
+  const webPage = {
+    '@type': 'WebPage',
+    '@id': `${url}#webpage`,
+    url,
+    name: meta?.title || siteInfo?.title,
+    description: meta?.description || siteInfo?.description,
+    inLanguage,
+    isPartOf: {
+      '@id': websiteId
+    },
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      url: image
     }
   }
 
@@ -249,35 +310,70 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
   if (meta?.type === 'Post') {
     return {
       '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: meta.title,
-      description: meta.description,
-      image: image,
-      url: url,
-      datePublished: meta.publishDay,
-      dateModified: meta.lastEditedDay || meta.publishDay,
-      author: {
-        '@type': 'Person',
-        name: author
-      },
-      publisher: {
-        '@type': 'Organization',
-        name: siteInfo?.title,
-        logo: {
-          '@type': 'ImageObject',
-          url: siteInfo?.icon
+      '@graph': [
+        publisher,
+        authorData,
+        webPage,
+        {
+          '@type': 'BlogPosting',
+          '@id': `${url}#article`,
+          headline: meta.title,
+          description: meta.description,
+          image,
+          url,
+          inLanguage,
+          datePublished: meta.publishDay,
+          dateModified: meta.lastEditedDay || meta.publishDay,
+          author: {
+            '@id': publisherId
+          },
+          publisher: {
+            '@id': publisherId
+          },
+          mainEntityOfPage: {
+            '@id': `${url}#webpage`
+          },
+          keywords: meta.tags?.join(', '),
+          articleSection: meta.category
+        },
+        {
+          '@type': 'BreadcrumbList',
+          '@id': `${url}#breadcrumb`,
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: siteInfo?.title,
+              item: siteUrl
+            },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: meta.title,
+              item: url
+            }
+          ]
+        },
+        {
+          '@type': 'FAQPage',
+          '@id': `${url}#faq`,
+          mainEntity: buildArticleFAQs(meta).map(item => ({
+            '@type': 'Question',
+            name: item.question,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: item.answer
+            }
+          }))
         }
-      },
-      mainEntityOfPage: {
-        '@type': 'WebPage',
-        '@id': url
-      },
-      keywords: meta.tags?.join(', '),
-      articleSection: meta.category
+      ]
     }
   }
 
-  return baseData
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [publisher, authorData, webPage]
+  }
 }
 
 /**
@@ -387,7 +483,7 @@ const getSEOMeta = (props, router, locale) => {
         type: post?.type,
         slug: post?.slug,
         image: post?.pageCoverThumbnail || `${siteInfo?.pageCover}`,
-        category: post?.category?.[0],
+        category: Array.isArray(post?.category) ? post?.category?.[0] : post?.category,
         tags: post?.tags
       }
   }

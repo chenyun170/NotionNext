@@ -34,11 +34,11 @@ const FloatingActivityCard = ({ config, isActive, isVisible }) => {
           </div>
           
           <h3 className="text-sm font-black text-gray-800 dark:text-white mb-2 leading-tight">
-            {config.title || '139届全球采购商数据新鲜出炉'}
+            {config.title || '图灵搜618优惠'}
           </h3>
           
           <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
-            🔥 外贸获客工具 ¥300/1个行业， <span className="text-orange-600 font-bold">¥600/3个行业!</span>
+            🔥 不仅价格便宜， <span className="text-orange-600 font-bold">还赠送功能!</span>
           </p>
           
           <a 
@@ -86,12 +86,12 @@ const InlineActivityCard = ({ config, isActive }) => {
 // --- 活动配置 (统一管理) ---
 const activityConfigs = {
   activity1: {
-    deadline: new Date('2026-05-31T23:59:59+08:00'),
-    title: '139届全球采购商数据新鲜出炉',
+    deadline: new Date('2026-07-01T00:00:00+08:00'),
+    title: '618图灵搜优惠',
     productName: '外贸获客工具',
-    description: '¥300/行业，¥600/3个行业！',
+    description: '价格便宜，功能升级！',
     emoji: '🔥',
-    link: 'https://h.topeasysoft.com/20260511gjh/index.html?i=BB54F6',
+    link: 'https://h.topeasysoft.com/20260618tls/index.html?i=BB54F6',
     buttonText: '立即参与',
     bgColor: 'bg-orange-50/95 dark:bg-orange-950/80',
     borderColor: 'border-orange-200 dark:border-orange-800',
@@ -102,12 +102,12 @@ const activityConfigs = {
     animation: 'animate-bounce'
   },
   activity2: {
-    deadline: new Date('2025-12-31T23:59:59+08:00'),
-    title: '活动二：顶易云岁末活动',
+    deadline: new Date('2026-07-01T00:00:00+08:00'),
+    title: '活动二：顶易云618活动',
     productName: '高阶获客工具',
-    description: '限时赠送社媒搜索工具！',
+    description: '限时赠送功能升级！',
     emoji: '🚀',
-    link: 'http://h.topeasysoft.com/20251211dyy/index.html?i=BB54F6',
+    link: 'https://h.topeasysoft.com/20260618dyy/index.html?i=BB54F6',
     buttonText: '查看详情',
     bgColor: 'bg-blue-50/95 dark:bg-blue-950/80',
     borderColor: 'border-blue-200 dark:border-blue-800',
@@ -119,19 +119,30 @@ const activityConfigs = {
   }
 }
 
+const getActiveActivities = () => {
+  const now = new Date()
+  const activeActivities = {}
+  Object.keys(activityConfigs).forEach(key => {
+    activeActivities[key] = now < activityConfigs[key].deadline
+  })
+  return activeActivities
+}
+
 const Announcement = ({ post, className }) => {
   const { locale } = useGlobal()
-  const [activities, setActivities] = useState({ activity1: false, activity2: false })
+  const [activities, setActivities] = useState(getActiveActivities)
   const [floatingVisible, setFloatingVisible] = useState(false)
   const announcementRef = useRef(null)
 
   useEffect(() => {
-    const now = new Date()
-    const newActivities = {}
-    Object.keys(activityConfigs).forEach(key => {
-      newActivities[key] = now < activityConfigs[key].deadline
-    })
-    setActivities(newActivities)
+    const checkActivityDeadlines = () => {
+      setActivities(getActiveActivities())
+    }
+
+    checkActivityDeadlines()
+    const timer = setInterval(checkActivityDeadlines, 60000)
+
+    return () => clearInterval(timer)
   }, [])
 
   useEffect(() => {

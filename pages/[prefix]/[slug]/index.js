@@ -15,13 +15,6 @@ const PrefixSlug = props => {
 }
 
 export async function getStaticPaths() {
-  if (!BLOG.isProd) {
-    return {
-      paths: [],
-      fallback: true
-    }
-  }
-
   const from = 'slug-paths'
   const { allPages } = await fetchGlobalAllData({ from })
 

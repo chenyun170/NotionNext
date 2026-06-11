@@ -14,7 +14,12 @@ const ACTIVITIES = [
   {
     icon: '🔥',
     text: '139届全球采购商数据新鲜出炉！¥300/行业，¥600/3个行业！',
-    link: 'https://h.topeasysoft.com/20260511gjh/index.html?i=BB54F6'
+    link: 'https://h.topeasysoft.com/20260618tls/index.html?i=BB54F6'
+  },
+  {
+    icon: '🚀',
+    text: '顶易云 618 活动进行中，6月30日24时截止',
+    link: 'https://h.topeasysoft.com/20260618dyy/index.html?i=BB54F6'
   }
 ]
 
@@ -36,7 +41,7 @@ const Header = props => {
   useEffect(() => {
     const checkDeadline = () => {
       const now = new Date()
-      const deadline = new Date('2026-05-31 23:59:59')
+      const deadline = new Date('2026-07-01T00:00:00+08:00')
       
       if (now > deadline) {
         setShowMarquee(false)
@@ -108,24 +113,27 @@ const Header = props => {
   )
 
   return (
-    <div id='top-nav' className='z-50 block lg:hidden sticky top-0 shadow-md'>
+    <div id='top-nav' className='z-50 block lg:hidden sticky top-0 shadow-sm'>
       
       {/* 1. 顶部跑马灯横幅 - 时间控制显隐 */}
       {showMarquee && (
-      <div 
-        className='w-full bg-gradient-to-r from-orange-500 to-orange-600 py-2.5 overflow-hidden relative animate-in fade-in duration-500'
-        style={{ zIndex: 100 }}
-      >
-        <div className='flex items-center'>
-          <div className={`pl-3 pr-2 bg-gradient-to-r from-orange-500 to-orange-600 ${Z_INDEX.marquee} relative flex items-center flex-shrink-0`}>
-            <i className='fas fa-bullhorn animate-bounce text-white text-xs'></i>
-          </div>
-          <div className='marquee-container flex-grow overflow-hidden'>
-            <div className='marquee-content whitespace-nowrap flex'>
-              <MarqueeItems />
-              <MarqueeItems />
-            </div>
-          </div>
+      <div
+        className='w-full border-b border-amber-100 bg-amber-50/95 px-3 py-1.5 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/80 dark:text-amber-100'
+        style={{ zIndex: 100 }}>
+        <div className='flex items-center gap-2 overflow-x-auto no-scrollbar'>
+          <i className='fas fa-bullhorn flex-shrink-0 text-[11px] text-amber-600 dark:text-amber-300'></i>
+          {ACTIVITIES.map((activity, idx) => (
+            <a
+              key={idx}
+              href={activity.link}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='flex flex-shrink-0 items-center gap-1 rounded-full border border-amber-200 bg-white/75 px-2.5 py-1 text-[11px] font-bold text-amber-800 no-underline dark:border-amber-800 dark:bg-amber-900/50 dark:text-amber-100'>
+              <span>{activity.icon}</span>
+              <span>618 Activity</span>
+              <i className='fas fa-arrow-up-right-from-square text-[9px] opacity-60'></i>
+            </a>
+          ))}
         </div>
       </div>
       )}
@@ -135,7 +143,7 @@ const Header = props => {
         id='sticky-nav'
         className={`relative w-full ${Z_INDEX.nav} bg-white dark:bg-black border-b border-gray-100 dark:border-zinc-900`}
       >
-        <div className='w-full flex justify-between items-center p-3'>
+        <div className='w-full flex justify-between items-center px-3 py-2.5'>
           <div className='flex flex-none flex-grow-0'>
             <Logo {...props} />
           </div>
@@ -150,7 +158,7 @@ const Header = props => {
         </div>
 
         {/* 3. 阅读进度条 - 优化版本 */}
-        <div className='absolute bottom-0 left-0 w-full h-[3px] bg-gray-100 dark:bg-zinc-800 overflow-hidden'>
+        <div className='absolute bottom-0 left-0 w-full h-[2px] bg-gray-100 dark:bg-zinc-800 overflow-hidden'>
           <div 
             className='h-full bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 shadow-[0_0_8px_rgba(249,115,22,0.8)] transition-all duration-150 ease-out'
             style={{ 
@@ -162,14 +170,20 @@ const Header = props => {
 
         {/* 4. 折叠菜单 */}
         <Collapse type='vertical' isOpen={isOpen} collapseRef={collapseRef}>
-          <div className='py-1 px-5 bg-white dark:bg-black'>
+          <div className='max-h-[72vh] overflow-y-auto border-b border-zinc-200 bg-white/98 px-4 pb-5 pt-3 shadow-xl backdrop-blur-xl dark:border-zinc-800 dark:bg-black/95'>
+            <div className='mb-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-2 dark:border-zinc-800 dark:bg-zinc-900/70'>
+              <SearchInput {...props} />
+            </div>
+            <div className='mb-3 flex items-center justify-between px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400'>
+              <span>Menu</span>
+              <span>Trade Intelligence</span>
+            </div>
             <MenuList
               {...props}
               onHeightChange={param =>
                 collapseRef.current?.updateCollapseHeight(param)
               }
             />
-            <SearchInput {...props} />
           </div>
         </Collapse>
       </div>

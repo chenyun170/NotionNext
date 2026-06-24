@@ -32,7 +32,14 @@ export interface NotionTokenResponseData {
 export interface NotionTokenResponse {
   status: number
   statusText: string
-  data: NotionTokenResponseData
+  data: NotionTokenResponseData | null
+}
+
+const isDevelopment = process.env.NODE_ENV === 'development'
+
+const buildSuccessMessage = (data: NotionTokenResponseData | null) => {
+  const workspaceName = data?.workspace_name || 'Notion 工作区'
+  return `授权成功：${workspaceName}`
 }
 
 /**
@@ -58,7 +65,7 @@ export default async function handler(
 
     if (params?.status === 200) {
       const redirectQuery = {
-        msg: '成功了' + JSON.stringify(params.data)
+        msg: buildSuccessMessage(params.data)
       }
 
       // 这里将用户数据写入到Notion数据库
@@ -74,7 +81,9 @@ export default async function handler(
       )
     }
   } catch (error) {
-    console.error(error)
+    if (isDevelopment) {
+      console.error(error)
+    }
     res.status(500).json({ error: 'Internal Server Error' })
   }
 }
@@ -87,6 +96,15 @@ const fetchToken = async (code: string): Promise<NotionTokenResponse> => {
   const clientId = process.env.OAUTH_CLIENT_ID
   const clientSecret = process.env.OAUTH_CLIENT_SECRET
   const redirectUri = process.env.OAUTH_REDIRECT_URI
+
+  if (!clientId || !clientSecret || !redirectUri) {
+    return {
+      status: 500,
+      statusText: 'OAuth 配置缺失',
+      data: null
+    }
+  }
+
   const encoded = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
 
   try {
@@ -105,18 +123,19 @@ const fetchToken = async (code: string): Promise<NotionTokenResponse> => {
         }
       }
     )
-    console.log('OAuth身份信息', response.data)
     return {
       status: response.status,
       statusText: response.statusText,
       data: response.data
     }
   } catch (error) {
-    console.error('Error fetching token', error)
+    if (isDevelopment) {
+      console.error('Error fetching token', error)
+    }
     return {
       status: 400,
       statusText: 'failed',
-      data: null as unknown as NotionTokenResponseData
+      data: null
     }
   }
 }

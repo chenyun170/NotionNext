@@ -14,6 +14,7 @@ export class RateLimiter {
   private lastRequestTime = 0
   private requestCount = 0
   private windowStart = Date.now()
+  private lockDisabled = false
 
   constructor(
     private maxRequestsPerMinute = 200,
@@ -21,35 +22,42 @@ export class RateLimiter {
   ) { }
 
   private async acquireLock() {
-    if (!this.lockFilePath) return
+    if (!this.lockFilePath || this.lockDisabled) return false
     // 如果锁文件存在且创建时间过久（比如 >5分钟），认为是陈旧锁，直接删除
-    if (fs.existsSync(this.lockFilePath)) {
-      const stats = fs.statSync(this.lockFilePath)
-      const age = Date.now() - stats.ctimeMs
-      if (age > 30 * 1000) { // 30秒
-        try {
+    try {
+      if (fs.existsSync(this.lockFilePath)) {
+        const stats = fs.statSync(this.lockFilePath)
+        const age = Date.now() - stats.ctimeMs
+        if (age > 30 * 1000) { // 30秒
           fs.unlinkSync(this.lockFilePath)
           console.warn('[限流] 删除陈旧锁文件:', this.lockFilePath)
-        } catch (err) {
-          console.error('[限流] 删除陈旧锁失败:', err)
         }
       }
+    } catch (err) {
+      console.warn('[限流] 检查锁文件失败，降级为无文件锁:', err)
+      this.lockDisabled = true
+      return false
     }
+
     while (true) {
       try {
         fs.writeFileSync(this.lockFilePath, process.pid.toString(), { flag: 'wx' })
-        return
+        return true
       } catch (err: any) {
         if (err.code === 'EEXIST') await new Promise(res => setTimeout(res, 100))
-        else throw err
+        else {
+          console.warn('[限流] 创建锁文件失败，降级为无文件锁:', err)
+          this.lockDisabled = true
+          return false
+        }
       }
     }
   }
 
-  private releaseLock() {
-    if (!this.lockFilePath) return
+  private releaseLock(hasLock: boolean) {
+    if (!this.lockFilePath || !hasLock) return
     try { if (fs.existsSync(this.lockFilePath)) fs.unlinkSync(this.lockFilePath) }
-    catch (err) { console.error('释放锁失败', err) }
+    catch (err) { console.warn('[限流] 释放锁失败:', err) }
   }
 
   public enqueue<T>(key: string, requestFunc: () => Promise<T>): Promise<T> {
@@ -74,8 +82,9 @@ export class RateLimiter {
     if (this.queue.length === 0) { this.isProcessing = false; return }
     this.isProcessing = true
 
+    let hasLock = false
     try {
-      await this.acquireLock()
+      hasLock = await this.acquireLock()
       const now = Date.now()
       const elapsed = now - this.windowStart
 
@@ -106,7 +115,7 @@ export class RateLimiter {
     } catch (err) {
       console.error('限流队列异常', err)
     } finally {
-      this.releaseLock()
+      this.releaseLock(hasLock)
       setTimeout(() => this.processQueue(), 0)
     }
   }

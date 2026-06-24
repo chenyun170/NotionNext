@@ -48,14 +48,26 @@ export async function getStaticProps({ locale }) {
 
   postsSortByDate.forEach(post => {
     const date = formatDateFmt(post.publishDate, 'yyyy-MM')
+    const archivePost = {
+      id: post.id,
+      title: post.title,
+      href: post.href,
+      publishDay: post.publishDay,
+      date: post.date
+        ? {
+            start_date: post.date.start_date
+          }
+        : null
+    }
     if (archivePosts[date]) {
-      archivePosts[date].push(post)
+      archivePosts[date].push(archivePost)
     } else {
-      archivePosts[date] = [post]
+      archivePosts[date] = [archivePost]
     }
   })
 
   props.archivePosts = archivePosts
+  delete props.posts
   delete props.allPages
 
   return {

@@ -104,6 +104,8 @@ const ExternalPlugin = props => {
   )
   const TIANLI_KEY = siteConfig('TianliGPT_KEY', null, NOTION_CONFIG)
   const GLOBAL_JS = siteConfig('GLOBAL_JS', '', NOTION_CONFIG)
+  const ALLOW_GLOBAL_JS =
+    String(siteConfig('ALLOW_GLOBAL_JS', false, NOTION_CONFIG)) === 'true'
   const CLARITY_ID = siteConfig('CLARITY_ID', null, NOTION_CONFIG)
   const IMG_SHADOW = siteConfig('IMG_SHADOW', null, NOTION_CONFIG)
   const ANIMATE_CSS_URL = siteConfig('ANIMATE_CSS_URL', null, NOTION_CONFIG)
@@ -180,12 +182,11 @@ const ExternalPlugin = props => {
 
   useEffect(() => {
     // 执行注入脚本
-    // eslint-disable-next-line no-eval
-    if (GLOBAL_JS && GLOBAL_JS.trim() !== '') {
-      // console.log('Inject JS:', GLOBAL_JS);
+    if (ALLOW_GLOBAL_JS && GLOBAL_JS && GLOBAL_JS.trim() !== '') {
+      // eslint-disable-next-line no-eval
+      eval(GLOBAL_JS)
     }
-    eval(GLOBAL_JS)
-  })
+  }, [ALLOW_GLOBAL_JS, GLOBAL_JS])
 
   if (DISABLE_PLUGIN) {
     return null

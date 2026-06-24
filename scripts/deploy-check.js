@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
+const { loadEnvConfig } = require('@next/env')
 const http = require('http')
 const https = require('https')
+
+loadEnvConfig(process.cwd())
 
 const baseUrl = process.env.DEPLOY_CHECK_BASE_URL || 'http://127.0.0.1:3000'
 const timeoutMs = Number(process.env.DEPLOY_CHECK_TIMEOUT_MS || 30000)

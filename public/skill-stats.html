@@ -99,59 +99,107 @@
       document.getElementById(id).textContent = value
     }
 
+    const clearElement = target => {
+      while (target.firstChild) {
+        target.removeChild(target.firstChild)
+      }
+    }
+
+    const appendEmpty = target => {
+      clearElement(target)
+      const empty = document.createElement('p')
+      empty.className = 'empty'
+      empty.textContent = '暂无数据'
+      target.appendChild(empty)
+    }
+
+    const createRow = (title, subtitle, count) => {
+      const row = document.createElement('div')
+      row.className = 'row'
+
+      const content = document.createElement('div')
+      const titleNode = document.createElement('div')
+      titleNode.textContent = title || 'unknown'
+      content.appendChild(titleNode)
+
+      if (subtitle) {
+        const subtitleNode = document.createElement('small')
+        subtitleNode.textContent = subtitle
+        content.appendChild(subtitleNode)
+      }
+
+      const countNode = document.createElement('b')
+      countNode.textContent = count
+
+      row.appendChild(content)
+      row.appendChild(countNode)
+      return row
+    }
+
     const renderList = (id, items) => {
       const target = document.getElementById(id)
       if (!items || !items.length) {
-        target.innerHTML = '<p class="empty">暂无数据</p>'
+        appendEmpty(target)
         return
       }
-      const max = Math.max(...items.map(item => item.count), 1)
-      target.innerHTML = items.map(item => `
-        <div class="row">
-          <div>
-            <div>${escapeHtml(item.name || 'unknown')}</div>
-            <div class="bar"><i style="width:${Math.max(6, item.count / max * 100)}%"></i></div>
-          </div>
-          <b>${item.count}</b>
-        </div>
-      `).join('')
+      clearElement(target)
+      const max = Math.max(...items.map(item => Number(item.count) || 0), 1)
+
+      items.forEach(item => {
+        const count = Number(item.count) || 0
+        const row = createRow(item.name || 'unknown', '', count)
+        const bar = document.createElement('div')
+        const barInner = document.createElement('i')
+        bar.className = 'bar'
+        barInner.style.width = `${Math.max(6, (count / max) * 100)}%`
+        bar.appendChild(barInner)
+        row.firstChild.appendChild(bar)
+        target.appendChild(row)
+      })
     }
 
     const renderDaily = items => {
       const target = document.getElementById('daily')
-      const max = Math.max(...items.map(item => item.count), 1)
-      target.innerHTML = items.map(item => `
-        <div class="day">
-          <i style="height:${Math.max(4, item.count / max * 120)}px"></i>
-          <b>${item.count}</b>
-          <span>${item.day.slice(5)}</span>
-        </div>
-      `).join('')
+      clearElement(target)
+      const safeItems = items || []
+      const max = Math.max(...safeItems.map(item => Number(item.count) || 0), 1)
+
+      safeItems.forEach(item => {
+        const count = Number(item.count) || 0
+        const day = document.createElement('div')
+        const bar = document.createElement('i')
+        const countNode = document.createElement('b')
+        const dateNode = document.createElement('span')
+
+        day.className = 'day'
+        bar.style.height = `${Math.max(4, (count / max) * 120)}px`
+        countNode.textContent = count
+        dateNode.textContent = String(item.day || '').slice(5)
+
+        day.appendChild(bar)
+        day.appendChild(countNode)
+        day.appendChild(dateNode)
+        target.appendChild(day)
+      })
     }
 
     const renderLatest = items => {
       const target = document.getElementById('latest')
       if (!items || !items.length) {
-        target.innerHTML = '<p class="empty">暂无数据</p>'
+        appendEmpty(target)
         return
       }
-      target.innerHTML = items.map(item => `
-        <div class="row">
-          <div>
-            <div>${escapeHtml(item.source || 'unknown')}</div>
-            <small>${escapeHtml(item.path || '')} · ${escapeHtml(item.day || '')}</small>
-          </div>
-          <b>1</b>
-        </div>
-      `).join('')
+      clearElement(target)
+      items.forEach(item => {
+        target.appendChild(
+          createRow(
+            item.source || 'unknown',
+            `${item.path || ''} · ${item.day || ''}`,
+            1
+          )
+        )
+      })
     }
-
-    const escapeHtml = value => String(value || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;')
 
     const tokenFromUrl = new URLSearchParams(window.location.search).get('token') || ''
     if (tokenFromUrl) {
@@ -193,7 +241,15 @@
         if (!tokenPanel.hidden) {
           return
         }
-        document.querySelector('main').innerHTML = '<section class="card"><p class="empty">统计接口暂时不可用。</p></section>'
+        const main = document.querySelector('main')
+        clearElement(main)
+        const card = document.createElement('section')
+        const empty = document.createElement('p')
+        card.className = 'card'
+        empty.className = 'empty'
+        empty.textContent = '统计接口暂时不可用。'
+        card.appendChild(empty)
+        main.appendChild(card)
       })
     }
 

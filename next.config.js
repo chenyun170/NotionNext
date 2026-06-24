@@ -134,8 +134,8 @@ const nextConfig = {
     loader: 'default',
     // 图片缓存优化
     minimumCacheTTL: 60 * 60 * 24 * 7, // 7天
-    // 危险的允许SVG
-    dangerouslyAllowSVG: true,
+    // 禁止通过 Next Image 优化代理 SVG，降低脚本型 SVG 风险
+    dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
 
@@ -206,9 +206,13 @@ const nextConfig = {
           {
             source: '/:path*{/}?',
             headers: [
-              // 为了博客兼容性，不做过多安全限制
-              { key: 'Access-Control-Allow-Credentials', value: 'true' },
-              { key: 'Access-Control-Allow-Origin', value: '*' },
+              // 基础安全头，保持第三方插件兼容，不启用强 CSP
+              { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+              { key: 'X-Content-Type-Options', value: 'nosniff' },
+              { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+              { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+              { key: 'Access-Control-Allow-Credentials', value: 'false' },
+              { key: 'Access-Control-Allow-Origin', value: BLOG.LINK || 'https://www.123170.xyz' },
               {
                 key: 'Access-Control-Allow-Methods',
                 value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT'
@@ -284,7 +288,7 @@ const nextConfig = {
     )
 
     // 性能优化配置
-    if (!dev) {
+    if (!dev && !isServer) {
       // 生产环境优化
       config.optimization = {
         ...config.optimization,

@@ -40,12 +40,12 @@ const SearchInput = (props) => {
 
   return (
     <div className='relative w-full group'>
-      {/* 搜索输入框：高度压缩至 h-8，样式与 SidebarTools 对齐 */}
+      {/* 搜索输入框：提高字号和点击区域，减轻长时间阅读后的识别负担 */}
       <input
         ref={searchInputRef}
         type='text'
         placeholder={locale.SEARCH.ARTICLES}
-        className='w-full h-8 pl-3 pr-8 text-[11px] outline-none bg-gray-100/50 dark:bg-white/5 border border-transparent focus:border-orange-500/50 rounded-lg transition-all dark:text-gray-200'
+        className='h-9 w-full rounded-lg border border-transparent bg-gray-100/70 pl-3.5 pr-9 text-[13px] outline-none transition-all placeholder:text-zinc-400 focus:border-orange-500/50 focus:bg-white dark:bg-white/5 dark:text-gray-200 dark:focus:bg-zinc-900'
         onKeyUp={handleKeyUp}
         onFocus={() => siteConfig('ALGOLIA_APP_ID') && searchModal?.current?.openSearch()}
         defaultValue={keyword || ''}
@@ -56,7 +56,7 @@ const SearchInput = (props) => {
         className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center'
         onClick={handleSearch}
       >
-        <i className={`text-[10px] transition-colors duration-200 ${onLoading ? 'fa-spinner animate-spin text-orange-500' : 'fa-search text-gray-400 group-hover:text-orange-500'}`} />
+        <i className={`text-xs transition-colors duration-200 ${onLoading ? 'fa-spinner animate-spin text-orange-500' : 'fa-search text-gray-400 group-hover:text-orange-500'}`} />
       </div>
 
       {/* 清除按钮：仅在有搜索词时显示 */}
@@ -65,7 +65,7 @@ const SearchInput = (props) => {
           className='absolute right-7 top-1/2 -translate-y-1/2 cursor-pointer'
           onClick={() => { searchInputRef.current.value = ''; handleSearch(); }}
         >
-          <i className='fas fa-times text-[10px] text-gray-300 hover:text-gray-500' />
+          <i className='fas fa-times text-xs text-gray-300 hover:text-gray-500' />
         </div>
       )}
     </div>

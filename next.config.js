@@ -126,9 +126,10 @@ const nextConfig = {
       'images.unsplash.com',
       'source.unsplash.com',
       'p1.qhimg.com',
-      'webmention.io',
-      'ko-fi.com'
-    ],
+      'webmention.io',
+      'ko-fi.com',
+      'cloudflare-imgbed-aa9.pages.dev'
+    ],
     // 图片加载器优化
     loader: 'default',
     // 图片缓存优化

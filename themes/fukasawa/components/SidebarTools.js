@@ -17,9 +17,6 @@ const SidebarTools = () => {
   // HS 搜索切换：false 为专业库，true 为 Google
   const [hsToGoogle, setHsToGoogle] = useState(false);
 
-  const AMAP_KEY = "41151e8e6a20ccd713ae595cd3236735";
-  const EX_API_URL = "https://v6.exchangerate-api.com/v6/08bd067e490fdc5d9ccac3bd/latest/USD";
-
   useEffect(() => {
     const updateTime = () => {
       const zones = [
@@ -41,44 +38,28 @@ const SidebarTools = () => {
       setTimes(res);
     };
 
-const initLocationWeather = async () => {
-  try {
-    // 直接固定南昌市的 adcode (360100)
-    const adcode = "360100";
-    const cityName = "南昌";
-
-    // 请求实时天气
-    const wRes = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?city=${adcode}&key=${AMAP_KEY}`);
-    const wData = await wRes.json();
-    
-    if (wData.lives?.length > 0) {
-      const live = wData.lives[0];
-      setWeather({ 
-        temp: live.temperature, 
-        text: live.weather, 
-        city: cityName // 固定显示南昌
-      });
-    }
-  } catch (e) { 
-    console.error("Weather Error", e); 
-    // 错误时显示默认值
-    setWeather({ temp: '20', text: '多云', city: '南昌' });
-  }
-};
-
-    const fetchRate = async () => {
+    const fetchSidebarTools = async () => {
       try {
-        const res = await fetch(EX_API_URL);
+        const res = await fetch('/api/sidebar-tools');
         const data = await res.json();
-        if (data.conversion_rates?.CNY) {
-          setRealRate(data.conversion_rates.CNY.toFixed(2));
+
+        if (data?.weather) {
+          setWeather(data.weather);
         }
-      } catch (e) { console.error("Rate Error"); }
+
+        if (data?.rate) {
+          setRealRate(data.rate);
+        }
+      } catch (e) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error("Sidebar tools API error", e);
+        }
+        setWeather({ temp: '20', text: '多云', city: '南昌' });
+      }
     };
 
     updateTime();
-    initLocationWeather();
-    fetchRate();
+    fetchSidebarTools();
     const timer = setInterval(updateTime, 30000);
     return () => clearInterval(timer);
   }, []);

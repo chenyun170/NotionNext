@@ -72,12 +72,12 @@ const ShareButtons = ({ post }) => {
   const titleWithSiteInfo = title + ' | ' + siteConfig('TITLE')
   const { locale } = useGlobal()
   const [qrCodeShow, setQrCodeShow] = useState(false)
+  const [copyTip, setCopyTip] = useState('')
 
   const copyUrl = () => {
-    // 确保 shareUrl 是一个正确的字符串并进行解码
     const decodedUrl = decodeURIComponent(shareUrl)
     navigator?.clipboard?.writeText(decodedUrl)
-    alert(locale.COMMON.URL_COPIED + ' \n' + decodedUrl)
+    setCopyTip(locale.COMMON.URL_COPIED)
   }
 
   const openPopover = () => {
@@ -91,8 +91,29 @@ const ShareButtons = ({ post }) => {
     setShareUrl(window.location.href)
   }, [])
 
+  useEffect(() => {
+    if (!copyTip) {
+      return
+    }
+
+    const timer = setTimeout(() => {
+      setCopyTip('')
+    }, 2200)
+
+    return () => clearTimeout(timer)
+  }, [copyTip])
+
   return (
     <>
+      <div
+        aria-live='polite'
+        className={`fixed bottom-6 right-6 z-50 rounded-full bg-slate-950 px-4 py-2 text-xs font-medium text-white shadow-lg transition-all duration-200 dark:bg-white dark:text-slate-900 ${
+          copyTip
+            ? 'translate-y-0 opacity-100'
+            : 'pointer-events-none translate-y-2 opacity-0'
+        }`}>
+        {copyTip}
+      </div>
       {services.map(singleService => {
         switch (singleService) {
           case 'facebook':

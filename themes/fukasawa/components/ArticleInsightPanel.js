@@ -18,12 +18,12 @@ const ArticleInsightPanel = ({ post }) => {
         <div className='p-5'>
           <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400'>
             <i className='fas fa-bolt' />
-            <span>Answer Brief</span>
+            <span>AI 摘要信号</span>
           </div>
           <h2 className='mb-3 text-xl font-black leading-tight text-zinc-900 dark:text-zinc-50'>
             这篇文章主要解决什么问题？
           </h2>
-          <p className='leading-7 text-zinc-600 dark:text-zinc-300'>
+          <p itemProp='abstract' className='leading-7 text-zinc-600 dark:text-zinc-300'>
             {summary}
           </p>
 
@@ -43,7 +43,7 @@ const ArticleInsightPanel = ({ post }) => {
 
         <div className='border-t border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-950/60 lg:border-l lg:border-t-0'>
           <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400'>
-            Content Signals
+            内容信号
           </div>
           <dl className='space-y-3 text-sm'>
             <SignalItem label='主题' value={post?.category || '外贸实战'} />

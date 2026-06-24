@@ -39,7 +39,7 @@ const SEO = props => {
         })
       }
     })
-  }, [])
+  }, [webFontUrl])
 
   // SEO关键词
   const KEYWORDS = siteConfig('KEYWORDS')
@@ -253,6 +253,92 @@ const toAbsoluteUrl = (value, baseUrl) => {
   return buildCanonicalUrl(baseUrl, value)
 }
 
+const buildTaxonomyDescription = (type, value, siteInfo) => {
+  const name = `${value || ''}`.trim()
+  const siteTitle = siteInfo?.title || siteConfig('TITLE')
+  const fallback =
+    siteInfo?.description ||
+    '外贸获客、海关数据、客户开发和 AI 外贸工具实战内容整理。'
+
+  if (!name) {
+    return fallback
+  }
+
+  const topicDescriptions = [
+    {
+      pattern: /海关数据|进口数据|HS|hs|OraSkl|oraskl/i,
+      description: `${siteTitle} 的${name}专题，整理海关数据查询、美国进口数据、进口商筛选、供应商关系分析和外贸获客实战方法。`
+    },
+    {
+      pattern: /外贸获客|客户开发|主动获客|找客户/i,
+      description: `${siteTitle} 的${name}专题，聚合外贸客户开发、主动获客、线索筛选、开发信和工具化增长的实战文章。`
+    },
+    {
+      pattern: /LinkedIn|领英/i,
+      description: `${siteTitle} 的${name}专题，围绕 LinkedIn 外贸开发客户、买家调研、关系触达和内容获客整理实操方法。`
+    },
+    {
+      pattern: /AI|人工智能|自动化/i,
+      description: `${siteTitle} 的${name}专题，整理 AI 外贸助手、自动化调研、邮件生成、客户跟进和效率工具使用方法。`
+    },
+    {
+      pattern: /图灵搜|顶易|顶易云/i,
+      description: `${siteTitle} 的${name}专题，整理外贸获客工具、数据工具、询盘转化和客户开发系统的使用经验。`
+    },
+    {
+      pattern: /WhatsApp|whatsapp/i,
+      description: `${siteTitle} 的${name}专题，整理 WhatsApp 外贸客户触达、话术、跟进节奏和成交转化经验。`
+    },
+    {
+      pattern: /Facebook|facebook/i,
+      description: `${siteTitle} 的${name}专题，整理 Facebook 外贸找客户、社媒线索开发、账号运营和私域跟进方法。`
+    },
+    {
+      pattern: /话术|邮件|开发信/i,
+      description: `${siteTitle} 的${name}专题，整理外贸沟通话术、开发信模板、客户回复和询盘跟进方法。`
+    }
+  ]
+
+  const matched = topicDescriptions.find(item => item.pattern.test(name))
+  if (matched) {
+    return matched.description
+  }
+
+  const label = type === 'tag' ? '标签' : '分类'
+  return `${siteTitle} 的${name}${label}内容，整理${name}相关的外贸获客、客户开发、工具使用和实战案例。`
+}
+
+const buildSearchDescription = (keyword, siteInfo) => {
+  const siteTitle = siteInfo?.title || siteConfig('TITLE')
+  const query = `${keyword || ''}`.trim()
+  if (!query) {
+    return `${siteTitle} 站内搜索，查找外贸获客、海关数据、客户开发、AI 外贸工具和实战文章。`
+  }
+  return `在 ${siteTitle} 搜索「${query}」相关内容，查找外贸获客、海关数据、客户开发和工具实战文章。`
+}
+
+const buildArticleAbout = meta => {
+  const topics = [
+    meta?.category,
+    ...(Array.isArray(meta?.tags) ? meta.tags : [])
+  ].filter(Boolean)
+
+  const uniqueTopics = Array.from(new Set(topics)).slice(0, 8)
+  if (!uniqueTopics.length) {
+    return [
+      {
+        '@type': 'Thing',
+        name: '外贸获客'
+      }
+    ]
+  }
+
+  return uniqueTopics.map(topic => ({
+    '@type': 'Thing',
+    name: topic
+  }))
+}
+
 /**
  * 生成结构化数据
  * @param {*} meta
@@ -319,6 +405,7 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
           '@id': `${url}#article`,
           headline: meta.title,
           description: meta.description,
+          abstract: meta.description,
           image,
           url,
           inLanguage,
@@ -334,7 +421,9 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
             '@id': `${url}#webpage`
           },
           keywords: meta.tags?.join(', '),
-          articleSection: meta.category
+          articleSection: meta.category,
+          isAccessibleForFree: true,
+          about: buildArticleAbout(meta)
         },
         {
           '@type': 'BreadcrumbList',
@@ -414,7 +503,7 @@ const getSEOMeta = (props, router, locale) => {
     case '/category/[category]':
       return {
         title: `${category} | ${locale.COMMON.CATEGORY} | ${siteInfo?.title}`,
-        description: `${siteInfo?.description}`,
+        description: buildTaxonomyDescription('category', category, siteInfo),
         slug: 'category/' + category,
         image: `${siteInfo?.pageCover}`,
         type: 'website'
@@ -422,7 +511,7 @@ const getSEOMeta = (props, router, locale) => {
     case '/category/[category]/page/[page]':
       return {
         title: `${category} | ${locale.COMMON.CATEGORY} | ${siteInfo?.title}`,
-        description: `${siteInfo?.description}`,
+        description: buildTaxonomyDescription('category', category, siteInfo),
         slug: 'category/' + category,
         image: `${siteInfo?.pageCover}`,
         type: 'website'
@@ -431,7 +520,7 @@ const getSEOMeta = (props, router, locale) => {
     case '/tag/[tag]/page/[page]':
       return {
         title: `${tag} | ${locale.COMMON.TAGS} | ${siteInfo?.title}`,
-        description: `${siteInfo?.description}`,
+        description: buildTaxonomyDescription('tag', tag, siteInfo),
         image: `${siteInfo?.pageCover}`,
         slug: 'tag/' + tag,
         type: 'website'
@@ -439,7 +528,7 @@ const getSEOMeta = (props, router, locale) => {
     case '/search':
       return {
         title: `${keyword || ''}${keyword ? ' | ' : ''}${locale.NAV.SEARCH} | ${siteInfo?.title}`,
-        description: `${siteInfo?.description}`,
+        description: buildSearchDescription(keyword, siteInfo),
         image: `${siteInfo?.pageCover}`,
         slug: 'search',
         type: 'website'
@@ -448,7 +537,7 @@ const getSEOMeta = (props, router, locale) => {
     case '/search/[keyword]/page/[page]':
       return {
         title: `${keyword || ''}${keyword ? ' | ' : ''}${locale.NAV.SEARCH} | ${siteInfo?.title}`,
-        description: TITLE,
+        description: buildSearchDescription(keyword, siteInfo),
         image: `${siteInfo?.pageCover}`,
         slug: 'search/' + (keyword || ''),
         type: 'website'

@@ -38,6 +38,7 @@ import BlogListScroll from './components/BlogListScroll'
 import BlogArchiveItem from './components/BlogPostArchive'
 import Header from './components/Header'
 import HomeIntro from './components/HomeIntro'
+import SearchResourceLinks from './components/SearchResourceLinks'
 import TagItemMini from './components/TagItemMini'
 import TopicIntro from './components/TopicIntro'
 import LoadingCover from './components/LoadingCover'
@@ -161,6 +162,7 @@ const LayoutPostList = memo((props) => {
     <div className='w-full'>
       {showHomeIntro && <HomeIntro {...props} />}
       {showTopicIntro && <TopicIntro {...props} />}
+      {props?.keyword && <SearchResourceLinks keyword={props.keyword} />}
       <div className='w-full p-2 mb-4'>
         <WWAds className='w-full' orientation='horizontal' />
       </div>

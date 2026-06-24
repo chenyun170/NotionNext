@@ -5,6 +5,39 @@ import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { extractLangId, extractLangPrefix } from '@/lib/utils/pageId'
 import { getServerSideSitemap } from 'next-sitemap'
 
+const STATIC_SEO_PAGES = [
+  {
+    slug: 'customs-data.html',
+    changefreq: 'weekly',
+    priority: '0.92'
+  },
+  {
+    slug: 'customs-data-skill.html',
+    changefreq: 'weekly',
+    priority: '0.9'
+  },
+  {
+    slug: 'oraskl.html',
+    changefreq: 'weekly',
+    priority: '0.8'
+  },
+  {
+    slug: 'tools.html',
+    changefreq: 'weekly',
+    priority: '0.82'
+  },
+  {
+    slug: 'faq.html',
+    changefreq: 'weekly',
+    priority: '0.8'
+  },
+  {
+    slug: 'about.html',
+    changefreq: 'monthly',
+    priority: '0.72'
+  }
+]
+
 export const getServerSideProps = async ctx => {
   let fields = []
   const siteIds = BLOG.NOTION_PAGE_ID.split(',')
@@ -13,23 +46,26 @@ export const getServerSideProps = async ctx => {
     const siteId = siteIds[index]
     const id = extractLangId(siteId)
     const locale = extractLangPrefix(siteId)
-    // 第一个id站点默认语言
-    const siteData = await fetchGlobalAllData({
-      pageId: id,
-      from: 'sitemap.xml'
-    })
-    const link = siteConfig(
-      'LINK',
-      siteData?.siteInfo?.link,
-      siteData.NOTION_CONFIG
-    )
-    const localeFields = generateLocalesSitemap(link, siteData.allPages, locale)
-    fields = fields.concat(localeFields)
+    try {
+      const siteData = await fetchGlobalAllData({
+        pageId: id,
+        from: 'sitemap.xml'
+      })
+      const link = siteConfig(
+        'LINK',
+        siteData?.siteInfo?.link,
+        siteData?.NOTION_CONFIG
+      )
+      const localeFields = generateLocalesSitemap(link, siteData?.allPages, locale)
+      fields = fields.concat(localeFields)
+    } catch (error) {
+      console.error('[sitemap.xml] Failed to fetch Notion pages:', error)
+      fields = fields.concat(generateLocalesSitemap(BLOG.LINK, [], locale))
+    }
   }
 
-  fields = getUniqueFields(fields);
+  fields = getUniqueFields(fields)
 
-  // 缓存
   ctx.res.setHeader(
     'Cache-Control',
     'public, max-age=3600, stale-while-revalidate=59'
@@ -38,48 +74,44 @@ export const getServerSideProps = async ctx => {
 }
 
 function generateLocalesSitemap(link, allPages, locale) {
-  // 确保链接不以斜杠结尾
-  if (link && link.endsWith('/')) {
-    link = link.slice(0, -1)
+  if (!link) {
+    return []
   }
 
-  if (locale && locale.length > 0 && locale.indexOf('/') !== 0) {
-    locale = '/' + locale
-  }
+  const normalizedLink = link.endsWith('/') ? link.slice(0, -1) : link
+  const normalizedLocale = locale && locale.length > 0
+    ? locale.indexOf('/') === 0
+      ? locale
+      : `/${locale}`
+    : ''
   const dateNow = new Date().toISOString().split('T')[0]
   const defaultFields = [
     {
-      loc: `${link}${locale}`,
+      loc: `${normalizedLink}${normalizedLocale}`,
       lastmod: dateNow,
       changefreq: 'daily',
       priority: '0.7'
     },
     {
-      loc: `${link}${locale}/archive`,
+      loc: `${normalizedLink}${normalizedLocale}/archive`,
       lastmod: dateNow,
       changefreq: 'daily',
       priority: '0.7'
     },
     {
-      loc: `${link}${locale}/category`,
+      loc: `${normalizedLink}${normalizedLocale}/category`,
       lastmod: dateNow,
       changefreq: 'daily',
       priority: '0.7'
     },
     {
-      loc: `${link}${locale}/rss/feed.xml`,
+      loc: `${normalizedLink}${normalizedLocale}/rss/feed.xml`,
       lastmod: dateNow,
       changefreq: 'daily',
       priority: '0.7'
     },
     {
-      loc: `${link}${locale}/search`,
-      lastmod: dateNow,
-      changefreq: 'daily',
-      priority: '0.7'
-    },
-    {
-      loc: `${link}${locale}/tag`,
+      loc: `${normalizedLink}${normalizedLocale}/tag`,
       lastmod: dateNow,
       changefreq: 'daily',
       priority: '0.7'
@@ -87,34 +119,51 @@ function generateLocalesSitemap(link, allPages, locale) {
   ]
   const postFields =
     allPages
-      ?.filter(p => p.status === BLOG.NOTION_PROPERTY_NAME.status_publish)
+      ?.filter(p => p?.status === BLOG.NOTION_PROPERTY_NAME.status_publish && p?.slug)
       ?.map(post => {
-        const slugWithoutLeadingSlash = post?.slug.startsWith('/')
-          ? post?.slug?.slice(1)
+        const slugWithoutLeadingSlash = post.slug.startsWith('/')
+          ? post.slug.slice(1)
           : post.slug
         return {
-          loc: `${link}${locale}/${slugWithoutLeadingSlash}`,
-          lastmod: new Date(post?.publishDay).toISOString().split('T')[0],
+          loc: `${normalizedLink}${normalizedLocale}/${slugWithoutLeadingSlash}`,
+          lastmod: formatSitemapDate(post?.lastEditedDay || post?.publishDay, dateNow),
           changefreq: 'daily',
           priority: '0.7'
         }
       }) ?? []
 
-  return defaultFields.concat(postFields)
+  const staticFields = STATIC_SEO_PAGES.map(page => ({
+    loc: `${normalizedLink}/${page.slug}`,
+    lastmod: dateNow,
+    changefreq: page.changefreq,
+    priority: page.priority
+  }))
+
+  return defaultFields.concat(postFields, staticFields)
 }
 
 function getUniqueFields(fields) {
-  const uniqueFieldsMap = new Map();
+  const uniqueFieldsMap = new Map()
 
   fields.forEach(field => {
-    const existingField = uniqueFieldsMap.get(field.loc);
+    const existingField = uniqueFieldsMap.get(field.loc)
 
     if (!existingField || new Date(field.lastmod) > new Date(existingField.lastmod)) {
-      uniqueFieldsMap.set(field.loc, field);
+      uniqueFieldsMap.set(field.loc, field)
     }
-  });
+  })
 
-  return Array.from(uniqueFieldsMap.values());
+  return Array.from(uniqueFieldsMap.values())
 }
 
-export default () => {}
+function formatSitemapDate(value, fallback) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) {
+    return fallback
+  }
+  return date.toISOString().split('T')[0]
+}
+
+const SitemapXml = () => {}
+
+export default SitemapXml

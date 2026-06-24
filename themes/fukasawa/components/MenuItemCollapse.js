@@ -16,6 +16,7 @@ export const MenuItemCollapse = props => {
   const [isOpen, changeIsOpen] = useState(false)
 
   const router = useRouter()
+  const LinkComponent = getLinkComponent(link?.href)
 
   if (!link || !link.show) {
     return null
@@ -42,7 +43,7 @@ export const MenuItemCollapse = props => {
         }
         onClick={toggleShow}>
         {!hasSubMenu && (
-          <SmartLink
+          <LinkComponent
             href={link?.href}
             target={link?.target}
             className='dark:text-gray-200 py-2 w-full my-auto items-center justify-between flex  '>
@@ -50,7 +51,7 @@ export const MenuItemCollapse = props => {
               <div className={`${link.icon} text-center w-4 mr-4`} />
               {link.name}
             </div>
-          </SmartLink>
+          </LinkComponent>
         )}
 
         {hasSubMenu && (
@@ -73,20 +74,21 @@ export const MenuItemCollapse = props => {
       {hasSubMenu && (
         <Collapse isOpen={isOpen} onHeightChange={props.onHeightChange}>
           {link.subMenus.map((sLink, index) => {
+            const SubLinkComponent = getLinkComponent(sLink.href)
             return (
               <div
                 key={index}
                 className='whitespace-nowrap dark:text-gray-200
               not:last-child:border-b-0 border-b dark:border-gray-800 py-2 px-14 cursor-pointer hover:bg-gray-100
               font-extralight dark:bg-black text-left justify-start text-gray-600 bg-gray-50 dark:hover:bg-gray-900 tracking-widest transition-all duration-200'>
-                <SmartLink href={sLink.href} target={link?.target}>
+                <SubLinkComponent href={sLink.href} target={link?.target}>
                   <div>
                     <div
                       className={`${sLink.icon} text-center w-3 mr-3 text-xs`}
                     />
                     {sLink.title}
                   </div>
-                </SmartLink>
+                </SubLinkComponent>
               </div>
             )
           })}
@@ -95,3 +97,5 @@ export const MenuItemCollapse = props => {
     </>
   )
 }
+
+const getLinkComponent = href => href?.endsWith('.html') ? 'a' : SmartLink

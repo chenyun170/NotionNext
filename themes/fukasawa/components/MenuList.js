@@ -3,6 +3,33 @@ import { useGlobal } from '@/lib/global'
 import CONFIG from '../config'
 import { MenuItemCollapse } from './MenuItemCollapse'
 import { MenuItemDrop } from './MenuItemDrop'
+
+const officialNavLinks = [
+  {
+    name: '海关数据专题',
+    href: '/customs-data.html',
+    show: true,
+    icon: 'fas fa-layer-group'
+  },
+  {
+    name: '工具导航',
+    href: '/tools.html',
+    show: true,
+    icon: 'fas fa-toolbox'
+  },
+  {
+    name: '常见问题',
+    href: '/faq.html',
+    show: true,
+    icon: 'fas fa-circle-question'
+  },
+  {
+    name: '关于本站',
+    href: '/about.html',
+    show: true,
+    icon: 'fas fa-circle-info'
+  }
+]
 /**
  * 菜单列表
  * @param {*} props
@@ -40,6 +67,8 @@ export const MenuList = props => {
     links = customMenu
   }
 
+  links = mergeOfficialNavLinks(links)
+
   if (!links || links.length === 0) {
     return null
   }
@@ -62,4 +91,11 @@ export const MenuList = props => {
       </menu>
     </>
   )
+}
+
+const mergeOfficialNavLinks = links => {
+  const safeLinks = Array.isArray(links) ? links : []
+  const hrefSet = new Set(safeLinks.map(link => link?.href).filter(Boolean))
+  const missingOfficialLinks = officialNavLinks.filter(link => !hrefSet.has(link.href))
+  return safeLinks.concat(missingOfficialLinks)
 }

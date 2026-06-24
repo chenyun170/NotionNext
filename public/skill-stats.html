@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>海关数据 Skill 点击统计看板</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { min-height: 100vh; font-family: "Inter","Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; color: #111827; background: linear-gradient(180deg,#f8fbff,#eef6ff 45%,#fff); line-height: 1.7; }
+    .container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    header { padding: 28px 0 18px; }
+    a { color: inherit; text-decoration: none; }
+    .nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .back { border: 1px solid rgba(15,23,42,.12); border-radius: 999px; padding: 9px 14px; color: #475569; font-size: 14px; font-weight: 800; background: rgba(255,255,255,.76); }
+    .eyebrow { display: inline-flex; margin-top: 32px; margin-bottom: 16px; border: 1px solid rgba(37,99,235,.16); border-radius: 999px; background: rgba(37,99,235,.08); padding: 7px 12px; color: #1d4ed8; font-size: 13px; font-weight: 900; }
+    h1 { color: #0f172a; font-size: clamp(34px, 5vw, 58px); line-height: 1; letter-spacing: -.055em; }
+    .lead { max-width: 780px; margin-top: 18px; color: #64748b; font-size: 16px; }
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 28px 0; }
+    .metric, .card { border: 1px solid rgba(15,23,42,.08); border-radius: 22px; background: #fff; box-shadow: 0 18px 50px rgba(15,23,42,.06); }
+    .metric { padding: 20px; }
+    .metric span { display: block; color: #64748b; font-size: 13px; font-weight: 800; }
+    .metric strong { display: block; margin-top: 8px; color: #0f172a; font-size: 34px; line-height: 1; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 34px; }
+    .card { overflow: hidden; }
+    .card h2 { border-bottom: 1px solid rgba(15,23,42,.08); padding: 16px 18px; color: #0f172a; font-size: 18px; }
+    .list { display: grid; gap: 0; }
+    .row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 14px; border-bottom: 1px solid rgba(15,23,42,.06); padding: 13px 18px; color: #334155; font-size: 14px; }
+    .row:last-child { border-bottom: 0; }
+    .row b { color: #1d4ed8; }
+    .bar { height: 8px; border-radius: 999px; background: #dbeafe; overflow: hidden; margin-top: 7px; }
+    .bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#2563eb,#0891b2); }
+    .daily { display: grid; grid-template-columns: repeat(14, 1fr); gap: 8px; padding: 18px; align-items: end; min-height: 170px; }
+    .day { display: grid; gap: 6px; align-items: end; text-align: center; color: #64748b; font-size: 11px; }
+    .day i { display: block; min-height: 4px; border-radius: 999px 999px 4px 4px; background: linear-gradient(180deg,#2563eb,#0891b2); }
+    .empty { padding: 18px; color: #64748b; }
+    .token-panel { margin: 24px 0; border: 1px solid rgba(15,23,42,.08); border-radius: 22px; background: #fff; padding: 18px; box-shadow: 0 18px 50px rgba(15,23,42,.06); }
+    .token-panel label { display: block; color: #334155; font-size: 13px; font-weight: 900; }
+    .token-panel div { display: flex; gap: 10px; margin-top: 10px; }
+    .token-panel input { min-width: 0; flex: 1; border: 1px solid rgba(15,23,42,.12); border-radius: 12px; padding: 10px 12px; font-size: 14px; outline: none; }
+    .token-panel button { border: 0; border-radius: 12px; background: #0f172a; color: #fff; padding: 10px 16px; font-weight: 900; cursor: pointer; }
+    @media (max-width: 880px) { .metrics, .grid { grid-template-columns: 1fr; } .daily { grid-template-columns: repeat(7,1fr); } }
+  </style>
+</head>
+<body>
+  <header class="container">
+    <nav class="nav">
+      <strong>外贸获客情报局 · 运营看板</strong>
+      <a class="back" href="/">返回首页</a>
+    </nav>
+    <div class="eyebrow">Customs Data Skill Analytics</div>
+    <h1>海关数据 Skill 点击统计</h1>
+    <p class="lead">只展示聚合数据，不展示 IP 和 User-Agent。总点击已排除本地测试、验证脚本等记录，更接近真实访客点击口径。</p>
+  </header>
+
+  <main class="container">
+    <section id="tokenPanel" class="token-panel" hidden>
+      <label for="statsToken">输入访问 token 后查看统计</label>
+      <div>
+        <input id="statsToken" type="password" autocomplete="off" placeholder="输入你的访问口令">
+        <button id="loadWithToken" type="button">查看看板</button>
+      </div>
+    </section>
+
+    <section class="metrics">
+      <div class="metric"><span>总点击</span><strong id="total">-</strong></div>
+      <div class="metric"><span>今日点击</span><strong id="today">-</strong></div>
+      <div class="metric"><span>近 7 天</span><strong id="last7Days">-</strong></div>
+      <div class="metric"><span>近 30 天</span><strong id="last30Days">-</strong></div>
+    </section>
+
+    <section class="token-panel" id="statsNote" hidden>
+      <label>统计口径说明</label>
+      <p class="lead" style="margin-top:8px;font-size:14px">原始点击 <strong id="rawTotal">-</strong> 条，已过滤测试记录 <strong id="filteredTotal">-</strong> 条；看板排行和趋势只计算过滤后的真实点击。</p>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>入口来源排行</h2>
+        <div id="topSources" class="list"></div>
+      </div>
+      <div class="card">
+        <h2>页面路径排行</h2>
+        <div id="topPaths" class="list"></div>
+      </div>
+      <div class="card">
+        <h2>近 14 天趋势</h2>
+        <div id="daily" class="daily"></div>
+      </div>
+      <div class="card">
+        <h2>最近点击</h2>
+        <div id="latest" class="list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const writeText = (id, value) => {
+      document.getElementById(id).textContent = value
+    }
+
+    const renderList = (id, items) => {
+      const target = document.getElementById(id)
+      if (!items || !items.length) {
+        target.innerHTML = '<p class="empty">暂无数据</p>'
+        return
+      }
+      const max = Math.max(...items.map(item => item.count), 1)
+      target.innerHTML = items.map(item => `
+        <div class="row">
+          <div>
+            <div>${escapeHtml(item.name || 'unknown')}</div>
+            <div class="bar"><i style="width:${Math.max(6, item.count / max * 100)}%"></i></div>
+          </div>
+          <b>${item.count}</b>
+        </div>
+      `).join('')
+    }
+
+    const renderDaily = items => {
+      const target = document.getElementById('daily')
+      const max = Math.max(...items.map(item => item.count), 1)
+      target.innerHTML = items.map(item => `
+        <div class="day">
+          <i style="height:${Math.max(4, item.count / max * 120)}px"></i>
+          <b>${item.count}</b>
+          <span>${item.day.slice(5)}</span>
+        </div>
+      `).join('')
+    }
+
+    const renderLatest = items => {
+      const target = document.getElementById('latest')
+      if (!items || !items.length) {
+        target.innerHTML = '<p class="empty">暂无数据</p>'
+        return
+      }
+      target.innerHTML = items.map(item => `
+        <div class="row">
+          <div>
+            <div>${escapeHtml(item.source || 'unknown')}</div>
+            <small>${escapeHtml(item.path || '')} · ${escapeHtml(item.day || '')}</small>
+          </div>
+          <b>1</b>
+        </div>
+      `).join('')
+    }
+
+    const escapeHtml = value => String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;')
+
+    const tokenFromUrl = new URLSearchParams(window.location.search).get('token') || ''
+    if (tokenFromUrl) {
+      sessionStorage.setItem('customsStatsToken', tokenFromUrl)
+      const cleanUrl = new URL(window.location.href)
+      cleanUrl.searchParams.delete('token')
+      window.history.replaceState(null, '', cleanUrl.toString())
+    }
+    const savedToken = sessionStorage.getItem('customsStatsToken') || tokenFromUrl
+    const tokenPanel = document.getElementById('tokenPanel')
+    const tokenInput = document.getElementById('statsToken')
+    const loadButton = document.getElementById('loadWithToken')
+
+    const loadStats = token => {
+      fetch('/api/customs-skill-stats', {
+        headers: token ? { 'x-stats-token': token } : {}
+      })
+      .then(response => {
+        if (response.status === 401) {
+          tokenPanel.hidden = false
+          throw new Error('unauthorized')
+        }
+        return response.json()
+      })
+      .then(data => {
+        writeText('total', data.total || 0)
+        writeText('rawTotal', data.rawTotal || 0)
+        writeText('filteredTotal', data.filteredTotal || 0)
+        writeText('today', data.today || 0)
+        writeText('last7Days', data.last7Days || 0)
+        writeText('last30Days', data.last30Days || 0)
+        renderList('topSources', data.topSources)
+        renderList('topPaths', data.topPaths)
+        renderDaily(data.daily || [])
+        renderLatest(data.latest)
+        document.getElementById('statsNote').hidden = false
+      })
+      .catch(() => {
+        if (!tokenPanel.hidden) {
+          return
+        }
+        document.querySelector('main').innerHTML = '<section class="card"><p class="empty">统计接口暂时不可用。</p></section>'
+      })
+    }
+
+    loadButton.addEventListener('click', () => {
+      const token = tokenInput.value.trim()
+      if (token) {
+        sessionStorage.setItem('customsStatsToken', token)
+        tokenPanel.hidden = true
+        loadStats(token)
+      }
+    })
+
+    loadStats(savedToken)
+  </script>
+</body>
+</html>

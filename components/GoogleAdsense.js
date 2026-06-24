@@ -61,7 +61,9 @@ function getNodesWithAdsByGoogleClass(node) {
  * @returns
  */
 export const initGoogleAdsense = ADSENSE_GOOGLE_ID => {
-  console.log('Load Adsense')
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Load Adsense')
+  }
   loadExternalResource(
     `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_GOOGLE_ID}`,
     'js'
@@ -208,7 +210,7 @@ const AdEmbed = () => {
         }
       })
     }, 1000)
-  }, [])
+  }, [ADSENSE_GOOGLE_ID, ADSENSE_GOOGLE_SLOT_AUTO, ADSENSE_GOOGLE_TEST])
   return <></>
 }
 

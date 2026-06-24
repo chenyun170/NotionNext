@@ -46,8 +46,10 @@ export default async function handler(req, res) {
     })
 
     const rawText = await response.text()
-    console.log('[diagnose] status:', response.status)
-    console.log('[diagnose] raw:', rawText.slice(0, 300))
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[diagnose] status:', response.status)
+      console.log('[diagnose] raw:', rawText.slice(0, 300))
+    }
 
     if (!response.ok) {
       return res.status(502).json({ error: `API错误 ${response.status}: ${rawText.slice(0, 150)}` })

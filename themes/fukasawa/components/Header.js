@@ -34,7 +34,9 @@ const Header = props => {
   const [isOpen, changeShow] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [showMarquee, setShowMarquee] = useState(true)
+  const [isSearchActive, setSearchActive] = useState(false)
   const collapseRef = useRef(null)
+  const searchInputRef = useRef(null)
   const throttleRef = useRef(null)
 
   // ========== 检查活动时间是否过期（动态更新） ==========
@@ -88,7 +90,17 @@ const Header = props => {
   }, [updateScrollProgress])
 
   const toggleMenuOpen = () => {
-    changeShow(!isOpen)
+    const nextOpen = !isOpen
+    changeShow(nextOpen)
+    if (!nextOpen) {
+      setSearchActive(false)
+    }
+  }
+
+  const openSearch = () => {
+    setSearchActive(true)
+    changeShow(true)
+    window.setTimeout(() => searchInputRef.current?.focus?.(), 120)
   }
 
   // ========== 跑马灯组件 ==========
@@ -147,13 +159,26 @@ const Header = props => {
           <div className='flex flex-none flex-grow-0'>
             <Logo {...props} />
           </div>
-          <div className='mr-1 flex justify-end items-center text-sm space-x-4 dark:text-gray-200'>
-            <div 
+          <div className='mr-1 flex items-center justify-end gap-1 text-sm dark:text-gray-200'>
+            <button
+              type='button'
+              onClick={openSearch}
+              aria-label='打开搜索'
+              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-zinc-100 hover:text-orange-500 dark:hover:bg-zinc-900 dark:hover:text-orange-400 ${
+                isSearchActive && isOpen
+                  ? 'bg-orange-50 text-orange-500 dark:bg-orange-950/40 dark:text-orange-300'
+                  : 'text-zinc-600 dark:text-zinc-200'
+              }`}>
+              <i className='fas fa-search text-sm' />
+            </button>
+            <button
+              type='button'
+              aria-label={isOpen ? '关闭菜单' : '打开菜单'}
               onClick={toggleMenuOpen} 
-              className='cursor-pointer text-lg p-2 hover:text-orange-500 dark:hover:text-orange-400 transition-colors'
+              className='flex h-9 w-9 items-center justify-center rounded-full text-lg transition-colors hover:bg-zinc-100 hover:text-orange-500 dark:hover:bg-zinc-900 dark:hover:text-orange-400'
             >
               {isOpen ? <i className='fas fa-times' /> : <i className='fas fa-bars' />}
-            </div>
+            </button>
           </div>
         </div>
 
@@ -172,7 +197,7 @@ const Header = props => {
         <Collapse type='vertical' isOpen={isOpen} collapseRef={collapseRef}>
           <div className='max-h-[72vh] overflow-y-auto border-b border-zinc-200 bg-white/98 px-4 pb-5 pt-3 shadow-xl backdrop-blur-xl dark:border-zinc-800 dark:bg-black/95'>
             <div className='mb-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-2 dark:border-zinc-800 dark:bg-zinc-900/70'>
-              <SearchInput {...props} />
+              <SearchInput {...props} cRef={searchInputRef} />
             </div>
             <div className='mb-3 flex items-center justify-between px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400'>
               <span>Menu</span>

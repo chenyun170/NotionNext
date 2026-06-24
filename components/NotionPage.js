@@ -83,7 +83,12 @@ const NotionPage = ({ post, className }) => {
     return () => {
       observer.disconnect()
     }
-  }, [post])
+  }, [
+    IMAGE_ZOOM_IN_WIDTH,
+    POST_DISABLE_DATABASE_CLICK,
+    POST_DISABLE_GALLERY_CLICK,
+    post
+  ])
 
   useEffect(() => {
     // Spoiler文本功能
@@ -114,7 +119,7 @@ const NotionPage = ({ post, className }) => {
 
     // 清理定时器，防止组件卸载时执行
     return () => clearTimeout(timer)
-  }, [post])
+  }, [SPOILER_TEXT_TAG, post])
 
   // const cleanBlockMap = cleanBlocksWithWarn(post?.blockMap);
   // console.log('NotionPage render with post:', post);
@@ -188,7 +193,6 @@ const autoScrollToHash = () => {
     const hash = window?.location?.hash
     const needToJumpToTitle = hash && hash.length > 0
     if (needToJumpToTitle) {
-      console.log('jump to hash', hash)
       const tocNode = document.getElementById(hash.substring(1))
       if (tocNode && tocNode?.className?.indexOf('notion') > -1) {
         tocNode.scrollIntoView({ block: 'start', behavior: 'smooth' })

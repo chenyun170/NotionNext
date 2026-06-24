@@ -6,6 +6,20 @@ html {
   overflow-x: hidden;
 }
 
+body,
+.sideLeft,
+#sticky-nav,
+article,
+section,
+aside,
+.bg-white,
+.dark\:bg-zinc-900,
+.dark\:bg-zinc-950\/40 {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
+}
+
 .wrapper {
   min-height: 100vh;
   display: flex;

@@ -62,21 +62,28 @@ const InlineActivityCard = ({ config, isActive }) => {
   if (!isActive) return null
 
   return (
-    <div 
-      className={`mb-4 p-3 ${config.bgColor} border ${config.borderColor} rounded-lg shadow-sm border-dashed`}
+    <div
+      className={`group mb-3 rounded-xl border ${config.borderColor} ${config.bgColor} p-3 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md`}
       role="region">
-      <div className={`flex items-center ${config.textColor} font-bold text-sm mb-1`}>
-        <i className={`${config.icon} mr-2 ${config.animation}`} aria-hidden="true" />
-        <span>{config.title}</span>
+      <div className='mb-2 flex items-start justify-between gap-2'>
+        <div className={`flex min-w-0 items-center ${config.textColor} font-bold text-sm`}>
+          <span className={`mr-2 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg ${config.iconBg}`}>
+            <i className={`${config.icon} text-xs`} aria-hidden="true" />
+          </span>
+          <span className='line-clamp-1'>{config.title}</span>
+        </div>
+        <span className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${config.badgeClass}`}>
+          限时
+        </span>
       </div>
-      <p className='text-xs text-gray-700 dark:text-gray-300'>
+      <p className='pl-9 text-xs leading-5 text-zinc-600 dark:text-zinc-400'>
         {config.emoji} <strong>{config.productName}</strong> {config.description}
       </p>
       <a 
         href={config.link} 
         target="_blank" 
         rel="noopener noreferrer"
-        className={`inline-block ${config.buttonBg} text-white text-[10px] px-2 py-1 rounded mt-2 ${config.buttonHover} transition-colors`}>
+        className={`ml-9 mt-3 inline-flex items-center rounded-lg border px-2.5 py-1.5 text-[11px] font-bold transition-colors ${config.buttonClass}`}>
         {config.buttonText} →
       </a>
     </div>
@@ -93,11 +100,12 @@ const activityConfigs = {
     emoji: '🔥',
     link: 'https://h.topeasysoft.com/20260618tls/index.html?i=BB54F6',
     buttonText: '立即参与',
-    bgColor: 'bg-orange-50/95 dark:bg-orange-950/80',
-    borderColor: 'border-orange-200 dark:border-orange-800',
-    textColor: 'text-orange-600 dark:text-orange-400',
-    buttonBg: 'bg-orange-500',
-    buttonHover: 'hover:bg-orange-600',
+    bgColor: 'bg-amber-50/45 dark:bg-amber-950/20',
+    borderColor: 'border-amber-100 dark:border-amber-900/50',
+    textColor: 'text-amber-700 dark:text-amber-300',
+    iconBg: 'bg-amber-100/80 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+    badgeClass: 'bg-amber-100/70 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+    buttonClass: 'border-amber-200 bg-white/70 text-amber-700 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-900/60 dark:bg-amber-950/20 dark:text-amber-300 dark:hover:bg-amber-950/50',
     icon: 'fas fa-gift',
     animation: 'animate-bounce'
   },
@@ -109,11 +117,12 @@ const activityConfigs = {
     emoji: '🚀',
     link: 'https://h.topeasysoft.com/20260618dyy/index.html?i=BB54F6',
     buttonText: '查看详情',
-    bgColor: 'bg-blue-50/95 dark:bg-blue-950/80',
-    borderColor: 'border-blue-200 dark:border-blue-800',
+    bgColor: 'bg-blue-50/45 dark:bg-blue-950/20',
+    borderColor: 'border-blue-100 dark:border-blue-900/50',
     textColor: 'text-blue-600 dark:text-blue-400',
-    buttonBg: 'bg-blue-500',
-    buttonHover: 'hover:bg-blue-600',
+    iconBg: 'bg-blue-100/80 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
+    badgeClass: 'bg-blue-100/70 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
+    buttonClass: 'border-blue-200 bg-white/70 text-blue-700 hover:border-blue-300 hover:bg-blue-100 dark:border-blue-900/60 dark:bg-blue-950/20 dark:text-blue-300 dark:hover:bg-blue-950/50',
     icon: 'fas fa-fire',
     animation: 'animate-pulse'
   }

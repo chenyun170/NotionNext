@@ -281,7 +281,7 @@ const TweetEmbed = dynamic(() => import('react-tweet-embed'), {
  */
 const AdEmbed = dynamic(
   () => import('@/components/GoogleAdsense').then(m => m.AdEmbed),
-  { ssr: true }
+  { ssr: false }
 )
 
 const Collection = dynamic(
@@ -290,7 +290,7 @@ const Collection = dynamic(
       m => m.Collection
     ),
   {
-    ssr: true
+    ssr: false
   }
 )
 

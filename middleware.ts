@@ -11,6 +11,8 @@ function isPublicFile(pathname: string) {
   return (
     pathname === '/robots.txt' ||
     pathname === '/sitemap.xml' ||
+    pathname === '/sitemap-core.xml' ||
+    pathname === '/sitemap-index.xml' ||
     pathname === '/redirect.json' ||
     pathname === '/favicon.ico' ||
     pathname.startsWith('/_next/')
@@ -51,7 +53,7 @@ function getCustomsSkillSearchRedirect(req: NextRequest) {
 export const config = {
   // ✅ 只对“页面路由”生效，排除 robots/sitemap 等公共文件
   matcher: [
-    '/((?!robots\\.txt|sitemap\\.xml|redirect\\.json|favicon\\.ico|_next/).*)'
+    '/((?!robots\\.txt|sitemap\\.xml|sitemap-core\\.xml|sitemap-index\\.xml|redirect\\.json|favicon\\.ico|_next/).*)'
   ]
 }
 

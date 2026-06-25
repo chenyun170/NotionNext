@@ -17,6 +17,7 @@
 ```powershell
 D:\node\node.exe scripts\seo-health-check.js
 D:\node\node.exe scripts\validate-seo-jsonld.js
+D:\node\node.exe scripts\generate-static-sitemaps.js
 ```
 
 ## Search Console 需要提交
@@ -66,6 +67,7 @@ D:\node\node.exe scripts\validate-seo-jsonld.js
 
 ```powershell
 D:\node\node.exe scripts\apply-static-breadcrumbs.js
+D:\node\node.exe scripts\generate-static-sitemaps.js
 D:\node\node.exe scripts\validate-seo-jsonld.js
 D:\node\node.exe scripts\seo-health-check.js
 ```
@@ -80,9 +82,11 @@ D:\node\node.exe scripts\seo-health-check.js
 
 优先写已有曝光但排名不稳定的词；不要只凭感觉扩页面。每次新增页面都要同步：
 
-- `pages/sitemap.xml.js`
-- `pages/sitemap-index.xml.js`
-- `pages/sitemap-core.xml.js`
+- `lib/seo/geoPages.js`
+- `scripts/generate-static-sitemaps.js`
+- `public/sitemap.xml`
+- `public/sitemap-index.xml`
+- `public/sitemap-core.xml`
 - `pages/llms.txt.js`
 - `public/google-submit-urls.txt`
 - `scripts/deploy-check.js`

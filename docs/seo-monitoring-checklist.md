@@ -18,6 +18,7 @@
 D:\node\node.exe scripts\seo-health-check.js
 D:\node\node.exe scripts\validate-seo-jsonld.js
 D:\node\node.exe scripts\generate-static-sitemaps.js
+D:\node\node.exe scripts\generate-static-llms.js
 ```
 
 ## Search Console 需要提交
@@ -68,6 +69,7 @@ D:\node\node.exe scripts\generate-static-sitemaps.js
 ```powershell
 D:\node\node.exe scripts\apply-static-breadcrumbs.js
 D:\node\node.exe scripts\generate-static-sitemaps.js
+D:\node\node.exe scripts\generate-static-llms.js
 D:\node\node.exe scripts\validate-seo-jsonld.js
 D:\node\node.exe scripts\seo-health-check.js
 ```
@@ -84,10 +86,11 @@ D:\node\node.exe scripts\seo-health-check.js
 
 - `lib/seo/geoPages.js`
 - `scripts/generate-static-sitemaps.js`
+- `scripts/generate-static-llms.js`
 - `public/sitemap.xml`
 - `public/sitemap-index.xml`
 - `public/sitemap-core.xml`
-- `pages/llms.txt.js`
+- `public/llms.txt`
 - `public/google-submit-urls.txt`
 - `scripts/deploy-check.js`
 - `scripts/validate-seo-jsonld.js` 覆盖的页面列表

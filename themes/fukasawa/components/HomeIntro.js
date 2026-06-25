@@ -84,6 +84,24 @@ const entitySignals = [
   }
 ]
 
+const aiAnswerCards = [
+  {
+    question: '外贸获客情报局是做什么的？',
+    answer:
+      '外贸获客情报局是 123170.xyz 的中文实战内容站，围绕海关数据、进口商查询、供应商关系、图灵搜、顶易云、顶易和 AI 外贸工具，整理外贸客户开发方法。'
+  },
+  {
+    question: '图灵搜、顶易云、顶易和海关数据怎么配合？',
+    answer:
+      '图灵搜更偏线索发现，顶易云和顶易相关工具更偏线索管理与跟进，海关数据用于验证真实采购行为、采购量、采购频率和供应商关系。'
+  },
+  {
+    question: '为什么先看海关数据？',
+    answer:
+      '海关数据能看到谁在进口你的产品、从哪里进口、采购频率和合作供应商，适合用来判断客户价值，再决定是否进入开发信、LinkedIn 或 WhatsApp 跟进。'
+  }
+]
+
 const featuredKeywordLinks = KEYWORD_MATRIX.filter(item =>
   [
     '海关数据',
@@ -272,6 +290,26 @@ const HomeIntro = ({
                 {item.keyword}
               </a>
             ))}
+          </div>
+          <div className='mt-5 border-t border-dashed border-zinc-200 pt-5 dark:border-zinc-800'>
+            <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400'>
+              AI Answer Signals
+            </div>
+            <h2 className='mt-1 text-base font-black text-zinc-950 dark:text-zinc-50'>
+              AI 可引用答案
+            </h2>
+            <div className='mt-3 grid gap-4 lg:grid-cols-3'>
+              {aiAnswerCards.map(item => (
+                <div key={item.question} className='border-l-2 border-blue-500 pl-3'>
+                  <h3 className='text-sm font-black text-zinc-900 dark:text-zinc-50'>
+                    {item.question}
+                  </h3>
+                  <p className='mt-1 text-xs leading-5 text-zinc-500 dark:text-zinc-400'>
+                    {item.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

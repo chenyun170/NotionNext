@@ -164,6 +164,11 @@ const nextConfig = {
             permanent: true
           },
           {
+            source: '/customs-data-importers',
+            destination: '/customs-data-importers.html',
+            permanent: true
+          },
+          {
             source: '/turingsearch',
             destination: '/turingsearch.html',
             permanent: true
@@ -181,6 +186,26 @@ const nextConfig = {
           {
             source: '/foreign-trade-tools',
             destination: '/foreign-trade-tools.html',
+            permanent: true
+          },
+          {
+            source: '/foreign-trade-lead-tools',
+            destination: '/foreign-trade-lead-tools.html',
+            permanent: true
+          },
+          {
+            source: '/turingsearch-vs-customs-data',
+            destination: '/turingsearch-vs-customs-data.html',
+            permanent: true
+          },
+          {
+            source: '/dingyiyun-customs-data',
+            destination: '/dingyiyun-customs-data.html',
+            permanent: true
+          },
+          {
+            source: '/methodology',
+            destination: '/methodology.html',
             permanent: true
           }
         ]

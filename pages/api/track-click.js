@@ -4,17 +4,7 @@ import path from 'path'
 const ALLOWED_EVENTS = new Set(['customs_data_skill_click'])
 const ALLOWED_TARGET_HOSTS = new Set(['www.oraskl.com', 'oraskl.com'])
 const ALLOWED_SITE_HOSTS = new Set(['www.123170.xyz', '123170.xyz'])
-const ALLOWED_INTERNAL_TARGET_PATHS = new Set([
-  '/customs-data-skill.html',
-  '/customs-data.html',
-  '/oraskl.html',
-  '/tools.html',
-  '/free-customs-data.html',
-  '/us-importers.html',
-  '/hs-code-lookup.html',
-  '/supplier-analysis.html',
-  '/customs-data-leads.html'
-])
+const BLOCKED_INTERNAL_TARGET_PREFIXES = ['/api/', '/_next/', '/js/', '/fonts/']
 const ALLOWED_SOURCE_GROUPS = new Set([
   'home',
   'article',
@@ -141,7 +131,9 @@ const isAllowedInternalTarget = target => {
     return (
       url.protocol === 'https:' &&
       ALLOWED_SITE_HOSTS.has(url.hostname) &&
-      ALLOWED_INTERNAL_TARGET_PATHS.has(url.pathname)
+      !BLOCKED_INTERNAL_TARGET_PREFIXES.some(prefix =>
+        url.pathname.startsWith(prefix)
+      )
     )
   } catch {
     return false

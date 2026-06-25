@@ -44,6 +44,8 @@
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --watchAll=false",
     "health-check": "node scripts/health-check.js",
+    "seo-check": "node scripts/seo-health-check.js",
+    "seo-jsonld": "node scripts/validate-seo-jsonld.js",
     "deploy-check": "node scripts/deploy-check.js",
     "validate": "npm run health-check",
     "final-validation": "node scripts/final-validation.js"

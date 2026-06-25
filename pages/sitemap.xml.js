@@ -27,6 +27,11 @@ const STATIC_SEO_PAGES = [
     priority: '0.86'
   },
   {
+    slug: 'customs-data-importers.html',
+    changefreq: 'weekly',
+    priority: '0.87'
+  },
+  {
     slug: 'hs-code-lookup.html',
     changefreq: 'weekly',
     priority: '0.84'
@@ -52,9 +57,19 @@ const STATIC_SEO_PAGES = [
     priority: '0.78'
   },
   {
+    slug: 'turingsearch-vs-customs-data.html',
+    changefreq: 'weekly',
+    priority: '0.79'
+  },
+  {
     slug: 'dingyiyun.html',
     changefreq: 'weekly',
     priority: '0.78'
+  },
+  {
+    slug: 'dingyiyun-customs-data.html',
+    changefreq: 'weekly',
+    priority: '0.79'
   },
   {
     slug: 'dingyi.html',
@@ -72,6 +87,11 @@ const STATIC_SEO_PAGES = [
     priority: '0.82'
   },
   {
+    slug: 'foreign-trade-lead-tools.html',
+    changefreq: 'weekly',
+    priority: '0.81'
+  },
+  {
     slug: 'faq.html',
     changefreq: 'weekly',
     priority: '0.8'
@@ -80,11 +100,16 @@ const STATIC_SEO_PAGES = [
     slug: 'about.html',
     changefreq: 'monthly',
     priority: '0.72'
+  },
+  {
+    slug: 'methodology.html',
+    changefreq: 'monthly',
+    priority: '0.74'
   }
 ]
 
 const SITEMAP_NOTION_TIMEOUT_MS = Number.parseInt(
-  process.env.SITEMAP_NOTION_TIMEOUT_MS || '6000',
+  process.env.SITEMAP_NOTION_TIMEOUT_MS || '3000',
   10
 )
 

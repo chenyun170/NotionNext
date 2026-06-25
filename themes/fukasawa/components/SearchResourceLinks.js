@@ -27,16 +27,34 @@ const toolKeywordResources = [
     icon: 'fa-scale-balanced'
   },
   {
+    title: '客户开发工具推荐',
+    description: '按线索、验证、联系人、触达和 CRM 复盘搭建最小工具组合。',
+    href: '/foreign-trade-lead-tools.html',
+    icon: 'fa-list-check'
+  },
+  {
     title: '图灵搜工具观察',
     description: '从线索发现、海关数据验证和客户开发流程看图灵搜适合放在哪一步。',
     href: '/turingsearch.html',
     icon: 'fa-magnifying-glass-chart'
   },
   {
+    title: '图灵搜和海关数据区别',
+    description: '一个偏线索发现，一个偏真实采购验证，适合组合使用。',
+    href: '/turingsearch-vs-customs-data.html',
+    icon: 'fa-code-compare'
+  },
+  {
     title: '顶易云工具观察',
     description: '围绕顶易云、海关数据和外贸客户开发，判断工具组合方式。',
     href: '/dingyiyun.html',
     icon: 'fa-cloud'
+  },
+  {
+    title: '顶易云和海关数据配合',
+    description: '用工具管理线索，用海关数据验证采购，再进入跟进动作。',
+    href: '/dingyiyun-customs-data.html',
+    icon: 'fa-diagram-project'
   },
   {
     title: '顶易工具选型',
@@ -46,14 +64,50 @@ const toolKeywordResources = [
   }
 ]
 
+const customsKeywordResources = [
+  {
+    title: '海关数据怎么查进口商',
+    description: '从产品关键词、HS 编码和供应商名称出发，筛选真实进口商。',
+    href: '/customs-data-importers.html',
+    icon: 'fa-building-user'
+  },
+  {
+    title: '海关数据专题',
+    description: '从查询入口、进口商筛选到供应商关系分析，系统理解海关数据获客。',
+    href: '/customs-data.html',
+    icon: 'fa-layer-group'
+  },
+  {
+    title: '美国进口商查询',
+    description: '用美国进口数据筛选持续采购、近期活跃、产品匹配的真实买家。',
+    href: '/us-importers.html',
+    icon: 'fa-ship'
+  },
+  {
+    title: 'HS 编码查进口商',
+    description: '用 HS 编码扩大候选池，再按产品描述和采购行为筛进口商。',
+    href: '/hs-code-lookup.html',
+    icon: 'fa-barcode'
+  },
+  {
+    title: '海关数据获客流程',
+    description: '把进口记录转成客户线索、开发信角度和跟进动作。',
+    href: '/customs-data-leads.html',
+    icon: 'fa-route'
+  }
+]
+
 const SearchResourceLinks = ({ keyword }) => {
   if (!keyword) {
     return null
   }
 
-  const activeResources = /图灵搜|顶易云|顶易|外贸工具|获客工具|外贸获客工具/i.test(String(keyword))
+  const keywordText = String(keyword)
+  const activeResources = /图灵搜|顶易云|顶易|外贸工具|获客工具|外贸获客工具|客户开发工具/i.test(keywordText)
     ? toolKeywordResources
-    : resources
+    : /海关数据|进口商|买家|采购商|HS|hs/i.test(keywordText)
+      ? customsKeywordResources
+      : resources
 
   return (
     <section

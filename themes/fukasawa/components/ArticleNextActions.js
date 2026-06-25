@@ -2,6 +2,39 @@ import SmartLink from '@/components/SmartLink'
 import { CUSTOMS_DATA_SKILL } from '@/lib/utils/customsDataSkill'
 import { trackCustomsDataSkillClick } from '@/lib/utils/customsDataSkillTracking'
 
+const resourceLinks = [
+  {
+    title: '外贸工具对比',
+    href: '/foreign-trade-tools.html',
+    description: '图灵搜、顶易云、顶易、海关数据工具怎么选。'
+  },
+  {
+    title: '客户开发工具推荐',
+    href: '/foreign-trade-lead-tools.html',
+    description: '按线索、验证、触达和跟进搭建最小工具组合。'
+  },
+  {
+    title: '图灵搜工具观察',
+    href: '/turingsearch.html',
+    description: '把图灵搜放到线索发现和客户验证流程里看。'
+  },
+  {
+    title: '图灵搜和海关数据区别',
+    href: '/turingsearch-vs-customs-data.html',
+    description: '一个找线索，一个验证真实采购。'
+  },
+  {
+    title: '顶易云工具观察',
+    href: '/dingyiyun.html',
+    description: '看顶易云如何配合海关数据和跟进流程。'
+  },
+  {
+    title: '顶易工具选型',
+    href: '/dingyi.html',
+    description: '从外贸软件、客户开发和数据验证角度判断。'
+  }
+]
+
 const ArticleNextActions = ({ post }) => {
   if (!post) {
     return null
@@ -63,6 +96,27 @@ const ArticleNextActions = ({ post }) => {
             <i className='fas fa-compass mr-2 text-xs' />
             继续看相关主题
           </SmartLink>
+        </div>
+      </div>
+
+      <div className='mt-5 border-t border-blue-100 pt-4 dark:border-blue-900/50'>
+        <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-400'>
+          继续阅读
+        </div>
+        <div className='grid gap-2 sm:grid-cols-2'>
+          {resourceLinks.map(resource => (
+            <a
+              key={resource.href}
+              href={resource.href}
+              className='group rounded-[10px] border border-zinc-200 bg-white/80 p-3 transition hover:border-blue-300 hover:bg-blue-50 dark:border-zinc-800 dark:bg-zinc-950/30 dark:hover:border-blue-700 dark:hover:bg-blue-950/30'>
+              <span className='text-sm font-black text-zinc-900 group-hover:text-blue-700 dark:text-zinc-50 dark:group-hover:text-blue-300'>
+                {resource.title}
+              </span>
+              <span className='mt-1 block text-xs leading-5 text-zinc-500 dark:text-zinc-400'>
+                {resource.description}
+              </span>
+            </a>
+          ))}
         </div>
       </div>
     </section>

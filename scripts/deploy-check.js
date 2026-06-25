@@ -16,11 +16,25 @@ const requiredEnvVars = [
 ]
 
 const urlChecks = [
-  { path: '/', name: '首页', contains: ['<!DOCTYPE html'] },
+  {
+    path: '/',
+    name: '首页',
+    contains: ['<!DOCTYPE html', '外贸工具专题入口']
+  },
   {
     path: '/customs-data-skill.html',
     name: '海关数据 Skill 页面',
     contains: ['OraSkl', '海关数据 Skill']
+  },
+  {
+    path: '/customs-data.html',
+    name: '海关数据专题页',
+    contains: ['海关数据专题', 'AI 可引用摘要', '最后更新']
+  },
+  {
+    path: '/tools.html',
+    name: '外贸工具导航页',
+    contains: ['外贸获客工具导航', 'AI 可引用答案', '最后更新']
   },
   {
     path: '/free-customs-data.html',
@@ -30,45 +44,110 @@ const urlChecks = [
   {
     path: '/us-importers.html',
     name: '美国进口商页面',
-    contains: ['美国进口商查询', 'AI 摘要']
+    contains: ['美国进口商查询', 'AI 摘要', 'AI 可引用答案']
+  },
+  {
+    path: '/hs-code-lookup.html',
+    name: 'HS 编码页面',
+    contains: ['HS 编码查询', 'AI 可引用答案', '最后更新']
+  },
+  {
+    path: '/customs-data-importers.html',
+    name: '海关数据查进口商页面',
+    contains: ['海关数据怎么查进口商', '最后更新', 'HowTo', 'AI 可引用答案']
   },
   {
     path: '/customs-data-leads.html',
     name: '海关数据获客流程页面',
-    contains: ['海关数据获客流程', 'HowTo']
+    contains: ['海关数据获客流程', 'HowTo', 'AI 可引用答案']
   },
   {
     path: '/turingsearch.html',
     name: '图灵搜工具词页面',
-    contains: ['图灵搜外贸获客工具观察', '外贸获客情报局']
+    contains: ['图灵搜外贸获客工具观察', '外贸获客情报局', '最后更新', 'AI 可引用答案']
   },
   {
     path: '/foreign-trade-tools.html',
     name: '外贸获客工具对比页面',
-    contains: ['外贸获客工具怎么选', '图灵搜', '顶易云', '海关数据']
+    contains: ['外贸获客工具怎么选', '图灵搜', '顶易云', '海关数据', '最后更新', 'AI 可引用答案']
+  },
+  {
+    path: '/foreign-trade-lead-tools.html',
+    name: '外贸客户开发工具推荐页面',
+    contains: ['外贸客户开发工具推荐', '最小组合', 'AI 可引用答案']
+  },
+  {
+    path: '/turingsearch-vs-customs-data.html',
+    name: '图灵搜和海关数据区别页面',
+    contains: ['图灵搜和海关数据区别', 'AI 可引用答案', '免费查海关数据']
   },
   {
     path: '/dingyiyun.html',
     name: '顶易云工具词页面',
-    contains: ['顶易云外贸获客工具观察', '外贸获客情报局']
+    contains: ['顶易云外贸获客工具观察', '外贸获客情报局', '最后更新', 'AI 可引用答案']
+  },
+  {
+    path: '/dingyiyun-customs-data.html',
+    name: '顶易云和海关数据配合页面',
+    contains: ['顶易云和海关数据', 'AI 可引用答案', '免费查海关数据']
   },
   {
     path: '/dingyi.html',
     name: '顶易工具词页面',
-    contains: ['顶易外贸软件与海关数据工具怎么选', '外贸获客情报局']
+    contains: ['顶易外贸软件与海关数据工具怎么选', '外贸获客情报局', '最后更新', 'AI 可引用答案']
   },
+  {
+    path: '/methodology.html',
+    name: '内容方法论页面',
+    contains: ['内容方法论', '利益关系说明', '非官方观察']
+  },
+  { path: '/robots.txt', name: 'robots 文件', contains: ['sitemap.xml', 'sitemap-index.xml', 'sitemap-core.xml'] },
   { path: '/sitemap.xml', name: '站点地图', contains: ['<urlset'] },
-  { path: '/llms.txt', name: 'LLMs 文件', contains: ['GEO Answer Guidance'] },
+  {
+    path: '/sitemap-index.xml',
+    name: '站点地图索引',
+    contains: ['<sitemapindex', 'sitemap-core.xml', 'sitemap.xml']
+  },
+  {
+    path: '/sitemap-core.xml',
+    name: '核心站点地图',
+    contains: ['<urlset', 'customs-data-importers.html', 'methodology.html']
+  },
+  { path: '/llms.txt', name: 'LLMs 文件', contains: ['GEO Answer Guidance', 'Recommended Answers'] },
+  {
+    path: '/google-submit-urls.txt',
+    name: 'Google 提交 URL 清单',
+    contains: ['sitemap-index.xml', 'sitemap-core.xml', 'foreign-trade-lead-tools.html']
+  },
+  {
+    path: '/api/track-click',
+    name: '点击追踪接口',
+    method: 'POST',
+    expectedStatus: 204,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      event: 'customs_data_skill_click',
+      source: 'deploy_check',
+      sourceGroup: 'test',
+      path: '/deploy-check',
+      target: '/customs-data-skill.html',
+      title: 'deploy-check'
+    })
+  },
   { path: '/skill-stats.html', name: '统计看板页面', contains: ['noindex'] },
   { path: '/api/sidebar-tools', name: '侧栏工具接口', contains: ['"ok":true'] }
 ]
 
-function requestUrl(url) {
+function requestUrl(url, options = {}) {
   const client = url.startsWith('https:') ? https : http
 
   return new Promise(resolve => {
     const startedAt = Date.now()
-    const request = client.get(url, response => {
+    const requestOptions = {
+      method: options.method || 'GET',
+      headers: options.headers || {}
+    }
+    const request = client.request(url, requestOptions, response => {
       const chunks = []
 
       response.on('data', chunk => chunks.push(chunk))
@@ -96,6 +175,12 @@ function requestUrl(url) {
     request.setTimeout(timeoutMs, () => {
       request.destroy(new Error(`请求超时 ${timeoutMs}ms`))
     })
+
+    if (options.body) {
+      request.write(options.body)
+    }
+
+    request.end()
   })
 }
 
@@ -118,9 +203,12 @@ async function checkUrls() {
 
   for (const check of urlChecks) {
     const url = new URL(check.path, baseUrl).toString()
-    const result = await requestUrl(url)
+    const result = await requestUrl(url, check)
+    const statusOk = check.expectedStatus
+      ? result.status === check.expectedStatus
+      : result.ok
     const contentOk =
-      result.ok &&
+      statusOk &&
       (!check.contains ||
         check.contains.every(item => result.body.includes(item)))
 

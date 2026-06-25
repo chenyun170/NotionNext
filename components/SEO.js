@@ -11,6 +11,19 @@ const BRAND_DOMAIN = '123170.xyz'
 const BRAND_TAGLINE = '海关数据与外贸获客实战情报站'
 const BRAND_DESCRIPTION =
   '外贸获客情报局（123170.xyz）专注海关数据、进口商查询、供应商关系分析和 AI 外贸工具，把真实贸易记录整理成可执行的客户开发线索。'
+const CORE_TOPICS = [
+  '海关数据',
+  '进口商查询',
+  '美国进口数据',
+  '供应商关系分析',
+  'HS 编码查询',
+  '外贸获客',
+  '客户开发',
+  '图灵搜',
+  '顶易云',
+  '顶易',
+  'OraSkl'
+]
 
 /**
  * 页面的Head头，有用于SEO
@@ -399,7 +412,8 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
       '@type': 'ImageObject',
       url: siteLogo
     },
-    description: siteDescription
+    description: siteDescription,
+    knowsAbout: CORE_TOPICS
   }
   const publisher = {
     '@type': 'WebSite',
@@ -412,6 +426,10 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
     publisher: {
       '@id': publisherId
     },
+    about: CORE_TOPICS.map(topic => ({
+      '@type': 'Thing',
+      name: topic
+    })),
     potentialAction: {
       '@type': 'SearchAction',
       target: `${siteUrl}/search/{search_term_string}`,
@@ -440,6 +458,12 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
       url: image
     }
   }
+  const breadcrumbData = buildBreadcrumbData({
+    url,
+    siteName,
+    siteUrl,
+    meta
+  })
 
   // 如果是文章页面，添加文章结构化数据
   if (meta?.type === 'Post') {
@@ -475,24 +499,7 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
           isAccessibleForFree: true,
           about: buildArticleAbout(meta)
         },
-        {
-          '@type': 'BreadcrumbList',
-          '@id': `${url}#breadcrumb`,
-          itemListElement: [
-            {
-              '@type': 'ListItem',
-              position: 1,
-              name: siteName,
-              item: siteUrl
-            },
-            {
-              '@type': 'ListItem',
-              position: 2,
-              name: meta.title,
-              item: url
-            }
-          ]
-        },
+        breadcrumbData,
         {
           '@type': 'FAQPage',
           '@id': `${url}#faq`,
@@ -511,7 +518,40 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
 
   return {
     '@context': 'https://schema.org',
-    '@graph': [publisherData, publisher, authorData, webPage]
+    '@graph': [publisherData, publisher, authorData, webPage, breadcrumbData]
+  }
+}
+
+const buildBreadcrumbData = ({ url, siteName, siteUrl, meta }) => {
+  const itemListElement = [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: siteName,
+      item: siteUrl
+    }
+  ]
+
+  if (meta?.type === 'Post' && meta?.category) {
+    itemListElement.push({
+      '@type': 'ListItem',
+      position: itemListElement.length + 1,
+      name: meta.category,
+      item: buildCanonicalUrl(siteUrl, 'category', encodeURIComponent(meta.category))
+    })
+  }
+
+  itemListElement.push({
+    '@type': 'ListItem',
+    position: itemListElement.length + 1,
+    name: meta?.title || siteName,
+    item: url
+  })
+
+  return {
+    '@type': 'BreadcrumbList',
+    '@id': `${url}#breadcrumb`,
+    itemListElement
   }
 }
 

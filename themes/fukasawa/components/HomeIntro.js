@@ -65,6 +65,51 @@ const trustSignals = [
   }
 ]
 
+const toolLinks = [
+  {
+    name: '外贸工具对比',
+    description: '按线索、验证、触达和跟进来选工具。',
+    href: '/foreign-trade-tools.html',
+    icon: 'fa-scale-balanced'
+  },
+  {
+    name: '客户开发工具推荐',
+    description: '按最小组合搭建外贸客户开发流程。',
+    href: '/foreign-trade-lead-tools.html',
+    icon: 'fa-list-check'
+  },
+  {
+    name: '图灵搜',
+    description: '适合放在线索发现和客户池扩展环节。',
+    href: '/turingsearch.html',
+    icon: 'fa-magnifying-glass-chart'
+  },
+  {
+    name: '图灵搜 vs 海关数据',
+    description: '一个找线索，一个验采购，组合更稳。',
+    href: '/turingsearch-vs-customs-data.html',
+    icon: 'fa-code-compare'
+  },
+  {
+    name: '顶易云',
+    description: '看工具如何配合海关数据和跟进流程。',
+    href: '/dingyiyun.html',
+    icon: 'fa-cloud'
+  },
+  {
+    name: '顶易云 + 海关数据',
+    description: '把线索管理和采购验证接成工作流。',
+    href: '/dingyiyun-customs-data.html',
+    icon: 'fa-diagram-project'
+  },
+  {
+    name: '顶易',
+    description: '从外贸软件和海关数据工具角度做选型。',
+    href: '/dingyi.html',
+    icon: 'fa-screwdriver-wrench'
+  }
+]
+
 const HomeIntro = ({
   siteInfo,
   postCount = 0,
@@ -170,6 +215,43 @@ const HomeIntro = ({
             </TopicLink>
           )
         })}
+        </div>
+        <div className='border-t border-zinc-200 bg-zinc-50/70 px-5 py-5 dark:border-zinc-800 dark:bg-zinc-950/40 sm:px-7'>
+          <div className='mb-3 flex flex-wrap items-end justify-between gap-2'>
+            <div>
+              <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-400'>
+                Tool Intelligence
+              </div>
+              <h2 className='mt-1 text-base font-black text-zinc-950 dark:text-zinc-50'>
+                外贸工具专题入口
+              </h2>
+            </div>
+            <a
+              href='/foreign-trade-tools.html'
+              className='text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200'>
+              查看工具对比
+            </a>
+          </div>
+          <div className='grid gap-2 sm:grid-cols-2 xl:grid-cols-4'>
+            {toolLinks.map(tool => (
+              <a
+                key={tool.href}
+                href={tool.href}
+                className='group rounded-[8px] border border-zinc-200 bg-white p-3 transition hover:border-blue-300 hover:bg-blue-50 dark:border-zinc-800 dark:bg-[#111113] dark:hover:border-blue-700 dark:hover:bg-blue-950/20'>
+                <div className='mb-2 flex items-center gap-2'>
+                  <span className='flex h-7 w-7 items-center justify-center rounded-[8px] bg-zinc-100 text-xs text-zinc-600 transition group-hover:bg-blue-600 group-hover:text-white dark:bg-zinc-900 dark:text-zinc-300'>
+                    <i className={`fas ${tool.icon}`} />
+                  </span>
+                  <span className='text-sm font-black text-zinc-900 group-hover:text-blue-700 dark:text-zinc-50 dark:group-hover:text-blue-300'>
+                    {tool.name}
+                  </span>
+                </div>
+                <p className='text-xs leading-5 text-zinc-500 dark:text-zinc-400'>
+                  {tool.description}
+                </p>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
   )

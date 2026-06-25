@@ -24,6 +24,10 @@ const SmartLink = ({ href, children, ...rest }) => {
   }
 
   const isExternal = urlString.startsWith('http') && !urlString.startsWith(LINK)
+  const isStaticHtmlPage =
+    typeof href === 'string' &&
+    (urlString.startsWith('/') || urlString.startsWith(LINK)) &&
+    urlString.split('?')[0].split('#')[0].endsWith('.html')
 
   if (isExternal) {
     // 对于外部链接，必须是 string 类型
@@ -36,6 +40,14 @@ const SmartLink = ({ href, children, ...rest }) => {
         target='_blank'
         rel='noopener noreferrer'
         {...filterDOMProps(rest)}>
+        {children}
+      </a>
+    )
+  }
+
+  if (isStaticHtmlPage) {
+    return (
+      <a href={href} {...filterDOMProps(rest)}>
         {children}
       </a>
     )

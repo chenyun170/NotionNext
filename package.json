@@ -46,6 +46,7 @@
     "health-check": "node scripts/health-check.js",
     "seo-check": "node scripts/seo-health-check.js",
     "seo-jsonld": "node scripts/validate-seo-jsonld.js",
+    "seo-breadcrumbs": "node scripts/apply-static-breadcrumbs.js",
     "deploy-check": "node scripts/deploy-check.js",
     "validate": "npm run health-check",
     "final-validation": "node scripts/final-validation.js"

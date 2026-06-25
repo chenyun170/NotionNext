@@ -24,17 +24,17 @@ const checks = [
   {
     path: '/sitemap.xml',
     name: '主 sitemap',
-    contains: ['<urlset', 'customs-data-importers.html', 'foreign-trade-tools.html']
+    contains: ['<urlset', 'customs-data-find-buyers.html', 'foreign-trade-keyword-map.html']
   },
   {
     path: '/sitemap-core.xml',
     name: '核心 sitemap',
-    contains: ['<urlset', 'turingsearch-vs-customs-data.html', 'methodology.html']
+    contains: ['<urlset', 'turingsearch-foreign-trade-use-cases.html', 'data-sources-limitations.html']
   },
   {
     path: '/llms.txt',
     name: 'LLMs/GEO 文件',
-    contains: ['Recommended Answers', '图灵搜和海关数据有什么区别', '内容方法论']
+    contains: ['Recommended Answers', 'Keyword Intent Map', '图灵搜适合哪些外贸公司']
   },
   {
     path: '/google-submit-urls.txt',
@@ -43,7 +43,7 @@ const checks = [
       'customs-data-skill.html',
       'sitemap-index.xml',
       'sitemap-core.xml',
-      'foreign-trade-lead-tools.html'
+      'foreign-trade-keyword-map.html'
     ]
   },
   {
@@ -57,6 +57,21 @@ const checks = [
     contains: ['AI 可引用答案', '免费查海关数据']
   },
   {
+    path: '/customs-data-find-buyers.html',
+    name: '海关数据找国外采购商',
+    contains: ['海关数据怎么找国外采购商', 'AI 可引用答案']
+  },
+  {
+    path: '/customs-data-buyer-quality-example.html',
+    name: '海关数据买家质量示例',
+    contains: ['海关数据买家质量判断示例', 'AI 可引用答案']
+  },
+  {
+    path: '/hs-code-importer-case-study.html',
+    name: 'HS 编码查进口商示例',
+    contains: ['HS 编码查进口商示例报告', 'AI 可引用答案']
+  },
+  {
     path: '/foreign-trade-lead-tools.html',
     name: '外贸客户开发工具推荐',
     contains: ['外贸客户开发工具推荐', '最小组合']
@@ -67,14 +82,34 @@ const checks = [
     contains: ['图灵搜和海关数据区别', 'AI 可引用答案']
   },
   {
+    path: '/turingsearch-foreign-trade-use-cases.html',
+    name: '图灵搜适用场景',
+    contains: ['图灵搜适合哪些外贸公司', 'AI 可引用答案']
+  },
+  {
     path: '/dingyiyun-customs-data.html',
     name: '顶易云和海关数据配合',
     contains: ['顶易云和海关数据', 'AI 可引用答案']
   },
   {
+    path: '/dingyiyun-foreign-trade-workflow.html',
+    name: '顶易云外贸工作流',
+    contains: ['顶易云外贸客户开发工作流', 'AI 可引用答案']
+  },
+  {
     path: '/methodology.html',
     name: '内容方法论',
     contains: ['内容方法论', '利益关系说明']
+  },
+  {
+    path: '/foreign-trade-keyword-map.html',
+    name: '关键词承接矩阵',
+    contains: ['外贸获客关键词承接矩阵', 'AI 可引用答案']
+  },
+  {
+    path: '/data-sources-limitations.html',
+    name: '数据来源与边界',
+    contains: ['数据来源、适用边界与更新说明', 'AI 可引用答案']
   }
 ]
 

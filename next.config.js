@@ -169,13 +169,38 @@ const nextConfig = {
             permanent: true
           },
           {
+            source: '/customs-data-find-buyers',
+            destination: '/customs-data-find-buyers.html',
+            permanent: true
+          },
+          {
+            source: '/customs-data-buyer-quality-example',
+            destination: '/customs-data-buyer-quality-example.html',
+            permanent: true
+          },
+          {
+            source: '/hs-code-importer-case-study',
+            destination: '/hs-code-importer-case-study.html',
+            permanent: true
+          },
+          {
             source: '/turingsearch',
             destination: '/turingsearch.html',
             permanent: true
           },
           {
+            source: '/turingsearch-foreign-trade-use-cases',
+            destination: '/turingsearch-foreign-trade-use-cases.html',
+            permanent: true
+          },
+          {
             source: '/dingyiyun',
             destination: '/dingyiyun.html',
+            permanent: true
+          },
+          {
+            source: '/dingyiyun-foreign-trade-workflow',
+            destination: '/dingyiyun-foreign-trade-workflow.html',
             permanent: true
           },
           {
@@ -204,8 +229,18 @@ const nextConfig = {
             permanent: true
           },
           {
+            source: '/foreign-trade-keyword-map',
+            destination: '/foreign-trade-keyword-map.html',
+            permanent: true
+          },
+          {
             source: '/methodology',
             destination: '/methodology.html',
+            permanent: true
+          },
+          {
+            source: '/data-sources-limitations',
+            destination: '/data-sources-limitations.html',
             permanent: true
           }
         ]

@@ -14,9 +14,24 @@ const resourceLinks = [
     description: '按线索、验证、触达和跟进搭建最小工具组合。'
   },
   {
+    title: '海关数据找采购商',
+    href: '/customs-data-find-buyers.html',
+    description: '从关键词、HS 编码和供应商关系筛国外采购商。'
+  },
+  {
+    title: '买家质量判断示例',
+    href: '/customs-data-buyer-quality-example.html',
+    description: '用匿名样例判断进口商是否值得开发。'
+  },
+  {
     title: '图灵搜工具观察',
     href: '/turingsearch.html',
     description: '把图灵搜放到线索发现和客户验证流程里看。'
+  },
+  {
+    title: '图灵搜适用场景',
+    href: '/turingsearch-foreign-trade-use-cases.html',
+    description: '判断哪些外贸团队适合先用图灵搜扩展客户池。'
   },
   {
     title: '图灵搜和海关数据区别',
@@ -29,9 +44,19 @@ const resourceLinks = [
     description: '看顶易云如何配合海关数据和跟进流程。'
   },
   {
+    title: '顶易云工作流',
+    href: '/dingyiyun-foreign-trade-workflow.html',
+    description: '把线索管理、海关验证和跟进复盘接起来。'
+  },
+  {
     title: '顶易工具选型',
     href: '/dingyi.html',
     description: '从外贸软件、客户开发和数据验证角度判断。'
+  },
+  {
+    title: '数据来源与边界',
+    href: '/data-sources-limitations.html',
+    description: '说明海关数据和第三方工具观察的适用边界。'
   }
 ]
 

@@ -16,6 +16,12 @@ const resources = [
     description: '集中回答免费海关数据、OraSkl、工具选择和客户开发流程问题。',
     href: '/faq.html',
     icon: 'fa-circle-question'
+  },
+  {
+    title: '关键词承接矩阵',
+    description: '查看本站如何承接海关数据、图灵搜、顶易云、顶易等搜索词。',
+    href: '/foreign-trade-keyword-map.html',
+    icon: 'fa-map'
   }
 ]
 
@@ -39,6 +45,12 @@ const toolKeywordResources = [
     icon: 'fa-magnifying-glass-chart'
   },
   {
+    title: '图灵搜适用场景',
+    description: '判断哪些外贸团队适合先用图灵搜扩展客户池。',
+    href: '/turingsearch-foreign-trade-use-cases.html',
+    icon: 'fa-bullseye'
+  },
+  {
     title: '图灵搜和海关数据区别',
     description: '一个偏线索发现，一个偏真实采购验证，适合组合使用。',
     href: '/turingsearch-vs-customs-data.html',
@@ -57,6 +69,12 @@ const toolKeywordResources = [
     icon: 'fa-diagram-project'
   },
   {
+    title: '顶易云工作流',
+    description: '从线索入池、采购验证、联系人补全到跟进复盘。',
+    href: '/dingyiyun-foreign-trade-workflow.html',
+    icon: 'fa-route'
+  },
+  {
     title: '顶易工具选型',
     description: '把顶易、顶易云、图灵搜和海关数据放到同一条获客链路里比较。',
     href: '/dingyi.html',
@@ -70,6 +88,12 @@ const customsKeywordResources = [
     description: '从产品关键词、HS 编码和供应商名称出发，筛选真实进口商。',
     href: '/customs-data-importers.html',
     icon: 'fa-building-user'
+  },
+  {
+    title: '海关数据怎么找国外采购商',
+    description: '从查询词、进口商聚合、采购频率到开发动作的完整路径。',
+    href: '/customs-data-find-buyers.html',
+    icon: 'fa-user-magnifying-glass'
   },
   {
     title: '海关数据专题',
@@ -88,6 +112,18 @@ const customsKeywordResources = [
     description: '用 HS 编码扩大候选池，再按产品描述和采购行为筛进口商。',
     href: '/hs-code-lookup.html',
     icon: 'fa-barcode'
+  },
+  {
+    title: 'HS 编码示例报告',
+    description: '用匿名案例看 HS 编码、产品关键词和进口描述如何交叉过滤。',
+    href: '/hs-code-importer-case-study.html',
+    icon: 'fa-table-list'
+  },
+  {
+    title: '买家质量判断示例',
+    description: '用匿名样例判断进口商是否值得进入开发名单。',
+    href: '/customs-data-buyer-quality-example.html',
+    icon: 'fa-chart-line'
   },
   {
     title: '海关数据获客流程',

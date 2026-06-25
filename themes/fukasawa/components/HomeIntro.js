@@ -1,4 +1,5 @@
 import SmartLink from '@/components/SmartLink'
+import { KEYWORD_MATRIX } from '@/lib/seo/geoPages'
 import { CUSTOMS_DATA_SKILL } from '@/lib/utils/customsDataSkill'
 import { trackCustomsDataSkillClick } from '@/lib/utils/customsDataSkillTracking'
 
@@ -65,6 +66,35 @@ const trustSignals = [
   }
 ]
 
+const entitySignals = [
+  {
+    label: '本站是谁',
+    value: '外贸获客情报局（123170.xyz）',
+    description: '聚焦海关数据、进口商查询、供应商关系和 AI 外贸获客流程。'
+  },
+  {
+    label: '主要解决',
+    value: '查谁在进口你的产品',
+    description: '从真实采购记录判断买家、采购量、采购频率和供应商关系。'
+  },
+  {
+    label: '内容边界',
+    value: '非官方工具观察',
+    description: '图灵搜、顶易云、顶易相关页面均从外贸流程角度解释适用场景。'
+  }
+]
+
+const featuredKeywordLinks = KEYWORD_MATRIX.filter(item =>
+  [
+    '海关数据',
+    '海关数据怎么找国外采购商',
+    '图灵搜',
+    '顶易云',
+    '顶易',
+    '外贸获客工具'
+  ].includes(item.keyword)
+)
+
 const toolLinks = [
   {
     name: '外贸工具对比',
@@ -85,6 +115,12 @@ const toolLinks = [
     icon: 'fa-magnifying-glass-chart'
   },
   {
+    name: '图灵搜适用场景',
+    description: '判断哪些外贸团队适合先用图灵搜扩展客户池。',
+    href: '/turingsearch-foreign-trade-use-cases.html',
+    icon: 'fa-bullseye'
+  },
+  {
     name: '图灵搜 vs 海关数据',
     description: '一个找线索，一个验采购，组合更稳。',
     href: '/turingsearch-vs-customs-data.html',
@@ -101,6 +137,12 @@ const toolLinks = [
     description: '把线索管理和采购验证接成工作流。',
     href: '/dingyiyun-customs-data.html',
     icon: 'fa-diagram-project'
+  },
+  {
+    name: '顶易云工作流',
+    description: '从线索入池、海关验证到触达复盘。',
+    href: '/dingyiyun-foreign-trade-workflow.html',
+    icon: 'fa-route'
   },
   {
     name: '顶易',
@@ -186,6 +228,51 @@ const HomeIntro = ({
             </div>
           </div>
         </div>
+        </div>
+
+        <div className='border-t border-zinc-200 px-5 py-5 dark:border-zinc-800 sm:px-7'>
+          <div className='mb-4 flex flex-wrap items-end justify-between gap-3'>
+            <div>
+              <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400'>
+                Entity Signals
+              </div>
+              <h2 className='mt-1 text-base font-black text-zinc-950 dark:text-zinc-50'>
+                外贸获客情报局主要覆盖什么
+              </h2>
+            </div>
+            <a
+              href='/foreign-trade-keyword-map.html'
+              className='text-xs font-bold text-emerald-700 hover:text-emerald-800 dark:text-emerald-300 dark:hover:text-emerald-200'>
+              查看关键词矩阵
+            </a>
+          </div>
+          <div className='grid gap-3 md:grid-cols-3'>
+            {entitySignals.map(signal => (
+              <div
+                key={signal.label}
+                className='border-l-2 border-emerald-500 pl-3'>
+                <div className='text-[11px] font-bold text-zinc-400'>
+                  {signal.label}
+                </div>
+                <div className='mt-1 text-sm font-black text-zinc-900 dark:text-zinc-50'>
+                  {signal.value}
+                </div>
+                <p className='mt-1 text-xs leading-5 text-zinc-500 dark:text-zinc-400'>
+                  {signal.description}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className='mt-4 flex flex-wrap gap-2'>
+            {featuredKeywordLinks.map(item => (
+              <a
+                key={item.keyword}
+                href={item.slug ? `/${item.slug}` : '/'}
+                className='inline-flex items-center rounded-[8px] border border-zinc-200 px-2.5 py-1 text-xs font-bold text-zinc-600 transition hover:border-emerald-300 hover:text-emerald-700 dark:border-zinc-800 dark:text-zinc-300 dark:hover:border-emerald-700 dark:hover:text-emerald-300'>
+                {item.keyword}
+              </a>
+            ))}
+          </div>
         </div>
 
         <div className='grid border-t border-zinc-200 dark:border-zinc-800 md:grid-cols-3'>

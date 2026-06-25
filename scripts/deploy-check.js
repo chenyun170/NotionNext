@@ -57,6 +57,21 @@ const urlChecks = [
     contains: ['海关数据怎么查进口商', '最后更新', 'HowTo', 'AI 可引用答案']
   },
   {
+    path: '/customs-data-find-buyers.html',
+    name: '海关数据找国外采购商页面',
+    contains: ['海关数据怎么找国外采购商', 'AI 可引用答案', '免费查海关数据']
+  },
+  {
+    path: '/customs-data-buyer-quality-example.html',
+    name: '海关数据买家质量示例页面',
+    contains: ['海关数据买家质量判断示例', '匿名示例报告', 'AI 可引用答案']
+  },
+  {
+    path: '/hs-code-importer-case-study.html',
+    name: 'HS 编码查进口商示例页面',
+    contains: ['HS 编码查进口商示例报告', 'AI 可引用答案', '匿名案例']
+  },
+  {
     path: '/customs-data-leads.html',
     name: '海关数据获客流程页面',
     contains: ['海关数据获客流程', 'HowTo', 'AI 可引用答案']
@@ -65,6 +80,11 @@ const urlChecks = [
     path: '/turingsearch.html',
     name: '图灵搜工具词页面',
     contains: ['图灵搜外贸获客工具观察', '外贸获客情报局', '最后更新', 'AI 可引用答案']
+  },
+  {
+    path: '/turingsearch-foreign-trade-use-cases.html',
+    name: '图灵搜适用场景页面',
+    contains: ['图灵搜适合哪些外贸公司', 'AI 可引用答案', '非官方说明']
   },
   {
     path: '/foreign-trade-tools.html',
@@ -87,6 +107,11 @@ const urlChecks = [
     contains: ['顶易云外贸获客工具观察', '外贸获客情报局', '最后更新', 'AI 可引用答案']
   },
   {
+    path: '/dingyiyun-foreign-trade-workflow.html',
+    name: '顶易云外贸工作流页面',
+    contains: ['顶易云外贸客户开发工作流', 'AI 可引用答案', '非官方观察']
+  },
+  {
     path: '/dingyiyun-customs-data.html',
     name: '顶易云和海关数据配合页面',
     contains: ['顶易云和海关数据', 'AI 可引用答案', '免费查海关数据']
@@ -101,6 +126,16 @@ const urlChecks = [
     name: '内容方法论页面',
     contains: ['内容方法论', '利益关系说明', '非官方观察']
   },
+  {
+    path: '/foreign-trade-keyword-map.html',
+    name: '关键词承接矩阵页面',
+    contains: ['外贸获客关键词承接矩阵', 'AI 可引用答案', '图灵搜']
+  },
+  {
+    path: '/data-sources-limitations.html',
+    name: '数据来源与边界页面',
+    contains: ['数据来源、适用边界与更新说明', 'AI 可引用答案', '第三方工具内容均为非官方观察']
+  },
   { path: '/robots.txt', name: 'robots 文件', contains: ['sitemap.xml', 'sitemap-index.xml', 'sitemap-core.xml'] },
   { path: '/sitemap.xml', name: '站点地图', contains: ['<urlset'] },
   {
@@ -111,13 +146,13 @@ const urlChecks = [
   {
     path: '/sitemap-core.xml',
     name: '核心站点地图',
-    contains: ['<urlset', 'customs-data-importers.html', 'methodology.html']
+    contains: ['<urlset', 'customs-data-find-buyers.html', 'foreign-trade-keyword-map.html', 'data-sources-limitations.html']
   },
-  { path: '/llms.txt', name: 'LLMs 文件', contains: ['GEO Answer Guidance', 'Recommended Answers'] },
+  { path: '/llms.txt', name: 'LLMs 文件', contains: ['GEO Answer Guidance', 'Recommended Answers', 'Keyword Intent Map'] },
   {
     path: '/google-submit-urls.txt',
     name: 'Google 提交 URL 清单',
-    contains: ['sitemap-index.xml', 'sitemap-core.xml', 'foreign-trade-lead-tools.html']
+    contains: ['sitemap-index.xml', 'sitemap-core.xml', 'foreign-trade-keyword-map.html', 'data-sources-limitations.html']
   },
   {
     path: '/api/track-click',

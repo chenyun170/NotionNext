@@ -74,7 +74,7 @@ const FloatButton = () => {
   const strokeDashoffset = circumference - (scrollProgress / 100) * circumference
 
   return (
-    <div className="fixed bottom-8 right-6 md:right-10 flex flex-col items-center space-y-6" style={{ zIndex: 9999 }}>  
+    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 md:bottom-8 md:right-10 flex flex-col items-center space-y-5 md:space-y-6" style={{ zIndex: 9999 }}>  
       
       {/* 1. 返回顶部按钮 - 加进度圆环 */}
       <div 
@@ -133,18 +133,18 @@ const FloatButton = () => {
       {!giftDismissed && (
       <div className="relative flex flex-col items-center">
         {showPopup && (
-          <div className="absolute bottom-16 right-0 w-56 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-2xl border border-white/20 dark:border-gray-800 p-5 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
+          <div className="absolute bottom-16 right-0 w-56 max-w-[calc(100vw-2rem)] backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 rounded-xl md:rounded-2xl shadow-2xl border border-white/20 dark:border-gray-800 p-4 md:p-5 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
             <button
               type="button"
               aria-label="关闭资料包浮窗"
               onClick={dismissGift}
-              className="absolute right-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-white/80 text-[10px] text-gray-400 shadow-sm transition hover:bg-orange-50 hover:text-orange-600 dark:bg-gray-800/80 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-orange-300"
+              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-xs text-gray-400 shadow-sm transition hover:bg-orange-50 hover:text-orange-600 md:right-2.5 md:top-2.5 md:h-6 md:w-6 md:text-[10px] dark:bg-gray-800/80 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-orange-300"
             >
               <i className="fas fa-times"></i>
             </button>
             <div className="text-center">
               <h3 className="font-black text-slate-800 dark:text-white text-sm tracking-tight">情报局长助手</h3>
-              <p className="text-gray-500 dark:text-gray-400 text-[10px] mt-1 mb-3 leading-relaxed">
+              <p className="text-gray-500 dark:text-gray-400 text-xs md:text-[10px] mt-1 mb-3 leading-relaxed">
                 扫码添加微信或点击下方按钮<br/>
                 备注<span className="text-orange-600 font-black italic">&quot;获客&quot;</span>领资料包
               </p>
@@ -156,7 +156,7 @@ const FloatButton = () => {
               {/* 增强功能：一键复制 */}
               <button 
                 onClick={() => copyToClipboard('waimao071')}
-                className="mb-3 w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-bold rounded-lg transition-colors shadow-sm"
+                className="mb-3 w-full py-2 md:py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs md:text-[10px] font-bold rounded-lg transition-colors shadow-sm"
               >
                 {copyText}
               </button>
@@ -172,7 +172,7 @@ const FloatButton = () => {
         )}
 
         {!showPopup && (
-          <div className="absolute -top-10 right-0 backdrop-blur-md bg-slate-900/80 text-white text-[9px] py-1.5 px-3 rounded-full whitespace-nowrap shadow-xl animate-bounce border border-white/10 font-bold tracking-wider">
+          <div className="absolute -top-11 right-0 max-w-[calc(100vw-4rem)] backdrop-blur-md bg-slate-900/80 text-white text-[10px] md:text-[9px] py-1.5 px-3 rounded-full whitespace-nowrap shadow-xl animate-bounce border border-white/10 font-bold tracking-wider">
             领资料包 🎁
             <div className="absolute -bottom-1 right-6 w-2 h-2 bg-slate-900/80 rotate-45 border-r border-b border-white/10"></div>
           </div>
@@ -182,7 +182,7 @@ const FloatButton = () => {
           type="button"
           aria-label="关闭资料包浮窗"
           onClick={dismissGift}
-          className="absolute -right-2 -top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full border border-white/70 bg-slate-900/80 text-[9px] text-white shadow-md transition hover:bg-orange-600 dark:border-gray-700"
+          className="absolute -right-3 -top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/70 bg-slate-900/80 text-xs text-white shadow-md transition hover:bg-orange-600 md:-right-2 md:-top-2 md:h-5 md:w-5 md:text-[9px] dark:border-gray-700"
         >
           <i className="fas fa-times"></i>
         </button>

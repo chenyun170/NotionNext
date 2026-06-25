@@ -4,8 +4,8 @@ import {
 } from '@/lib/utils/customsDataSkill'
 import { trackCustomsDataSkillClick } from '@/lib/utils/customsDataSkillTracking'
 
-const SkillSearchPromo = ({ keyword }) => {
-  if (!shouldShowCustomsDataSkill(keyword)) {
+const SkillSearchPromo = ({ keyword, forceShow = false }) => {
+  if (!forceShow && !shouldShowCustomsDataSkill(keyword)) {
     return null
   }
 

@@ -3,6 +3,18 @@ import path from 'path'
 
 const ALLOWED_EVENTS = new Set(['customs_data_skill_click'])
 const ALLOWED_TARGET_HOSTS = new Set(['www.oraskl.com', 'oraskl.com'])
+const ALLOWED_SITE_HOSTS = new Set(['www.123170.xyz', '123170.xyz'])
+const ALLOWED_INTERNAL_TARGET_PATHS = new Set([
+  '/customs-data-skill.html',
+  '/customs-data.html',
+  '/oraskl.html',
+  '/tools.html',
+  '/free-customs-data.html',
+  '/us-importers.html',
+  '/hs-code-lookup.html',
+  '/supplier-analysis.html',
+  '/customs-data-leads.html'
+])
 const ALLOWED_SOURCE_GROUPS = new Set([
   'home',
   'article',
@@ -12,6 +24,7 @@ const ALLOWED_SOURCE_GROUPS = new Set([
   'topic',
   'brand',
   'tools',
+  'cluster',
   'test',
   'other'
 ])
@@ -101,9 +114,35 @@ const sanitizeValue = (value, maxLength) => {
 }
 
 const isAllowedTarget = target => {
+  const value = String(target || '').trim()
+
+  if (isAllowedInternalTarget(value)) {
+    return true
+  }
+
   try {
-    const url = new URL(target)
+    const url = new URL(value)
     return url.protocol === 'https:' && ALLOWED_TARGET_HOSTS.has(url.hostname)
+  } catch {
+    return false
+  }
+}
+
+const isAllowedInternalTarget = target => {
+  if (!target || target.startsWith('//')) {
+    return false
+  }
+
+  try {
+    const url = target.startsWith('/')
+      ? new URL(target, 'https://www.123170.xyz')
+      : new URL(target)
+
+    return (
+      url.protocol === 'https:' &&
+      ALLOWED_SITE_HOSTS.has(url.hostname) &&
+      ALLOWED_INTERNAL_TARGET_PATHS.has(url.pathname)
+    )
   } catch {
     return false
   }

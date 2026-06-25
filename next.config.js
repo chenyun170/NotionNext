@@ -122,14 +122,69 @@ const nextConfig = {
   redirects: process.env.EXPORT
     ? undefined
     : () => {
-        return [
-          {
-            source: '/feed',
-            destination: '/rss/feed.xml',
-            permanent: true
-          }
-        ]
-      },
+        return [
+          {
+            source: '/feed',
+            destination: '/rss/feed.xml',
+            permanent: true
+          },
+          {
+            source: '/about',
+            destination: '/about.html',
+            permanent: true
+          },
+          {
+            source: '/oraskl',
+            destination: '/oraskl.html',
+            permanent: true
+          },
+          {
+            source: '/free-customs-data',
+            destination: '/free-customs-data.html',
+            permanent: true
+          },
+          {
+            source: '/us-importers',
+            destination: '/us-importers.html',
+            permanent: true
+          },
+          {
+            source: '/hs-code-lookup',
+            destination: '/hs-code-lookup.html',
+            permanent: true
+          },
+          {
+            source: '/supplier-analysis',
+            destination: '/supplier-analysis.html',
+            permanent: true
+          },
+          {
+            source: '/customs-data-leads',
+            destination: '/customs-data-leads.html',
+            permanent: true
+          },
+          {
+            source: '/turingsearch',
+            destination: '/turingsearch.html',
+            permanent: true
+          },
+          {
+            source: '/dingyiyun',
+            destination: '/dingyiyun.html',
+            permanent: true
+          },
+          {
+            source: '/dingyi',
+            destination: '/dingyi.html',
+            permanent: true
+          },
+          {
+            source: '/foreign-trade-tools',
+            destination: '/foreign-trade-tools.html',
+            permanent: true
+          }
+        ]
+      },
   // 重写url
   rewrites: process.env.EXPORT
     ? undefined

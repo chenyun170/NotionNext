@@ -14,11 +14,19 @@ const BLOG = {
   APPEARANCE: process.env.NEXT_PUBLIC_APPEARANCE || 'auto', // ['light', 'dark', 'auto'], // light 日间模式 ， dark夜间模式， auto根据时间和主题自动夜间模式
   APPEARANCE_DARK_TIME: process.env.NEXT_PUBLIC_APPEARANCE_DARK_TIME || [18, 6], // 夜间模式起至时间，false时关闭根据时间自动切换夜间模式
 
-  AUTHOR: process.env.NEXT_PUBLIC_AUTHOR || '外贸情报局局长', // 您的昵称 例如 tangly1024
-  BIO: process.env.NEXT_PUBLIC_BIO || '深耕图灵搜、海关数据与AI外贸助手，分享最前沿的客户开发系统实战方案。', // 作者简介
+  TITLE: process.env.NEXT_PUBLIC_TITLE || '外贸获客情报局', // 网站标题
+  DESCRIPTION:
+    process.env.NEXT_PUBLIC_DESCRIPTION ||
+    '外贸获客情报局专注海关数据、进口商查询、供应商关系分析和 AI 外贸工具，把真实贸易记录整理成可执行的客户开发线索。', // 网站描述
+  AUTHOR: process.env.NEXT_PUBLIC_AUTHOR || '外贸获客情报局', // 您的昵称 例如 tangly1024
+  BIO:
+    process.env.NEXT_PUBLIC_BIO ||
+    '外贸获客情报局专注海关数据、进口商查询、供应商关系分析和 AI 外贸工具，帮助外贸人用真实贸易记录找到可开发客户。', // 作者简介
   LINK: process.env.NEXT_PUBLIC_LINK || 'https://www.123170.xyz', // 网站地址
-  KEYWORDS: process.env.NEXT_PUBLIC_KEYWORD || '图灵搜,外贸软件,顶易,海关数据,外贸找客户,顶易云,外贸客户开发系统,主动获客', // 网站关键词 英文逗号隔开
-  BLOG_FAVICON: process.env.NEXT_PUBLIC_FAVICON || 'public/favicon.ico', // blog favicon 配置, 默认使用 /public/favicon.ico，支持在线图片，如 https://img.imesong.com/favicon.png
+  KEYWORDS:
+    process.env.NEXT_PUBLIC_KEYWORD ||
+    '外贸获客情报局,123170,123170.xyz,图灵搜,顶易云,顶易,海关数据,进口商查询,美国进口商,供应商关系分析,外贸获客,外贸找客户,客户开发,AI外贸工具', // 网站关键词 英文逗号隔开
+  BLOG_FAVICON: process.env.NEXT_PUBLIC_FAVICON || 'https://cloudflare-imgbed-aa9.pages.dev/file/1766201108426_logo.png', // blog favicon 配置, 默认使用 /public/favicon.ico，支持在线图片，如 https://img.imesong.com/favicon.png
   BEI_AN: process.env.NEXT_PUBLIC_BEI_AN || '', // 备案号 闽ICP备XXXXXX
   BEI_AN_LINK: process.env.NEXT_PUBLIC_BEI_AN_LINK || 'https://beian.miit.gov.cn/', // 备案查询链接，如果用了萌备等备案请在这里填写
   BEI_AN_GONGAN: process.env.NEXT_PUBLIC_BEI_AN_GONGAN || '', // 公安备案号，例如 '浙公网安备3xxxxxxxx8号'

@@ -31,7 +31,6 @@ const checks = [
       'SoftwareApplication',
       'FAQPage',
       'HowTo',
-      'Step 01',
       text.skill,
       'customs_data_skill_click',
       '.btn:focus-visible',
@@ -46,6 +45,36 @@ const checks = [
     notContainsBody: [text.searchTypo, text.searchTypoExtra]
   },
   {
+    name: '免费海关数据长尾页',
+    path: '/free-customs-data.html',
+    status: 200,
+    contains: ['免费海关数据查询', 'AI 摘要', 'FAQPage', 'cluster_free_customs_skill']
+  },
+  {
+    name: '美国进口商长尾页',
+    path: '/us-importers.html',
+    status: 200,
+    contains: ['美国进口商查询', 'AI 摘要', 'FAQPage', 'cluster_us_importers_skill']
+  },
+  {
+    name: 'HS 编码长尾页',
+    path: '/hs-code-lookup.html',
+    status: 200,
+    contains: ['HS 编码查询', 'AI 摘要', 'FAQPage', 'cluster_hs_code_skill']
+  },
+  {
+    name: '供应商分析长尾页',
+    path: '/supplier-analysis.html',
+    status: 200,
+    contains: ['供应商关系分析', 'AI 摘要', 'FAQPage', 'cluster_supplier_skill']
+  },
+  {
+    name: '海关数据获客流程页',
+    path: '/customs-data-leads.html',
+    status: 200,
+    contains: ['海关数据获客流程', 'HowTo', 'AI 摘要', 'cluster_leads_skill']
+  },
+  {
     name: 'OraSkl 品牌页',
     path: '/oraskl.html',
     status: 200,
@@ -58,17 +87,50 @@ const checks = [
     redirect: '/oraskl.html'
   },
   {
+    name: '免费海关数据跳转',
+    path: '/free-customs-data',
+    redirect: '/free-customs-data.html'
+  },
+  {
+    name: '美国进口商跳转',
+    path: '/us-importers',
+    redirect: '/us-importers.html'
+  },
+  {
+    name: 'HS 编码跳转',
+    path: '/hs-code-lookup',
+    redirect: '/hs-code-lookup.html'
+  },
+  {
+    name: '供应商分析跳转',
+    path: '/supplier-analysis',
+    redirect: '/supplier-analysis.html'
+  },
+  {
+    name: '海关数据获客流程跳转',
+    path: '/customs-data-leads',
+    redirect: '/customs-data-leads.html'
+  },
+  {
     name: 'sitemap 收录',
     path: '/sitemap.xml',
     status: 200,
-    contains: ['/customs-data-skill.html', '/oraskl.html'],
+    contains: [
+      '/customs-data-skill.html',
+      '/oraskl.html',
+      '/free-customs-data.html',
+      '/us-importers.html',
+      '/hs-code-lookup.html',
+      '/supplier-analysis.html',
+      '/customs-data-leads.html'
+    ],
     notContains: ['/zh-CN/customs-data-skill.html', '/zh-CN/oraskl.html', '/search</loc>']
   },
   {
     name: 'llms 收录',
     path: '/llms.txt',
     status: 200,
-    contains: ['OraSkl Brand Entry']
+    contains: ['OraSkl Brand Entry', '免费海关数据查询指南', '美国进口商查询指南', '供应商关系分析']
   },
   {
     name: '搜索 oraskl 跳转',

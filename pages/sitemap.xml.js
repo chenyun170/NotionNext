@@ -17,12 +17,57 @@ const STATIC_SEO_PAGES = [
     priority: '0.9'
   },
   {
+    slug: 'free-customs-data.html',
+    changefreq: 'weekly',
+    priority: '0.86'
+  },
+  {
+    slug: 'us-importers.html',
+    changefreq: 'weekly',
+    priority: '0.86'
+  },
+  {
+    slug: 'hs-code-lookup.html',
+    changefreq: 'weekly',
+    priority: '0.84'
+  },
+  {
+    slug: 'supplier-analysis.html',
+    changefreq: 'weekly',
+    priority: '0.84'
+  },
+  {
+    slug: 'customs-data-leads.html',
+    changefreq: 'weekly',
+    priority: '0.85'
+  },
+  {
     slug: 'oraskl.html',
     changefreq: 'weekly',
     priority: '0.8'
   },
   {
+    slug: 'turingsearch.html',
+    changefreq: 'weekly',
+    priority: '0.78'
+  },
+  {
+    slug: 'dingyiyun.html',
+    changefreq: 'weekly',
+    priority: '0.78'
+  },
+  {
+    slug: 'dingyi.html',
+    changefreq: 'weekly',
+    priority: '0.78'
+  },
+  {
     slug: 'tools.html',
+    changefreq: 'weekly',
+    priority: '0.82'
+  },
+  {
+    slug: 'foreign-trade-tools.html',
     changefreq: 'weekly',
     priority: '0.82'
   },
@@ -38,6 +83,11 @@ const STATIC_SEO_PAGES = [
   }
 ]
 
+const SITEMAP_NOTION_TIMEOUT_MS = Number.parseInt(
+  process.env.SITEMAP_NOTION_TIMEOUT_MS || '6000',
+  10
+)
+
 export const getServerSideProps = async ctx => {
   let fields = []
   const siteIds = BLOG.NOTION_PAGE_ID.split(',')
@@ -47,10 +97,14 @@ export const getServerSideProps = async ctx => {
     const id = extractLangId(siteId)
     const locale = extractLangPrefix(siteId)
     try {
-      const siteData = await fetchGlobalAllData({
-        pageId: id,
-        from: 'sitemap.xml'
-      })
+      const siteData = await withTimeout(
+        fetchGlobalAllData({
+          pageId: id,
+          from: 'sitemap.xml'
+        }),
+        SITEMAP_NOTION_TIMEOUT_MS,
+        `fetch Notion data for sitemap (${id})`
+      )
       const link = siteConfig(
         'LINK',
         siteData?.siteInfo?.link,
@@ -154,6 +208,19 @@ function getUniqueFields(fields) {
   })
 
   return Array.from(uniqueFieldsMap.values())
+}
+
+function withTimeout(promise, timeoutMs, label) {
+  let timeoutId
+
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      timeoutId = setTimeout(() => {
+        reject(new Error(`${label} timed out after ${timeoutMs}ms`))
+      }, timeoutMs)
+    })
+  ]).finally(() => clearTimeout(timeoutId))
 }
 
 function formatSitemapDate(value, fallback) {

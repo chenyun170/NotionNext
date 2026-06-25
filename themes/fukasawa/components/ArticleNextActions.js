@@ -34,6 +34,17 @@ const ArticleNextActions = ({ post }) => {
 
         <div className='grid gap-2'>
           <a
+            href={CUSTOMS_DATA_SKILL.href}
+            onClick={() => trackCustomsDataSkillClick('article_skill_card')}
+            className='inline-flex flex-col rounded-[10px] border border-blue-200 bg-white/85 px-4 py-3 text-left transition hover:border-blue-300 hover:bg-blue-50 dark:border-blue-900/70 dark:bg-blue-950/20 dark:hover:bg-blue-950/50'>
+            <span className='text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-300'>
+              海关数据工具入口
+            </span>
+            <span className='mt-1 text-sm font-black text-zinc-950 dark:text-zinc-50'>
+              海关数据免费查询 Skill
+            </span>
+          </a>
+          <a
             href='/customs-data.html'
             className='inline-flex h-10 items-center justify-center rounded-[10px] bg-zinc-950 px-3 text-[13px] font-bold text-white transition hover:bg-blue-700 dark:bg-white dark:text-zinc-950 dark:hover:bg-blue-300 sm:h-11 sm:px-4 sm:text-sm'>
             <i className='fas fa-layer-group mr-2 text-xs' />

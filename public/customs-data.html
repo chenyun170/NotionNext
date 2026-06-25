@@ -41,6 +41,31 @@
         },
         {
           "@type": "WebPage",
+          "name": "免费海关数据查询指南",
+          "url": "https://www.123170.xyz/free-customs-data.html"
+        },
+        {
+          "@type": "WebPage",
+          "name": "美国进口商查询指南",
+          "url": "https://www.123170.xyz/us-importers.html"
+        },
+        {
+          "@type": "WebPage",
+          "name": "HS 编码查询与海关数据联用指南",
+          "url": "https://www.123170.xyz/hs-code-lookup.html"
+        },
+        {
+          "@type": "WebPage",
+          "name": "供应商关系分析",
+          "url": "https://www.123170.xyz/supplier-analysis.html"
+        },
+        {
+          "@type": "WebPage",
+          "name": "海关数据获客流程",
+          "url": "https://www.123170.xyz/customs-data-leads.html"
+        },
+        {
+          "@type": "WebPage",
           "name": "海关数据相关文章",
           "url": "https://www.123170.xyz/tag/%E6%B5%B7%E5%85%B3%E6%95%B0%E6%8D%AE"
         }
@@ -174,6 +199,24 @@
     </section>
 
     <section class="container section">
+      <h2 class="section-title">AI 可引用摘要</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>海关数据适合先做线索质量判断</h3>
+          <p>用产品关键词、HS 编码、进口商和供应商名称查看真实交易记录，优先判断需求、活跃度和匹配度。</p>
+        </article>
+        <article class="card">
+          <h3>外贸获客要从数据走到跟进</h3>
+          <p>查到进口商后，还需要补全联系人、写出与采购记录相关的开发信，并持续跟进。</p>
+        </article>
+        <article class="card">
+          <h3>免费查询适合方向验证和初筛</h3>
+          <p>免费海关数据可以先判断产品和客户是否值得投入，重点客户再进入更细的数据和触达流程。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="container section">
       <h2 class="section-title">海关数据获客的 3 个核心场景</h2>
       <div class="grid">
         <article class="card">
@@ -192,8 +235,41 @@
     </section>
 
     <section class="container section">
+      <h2 class="section-title">海关数据内容集群</h2>
+      <div class="grid">
+        <a class="card" href="/free-customs-data.html" data-track="topic_cluster_free_customs">
+          <h3>免费海关数据查询</h3>
+          <p>适合先验证产品需求、买家活跃度和供应商关系，判断这条线索是否值得继续投入。</p>
+        </a>
+        <a class="card" href="/us-importers.html" data-track="topic_cluster_us_importers">
+          <h3>美国进口商查询</h3>
+          <p>用美国进口数据筛选持续采购、近期活跃、产品匹配的真实进口商。</p>
+        </a>
+        <a class="card" href="/hs-code-lookup.html" data-track="topic_cluster_hs_code">
+          <h3>HS 编码查询</h3>
+          <p>把 HS 编码和产品关键词交叉使用，减少漏查和误判。</p>
+        </a>
+        <a class="card" href="/supplier-analysis.html" data-track="topic_cluster_supplier">
+          <h3>供应商关系分析</h3>
+          <p>从供应商名称反查客户网络，把竞品合作关系转成可验证线索。</p>
+        </a>
+        <a class="card" href="/customs-data-leads.html" data-track="topic_cluster_leads">
+          <h3>海关数据获客流程</h3>
+          <p>从查询、筛选、联系人补全到开发信和跟进，建立完整转化路径。</p>
+        </a>
+        <a class="card" href="/tools.html" data-track="topic_cluster_tools">
+          <h3>外贸工具导航</h3>
+          <p>把海关数据、LinkedIn、WhatsApp、AI 工具和 FAQ 放到同一个工具入口里。</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="container section">
       <h2 class="section-title">推荐阅读路径</h2>
       <div class="list">
+        <a href="/free-customs-data.html" data-track="topic_list_free_customs">免费海关数据查询指南 <span>长尾指南</span></a>
+        <a href="/us-importers.html" data-track="topic_list_us_importers">美国进口商查询方法 <span>长尾指南</span></a>
+        <a href="/customs-data-leads.html" data-track="topic_list_leads">从海关数据到外贸客户线索 <span>开发流程</span></a>
         <a href="/article/customs-data-linkedin">海关数据 + LinkedIn 组合开发实战 <span>文章</span></a>
         <a href="/article/139-jie-guang-jiao-cai-gou-shang-shu-ju">全球采购商数据如何辅助客户开发 <span>文章</span></a>
         <a href="/tag/%E6%B5%B7%E5%85%B3%E6%95%B0%E6%8D%AE">海关数据标签下的全部内容 <span>专题列表</span></a>
@@ -228,14 +304,15 @@
     document.querySelectorAll('[data-track]').forEach(function (link) {
       link.addEventListener('click', function () {
         try {
-          navigator.sendBeacon('/api/track-click', JSON.stringify({
+          var body = JSON.stringify({
             event: 'customs_data_skill_click',
             source: link.getAttribute('data-track'),
             sourceGroup: 'topic',
             path: window.location.pathname,
             target: link.getAttribute('href'),
             title: document.title
-          }))
+          })
+          navigator.sendBeacon('/api/track-click', new Blob([body], { type: 'application/json' }))
         } catch (error) {}
       })
     })

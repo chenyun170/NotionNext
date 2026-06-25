@@ -4,28 +4,28 @@ import { trackCustomsDataSkillClick } from '@/lib/utils/customsDataSkillTracking
 
 const fallbackTopics = [
   {
-    name: '海关数据',
-    description: '用贸易记录判断客户、市场和采购节奏。',
-    href: '/search?s=%E6%B5%B7%E5%85%B3%E6%95%B0%E6%8D%AE',
-    icon: 'fa-chart-line'
+    name: '海关数据专题',
+    description: '从产品、HS 编码、进口商和供应商关系开始判断市场机会。',
+    href: '/customs-data.html',
+    icon: 'fa-database'
   },
   {
-    name: '客户开发',
-    description: '从线索挖掘到触达跟进的外贸增长方法。',
-    href: '/search?s=%E5%AE%A2%E6%88%B7%E5%BC%80%E5%8F%91',
-    icon: 'fa-user-plus'
+    name: '美国进口商查询',
+    description: '用美国进口数据筛选持续采购、近期活跃的真实买家。',
+    href: '/us-importers.html',
+    icon: 'fa-building-user'
   },
   {
-    name: 'AI 外贸工具',
-    description: '把 AI 用到调研、邮件、跟进和自动化流程。',
-    href: '/search?s=AI',
-    icon: 'fa-magic'
+    name: '供应商关系分析',
+    description: '反查供应商服务过哪些客户，判断竞品和渠道关系。',
+    href: '/supplier-analysis.html',
+    icon: 'fa-project-diagram'
   }
 ]
 
 const flagshipTopics = [
   {
-    name: '海关数据',
+    name: '海关数据专题',
     match: /海关|数据|进口|贸易/i,
     description: '围绕进口商、供应商、HS 编码和采购记录，判断真实买家与市场机会。',
     href: '/customs-data.html',
@@ -33,33 +33,35 @@ const flagshipTopics = [
     icon: 'fa-database'
   },
   {
-    name: '外贸获客',
-    match: /外贸获客|客户开发|主动获客|找客户/i,
-    description: '从线索筛选、触达话术到跟进节奏，整理可执行的 B2B 获客方法。',
-    href: '/tag/%E5%A4%96%E8%B4%B8%E8%8E%B7%E5%AE%A2',
-    icon: 'fa-user-plus'
+    name: '美国进口商查询',
+    match: /美国|进口商|买家|采购商/i,
+    description: '用美国进口记录筛选持续采购、近期活跃、产品匹配的潜在客户。',
+    href: '/us-importers.html',
+    preferStaticHref: true,
+    icon: 'fa-building-user'
   },
   {
-    name: 'AI 与工具',
-    match: /AI|工具|自动化|图灵搜|顶易/i,
-    description: '把 AI、搜索工具和数据工具用于调研、开发信、跟进和效率提升。',
-    href: '/search/AI',
-    icon: 'fa-magic'
+    name: '供应商关系分析',
+    match: /供应商|竞品|关系|渠道/i,
+    description: '反查供应商客户网络，把竞品供应链转成可验证的开发线索。',
+    href: '/supplier-analysis.html',
+    preferStaticHref: true,
+    icon: 'fa-project-diagram'
   }
 ]
 
 const trustSignals = [
   {
-    label: '数据线索',
-    value: '海关数据 / 采购记录'
+    label: '核心线索',
+    value: '进口商 / 供应商 / HS 编码'
   },
   {
-    label: '内容方式',
-    value: '实战拆解 / 工具验证'
+    label: '判断方式',
+    value: '采购频次 / 近期活跃 / 产品匹配'
   },
   {
-    label: '更新节奏',
-    value: '持续补充外贸方法'
+    label: '转化路径',
+    value: '查数据 / 筛客户 / 做跟进'
   }
 ]
 
@@ -69,44 +71,44 @@ const HomeIntro = ({
   categoryOptions = []
 }) => {
   const topics = buildTopics(categoryOptions)
+  const homeDescription = buildHomeDescription(siteInfo?.description)
 
   return (
     <section className='mb-8 overflow-hidden rounded-[8px] border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-[#111113]'>
         <div className='px-5 py-6 sm:px-7 sm:py-8'>
         <div className='mb-4 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400'>
           <span className='h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-400' />
-          <span>Foreign Trade Intelligence</span>
+          <span>123170.xyz · Foreign Trade Intelligence</span>
         </div>
 
         <div className='grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-end'>
           <div>
             <h1 className='max-w-3xl text-2xl font-black leading-tight text-zinc-950 dark:text-zinc-50 sm:text-3xl'>
-              {siteInfo?.title || '外贸获客情报局'}
+              外贸获客情报局：帮外贸人用海关数据找到真实进口商
             </h1>
             <p className='mt-3 max-w-2xl text-sm leading-7 text-zinc-600 dark:text-zinc-300'>
-              {siteInfo?.description ||
-                '聚焦海关数据、客户开发、跨境工具和 AI 外贸自动化，整理可落地的获客方法与工具实战。'}
+              {homeDescription}
             </p>
             <div className='mt-5 flex flex-wrap gap-2'>
-              <SmartLink
-                href='/search/%E5%A4%96%E8%B4%B8%E8%8E%B7%E5%AE%A2'
-                className='inline-flex h-10 items-center rounded-[8px] bg-zinc-950 px-4 text-sm font-bold text-white transition hover:bg-blue-600 dark:bg-white dark:text-zinc-950 dark:hover:bg-blue-400'>
-                <i className='fas fa-search mr-2 text-xs' />
-                搜索获客方法
-              </SmartLink>
-              <SmartLink
-                href='#posts-wrapper'
-                className='inline-flex h-10 items-center rounded-[8px] border border-zinc-200 px-4 text-sm font-bold text-zinc-700 transition hover:border-blue-300 hover:text-blue-600 dark:border-zinc-800 dark:text-zinc-200 dark:hover:border-blue-700 dark:hover:text-blue-300'>
-                <i className='fas fa-clock-rotate-left mr-2 text-xs' />
-                查看最新文章
-              </SmartLink>
               <a
                 href={CUSTOMS_DATA_SKILL.href}
-                onClick={() => trackCustomsDataSkillClick('home_intro_button')}
-                className='inline-flex h-10 items-center rounded-[8px] border border-blue-200 bg-blue-50 px-4 text-sm font-bold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100 dark:border-blue-900/70 dark:bg-blue-950/30 dark:text-blue-300 dark:hover:border-blue-700 dark:hover:bg-blue-950/50'>
+                onClick={() => trackCustomsDataSkillClick('home_intro_primary')}
+                className='inline-flex h-10 items-center rounded-[8px] bg-zinc-950 px-4 text-sm font-bold text-white transition hover:bg-blue-600 dark:bg-white dark:text-zinc-950 dark:hover:bg-blue-400'>
                 <i className='fas fa-database mr-2 text-xs' />
                 海关数据免费查询 Skill
               </a>
+              <SmartLink
+                href='/customs-data.html'
+                className='inline-flex h-10 items-center rounded-[8px] border border-zinc-200 px-4 text-sm font-bold text-zinc-700 transition hover:border-blue-300 hover:text-blue-600 dark:border-zinc-800 dark:text-zinc-200 dark:hover:border-blue-700 dark:hover:text-blue-300'>
+                <i className='fas fa-layer-group mr-2 text-xs' />
+                看海关数据专题
+              </SmartLink>
+              <SmartLink
+                href='#posts-wrapper'
+                className='inline-flex h-10 items-center rounded-[8px] border border-blue-200 bg-blue-50 px-4 text-sm font-bold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100 dark:border-blue-900/70 dark:bg-blue-950/30 dark:text-blue-300 dark:hover:border-blue-700 dark:hover:bg-blue-950/50'>
+                <i className='fas fa-clock-rotate-left mr-2 text-xs' />
+                查看最新文章
+              </SmartLink>
             </div>
           </div>
 
@@ -124,7 +126,7 @@ const HomeIntro = ({
                 </div>
               </div>
               <div className='pb-1 text-xs leading-6 text-zinc-500 dark:text-zinc-400'>
-                搜索、热门文章和标签已收纳到侧栏，这里只保留首页主线。
+                主线很简单：先验证需求，再筛选进口商，最后进入触达和跟进。
               </div>
             </div>
             <div className='mt-4 grid gap-2 border-t border-dashed border-zinc-200 pt-4 dark:border-zinc-800'>
@@ -189,6 +191,18 @@ const buildTopics = categoryOptions => {
   })
 
   return topics?.length ? topics : fallbackTopics
+}
+
+const buildHomeDescription = description => {
+  const fallback =
+    '聚焦海关数据、美国进口数据、进口商查询、供应商关系分析和外贸获客工具，把“查数据”整理成可执行的客户开发路径。'
+  const text = description || fallback
+
+  if (/外贸获客情报局|123170\.xyz/i.test(text)) {
+    return text
+  }
+
+  return `这里是 123170.xyz 外贸获客情报局。${text}`
 }
 
 const buildTopicDescription = (name, fallbackDescription) => {

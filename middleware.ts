@@ -17,6 +17,34 @@ function isPublicFile(pathname: string) {
   )
 }
 
+function getCustomsSkillSearchRedirect(req: NextRequest) {
+  const pathname = req.nextUrl.pathname
+
+  if (!pathname.toLowerCase().startsWith('/search/')) {
+    return null
+  }
+
+  const rawKeyword = pathname.slice('/search/'.length).split('/')[0] || ''
+  let keyword = rawKeyword
+
+  try {
+    keyword = decodeURIComponent(rawKeyword)
+  } catch {
+    keyword = rawKeyword
+  }
+
+  const normalizedKeyword = keyword.toLowerCase().replace(/\s+/g, '')
+
+  if (!/oraskl|skll/.test(normalizedKeyword)) {
+    return null
+  }
+
+  const redirectToUrl = req.nextUrl.clone()
+  redirectToUrl.pathname = '/customs-data-skill.html'
+  redirectToUrl.search = ''
+  return NextResponse.redirect(redirectToUrl, 308)
+}
+
 /**
  * Clerk 身份验证中间件
  */
@@ -49,6 +77,9 @@ const noAuthMiddleware = async (req: NextRequest, ev: any) => {
   // ✅ 再保险：公共文件直接放行
   if (isPublicFile(req.nextUrl.pathname)) return NextResponse.next()
 
+  const customsSkillRedirect = getCustomsSkillSearchRedirect(req)
+  if (customsSkillRedirect) return customsSkillRedirect
+
   if (BLOG['UUID_REDIRECT']) {
     let redirectJson: Record<string, string> = {}
     try {
@@ -79,6 +110,9 @@ const authMiddleware = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
   ? clerkMiddleware((auth, req) => {
       // ✅ 再保险：公共文件直接放行
       if (isPublicFile(req.nextUrl.pathname)) return NextResponse.next()
+
+      const customsSkillRedirect = getCustomsSkillSearchRedirect(req)
+      if (customsSkillRedirect) return customsSkillRedirect
 
       const { userId } = auth()
 

@@ -6,6 +6,12 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
+const BRAND_NAME = '外贸获客情报局'
+const BRAND_DOMAIN = '123170.xyz'
+const BRAND_TAGLINE = '海关数据与外贸获客实战情报站'
+const BRAND_DESCRIPTION =
+  '外贸获客情报局（123170.xyz）专注海关数据、进口商查询、供应商关系分析和 AI 外贸工具，把真实贸易记录整理成可执行的客户开发线索。'
+
 /**
  * 页面的Head头，有用于SEO
  * @param {*} param0
@@ -51,9 +57,12 @@ const SEO = props => {
     url = buildCanonicalUrl(siteBaseUrl, meta.slug)
     image = toAbsoluteUrl(meta.image || '/bg_image.jpg', siteBaseUrl)
   }
-  const TITLE = siteConfig('TITLE')
-  const title = meta?.title || TITLE
-  const description = meta?.description || `${siteInfo?.description}`
+  const siteTitle = siteInfo?.title || siteConfig('TITLE') || BRAND_NAME
+  const siteName = getBrandAwareName(siteTitle)
+  const title = meta?.title || siteTitle
+  const description =
+    meta?.description ||
+    getBrandAwareDescription(siteInfo?.description || siteConfig('DESCRIPTION'))
   const rawType = meta?.type || 'website'
   const isArticle = rawType === 'Post' || rawType === 'article'
   const type = isArticle ? 'article' : 'website'
@@ -141,13 +150,13 @@ const SEO = props => {
       <link
         rel='alternate'
         type='application/rss+xml'
-        title={`${siteConfig('TITLE')} RSS`}
+        title={`${siteTitle} RSS`}
         href={buildCanonicalUrl(siteBaseUrl, 'rss/feed.xml')}
       />
       <link
         rel='alternate'
         type='text/plain'
-        title={`${siteConfig('TITLE')} llms.txt`}
+        title={`${siteTitle} llms.txt`}
         href={buildCanonicalUrl(siteBaseUrl, 'llms.txt')}
       />
 
@@ -165,7 +174,7 @@ const SEO = props => {
       <meta property='og:image:width' content='1200' />
       <meta property='og:image:height' content='630' />
       <meta property='og:image:alt' content={title} />
-      <meta property='og:site_name' content={siteConfig('TITLE')} />
+      <meta property='og:site_name' content={siteName} />
       <meta property='og:type' content={type} />
 
       {/* Twitter Card 元数据 */}
@@ -253,12 +262,32 @@ const toAbsoluteUrl = (value, baseUrl) => {
   return buildCanonicalUrl(baseUrl, value)
 }
 
+const getBrandAwareDescription = description => {
+  const text = `${description || ''}`.trim()
+
+  if (/外贸获客情报局|123170\.xyz/i.test(text)) {
+    return text
+  }
+
+  return BRAND_DESCRIPTION
+}
+
+const getBrandAwareName = name => {
+  const text = `${name || ''}`.trim()
+
+  if (text.includes(BRAND_NAME)) {
+    return BRAND_NAME
+  }
+
+  return text || BRAND_NAME
+}
+
 const buildTaxonomyDescription = (type, value, siteInfo) => {
   const name = `${value || ''}`.trim()
   const siteTitle = siteInfo?.title || siteConfig('TITLE')
   const fallback =
-    siteInfo?.description ||
-    '外贸获客、海关数据、客户开发和 AI 外贸工具实战内容整理。'
+    getBrandAwareDescription(siteInfo?.description) ||
+    BRAND_DESCRIPTION
 
   if (!name) {
     return fallback
@@ -350,14 +379,34 @@ const buildArticleAbout = meta => {
  */
 const generateStructuredData = (meta, siteInfo, url, image, author) => {
   const siteUrl = buildCanonicalUrl(siteConfig('LINK'))
-  const publisherId = `${siteUrl}/#publisher`
+  const publisherId = `${siteUrl}/#organization`
+  const authorId = `${siteUrl}/#author`
   const websiteId = `${siteUrl}/#website`
   const inLanguage = siteConfig('LANG')
+  const siteTitle = siteInfo?.title || siteConfig('TITLE') || BRAND_NAME
+  const siteName = getBrandAwareName(siteTitle)
+  const siteDescription = getBrandAwareDescription(
+    siteInfo?.description || siteConfig('DESCRIPTION')
+  )
+  const siteLogo = toAbsoluteUrl(siteInfo?.icon || '/logo.png', siteUrl)
+  const publisherData = {
+    '@type': 'Organization',
+    '@id': publisherId,
+    name: siteName,
+    alternateName: [BRAND_NAME, BRAND_DOMAIN, `www.${BRAND_DOMAIN}`],
+    url: siteUrl,
+    logo: {
+      '@type': 'ImageObject',
+      url: siteLogo
+    },
+    description: siteDescription
+  }
   const publisher = {
     '@type': 'WebSite',
     '@id': websiteId,
-    name: siteInfo?.title,
-    description: siteInfo?.description,
+    name: siteName,
+    alternateName: [BRAND_NAME, BRAND_DOMAIN],
+    description: siteDescription,
     url: siteUrl,
     inLanguage,
     publisher: {
@@ -365,13 +414,13 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
     },
     potentialAction: {
       '@type': 'SearchAction',
-      target: `${siteUrl}/search?s={search_term_string}`,
+      target: `${siteUrl}/search/{search_term_string}`,
       'query-input': 'required name=search_term_string'
     }
   }
   const authorData = {
     '@type': 'Person',
-    '@id': publisherId,
+    '@id': authorId,
     name: author,
     url: siteUrl,
     image: siteInfo?.icon
@@ -380,8 +429,8 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
     '@type': 'WebPage',
     '@id': `${url}#webpage`,
     url,
-    name: meta?.title || siteInfo?.title,
-    description: meta?.description || siteInfo?.description,
+    name: meta?.title || siteName,
+    description: meta?.description || siteDescription,
     inLanguage,
     isPartOf: {
       '@id': websiteId
@@ -397,6 +446,7 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
     return {
       '@context': 'https://schema.org',
       '@graph': [
+        publisherData,
         publisher,
         authorData,
         webPage,
@@ -412,7 +462,7 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
           datePublished: meta.publishDay,
           dateModified: meta.lastEditedDay || meta.publishDay,
           author: {
-            '@id': publisherId
+            '@id': authorId
           },
           publisher: {
             '@id': publisherId
@@ -432,7 +482,7 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
             {
               '@type': 'ListItem',
               position: 1,
-              name: siteInfo?.title,
+              name: siteName,
               item: siteUrl
             },
             {
@@ -461,7 +511,7 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
 
   return {
     '@context': 'https://schema.org',
-    '@graph': [publisher, authorData, webPage]
+    '@graph': [publisherData, publisher, authorData, webPage]
   }
 }
 
@@ -474,12 +524,18 @@ const getSEOMeta = (props, router, locale) => {
   const { post, siteInfo, tag, category, page } = props
   const keyword = router?.query?.s
 
-  const TITLE = siteConfig('TITLE')
+  const TITLE = siteConfig('TITLE') || BRAND_NAME
+  const siteTitle = siteInfo?.title || TITLE
+  const siteDescription = getBrandAwareDescription(
+    siteInfo?.description || siteConfig('DESCRIPTION')
+  )
   switch (router.route) {
     case '/':
       return {
-        title: `${siteInfo?.title} | ${siteInfo?.description}`,
-        description: `${siteInfo?.description}`,
+        title: `${BRAND_NAME} - ${BRAND_TAGLINE}`,
+        description: siteDescription.includes(BRAND_NAME)
+          ? siteDescription
+          : `${BRAND_DESCRIPTION} 这里是 ${BRAND_NAME} 官网入口。`,
         image: `${siteInfo?.pageCover}`,
         slug: '',
         type: 'website'
@@ -566,8 +622,8 @@ const getSEOMeta = (props, router, locale) => {
     default:
       return {
         title: post
-          ? `${post?.title} | ${siteInfo?.title}`
-          : `${siteInfo?.title} | loading`,
+          ? `${post?.title} | ${siteTitle}`
+          : `${siteTitle} | loading`,
         description: post?.summary,
         type: post?.type,
         slug: post?.slug,

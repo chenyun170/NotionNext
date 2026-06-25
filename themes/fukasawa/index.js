@@ -39,6 +39,7 @@ import BlogArchiveItem from './components/BlogPostArchive'
 import Header from './components/Header'
 import HomeIntro from './components/HomeIntro'
 import SearchResourceLinks from './components/SearchResourceLinks'
+import SkillSearchPromo from './components/SkillSearchPromo'
 import TagItemMini from './components/TagItemMini'
 import TopicIntro from './components/TopicIntro'
 import LoadingCover from './components/LoadingCover'
@@ -155,6 +156,7 @@ const LayoutPostList = memo((props) => {
   )
   const showHomeIntro = !props?.category && !props?.tag && !props?.keyword && !props?.page
   const showTopicIntro = props?.category || props?.tag || props?.keyword
+  const topicKeyword = props?.keyword || props?.category || props?.tag
   
   const ListComponent = POST_LIST_STYLE === 'page' ? BlogListPage : BlogListScroll
   
@@ -162,6 +164,14 @@ const LayoutPostList = memo((props) => {
     <div className='w-full'>
       {showHomeIntro && <HomeIntro {...props} />}
       {showTopicIntro && <TopicIntro {...props} />}
+      {topicKeyword && (
+        <SkillSearchPromo
+          keyword={topicKeyword}
+          forceShow={Boolean(
+            props?.category && /海关数据/.test(String(props.category))
+          )}
+        />
+      )}
       {props?.keyword && <SearchResourceLinks keyword={props.keyword} />}
       <div className='w-full p-2 mb-4'>
         <WWAds className='w-full' orientation='horizontal' />
@@ -261,7 +271,14 @@ const LayoutSearch = memo(({ keyword, ...props }) => {
     highlightSearchResults()
   }, [highlightSearchResults])
   
-  return <LayoutPostList keyword={keyword} {...props} />
+  return (
+    <>
+      <Head>
+        <meta name='robots' content='noindex,follow' />
+      </Head>
+      <LayoutPostList keyword={keyword} {...props} />
+    </>
+  )
 })
 
 LayoutSearch.displayName = 'LayoutSearch'

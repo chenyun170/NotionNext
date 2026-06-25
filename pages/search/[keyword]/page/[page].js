@@ -3,6 +3,7 @@ import { getDataFromCache } from '@/lib/cache/cache_manager'
 import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
+import { shouldRedirectSearchToCustomsSkill } from '@/lib/utils/customsDataSkill'
 
 const Index = props => {
   const { keyword } = props
@@ -18,6 +19,15 @@ const Index = props => {
  * @returns
  */
 export async function getStaticProps({ params: { keyword, page }, locale }) {
+  if (shouldRedirectSearchToCustomsSkill(keyword)) {
+    return {
+      redirect: {
+        destination: '/customs-data-skill.html',
+        permanent: true
+      }
+    }
+  }
+
   const props = await fetchGlobalAllData({
     from: 'search-props',
     pageType: ['Post'],

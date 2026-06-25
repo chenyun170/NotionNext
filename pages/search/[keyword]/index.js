@@ -4,6 +4,7 @@ import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
 import { getPageContentText } from '@/lib/db/notion/getPageContentText'
+import { shouldRedirectSearchToCustomsSkill } from '@/lib/utils/customsDataSkill'
 
 const Index = props => {
   const theme = siteConfig('THEME', BLOG.THEME, props.NOTION_CONFIG)
@@ -16,6 +17,15 @@ const Index = props => {
  * @returns
  */
 export async function getStaticProps({ params: { keyword }, locale }) {
+  if (shouldRedirectSearchToCustomsSkill(keyword)) {
+    return {
+      redirect: {
+        destination: '/customs-data-skill.html',
+        permanent: true
+      }
+    }
+  }
+
   const props = await fetchGlobalAllData({
     from: 'search-props',
     locale

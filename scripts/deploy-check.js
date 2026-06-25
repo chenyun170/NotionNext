@@ -22,6 +22,41 @@ const urlChecks = [
     name: '海关数据 Skill 页面',
     contains: ['OraSkl', '海关数据 Skill']
   },
+  {
+    path: '/free-customs-data.html',
+    name: '免费海关数据页面',
+    contains: ['免费海关数据查询', 'AI 摘要']
+  },
+  {
+    path: '/us-importers.html',
+    name: '美国进口商页面',
+    contains: ['美国进口商查询', 'AI 摘要']
+  },
+  {
+    path: '/customs-data-leads.html',
+    name: '海关数据获客流程页面',
+    contains: ['海关数据获客流程', 'HowTo']
+  },
+  {
+    path: '/turingsearch.html',
+    name: '图灵搜工具词页面',
+    contains: ['图灵搜外贸获客工具观察', '外贸获客情报局']
+  },
+  {
+    path: '/foreign-trade-tools.html',
+    name: '外贸获客工具对比页面',
+    contains: ['外贸获客工具怎么选', '图灵搜', '顶易云', '海关数据']
+  },
+  {
+    path: '/dingyiyun.html',
+    name: '顶易云工具词页面',
+    contains: ['顶易云外贸获客工具观察', '外贸获客情报局']
+  },
+  {
+    path: '/dingyi.html',
+    name: '顶易工具词页面',
+    contains: ['顶易外贸软件与海关数据工具怎么选', '外贸获客情报局']
+  },
   { path: '/sitemap.xml', name: '站点地图', contains: ['<urlset'] },
   { path: '/llms.txt', name: 'LLMs 文件', contains: ['GEO Answer Guidance'] },
   { path: '/skill-stats.html', name: '统计看板页面', contains: ['noindex'] },

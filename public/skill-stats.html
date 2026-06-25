@@ -28,6 +28,7 @@
     .row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 14px; border-bottom: 1px solid rgba(15,23,42,.06); padding: 13px 18px; color: #334155; font-size: 14px; }
     .row:last-child { border-bottom: 0; }
     .row b { color: #1d4ed8; }
+    .row small { display: block; margin-top: 4px; color: #64748b; font-size: 12px; line-height: 1.5; }
     .bar { height: 8px; border-radius: 999px; background: #dbeafe; overflow: hidden; margin-top: 7px; }
     .bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#2563eb,#0891b2); }
     .daily { display: grid; grid-template-columns: repeat(14, 1fr); gap: 8px; padding: 18px; align-items: end; min-height: 170px; }
@@ -72,6 +73,17 @@
     <section class="token-panel" id="statsNote" hidden>
       <label>统计口径说明</label>
       <p class="lead" style="margin-top:8px;font-size:14px">原始点击 <strong id="rawTotal">-</strong> 条，已过滤测试记录 <strong id="filteredTotal">-</strong> 条；看板排行和趋势只计算过滤后的真实点击。</p>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>转化路径摘要</h2>
+        <div id="conversion" class="list"></div>
+      </div>
+      <div class="card">
+        <h2>来源组表现</h2>
+        <div id="sourceGroups" class="list"></div>
+      </div>
     </section>
 
     <section class="grid">
@@ -201,6 +213,68 @@
       })
     }
 
+    const targetTypeLabel = value => {
+      const labels = {
+        skill_page: '进入 Skill 介绍页',
+        oraskl_outbound: '直接跳转 OraSkl',
+        internal_content: '站内内容跳转',
+        other: '其他目标',
+        unknown: '未知目标'
+      }
+      return labels[value] || value || '未知目标'
+    }
+
+    const renderConversion = conversion => {
+      const target = document.getElementById('conversion')
+      const safeConversion = conversion || {}
+      clearElement(target)
+      const rows = [
+        {
+          name: '进入 Skill 介绍页',
+          note: '站内转化点击',
+          count: safeConversion.skillPageClicks || 0
+        },
+        {
+          name: '直接跳转 OraSkl',
+          note: `外跳占比 ${Math.round((safeConversion.outboundRate || 0) * 100)}%`,
+          count: safeConversion.orasklOutboundClicks || 0
+        },
+        {
+          name: '站内内容跳转',
+          note: '专题、工具和长尾页之间的路径',
+          count: safeConversion.contentNavigationClicks || 0
+        }
+      ]
+
+      rows.forEach(item => {
+        target.appendChild(createRow(item.name, item.note, item.count))
+      })
+
+      ;(safeConversion.targetTypes || []).forEach(item => {
+        target.appendChild(
+          createRow(targetTypeLabel(item.name), '目标类型明细', item.count || 0)
+        )
+      })
+    }
+
+    const renderSourceGroups = items => {
+      const target = document.getElementById('sourceGroups')
+      if (!items || !items.length) {
+        appendEmpty(target)
+        return
+      }
+      clearElement(target)
+      items.forEach(item => {
+        target.appendChild(
+          createRow(
+            item.label || item.name || 'unknown',
+            `近 7 天 ${item.last7Days || 0} · Skill ${item.skillPageClicks || 0} · OraSkl ${item.orasklOutboundClicks || 0} · Top ${item.topSource || '-'}`,
+            item.count || 0
+          )
+        )
+      })
+    }
+
     const tokenFromUrl = new URLSearchParams(window.location.search).get('token') || ''
     if (tokenFromUrl) {
       sessionStorage.setItem('customsStatsToken', tokenFromUrl)
@@ -233,6 +307,8 @@
         writeText('last30Days', data.last30Days || 0)
         renderList('topSources', data.topSources)
         renderList('topPaths', data.topPaths)
+        renderConversion(data.conversion)
+        renderSourceGroups(data.sourceGroupSummary)
         renderDaily(data.daily || [])
         renderLatest(data.latest)
         document.getElementById('statsNote').hidden = false

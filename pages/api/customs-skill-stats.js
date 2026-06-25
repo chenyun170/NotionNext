@@ -77,6 +77,8 @@ const buildSummary = (records, rawTotal) => {
     topSources: topCounter(records, 'source', 8),
     topSourceGroups: topCounter(records, 'sourceGroup', 8),
     topPaths: topCounter(records, 'path', 8),
+    conversion: buildConversionSummary(records),
+    sourceGroupSummary: buildSourceGroupSummary(records, last7DayStart),
     daily: buildDailySeries(records, 14),
     latest: records
       .slice(-10)
@@ -86,6 +88,7 @@ const buildSummary = (records, rawTotal) => {
         sourceGroup: record.sourceGroup || '',
         path: record.path || '',
         target: record.target || '',
+        targetType: getTargetType(record.target),
         title: record.title || '',
         ts: Number(record.ts) || 0,
         day: formatDay(record.ts)
@@ -122,6 +125,127 @@ const topCounter = (records, key, limit) => {
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
     .slice(0, limit)
+}
+
+const buildConversionSummary = records => {
+  const total = records.length || 0
+  const targetTypes = topCounter(
+    records.map(record => ({
+      targetType: getTargetType(record.target)
+    })),
+    'targetType',
+    8
+  )
+  const skillPageClicks = records.filter(
+    record => getTargetType(record.target) === 'skill_page'
+  ).length
+  const orasklOutboundClicks = records.filter(
+    record => getTargetType(record.target) === 'oraskl_outbound'
+  ).length
+  const contentNavigationClicks = records.filter(
+    record => getTargetType(record.target) === 'internal_content'
+  ).length
+
+  return {
+    skillPageClicks,
+    orasklOutboundClicks,
+    contentNavigationClicks,
+    outboundRate: total ? Number((orasklOutboundClicks / total).toFixed(4)) : 0,
+    targetTypes
+  }
+}
+
+const buildSourceGroupSummary = (records, last7DayStart) => {
+  const groups = new Map()
+
+  records.forEach(record => {
+    const groupName = record.sourceGroup || 'unknown'
+    const current = groups.get(groupName) || {
+      name: groupName,
+      label: getSourceGroupLabel(groupName),
+      count: 0,
+      last7Days: 0,
+      skillPageClicks: 0,
+      orasklOutboundClicks: 0,
+      topSource: '',
+      sources: new Map()
+    }
+
+    const targetType = getTargetType(record.target)
+    current.count += 1
+    current.last7Days += Number(record.ts) >= last7DayStart ? 1 : 0
+    current.skillPageClicks += targetType === 'skill_page' ? 1 : 0
+    current.orasklOutboundClicks += targetType === 'oraskl_outbound' ? 1 : 0
+    current.sources.set(
+      record.source || 'unknown',
+      (current.sources.get(record.source || 'unknown') || 0) + 1
+    )
+    groups.set(groupName, current)
+  })
+
+  return Array.from(groups.values())
+    .map(group => {
+      const topSource = Array.from(group.sources.entries()).sort(
+        (a, b) => b[1] - a[1] || a[0].localeCompare(b[0])
+      )[0]
+
+      return {
+        name: group.name,
+        label: group.label,
+        count: group.count,
+        last7Days: group.last7Days,
+        skillPageClicks: group.skillPageClicks,
+        orasklOutboundClicks: group.orasklOutboundClicks,
+        topSource: topSource ? topSource[0] : ''
+      }
+    })
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+}
+
+const getTargetType = target => {
+  const value = String(target || '')
+
+  if (!value) {
+    return 'unknown'
+  }
+
+  try {
+    const url = value.startsWith('/')
+      ? new URL(value, 'https://www.123170.xyz')
+      : new URL(value)
+
+    if (url.hostname === 'www.oraskl.com' || url.hostname === 'oraskl.com') {
+      return 'oraskl_outbound'
+    }
+
+    if (url.pathname === '/customs-data-skill.html') {
+      return 'skill_page'
+    }
+
+    if (url.hostname === 'www.123170.xyz' || url.hostname === '123170.xyz') {
+      return 'internal_content'
+    }
+  } catch {}
+
+  return 'other'
+}
+
+const getSourceGroupLabel = group => {
+  const labels = {
+    home: '首页',
+    topic: '专题页',
+    cluster: '内容集群',
+    tools: '工具页',
+    article: '文章页',
+    search: '搜索页',
+    related: '相关推荐',
+    brand: '品牌页',
+    static: '静态页',
+    other: '其他',
+    unknown: '未知'
+  }
+
+  return labels[group] || group || '未知'
 }
 
 const buildDailySeries = (records, days) => {

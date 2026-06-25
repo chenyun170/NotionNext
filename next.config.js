@@ -88,6 +88,7 @@ const nextConfig = {
     ? undefined
     : {
         defaultLocale: BLOG.LANG,
+        localeDetection: false,
         // 支持的所有多语言,按需填写即可
         locales: locales
       },

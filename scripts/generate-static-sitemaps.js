@@ -15,9 +15,12 @@ const NAV_PAGES = [
 const PUBLIC_DIR = path.join(process.cwd(), 'public')
 
 function main() {
-  writeFile('sitemap.xml', buildUrlset([...CORE_SEO_PAGES, ...NAV_PAGES]))
+  const allPages = [...CORE_SEO_PAGES, ...NAV_PAGES]
+
+  writeFile('sitemap.xml', buildUrlset(allPages))
   writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES))
   writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap-core.xml', 'sitemap.xml']))
+  writeFile('sitemap.txt', buildTextSitemap(allPages))
 }
 
 function buildUrlset(pages) {
@@ -57,6 +60,12 @@ function buildSitemapIndex(slugs) {
     ...sitemaps,
     '</sitemapindex>'
   ].join('\n')
+}
+
+function buildTextSitemap(pages) {
+  return getUniquePages(pages)
+    .map(page => (page.slug ? `${SITE_URL}/${page.slug}` : SITE_URL))
+    .join('\n')
 }
 
 function getUniquePages(pages) {

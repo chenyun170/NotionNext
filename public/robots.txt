@@ -4,4 +4,4 @@ Allow: /
 Sitemap: https://www.123170.xyz/sitemap.xml
 Sitemap: https://www.123170.xyz/sitemap-index.xml
 Sitemap: https://www.123170.xyz/sitemap-core.xml
-LLMs: https://www.123170.xyz/llms.txt
+Sitemap: https://www.123170.xyz/sitemap.txt

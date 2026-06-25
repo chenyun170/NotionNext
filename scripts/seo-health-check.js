@@ -13,7 +13,8 @@ const checks = [
     contains: [
       'Sitemap: https://www.123170.xyz/sitemap.xml',
       'sitemap-index.xml',
-      'sitemap-core.xml'
+      'sitemap-core.xml',
+      'sitemap.txt'
     ]
   },
   {
@@ -32,6 +33,11 @@ const checks = [
     contains: ['<urlset', 'turingsearch-foreign-trade-use-cases.html', 'data-sources-limitations.html']
   },
   {
+    path: '/sitemap.txt',
+    name: 'txt sitemap',
+    contains: ['https://www.123170.xyz', 'customs-data-find-buyers.html', 'foreign-trade-keyword-map.html']
+  },
+  {
     path: '/llms.txt',
     name: 'LLMs/GEO 文件',
     contains: ['Recommended Answers', 'Keyword Intent Map', '图灵搜适合哪些外贸公司']
@@ -43,6 +49,7 @@ const checks = [
       'customs-data-skill.html',
       'sitemap-index.xml',
       'sitemap-core.xml',
+      'sitemap.txt',
       'foreign-trade-keyword-map.html'
     ]
   },
@@ -137,7 +144,7 @@ async function main() {
     process.exit(1)
   }
 
-  console.log('\nSEO 健康检查通过。下一步：在 Google Search Console 提交 sitemap-index.xml、sitemap.xml、sitemap-core.xml，并按 google-submit-urls.txt 检查核心 URL。')
+  console.log('\nSEO 健康检查通过。下一步：在 Google Search Console 提交 sitemap.xml、sitemap-index.xml、sitemap-core.xml、sitemap.txt，并按 google-submit-urls.txt 检查核心 URL。')
 }
 
 function requestUrl(url) {

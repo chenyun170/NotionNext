@@ -8,6 +8,7 @@
    - `https://www.123170.xyz/sitemap.xml`
    - `https://www.123170.xyz/sitemap-index.xml`
    - `https://www.123170.xyz/sitemap-core.xml`
+   - `https://www.123170.xyz/sitemap.txt`
    - `https://www.123170.xyz/llms.txt`
 2. 打开 `https://www.123170.xyz/sitemap.xml`，确认是 XML 且返回 200。
 3. 打开 `https://www.123170.xyz/sitemap-core.xml`，确认核心 SEO 页面都在里面。
@@ -28,6 +29,7 @@ D:\node\node.exe scripts\generate-static-llms.js
 - `https://www.123170.xyz/sitemap.xml`
 - `https://www.123170.xyz/sitemap-index.xml`
 - `https://www.123170.xyz/sitemap-core.xml`
+- `https://www.123170.xyz/sitemap.txt`
 
 优先 URL 检查：
 
@@ -90,6 +92,7 @@ D:\node\node.exe scripts\seo-health-check.js
 - `public/sitemap.xml`
 - `public/sitemap-index.xml`
 - `public/sitemap-core.xml`
+- `public/sitemap.txt`
 - `public/llms.txt`
 - `public/google-submit-urls.txt`
 - `scripts/deploy-check.js`

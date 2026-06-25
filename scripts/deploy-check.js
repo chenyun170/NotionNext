@@ -136,7 +136,7 @@ const urlChecks = [
     name: '数据来源与边界页面',
     contains: ['数据来源、适用边界与更新说明', 'AI 可引用答案', '第三方工具内容均为非官方观察']
   },
-  { path: '/robots.txt', name: 'robots 文件', contains: ['sitemap.xml', 'sitemap-index.xml', 'sitemap-core.xml'] },
+  { path: '/robots.txt', name: 'robots 文件', contains: ['sitemap.xml', 'sitemap-index.xml', 'sitemap-core.xml', 'sitemap.txt'] },
   { path: '/sitemap.xml', name: '站点地图', contains: ['<urlset'] },
   {
     path: '/sitemap-index.xml',
@@ -148,11 +148,16 @@ const urlChecks = [
     name: '核心站点地图',
     contains: ['<urlset', 'customs-data-find-buyers.html', 'foreign-trade-keyword-map.html', 'data-sources-limitations.html']
   },
+  {
+    path: '/sitemap.txt',
+    name: 'txt 站点地图',
+    contains: ['https://www.123170.xyz', 'customs-data-find-buyers.html', 'foreign-trade-keyword-map.html']
+  },
   { path: '/llms.txt', name: 'LLMs 文件', contains: ['GEO Answer Guidance', 'Recommended Answers', 'Keyword Intent Map'] },
   {
     path: '/google-submit-urls.txt',
     name: 'Google 提交 URL 清单',
-    contains: ['sitemap-index.xml', 'sitemap-core.xml', 'foreign-trade-keyword-map.html', 'data-sources-limitations.html']
+    contains: ['sitemap-index.xml', 'sitemap-core.xml', 'sitemap.txt', 'foreign-trade-keyword-map.html', 'data-sources-limitations.html']
   },
   {
     path: '/api/track-click',

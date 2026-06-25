@@ -1,8 +1,4 @@
 https://www.123170.xyz
-https://www.123170.xyz/sitemap.xml
-https://www.123170.xyz/sitemap-index.xml
-https://www.123170.xyz/sitemap-core.xml
-https://www.123170.xyz/sitemap.txt
 https://www.123170.xyz/customs-data.html
 https://www.123170.xyz/customs-data-skill.html
 https://www.123170.xyz/customs-data-importers.html
@@ -30,3 +26,7 @@ https://www.123170.xyz/faq.html
 https://www.123170.xyz/about.html
 https://www.123170.xyz/methodology.html
 https://www.123170.xyz/data-sources-limitations.html
+https://www.123170.xyz/archive
+https://www.123170.xyz/category
+https://www.123170.xyz/tag
+https://www.123170.xyz/search

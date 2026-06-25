@@ -286,14 +286,7 @@ const nextConfig = {
           )
         }
 
-        return [
-          ...langsRewrites,
-          // 伪静态重写
-          {
-            source: '/:path*.html',
-            destination: '/:path*'
-          }
-        ]
+        return langsRewrites
       },
   headers: process.env.EXPORT
     ? undefined

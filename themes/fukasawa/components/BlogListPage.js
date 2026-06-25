@@ -9,10 +9,11 @@ import BlogCard from './BlogCard'
 import BlogPostListEmpty from './BlogListEmpty'
 import PaginationSimple from './PaginationSimple'
 
-const BlogListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
+const BlogListPage = ({ page = 1, posts = [], postCount, postsPerPage, siteInfo }) => {
   const { NOTION_CONFIG } = useGlobal()
-  const postsPerPage = siteConfig('POSTS_PER_PAGE', 12, NOTION_CONFIG)
-  const totalPage = Math.ceil(postCount / postsPerPage)
+  const resolvedPostsPerPage =
+    Number.parseInt(postsPerPage || siteConfig('POSTS_PER_PAGE', 12, NOTION_CONFIG), 10) || 12
+  const totalPage = Math.ceil((postCount || posts.length) / resolvedPostsPerPage)
   const showNext = page < totalPage
 
   const [columns, setColumns] = useState(calculateColumns())

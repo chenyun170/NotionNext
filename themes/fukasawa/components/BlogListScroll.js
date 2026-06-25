@@ -6,10 +6,11 @@ import { useEffect, useRef, useState, useMemo } from 'react'
 import BlogCard from './BlogCard'
 import BlogPostListEmpty from './BlogListEmpty'
 
-const BlogListScroll = ({ posts }) => {
+const BlogListScroll = ({ posts, postsPerPage }) => {
   const { locale, NOTION_CONFIG } = useGlobal()
   const [page, setPage] = useState(1)
-  const POSTS_PER_PAGE = siteConfig('POSTS_PER_PAGE', 12, NOTION_CONFIG)
+  const POSTS_PER_PAGE =
+    Number.parseInt(postsPerPage || siteConfig('POSTS_PER_PAGE', 12, NOTION_CONFIG), 10) || 12
   const loaderRef = useRef(null)
 
   // 计算总文章数和当前可见文章

@@ -30,6 +30,8 @@ module.exports = {
     process.env.NEXT_PUBLIC_POSTS_PER_PAGE ||
     process.env.NEXT_PUBLIC_POST_PER_PAGE ||
     12, // post counts per page
+  HOME_POSTS_PER_PAGE:
+    process.env.NEXT_PUBLIC_HOME_POSTS_PER_PAGE || 8, // 首页文章列表数量，降低首页首屏和 HTML 体积
   POSTS_SORT_BY: process.env.NEXT_PUBLIC_POST_SORT_BY || 'notion', // 排序方式 'date'按时间,'notion'由notion控制
 
   // 文章过期提醒配置 p.s. 目前此功能暂时只适用于heo主题

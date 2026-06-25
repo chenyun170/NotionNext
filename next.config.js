@@ -31,6 +31,7 @@ const locales = (function () {
   }
   return langs
 })()
+const enableI18n = !process.env.EXPORT && locales.length > 1
 
 /**
  * 扫描指定目录下的文件夹名，用于获取所有主题
@@ -83,15 +84,15 @@ const nextConfig = {
       transform: '@heroicons/react/24/solid/{{member}}'
     }
   },
-  // 多语言， 在export时禁用
-  i18n: process.env.EXPORT
-    ? undefined
-    : {
+  // 多语言站点才启用 Next i18n；单语言站点避免生成 /zh-CN 这类重复入口
+  i18n: enableI18n
+    ? {
         defaultLocale: BLOG.LANG,
         localeDetection: false,
         // 支持的所有多语言,按需填写即可
         locales: locales
-      },
+      }
+    : undefined,
   images: {
     // 图片压缩和格式优化
     formats: ['image/avif', 'image/webp'],
@@ -123,7 +124,23 @@ const nextConfig = {
   redirects: process.env.EXPORT
     ? undefined
     : () => {
+        const singleLocaleRedirects = locales.length <= 1
+          ? [
+              {
+                source: `/${BLOG.LANG}`,
+                destination: '/',
+                permanent: true
+              },
+              {
+                source: `/${BLOG.LANG}/:path*`,
+                destination: '/:path*',
+                permanent: true
+              }
+            ]
+          : []
+
         return [
+          ...singleLocaleRedirects,
           {
             source: '/feed',
             destination: '/rss/feed.xml',

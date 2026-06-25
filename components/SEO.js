@@ -28,6 +28,55 @@ const CORE_TOPICS = [
   '顶易',
   'OraSkl'
 ]
+const HOME_FAQS = [
+  {
+    question: '外贸获客情报局是做什么的？',
+    answer:
+      '外贸获客情报局是 123170.xyz 的中文实战内容站，围绕海关数据、进口商查询、供应商关系、图灵搜、顶易云、顶易和 AI 外贸工具，整理外贸客户开发方法。'
+  },
+  {
+    question: '图灵搜、顶易云、顶易和海关数据怎么配合？',
+    answer:
+      '图灵搜更偏线索发现，顶易云和顶易相关工具更偏线索管理与跟进，海关数据用于验证真实采购行为、采购量、采购频率和供应商关系。'
+  },
+  {
+    question: '为什么先看海关数据？',
+    answer:
+      '海关数据能看到谁在进口你的产品、从哪里进口、采购频率和合作供应商，适合用来判断客户价值，再决定是否进入开发信、LinkedIn 或 WhatsApp 跟进。'
+  }
+]
+const HOME_ENTRY_PAGES = [
+  {
+    name: '海关数据专题',
+    url: 'customs-data.html',
+    description: '围绕进口商、供应商、HS 编码和采购记录判断真实买家与市场机会。'
+  },
+  {
+    name: '图灵搜',
+    url: 'turingsearch.html',
+    description: '从外贸线索发现和客户池扩展角度解释图灵搜的适用场景。'
+  },
+  {
+    name: '顶易云',
+    url: 'dingyiyun.html',
+    description: '梳理顶易云如何配合海关数据、线索管理和外贸跟进流程。'
+  },
+  {
+    name: '顶易',
+    url: 'dingyi.html',
+    description: '从外贸软件和海关数据工具选型角度整理顶易相关信息。'
+  },
+  {
+    name: '外贸工具对比',
+    url: 'foreign-trade-tools.html',
+    description: '按线索发现、采购验证、触达跟进和团队协作对比外贸获客工具。'
+  },
+  {
+    name: '外贸关键词矩阵',
+    url: 'foreign-trade-keyword-map.html',
+    description: '整理海关数据、图灵搜、顶易云、顶易和外贸获客相关关键词入口。'
+  }
+]
 
 /**
  * 页面的Head头，有用于SEO
@@ -385,6 +434,35 @@ const buildArticleAbout = meta => {
   }))
 }
 
+const buildHomeFAQData = url => ({
+  '@type': 'FAQPage',
+  '@id': `${url}#home-faq`,
+  mainEntity: HOME_FAQS.map(item => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer
+    }
+  }))
+})
+
+const buildHomeItemListData = siteUrl => ({
+  '@type': 'ItemList',
+  '@id': `${siteUrl}/#core-entry-pages`,
+  name: '外贸获客情报局核心入口',
+  itemListElement: HOME_ENTRY_PAGES.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    item: {
+      '@type': 'WebPage',
+      name: item.name,
+      url: buildCanonicalUrl(siteUrl, item.url),
+      description: item.description
+    }
+  }))
+})
+
 /**
  * 生成结构化数据
  * @param {*} meta
@@ -468,6 +546,10 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
     siteUrl,
     meta
   })
+  const homeGraph =
+    meta?.type === 'website' && !meta?.slug
+      ? [buildHomeFAQData(url), buildHomeItemListData(siteUrl)]
+      : []
 
   // 如果是文章页面，添加文章结构化数据
   if (meta?.type === 'Post') {
@@ -522,7 +604,7 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
 
   return {
     '@context': 'https://schema.org',
-    '@graph': [publisherData, publisher, authorData, webPage, breadcrumbData]
+    '@graph': [publisherData, publisher, authorData, webPage, breadcrumbData, ...homeGraph]
   }
 }
 

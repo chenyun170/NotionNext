@@ -3,6 +3,7 @@ import { siteConfig } from '@/lib/config'
 import { getGlobalData, getPostBlocks } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
 import { checkDataFromAlgolia } from '@/lib/plugins/algolia'
+import { getHomePostsPerPage } from '@/lib/utils/homePosts'
 
 /**
  * 首页布局组件
@@ -37,6 +38,7 @@ export async function getStaticProps(context) {
   const NOTION_CONFIG = props?.NOTION_CONFIG
   const POST_PREVIEW_LINES = siteConfig('POST_PREVIEW_LINES', 12, NOTION_CONFIG)
   const POSTS_PER_PAGE = siteConfig('POSTS_PER_PAGE', 12, NOTION_CONFIG)
+  const HOME_POSTS_PER_PAGE = getHomePostsPerPage(NOTION_CONFIG)
   const POST_LIST_STYLE = siteConfig('POST_LIST_STYLE', 'page', NOTION_CONFIG)
 
   // 2) 筛选已发布文章
@@ -48,8 +50,10 @@ export async function getStaticProps(context) {
   // 3) 根据布局风格截取文章
   if (POST_LIST_STYLE === 'scroll') {
     props.posts = allPosts
+    props.postsPerPage = POSTS_PER_PAGE
   } else {
-    props.posts = allPosts.slice(0, POSTS_PER_PAGE)
+    props.posts = allPosts.slice(0, HOME_POSTS_PER_PAGE)
+    props.postsPerPage = HOME_POSTS_PER_PAGE
   }
 
   // 4) 并行抓取预览摘要（失败不阻断构建）

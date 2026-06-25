@@ -82,7 +82,9 @@ function getConfigValue(global, notionConfig, key, defaultValue) {
  */
 const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
   const global = useGlobal()
-  const leftAreaSlot = useMemo(() => <Live2D />, [])
+  const router = useRouter()
+  const isHomeRoute = router?.route === '/'
+  const leftAreaSlot = useMemo(() => (isHomeRoute ? null : <Live2D />), [isHomeRoute])
   const { onLoading, fullWidth } = global
   const searchModal = useRef(null)
   const layoutReverse = parseConfigBoolean(
@@ -107,8 +109,8 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
         <Style />
         <Header {...props} />
 
-        <div className={`flex ${layoutReverse ? 'flex-row-reverse' : ''}`}>
-          <AsideLeft {...props} slot={leftAreaSlot} />
+        <div className={`flex ${layoutReverse && !isHomeRoute ? 'flex-row-reverse' : ''}`}>
+          {!isHomeRoute && <AsideLeft {...props} slot={leftAreaSlot} />}
 
           <main 
             id='wrapper' 

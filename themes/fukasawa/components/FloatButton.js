@@ -1,15 +1,33 @@
 import React, { useState, useEffect } from 'react'
 
+const GIFT_DISMISS_KEY = 'fukasawa_gift_dismissed_at'
+const GIFT_DISMISS_DAYS = 7
+const GIFT_DISMISS_MS = GIFT_DISMISS_DAYS * 24 * 60 * 60 * 1000
+
 /**
  * 侧边栏悬浮组件 - 修复语法错误并集成一键复制功能 + 浏览进度
  */
 const FloatButton = () => {
   const [showPopup, setShowPopup] = useState(false)
+  const [giftDismissed, setGiftDismissed] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [copyText, setCopyText] = useState('复制微信号')
   const [scrollProgress, setScrollProgress] = useState(0)
 
   useEffect(() => {
+    try {
+      const dismissedAt = Number(window.localStorage.getItem(GIFT_DISMISS_KEY))
+      const stillDismissed = dismissedAt && Date.now() - dismissedAt < GIFT_DISMISS_MS
+
+      if (stillDismissed) {
+        setGiftDismissed(true)
+      } else {
+        window.localStorage.removeItem(GIFT_DISMISS_KEY)
+      }
+    } catch (error) {
+      console.warn('Failed to read gift dismiss state:', error)
+    }
+
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 150)
       
@@ -37,6 +55,18 @@ const FloatButton = () => {
       setCopyText('已复制！')
       setTimeout(() => setCopyText('复制微信号'), 2000)
     })
+  }
+
+  const dismissGift = event => {
+    event?.stopPropagation()
+    setShowPopup(false)
+    setGiftDismissed(true)
+
+    try {
+      window.localStorage.setItem(GIFT_DISMISS_KEY, String(Date.now()))
+    } catch (error) {
+      console.warn('Failed to save gift dismiss state:', error)
+    }
   }
 
   // 圆环进度计算
@@ -100,14 +130,23 @@ const FloatButton = () => {
       </div>
 
       {/* 2. 礼品包悬浮球区域 */}
+      {!giftDismissed && (
       <div className="relative flex flex-col items-center">
         {showPopup && (
           <div className="absolute bottom-16 right-0 w-56 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-2xl border border-white/20 dark:border-gray-800 p-5 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
+            <button
+              type="button"
+              aria-label="关闭资料包浮窗"
+              onClick={dismissGift}
+              className="absolute right-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-white/80 text-[10px] text-gray-400 shadow-sm transition hover:bg-orange-50 hover:text-orange-600 dark:bg-gray-800/80 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-orange-300"
+            >
+              <i className="fas fa-times"></i>
+            </button>
             <div className="text-center">
               <h3 className="font-black text-slate-800 dark:text-white text-sm tracking-tight">情报局长助手</h3>
               <p className="text-gray-500 dark:text-gray-400 text-[10px] mt-1 mb-3 leading-relaxed">
                 扫码添加微信或点击下方按钮<br/>
-                备注<span className="text-orange-600 font-black italic">"获客"</span>领资料包
+                备注<span className="text-orange-600 font-black italic">&quot;获客&quot;</span>领资料包
               </p>
               
               <div className="bg-white dark:bg-black/20 p-2 rounded-xl mb-3 border border-gray-100 dark:border-gray-800 shadow-inner">
@@ -139,6 +178,15 @@ const FloatButton = () => {
           </div>
         )}
 
+        <button
+          type="button"
+          aria-label="关闭资料包浮窗"
+          onClick={dismissGift}
+          className="absolute -right-2 -top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full border border-white/70 bg-slate-900/80 text-[9px] text-white shadow-md transition hover:bg-orange-600 dark:border-gray-700"
+        >
+          <i className="fas fa-times"></i>
+        </button>
+
         <div 
           onClick={() => setShowPopup(!showPopup)}
           className={`w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-2xl transition-all duration-500 active:scale-90 ${
@@ -148,6 +196,7 @@ const FloatButton = () => {
           <i className={`fas ${showPopup ? 'fa-times' : 'fa-gift'} text-white text-lg`}></i>
         </div>
       </div>
+      )}
 
       <style jsx>{`
         .animate-pulse-orange {

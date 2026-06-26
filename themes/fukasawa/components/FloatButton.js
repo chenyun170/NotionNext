@@ -10,6 +10,7 @@ const GIFT_DISMISS_MS = GIFT_DISMISS_DAYS * 24 * 60 * 60 * 1000
 const FloatButton = () => {
   const [showPopup, setShowPopup] = useState(false)
   const [giftDismissed, setGiftDismissed] = useState(false)
+  const [giftReady, setGiftReady] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [copyText, setCopyText] = useState('复制微信号')
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -28,8 +29,17 @@ const FloatButton = () => {
       console.warn('Failed to read gift dismiss state:', error)
     }
 
-    const handleScroll = () => {
+    const updateFloatingState = () => {
       setShowScrollTop(window.scrollY > 150)
+
+      const isDesktop = window.innerWidth >= 768
+      const mobileRevealPoint = Math.min(520, window.innerHeight * 0.65)
+      const shouldShowGift = isDesktop || window.scrollY > mobileRevealPoint
+
+      setGiftReady(shouldShowGift)
+      if (!shouldShowGift) {
+        setShowPopup(false)
+      }
       
       // 计算浏览进度
       const currentScrollY = window.scrollY
@@ -40,9 +50,14 @@ const FloatButton = () => {
         setScrollProgress(progress)
       }
     }
-    
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+
+    updateFloatingState()
+    window.addEventListener('scroll', updateFloatingState, { passive: true })
+    window.addEventListener('resize', updateFloatingState)
+    return () => {
+      window.removeEventListener('scroll', updateFloatingState)
+      window.removeEventListener('resize', updateFloatingState)
+    }
   }, [])
 
   const scrollToTop = () => {
@@ -74,7 +89,7 @@ const FloatButton = () => {
   const strokeDashoffset = circumference - (scrollProgress / 100) * circumference
 
   return (
-    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 md:bottom-8 md:right-10 flex flex-col items-center space-y-5 md:space-y-6" style={{ zIndex: 9999 }}>  
+    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 md:bottom-7 md:right-9 lg:bottom-8 lg:right-10 flex flex-col items-center space-y-4 md:space-y-5" style={{ zIndex: 9999 }}>
       
       {/* 1. 返回顶部按钮 - 加进度圆环 */}
       <div 
@@ -130,8 +145,8 @@ const FloatButton = () => {
       </div>
 
       {/* 2. 礼品包悬浮球区域 */}
-      {!giftDismissed && (
-      <div className="relative flex flex-col items-center">
+      {!giftDismissed && giftReady && (
+      <div className="group relative flex flex-col items-center">
         {showPopup && (
           <div className="absolute bottom-16 right-0 w-56 max-w-[calc(100vw-2rem)] backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 rounded-xl md:rounded-2xl shadow-2xl border border-white/20 dark:border-gray-800 p-4 md:p-5 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
             <button
@@ -172,7 +187,7 @@ const FloatButton = () => {
         )}
 
         {!showPopup && (
-          <div className="absolute -top-11 right-0 max-w-[calc(100vw-4rem)] backdrop-blur-md bg-slate-900/80 text-white text-[10px] md:text-[9px] py-1.5 px-3 rounded-full whitespace-nowrap shadow-xl animate-bounce border border-white/10 font-bold tracking-wider">
+          <div className="pointer-events-none absolute -top-11 right-0 hidden max-w-[calc(100vw-4rem)] whitespace-nowrap rounded-full border border-white/10 bg-slate-900/80 px-3 py-1.5 text-[9px] font-bold tracking-wider text-white opacity-0 shadow-xl backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100 sm:block">
             领资料包 🎁
             <div className="absolute -bottom-1 right-6 w-2 h-2 bg-slate-900/80 rotate-45 border-r border-b border-white/10"></div>
           </div>

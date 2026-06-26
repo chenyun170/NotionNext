@@ -130,19 +130,19 @@ const Header = props => {
       {/* 1. 顶部跑马灯横幅 - 时间控制显隐 */}
       {showMarquee && (
       <div
-        className='w-full border-b border-amber-100 bg-amber-50/95 px-3 py-1.5 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/80 dark:text-amber-100'
+        className='w-full border-b border-amber-100 bg-amber-50/95 px-2 py-1 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/80 dark:text-amber-100'
         style={{ zIndex: 100 }}>
-        <div className='flex items-center gap-2 overflow-x-auto no-scrollbar'>
-          <i className='fas fa-bullhorn flex-shrink-0 text-[11px] text-amber-600 dark:text-amber-300'></i>
+        <div className='flex items-center gap-1.5 overflow-x-auto no-scrollbar'>
+          <i className='fas fa-bullhorn flex-shrink-0 text-[10px] text-amber-600 dark:text-amber-300'></i>
           {ACTIVITIES.map((activity, idx) => (
             <a
               key={idx}
               href={activity.link}
               target='_blank'
               rel='noopener noreferrer'
-              className='flex flex-shrink-0 items-center gap-1 rounded-full border border-amber-200 bg-white/75 px-2.5 py-1 text-[11px] font-bold text-amber-800 no-underline dark:border-amber-800 dark:bg-amber-900/50 dark:text-amber-100'>
+              className={`${idx > 0 ? 'hidden sm:flex' : 'flex'} flex-shrink-0 items-center gap-1 rounded-full border border-amber-200 bg-white/75 px-2 py-0.5 text-[10px] font-bold text-amber-800 no-underline dark:border-amber-800 dark:bg-amber-900/50 dark:text-amber-100`}>
               <span>{activity.icon}</span>
-              <span>618 Activity</span>
+              <span>{idx === 0 ? '618 活动' : '顶易云活动'}</span>
               <i className='fas fa-arrow-up-right-from-square text-[9px] opacity-60'></i>
             </a>
           ))}

@@ -92,10 +92,10 @@ const HomeIntro = ({
   const homeDescription = buildHomeDescription()
 
   return (
-    <section className='mb-8 overflow-hidden rounded-[8px] border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-[#111113]'>
+    <section className='mb-8 overflow-hidden rounded-[8px] border border-zinc-300 bg-white shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-[#111113] dark:shadow-none'>
       <div className='px-5 py-6 sm:px-7 sm:py-8'>
-        <div className='mb-4 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400'>
-          <span className='h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-400' />
+        <div className='mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-blue-700 dark:text-blue-300'>
+          <span className='h-2 w-2 rounded-full bg-blue-700 dark:bg-blue-300' />
           <span>123170.xyz · Foreign Trade Intelligence</span>
         </div>
 
@@ -104,55 +104,55 @@ const HomeIntro = ({
             <h1 className='max-w-3xl text-2xl font-black leading-tight text-zinc-950 dark:text-zinc-50 sm:text-3xl'>
               外贸获客情报局：帮外贸人用海关数据找到真实进口商
             </h1>
-            <p className='mt-3 max-w-2xl text-sm leading-7 text-zinc-600 dark:text-zinc-300'>
+            <p className='mt-3 max-w-2xl text-sm font-medium leading-7 text-zinc-700 dark:text-zinc-300'>
               {homeDescription}
             </p>
             <div className='mt-5 flex flex-wrap gap-2'>
               <a
                 href={CUSTOMS_DATA_SKILL.href}
                 onClick={() => trackCustomsDataSkillClick('home_intro_primary')}
-                className='inline-flex h-10 items-center rounded-[8px] bg-zinc-950 px-4 text-sm font-bold text-white transition hover:bg-blue-600 dark:bg-white dark:text-zinc-950 dark:hover:bg-blue-400'>
+                className='inline-flex h-10 items-center rounded-[8px] bg-blue-700 px-4 text-sm font-bold text-white shadow-sm shadow-blue-900/20 transition hover:bg-blue-800 dark:bg-blue-400 dark:text-zinc-950 dark:hover:bg-blue-300'>
                 <i className='fas fa-database mr-2 text-xs' />
                 海关数据免费查询 Skill
               </a>
               <SmartLink
                 href='/customs-data.html'
-                className='inline-flex h-10 items-center rounded-[8px] border border-zinc-200 px-4 text-sm font-bold text-zinc-700 transition hover:border-blue-300 hover:text-blue-600 dark:border-zinc-800 dark:text-zinc-200 dark:hover:border-blue-700 dark:hover:text-blue-300'>
+                className='inline-flex h-10 items-center rounded-[8px] border border-zinc-300 bg-white px-4 text-sm font-bold text-zinc-800 transition hover:border-blue-300 hover:text-blue-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-blue-700 dark:hover:text-blue-300'>
                 <i className='fas fa-layer-group mr-2 text-xs' />
                 看海关数据专题
               </SmartLink>
             </div>
 
-            <div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-zinc-500 dark:text-zinc-400'>
-              <span className='font-bold text-zinc-600 dark:text-zinc-300'>快捷入口</span>
+            <div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-zinc-600 dark:text-zinc-400'>
+              <span className='font-bold text-zinc-800 dark:text-zinc-300'>快捷入口</span>
               {quickLinks.map(item => (
                 <a
                   key={item.href}
                   href={item.href}
-                  className='font-semibold text-zinc-500 transition hover:text-blue-600 dark:text-zinc-400 dark:hover:text-blue-300'>
+                  className='font-semibold text-zinc-600 transition hover:text-blue-700 dark:text-zinc-400 dark:hover:text-blue-300'>
                   {item.name}
                 </a>
               ))}
             </div>
           </div>
 
-          <div className='rounded-[8px] border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950/50'>
-            <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-400'>
+          <div className='rounded-[8px] border border-zinc-300 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-950/50'>
+            <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400'>
               核心判断
             </div>
             <div className='mt-3'>
               <div className='text-3xl font-black text-zinc-950 dark:text-zinc-50'>
                 {postCount || 0}
               </div>
-              <div className='text-xs text-zinc-500 dark:text-zinc-400'>
+              <div className='text-xs font-medium text-zinc-600 dark:text-zinc-400'>
                 篇实战文章
               </div>
             </div>
-            <div className='mt-4 grid gap-2 border-t border-dashed border-zinc-200 pt-4 dark:border-zinc-800'>
+            <div className='mt-4 grid gap-2 border-t border-dashed border-zinc-300 pt-4 dark:border-zinc-800'>
               {trustSignals.map(signal => (
                 <div key={signal.label} className='flex items-center justify-between gap-3 text-xs'>
-                  <span className='text-zinc-400'>{signal.label}</span>
-                  <span className='text-right font-semibold text-zinc-700 dark:text-zinc-200'>
+                  <span className='font-medium text-zinc-500 dark:text-zinc-400'>{signal.label}</span>
+                  <span className='text-right font-bold text-zinc-800 dark:text-zinc-200'>
                     {signal.value}
                   </span>
                 </div>
@@ -162,28 +162,28 @@ const HomeIntro = ({
         </div>
       </div>
 
-      <div className='grid border-t border-zinc-200 dark:border-zinc-800 md:grid-cols-3'>
+      <div className='grid border-t border-zinc-300 dark:border-zinc-800 md:grid-cols-3'>
         {topics.map(topic => {
           const TopicLink = topic.href?.endsWith('.html') ? 'a' : SmartLink
           return (
             <TopicLink
               key={topic.name}
               href={topic.href}
-              className='group min-h-[112px] border-b border-zinc-200 p-4 transition hover:bg-blue-50 dark:border-zinc-800 dark:hover:bg-blue-950/20 md:border-b-0 md:border-r last:md:border-r-0'>
+              className='group min-h-[112px] border-b border-zinc-300 p-4 transition hover:bg-blue-50 dark:border-zinc-800 dark:hover:bg-blue-950/20 md:border-b-0 md:border-r last:md:border-r-0'>
               <div className='mb-3 flex items-center justify-between'>
-                <span className='flex h-8 w-8 items-center justify-center rounded-[8px] bg-zinc-100 text-sm text-zinc-600 transition group-hover:bg-blue-600 group-hover:text-white dark:bg-zinc-900 dark:text-zinc-300'>
+                <span className='flex h-8 w-8 items-center justify-center rounded-[8px] bg-zinc-100 text-sm text-zinc-700 transition group-hover:bg-blue-700 group-hover:text-white dark:bg-zinc-900 dark:text-zinc-300'>
                   <i className={`fas ${topic.icon}`} />
                 </span>
                 {topic.count && (
-                  <span className='text-xs font-semibold text-zinc-400'>
+                  <span className='text-xs font-semibold text-zinc-500 dark:text-zinc-400'>
                     {topic.count} 篇
                   </span>
                 )}
               </div>
-              <h2 className='text-base font-black text-zinc-900 group-hover:text-blue-700 dark:text-zinc-50 dark:group-hover:text-blue-300'>
+              <h2 className='text-base font-black text-zinc-950 group-hover:text-blue-800 dark:text-zinc-50 dark:group-hover:text-blue-300'>
                 {topic.name}
               </h2>
-              <p className='mt-2 text-sm leading-6 text-zinc-500 dark:text-zinc-400'>
+              <p className='mt-2 text-sm font-medium leading-6 text-zinc-600 dark:text-zinc-400'>
                 {topic.description}
               </p>
             </TopicLink>

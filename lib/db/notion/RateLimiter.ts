@@ -4,11 +4,11 @@ import path from 'path'
 interface QueueItem<T> {
   requestFunc: () => Promise<T>
   resolve: (value: T) => void
-  reject: (err: any) => void
+  reject: (err: unknown) => void
 }
 
 export class RateLimiter {
-  private queue: QueueItem<any>[] = []
+  private queue: Array<QueueItem<unknown>> = []
   private inflight = new Set<string>()
   private isProcessing = false
   private lastRequestTime = 0
@@ -43,8 +43,9 @@ export class RateLimiter {
       try {
         fs.writeFileSync(this.lockFilePath, process.pid.toString(), { flag: 'wx' })
         return true
-      } catch (err: any) {
-        if (err.code === 'EEXIST') await new Promise(res => setTimeout(res, 100))
+      } catch (err: unknown) {
+        const fileError = err as NodeJS.ErrnoException
+        if (fileError.code === 'EEXIST') await new Promise(res => setTimeout(res, 100))
         else {
           console.warn('[限流] 创建锁文件失败，降级为无文件锁:', err)
           this.lockDisabled = true
@@ -73,8 +74,12 @@ export class RateLimiter {
     }
 
     return new Promise((resolve, reject) => {
-      this.queue.push({ requestFunc, resolve, reject })
-      if (!this.isProcessing) this.processQueue()
+      this.queue.push({
+        requestFunc,
+        resolve: value => resolve(value as T),
+        reject
+      })
+      if (!this.isProcessing) void this.processQueue()
     })
   }
 
@@ -116,7 +121,7 @@ export class RateLimiter {
       console.error('限流队列异常', err)
     } finally {
       this.releaseLock(hasLock)
-      setTimeout(() => this.processQueue(), 0)
+      setTimeout(() => { void this.processQueue() }, 0)
     }
   }
 }

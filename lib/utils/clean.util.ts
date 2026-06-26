@@ -1,19 +1,18 @@
-import { deepClone } from '@/lib/utils'
-
-export function cleanIds(items?: any[]) {
-  if (!Array.isArray(items)) return items
-  return deepClone(items.map(i => {
-    delete i.id
-    return i
-  }))
+export function cleanIds<T extends { id?: unknown }>(items?: T[]): T[] {
+  if (!Array.isArray(items)) return []
+  return items.map(item => {
+    const next = { ...item }
+    delete next.id
+    return next
+  })
 }
 
-export function cleanPages(pages?: any[], tagOptions?: any[]) {
-  if (!Array.isArray(pages)) return pages || []
+export function cleanPages<T>(pages?: T[], _tagOptions?: unknown[]): T[] {
+  if (!Array.isArray(pages)) return []
   return pages
 }
 
-export function shortenIds(items?: any[]) {
-  if (!Array.isArray(items)) return items
+export function shortenIds<T>(items?: T[]): T[] {
+  if (!Array.isArray(items)) return []
   return items
 }

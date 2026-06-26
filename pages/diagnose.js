@@ -282,7 +282,7 @@ export default function DiagnosePage() {
               <button onClick={() => setStep(1)} style={{ padding: '10px 20px', borderRadius: 8, background: 'transparent', border: '1px solid #d1d5db', cursor: 'pointer', fontSize: 14 }}>
                 ← 上一步
               </button>
-              <button onClick={runDiagnosis} disabled={!canNext2 || loading} style={nextBtnStyle(canNext2 && !loading)}>
+              <button onClick={() => { void runDiagnosis() }} disabled={!canNext2 || loading} style={nextBtnStyle(canNext2 && !loading)}>
                 {loading ? '⏳ AI 分析中...' : '🤖 开始 AI 诊断'}
               </button>
             </div>

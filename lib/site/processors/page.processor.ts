@@ -1,6 +1,17 @@
-import { cleanPages, cleanIds, shortenIds } from '@/lib/utils/clean.util'
 import { applySchedulePublish } from '@/lib/site/processors/schedule.processor'
 import type { SiteData } from '@/lib/site/site.types'
+
+function cleanIds<T extends object>(items: T[]): T[] {
+  return items.map(item => {
+    const next = { ...item } as T & { id?: unknown }
+    delete next.id
+    return next
+  })
+}
+
+function cleanPages<T>(pages: T[], _tagOptions?: unknown[]): T[] {
+  return pages
+}
 
 export function handleDataBeforeReturn(db: SiteData): SiteData {
   applySchedulePublish(db)

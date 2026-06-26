@@ -1,8 +1,25 @@
 import { idToUuid } from 'notion-utils'
-import type { SiteData } from '../../site.types'
+import type { SiteInfo, SiteData } from '../../site.types'
+
+interface NotionRecordMapLike {
+  block?: unknown
+}
+
+const emptySiteInfo: SiteInfo = {
+  title: '',
+  description: '',
+  pageCover: '',
+  icon: '',
+  link: ''
+}
+
+function getRecordMapBlock(recordMap: unknown): unknown {
+  if (typeof recordMap !== 'object' || recordMap === null) return undefined
+  return (recordMap as NotionRecordMapLike).block
+}
 
 export function normalizeNotionSite(
-  recordMap: any,
+  recordMap: unknown,
   sitePageId: string,
   from?: string
 ): SiteData {
@@ -14,7 +31,7 @@ export function normalizeNotionSite(
 
   return {
     NOTION_CONFIG: {},
-    siteInfo: {} as any,
+    siteInfo: emptySiteInfo,
     notice: null,
     allPages: [],
     allNavPages: [],
@@ -24,7 +41,7 @@ export function normalizeNotionSite(
     customNav: [],
     customMenu: [],
     postCount: 0,
-    block: recordMap?.block,
+    block: getRecordMapBlock(recordMap),
     schema: {},
     rawMetadata: {}
   }

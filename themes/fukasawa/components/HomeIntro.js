@@ -75,8 +75,9 @@ const quickLinks = [
     href: '/dingyiyun.html'
   },
   {
-    name: '顶易',
-    href: '/dingyi.html'
+    name: '顶易软件选型',
+    href: '/dingyi.html',
+    title: '顶易偏外贸客户开发软件和工具选型，用来看线索发现、客户管理、触达跟进和海关数据如何组合。'
   },
   {
     name: '工具对比',
@@ -129,6 +130,7 @@ const HomeIntro = ({
                 <a
                   key={item.href}
                   href={item.href}
+                  title={item.title || item.name}
                   className='font-semibold text-zinc-600 transition hover:text-blue-700 dark:text-zinc-400 dark:hover:text-blue-300'>
                   {item.name}
                 </a>

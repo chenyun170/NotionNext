@@ -6,10 +6,14 @@ import { useState, useEffect, useRef } from 'react'
 
 const NotionPage = dynamic(() => import('@/components/NotionPage'))
 
+const FLOATING_AD_DISMISS_KEY = 'fukasawa_floating_activity_dismissed_at'
+const FLOATING_AD_DISMISS_DAYS = 7
+const FLOATING_AD_DISMISS_MS = FLOATING_AD_DISMISS_DAYS * 24 * 60 * 60 * 1000
+
 /**
  * 悬浮活动卡片 - 毛玻璃版
  */
-const FloatingActivityCard = ({ config, isActive, isVisible }) => {
+const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
   if (!isActive) return null
 
   return (
@@ -20,6 +24,14 @@ const FloatingActivityCard = ({ config, isActive, isVisible }) => {
       
       {/* 核心毛玻璃容器 */}
       <div className={`relative overflow-hidden p-5 rounded-2xl border border-white/20 shadow-2xl backdrop-blur-md bg-white/70 dark:bg-[#1a1a1a]/70`}>
+        <button
+          type='button'
+          aria-label='关闭活动广告'
+          onClick={onDismiss}
+          className='absolute right-2 top-2 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[11px] text-gray-500 shadow-sm transition hover:bg-orange-50 hover:text-orange-600 dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-orange-300'
+        >
+          <i className='fas fa-times' aria-hidden='true' />
+        </button>
         
         {/* 装饰性背景光晕 */}
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl"></div>
@@ -141,7 +153,23 @@ const Announcement = ({ post, className }) => {
   const { locale } = useGlobal()
   const [activities, setActivities] = useState(getActiveActivities)
   const [floatingVisible, setFloatingVisible] = useState(false)
+  const [floatingDismissed, setFloatingDismissed] = useState(false)
   const announcementRef = useRef(null)
+
+  useEffect(() => {
+    try {
+      const dismissedAt = Number(window.localStorage.getItem(FLOATING_AD_DISMISS_KEY))
+      const stillDismissed = dismissedAt && Date.now() - dismissedAt < FLOATING_AD_DISMISS_MS
+
+      if (stillDismissed) {
+        setFloatingDismissed(true)
+      } else {
+        window.localStorage.removeItem(FLOATING_AD_DISMISS_KEY)
+      }
+    } catch (error) {
+      console.warn('Failed to read floating activity dismiss state:', error)
+    }
+  }, [])
 
   useEffect(() => {
     const checkActivityDeadlines = () => {
@@ -165,12 +193,23 @@ const Announcement = ({ post, className }) => {
       // 检查屏幕宽度，防止在窄屏遮挡内容
       const isWideScreen = typeof window !== 'undefined' && window.innerWidth > 1024
       
-      setFloatingVisible(isOutOfView && isWideScreen && (activities.activity1 || activities.activity2))
+      setFloatingVisible(!floatingDismissed && isOutOfView && isWideScreen && (activities.activity1 || activities.activity2))
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [activities])
+  }, [activities, floatingDismissed])
+
+  const dismissFloatingAd = () => {
+    setFloatingVisible(false)
+    setFloatingDismissed(true)
+
+    try {
+      window.localStorage.setItem(FLOATING_AD_DISMISS_KEY, String(Date.now()))
+    } catch (error) {
+      console.warn('Failed to save floating activity dismiss state:', error)
+    }
+  }
 
   return (
     <>
@@ -202,6 +241,7 @@ const Announcement = ({ post, className }) => {
           config={activityConfigs.activity1} 
           isActive={activities.activity1}
           isVisible={floatingVisible} 
+          onDismiss={dismissFloatingAd}
         />
       )}
     </>

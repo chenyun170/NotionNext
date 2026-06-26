@@ -29,112 +29,112 @@ const urlChecks = [
   {
     path: '/customs-data.html',
     name: '海关数据专题页',
-    contains: ['海关数据专题', 'AI 可引用摘要', '最后更新']
+    contains: ['海关数据专题', '核心摘要', '最后更新']
   },
   {
     path: '/tools.html',
     name: '外贸工具导航页',
-    contains: ['外贸获客工具导航', 'AI 可引用答案', '最后更新']
+    contains: ['外贸获客工具导航', '核心结论', '最后更新']
   },
   {
     path: '/free-customs-data.html',
     name: '免费海关数据页面',
-    contains: ['免费海关数据查询', 'AI 摘要']
+    contains: ['免费海关数据查询', '核心摘要']
   },
   {
     path: '/us-importers.html',
     name: '美国进口商页面',
-    contains: ['美国进口商查询', 'AI 摘要', 'AI 可引用答案']
+    contains: ['美国进口商查询', '核心摘要', '核心结论']
   },
   {
     path: '/hs-code-lookup.html',
     name: 'HS 编码页面',
-    contains: ['HS 编码查询', 'AI 可引用答案', '最后更新']
+    contains: ['HS 编码查询', '核心结论', '最后更新']
   },
   {
     path: '/customs-data-importers.html',
     name: '海关数据查进口商页面',
-    contains: ['海关数据怎么查进口商', '最后更新', 'HowTo', 'AI 可引用答案']
+    contains: ['海关数据怎么查进口商', '最后更新', 'HowTo', '核心结论']
   },
   {
     path: '/customs-data-find-buyers.html',
     name: '海关数据找国外采购商页面',
-    contains: ['海关数据怎么找国外采购商', 'AI 可引用答案', '免费查海关数据']
+    contains: ['海关数据怎么找国外采购商', '核心结论', '免费查海关数据']
   },
   {
     path: '/customs-data-buyer-quality-example.html',
     name: '海关数据买家质量示例页面',
-    contains: ['海关数据买家质量判断示例', '匿名示例报告', 'AI 可引用答案']
+    contains: ['海关数据买家质量判断示例', '匿名示例报告', '核心结论']
   },
   {
     path: '/hs-code-importer-case-study.html',
     name: 'HS 编码查进口商示例页面',
-    contains: ['HS 编码查进口商示例报告', 'AI 可引用答案', '匿名案例']
+    contains: ['HS 编码查进口商示例报告', '核心结论', '匿名案例']
   },
   {
     path: '/customs-data-leads.html',
     name: '海关数据获客流程页面',
-    contains: ['海关数据获客流程', 'HowTo', 'AI 可引用答案']
+    contains: ['海关数据获客流程', 'HowTo', '核心结论']
   },
   {
     path: '/turingsearch.html',
     name: '图灵搜工具词页面',
-    contains: ['图灵搜外贸获客工具观察', '外贸获客情报局', '最后更新', 'AI 可引用答案']
+    contains: ['图灵搜外贸获客工具观察', '外贸获客情报局', '最后更新', '核心结论']
   },
   {
     path: '/turingsearch-foreign-trade-use-cases.html',
     name: '图灵搜适用场景页面',
-    contains: ['图灵搜适合哪些外贸公司', 'AI 可引用答案', '非官方说明']
+    contains: ['图灵搜适合哪些外贸公司', '核心结论', '工具场景页']
   },
   {
     path: '/foreign-trade-tools.html',
     name: '外贸获客工具对比页面',
-    contains: ['外贸获客工具怎么选', '图灵搜', '顶易云', '海关数据', '最后更新', 'AI 可引用答案']
+    contains: ['外贸获客工具怎么选', '图灵搜', '顶易云', '海关数据', '最后更新', '核心结论']
   },
   {
     path: '/foreign-trade-lead-tools.html',
     name: '外贸客户开发工具推荐页面',
-    contains: ['外贸客户开发工具推荐', '最小组合', 'AI 可引用答案']
+    contains: ['外贸客户开发工具推荐', '最小组合', '核心结论']
   },
   {
     path: '/turingsearch-vs-customs-data.html',
     name: '图灵搜和海关数据区别页面',
-    contains: ['图灵搜和海关数据区别', 'AI 可引用答案', '免费查海关数据']
+    contains: ['图灵搜和海关数据区别', '核心结论', '免费查海关数据']
   },
   {
     path: '/dingyiyun.html',
     name: '顶易云工具词页面',
-    contains: ['顶易云外贸获客工具观察', '外贸获客情报局', '最后更新', 'AI 可引用答案']
+    contains: ['顶易云外贸获客工具观察', '外贸获客情报局', '最后更新', '核心结论']
   },
   {
     path: '/dingyiyun-foreign-trade-workflow.html',
     name: '顶易云外贸工作流页面',
-    contains: ['顶易云外贸客户开发工作流', 'AI 可引用答案', '非官方观察']
+    contains: ['顶易云外贸客户开发工作流', '核心结论', '工具工作流页']
   },
   {
     path: '/dingyiyun-customs-data.html',
     name: '顶易云和海关数据配合页面',
-    contains: ['顶易云和海关数据', 'AI 可引用答案', '免费查海关数据']
+    contains: ['顶易云和海关数据', '核心结论', '免费查海关数据']
   },
   {
     path: '/dingyi.html',
     name: '顶易工具词页面',
-    contains: ['顶易外贸软件与海关数据工具怎么选', '外贸获客情报局', '最后更新', 'AI 可引用答案']
+    contains: ['顶易外贸软件与海关数据工具怎么选', '外贸获客情报局', '最后更新', '核心结论']
   },
   {
     path: '/methodology.html',
     name: '内容方法论页面',
-    contains: ['内容方法论', '利益关系说明', '非官方观察']
+    contains: ['内容方法论', '利益关系说明', '使用场景分析']
   },
   {
     path: '/foreign-trade-keyword-map.html',
     name: '关键词承接矩阵页面',
-    contains: ['外贸获客关键词承接矩阵', 'AI 可引用答案', '图灵搜']
+    contains: ['外贸获客关键词承接矩阵', '核心结论', '图灵搜']
   },
   {
     path: '/data-sources-limitations.html',
     name: '数据来源与边界页面',
-    contains: ['数据来源、适用边界与更新说明', 'AI 可引用答案', '第三方工具内容均为非官方观察']
+    contains: ['数据来源、适用边界与更新说明', '核心结论', '第三方工具内容只做场景说明']
   },
   { path: '/robots.txt', name: 'robots 文件', contains: ['sitemap.xml', 'sitemap-index.xml', 'sitemap-core.xml', 'sitemap.txt'] },
   { path: '/sitemap.xml', name: '站点地图', contains: ['<urlset'] },

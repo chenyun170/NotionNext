@@ -48,31 +48,31 @@ const checks = [
     name: '免费海关数据长尾页',
     path: '/free-customs-data.html',
     status: 200,
-    contains: ['免费海关数据查询', 'AI 摘要', 'FAQPage', 'cluster_free_customs_skill']
+    contains: ['免费海关数据查询', '核心摘要', 'FAQPage', 'cluster_free_customs_skill']
   },
   {
     name: '美国进口商长尾页',
     path: '/us-importers.html',
     status: 200,
-    contains: ['美国进口商查询', 'AI 摘要', 'FAQPage', 'cluster_us_importers_skill']
+    contains: ['美国进口商查询', '核心摘要', 'FAQPage', 'cluster_us_importers_skill']
   },
   {
     name: 'HS 编码长尾页',
     path: '/hs-code-lookup.html',
     status: 200,
-    contains: ['HS 编码查询', 'AI 摘要', 'FAQPage', 'cluster_hs_code_skill']
+    contains: ['HS 编码查询', '核心摘要', 'FAQPage', 'cluster_hs_code_skill']
   },
   {
     name: '供应商分析长尾页',
     path: '/supplier-analysis.html',
     status: 200,
-    contains: ['供应商关系分析', 'AI 摘要', 'FAQPage', 'cluster_supplier_skill']
+    contains: ['供应商关系分析', '核心摘要', 'FAQPage', 'cluster_supplier_skill']
   },
   {
     name: '海关数据获客流程页',
     path: '/customs-data-leads.html',
     status: 200,
-    contains: ['海关数据获客流程', 'HowTo', 'AI 摘要', 'cluster_leads_skill']
+    contains: ['海关数据获客流程', 'HowTo', '核心摘要', 'cluster_leads_skill']
   },
   {
     name: 'OraSkl 品牌页',

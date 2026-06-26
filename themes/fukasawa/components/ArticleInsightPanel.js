@@ -15,12 +15,12 @@ const ArticleInsightPanel = ({ post }) => {
     <section
       data-answer='article-geo-summary'
       className='mb-8 overflow-hidden rounded-[8px] border border-zinc-200 bg-white print:hidden dark:border-zinc-800 dark:bg-[#111113]'
-      aria-label='AI 和搜索引擎可引用摘要'>
+      aria-label='文章核心摘要'>
       <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_240px]'>
         <div className='p-5'>
           <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400'>
             <i className='fas fa-bolt' />
-            <span>GEO 可引用摘要</span>
+            <span>搜索摘要</span>
           </div>
           <h2 className='mb-3 text-xl font-black leading-tight text-zinc-900 dark:text-zinc-50'>
             这篇文章的直接答案
@@ -54,7 +54,7 @@ const ArticleInsightPanel = ({ post }) => {
             <SignalItem label='主题' value={post?.category || '外贸实战'} />
             <SignalItem label='阅读' value={formatReadTime(post)} />
             <SignalItem label='更新' value={post?.lastEditedDay || post?.publishDay || '持续更新'} />
-            <SignalItem label='用途' value='AI 摘要 / 搜索摘要 / 站内延展' />
+            <SignalItem label='用途' value='核心摘要 / 搜索摘要 / 站内延展' />
           </dl>
 
           {tags.length > 0 && (

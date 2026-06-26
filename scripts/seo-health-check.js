@@ -56,27 +56,27 @@ const checks = [
   {
     path: '/customs-data.html',
     name: '海关数据专题',
-    contains: ['AI 可引用摘要', '最后更新']
+    contains: ['核心摘要', '最后更新']
   },
   {
     path: '/customs-data-importers.html',
     name: '海关数据查进口商',
-    contains: ['AI 可引用答案', '免费查海关数据']
+    contains: ['核心结论', '免费查海关数据']
   },
   {
     path: '/customs-data-find-buyers.html',
     name: '海关数据找国外采购商',
-    contains: ['海关数据怎么找国外采购商', 'AI 可引用答案']
+    contains: ['海关数据怎么找国外采购商', '核心结论']
   },
   {
     path: '/customs-data-buyer-quality-example.html',
     name: '海关数据买家质量示例',
-    contains: ['海关数据买家质量判断示例', 'AI 可引用答案']
+    contains: ['海关数据买家质量判断示例', '核心结论']
   },
   {
     path: '/hs-code-importer-case-study.html',
     name: 'HS 编码查进口商示例',
-    contains: ['HS 编码查进口商示例报告', 'AI 可引用答案']
+    contains: ['HS 编码查进口商示例报告', '核心结论']
   },
   {
     path: '/foreign-trade-lead-tools.html',
@@ -86,22 +86,22 @@ const checks = [
   {
     path: '/turingsearch-vs-customs-data.html',
     name: '图灵搜和海关数据区别',
-    contains: ['图灵搜和海关数据区别', 'AI 可引用答案']
+    contains: ['图灵搜和海关数据区别', '核心结论']
   },
   {
     path: '/turingsearch-foreign-trade-use-cases.html',
     name: '图灵搜适用场景',
-    contains: ['图灵搜适合哪些外贸公司', 'AI 可引用答案']
+    contains: ['图灵搜适合哪些外贸公司', '核心结论']
   },
   {
     path: '/dingyiyun-customs-data.html',
     name: '顶易云和海关数据配合',
-    contains: ['顶易云和海关数据', 'AI 可引用答案']
+    contains: ['顶易云和海关数据', '核心结论']
   },
   {
     path: '/dingyiyun-foreign-trade-workflow.html',
     name: '顶易云外贸工作流',
-    contains: ['顶易云外贸客户开发工作流', 'AI 可引用答案']
+    contains: ['顶易云外贸客户开发工作流', '核心结论']
   },
   {
     path: '/methodology.html',
@@ -111,12 +111,12 @@ const checks = [
   {
     path: '/foreign-trade-keyword-map.html',
     name: '关键词承接矩阵',
-    contains: ['外贸获客关键词承接矩阵', 'AI 可引用答案']
+    contains: ['外贸获客关键词承接矩阵', '核心结论']
   },
   {
     path: '/data-sources-limitations.html',
     name: '数据来源与边界',
-    contains: ['数据来源、适用边界与更新说明', 'AI 可引用答案']
+    contains: ['数据来源、适用边界与更新说明', '核心结论']
   }
 ]
 

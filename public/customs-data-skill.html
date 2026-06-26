@@ -436,6 +436,105 @@
       font-size: 14px;
       line-height: 1.7;
     }
+    .platform-preview {
+      padding: 0 0 54px;
+    }
+    .platform-preview-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .platform-preview h2 {
+      max-width: 680px;
+      color: #0f172a;
+      font-size: clamp(24px, 4vw, 38px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .platform-preview-header p {
+      max-width: 430px;
+      color: #64748b;
+      font-size: 15px;
+    }
+    .screenshot-frame {
+      position: relative;
+      overflow: hidden;
+      max-height: 560px;
+      border: 1px solid rgba(37, 99, 235, 0.14);
+      border-radius: 24px;
+      background: #06101f;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.16);
+      transition: max-height .45s ease;
+      cursor: pointer;
+    }
+    .screenshot-frame.expanded {
+      max-height: 2600px;
+      cursor: default;
+    }
+    .screenshot-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .screenshot-frame::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 180px;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(6, 16, 31, 0), rgba(6, 16, 31, .92));
+      transition: opacity .25s ease;
+    }
+    .screenshot-frame.expanded::after {
+      opacity: 0;
+    }
+    .screenshot-toggle {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      z-index: 2;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: 999px;
+      background: rgba(15, 23, 42, .78);
+      color: #ffffff;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 900;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 16px 38px rgba(2, 6, 23, .34);
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease;
+    }
+    .screenshot-toggle:hover {
+      transform: translateX(-50%) translateY(-2px);
+      background: rgba(37, 99, 235, .86);
+    }
+    .screenshot-frame.expanded .screenshot-toggle {
+      position: sticky;
+      margin: 18px auto 22px;
+      bottom: 20px;
+      left: auto;
+      transform: none;
+      display: flex;
+      width: max-content;
+      background: rgba(15, 23, 42, .88);
+    }
+    .screenshot-frame.expanded .screenshot-toggle:hover {
+      transform: translateY(-2px);
+    }
+    .screenshot-toggle:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.34);
+      outline-offset: 4px;
+    }
     .examples {
       padding: 0 0 54px;
     }
@@ -551,6 +650,14 @@
       .answer-summary-list { grid-template-columns: 1fr; }
       .examples-header { display: block; }
       .examples-header p { margin-top: 10px; }
+      .platform-preview-header { display: block; }
+      .platform-preview-header p { margin-top: 10px; }
+      .screenshot-frame { max-height: 390px; border-radius: 18px; }
+      .screenshot-toggle {
+        bottom: 16px;
+        width: calc(100% - 32px);
+        padding: 12px 14px;
+      }
       .example-grid { grid-template-columns: 1fr; }
       .faq-grid { grid-template-columns: 1fr; }
       .btn { width: 100%; }
@@ -621,6 +728,26 @@
           </li>
         </ul>
       </div>
+    </section>
+
+    <section class="container platform-preview" aria-labelledby="customs-data-platform-preview-title">
+      <div class="platform-preview-header">
+        <h2 id="customs-data-platform-preview-title">海关数据 Skill 查询结果示例</h2>
+        <p>输入产品或 HS 编码后，可以看到进口商、采购量、客户分层、地区分布、趋势图和近期采购明细。</p>
+      </div>
+      <figure class="screenshot-frame" data-screenshot-preview aria-label="OraSkl 海关数据 Skill 查询结果截图">
+        <img
+          src="/images/oraskl-customs-data-skill-preview.jpeg"
+          alt="OraSkl 海关数据 Skill 免费查询平台截图，展示进口商排名、客户分层、地区分布、趋势分析和采购明细"
+          width="1788"
+          height="2513"
+          loading="lazy"
+        >
+        <button class="screenshot-toggle" type="button" data-screenshot-toggle aria-expanded="false">
+          <span data-screenshot-toggle-text>展开查看完整截图</span>
+          <span aria-hidden="true">↓</span>
+        </button>
+      </figure>
     </section>
 
     <section class="container examples" aria-labelledby="customs-data-examples-title">
@@ -698,6 +825,31 @@
 
   <script>
     (function () {
+      var screenshotFrame = document.querySelector('[data-screenshot-preview]');
+      var screenshotToggle = document.querySelector('[data-screenshot-toggle]');
+      var screenshotToggleText = document.querySelector('[data-screenshot-toggle-text]');
+      if (screenshotFrame && screenshotToggle && screenshotToggleText) {
+        function setScreenshotExpanded(expanded) {
+          screenshotFrame.classList.toggle('expanded', expanded);
+          screenshotToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+          screenshotToggleText.textContent = expanded ? '收起截图' : '展开查看完整截图';
+          if (!expanded) {
+            screenshotFrame.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+
+        screenshotFrame.addEventListener('click', function () {
+          if (!screenshotFrame.classList.contains('expanded')) {
+            setScreenshotExpanded(true);
+          }
+        });
+
+        screenshotToggle.addEventListener('click', function (event) {
+          event.stopPropagation();
+          setScreenshotExpanded(!screenshotFrame.classList.contains('expanded'));
+        });
+      }
+
       var endpoint = '/api/track-click';
       var eventName = 'customs_data_skill_click';
       function trackCustomsDataSkillClick(source, target) {

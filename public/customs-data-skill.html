@@ -647,6 +647,13 @@
     .mobile-sticky-cta .btn { width: 100%; }
     @media (max-width: 820px) {
       .hero { grid-template-columns: 1fr; padding-top: 32px; }
+      .nav { gap: 10px; }
+      .nav { justify-content: flex-start; }
+      .back-link { flex-shrink: 0; padding: 8px 12px; font-size: 13px; }
+      .eyebrow { max-width: 100%; white-space: normal; }
+      .hero > div:first-child { max-width: 358px; }
+      h1 { font-size: 34px; line-height: 1.08; overflow-wrap: anywhere; }
+      .lead { font-size: 16px; }
       .answer-summary-list { grid-template-columns: 1fr; }
       .examples-header { display: block; }
       .examples-header p { margin-top: 10px; }
@@ -673,7 +680,7 @@
         <span class="brand-badge">O</span>
         <span>OraSkl</span>
       </a>
-      <a class="back-link" href="/">返回外贸获客情报局</a>
+      <a class="back-link" href="/" aria-label="返回外贸获客情报局首页">返回首页</a>
     </div>
   </header>
 

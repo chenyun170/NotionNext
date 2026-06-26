@@ -44,7 +44,7 @@ const Logo = props => {
   };
 
   return (
-    <section className='flex justify-center lg:justify-start overflow-visible'>
+    <section className='flex justify-start overflow-visible'>
       <style jsx>{`
         .shimmer-text {
           background: linear-gradient(90deg, transparent 0%, #ff8c00 50%, transparent 100%);
@@ -60,7 +60,7 @@ const Logo = props => {
       `}</style>
 
       {/* 💡 修复点：确保 SmartLink 只有一个开口和一个闭口 */}
-      <SmartLink href='/' className='flex flex-col items-center lg:items-start group cursor-pointer'>
+      <SmartLink href='/' className='flex flex-row items-center gap-2 group cursor-pointer lg:flex-col lg:items-start lg:gap-0'>
         
 {/* Logo 图标容器 */}
 <div className='relative'> 
@@ -68,14 +68,13 @@ const Logo = props => {
     src='/logo.png' 
     // 💡 关键点 1：使用 hover:rotate-12 直接驱动，不依赖父级 group
     // 💡 关键点 2：添加 transform 和 inline-block 确保 CSS 变换生效
-    className='w-16 h-16 mb-2 object-contain transition-all duration-500 ease-in-out transform hover:rotate-12 inline-block' 
-    style={{ minWidth: '72px', minHeight: '72px' }}
+    className='h-10 w-10 min-w-10 object-contain transition-all duration-500 ease-in-out transform hover:rotate-12 inline-block lg:mb-2 lg:h-16 lg:w-16 lg:min-w-[72px]'
     alt={siteConfig('TITLE')} 
   />
 </div>
 
         {/* 文字标题 - 忍者特效 */}
-        <div className='text-center lg:text-left relative z-20 mt-1'>
+        <div className='text-left relative z-20 lg:mt-1'>
           <motion.div 
             variants={smokeContainer}
             initial="hidden"

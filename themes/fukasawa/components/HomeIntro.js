@@ -95,30 +95,30 @@ const HomeIntro = ({
   return (
     <section className='mb-8 overflow-hidden rounded-[8px] border border-zinc-300 bg-white shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-[#111113] dark:shadow-none'>
       <div className='px-5 py-6 sm:px-7 sm:py-8'>
-        <div className='mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-blue-700 dark:text-blue-300'>
+        <div className='mb-4 flex min-w-0 flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em] text-blue-700 dark:text-blue-300 sm:text-[11px] sm:tracking-[0.18em]'>
           <span className='h-2 w-2 rounded-full bg-blue-700 dark:bg-blue-300' />
-          <span>123170.xyz · Foreign Trade Intelligence</span>
+          <span className='min-w-0 break-words leading-5'>123170.xyz · Foreign Trade Intelligence</span>
         </div>
 
         <div className='grid gap-5 lg:grid-cols-[minmax(0,1fr)_240px] lg:items-center'>
-          <div>
-            <h1 className='max-w-3xl text-2xl font-black leading-tight text-zinc-950 dark:text-zinc-50 sm:text-3xl'>
+          <div className='min-w-0 max-w-[326px] sm:max-w-none'>
+            <h1 className='max-w-3xl break-words text-[22px] font-black leading-tight text-zinc-950 [overflow-wrap:anywhere] dark:text-zinc-50 sm:text-3xl'>
               外贸获客情报局：帮外贸人用海关数据找到真实进口商
             </h1>
-            <p className='mt-3 max-w-2xl text-sm font-medium leading-7 text-zinc-700 dark:text-zinc-300'>
+            <p className='mt-3 max-w-2xl break-words text-sm font-medium leading-7 text-zinc-700 dark:text-zinc-300'>
               {homeDescription}
             </p>
-            <div className='mt-5 flex flex-wrap gap-2'>
+            <div className='mt-5 flex w-full min-w-0 flex-wrap gap-2'>
               <a
                 href={CUSTOMS_DATA_SKILL.href}
                 onClick={() => trackCustomsDataSkillClick('home_intro_primary')}
-                className='inline-flex h-10 items-center rounded-[8px] bg-blue-700 px-4 text-sm font-bold text-white shadow-sm shadow-blue-900/20 transition hover:bg-blue-800 dark:bg-blue-400 dark:text-zinc-950 dark:hover:bg-blue-300'>
+                className='inline-flex h-10 w-full max-w-full items-center justify-center rounded-[8px] bg-blue-700 px-4 text-sm font-bold text-white shadow-sm shadow-blue-900/20 transition hover:bg-blue-800 dark:bg-blue-400 dark:text-zinc-950 dark:hover:bg-blue-300 sm:w-auto'>
                 <i className='fas fa-database mr-2 text-xs' />
                 海关数据免费查询 Skill
               </a>
               <SmartLink
                 href='/customs-data.html'
-                className='inline-flex h-10 items-center rounded-[8px] border border-zinc-300 bg-white px-4 text-sm font-bold text-zinc-800 transition hover:border-blue-300 hover:text-blue-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-blue-700 dark:hover:text-blue-300'>
+                className='inline-flex h-10 w-full max-w-full items-center justify-center rounded-[8px] border border-zinc-300 bg-white px-4 text-sm font-bold text-zinc-800 transition hover:border-blue-300 hover:text-blue-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-blue-700 dark:hover:text-blue-300 sm:w-auto'>
                 <i className='fas fa-layer-group mr-2 text-xs' />
                 看海关数据专题
               </SmartLink>
@@ -138,7 +138,7 @@ const HomeIntro = ({
             </div>
           </div>
 
-          <div className='rounded-[8px] border border-zinc-300 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-950/50'>
+          <div className='min-w-0 max-w-[326px] rounded-[8px] border border-zinc-300 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-950/50 sm:max-w-none'>
             <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400'>
               核心判断
             </div>
@@ -152,9 +152,9 @@ const HomeIntro = ({
             </div>
             <div className='mt-4 grid gap-2 border-t border-dashed border-zinc-300 pt-4 dark:border-zinc-800'>
               {trustSignals.map(signal => (
-                <div key={signal.label} className='flex items-center justify-between gap-3 text-xs'>
+                <div key={signal.label} className='flex min-w-0 flex-col gap-1 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-3'>
                   <span className='font-medium text-zinc-500 dark:text-zinc-400'>{signal.label}</span>
-                  <span className='text-right font-bold text-zinc-800 dark:text-zinc-200'>
+                  <span className='break-words font-bold text-zinc-800 dark:text-zinc-200 sm:text-right'>
                     {signal.value}
                   </span>
                 </div>

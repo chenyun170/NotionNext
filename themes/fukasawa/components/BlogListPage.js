@@ -9,6 +9,8 @@ import BlogCard from './BlogCard'
 import BlogPostListEmpty from './BlogListEmpty'
 import PaginationSimple from './PaginationSimple'
 
+const DEFAULT_COLUMNS = 3
+
 const BlogListPage = ({ page = 1, posts = [], postCount, postsPerPage, siteInfo }) => {
   const { NOTION_CONFIG } = useGlobal()
   const resolvedPostsPerPage =
@@ -16,10 +18,11 @@ const BlogListPage = ({ page = 1, posts = [], postCount, postsPerPage, siteInfo 
   const totalPage = Math.ceil((postCount || posts.length) / resolvedPostsPerPage)
   const showNext = page < totalPage
 
-  const [columns, setColumns] = useState(calculateColumns())
+  const [columns, setColumns] = useState(DEFAULT_COLUMNS)
 
   // 1. 响应式监听优化
   useEffect(() => {
+    setColumns(calculateColumns())
     const handleResize = debounce(() => setColumns(calculateColumns()), 200)
     window.addEventListener('resize', handleResize)
     return () => {
@@ -101,7 +104,7 @@ const BlogListPage = ({ page = 1, posts = [], postCount, postsPerPage, siteInfo 
 }
 
 const calculateColumns = () => {
-  if (!isBrowser) return 3
+  if (!isBrowser) return DEFAULT_COLUMNS
   if (window.innerWidth >= 1280) return 3
   if (window.innerWidth >= 768) return 2
   return 1

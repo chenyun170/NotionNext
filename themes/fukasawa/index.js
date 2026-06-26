@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { createContext, useContext, useEffect, useRef } from 'react'
-import { Transition } from '@headlessui/react'
 import BLOG from '@/blog.config'
 import { useGlobal } from '@/lib/global'
 import { isBrowser } from '@/lib/utils'
@@ -115,19 +114,10 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
             className='relative flex-1 flex w-full py-8 justify-center bg-[#f8f8f8] dark:bg-hexonight'
           >
             <div id='container-inner' className={containerClassName}>
-              <Transition
-                show={!onLoading}
-                appear={true}
-                className='w-full'
-                enter='transition ease-out duration-500 transform'
-                enterFrom='opacity-0 translate-y-8'
-                enterTo='opacity-100 translate-y-0'
-                leave='transition ease-in duration-300 opacity-0'
-                unmount={false}
-              >
+              <div className='w-full'>
                 {headerSlot && <div>{headerSlot}</div>}
                 <div className='min-h-[60vh]'>{children}</div>
-              </Transition>
+              </div>
 
               <div className='mt-8 rounded-xl overflow-hidden'>
                 <AdSlot type='native' />

@@ -1,7 +1,7 @@
 import fs from 'fs'
-import path from 'path'
 
 interface QueueItem<T> {
+  key: string
   requestFunc: () => Promise<T>
   resolve: (value: T) => void
   reject: (err: unknown) => void
@@ -21,6 +21,16 @@ export class RateLimiter {
     private lockFilePath?: string
   ) { }
 
+  private disableFileLock(reason: string, err: unknown) {
+    const fileError = err as NodeJS.ErrnoException
+    if (process.env.BUILD_MODE !== 'true') {
+      console.warn(
+        `[RateLimiter] ${reason}; file lock disabled (${fileError.code || 'unknown'}).`
+      )
+    }
+    this.lockDisabled = true
+  }
+
   private async acquireLock() {
     if (!this.lockFilePath || this.lockDisabled) return false
     // 如果锁文件存在且创建时间过久（比如 >5分钟），认为是陈旧锁，直接删除
@@ -34,8 +44,7 @@ export class RateLimiter {
         }
       }
     } catch (err) {
-      console.warn('[限流] 检查锁文件失败，降级为无文件锁:', err)
-      this.lockDisabled = true
+      this.disableFileLock('Failed to inspect lock file', err)
       return false
     }
 
@@ -47,8 +56,7 @@ export class RateLimiter {
         const fileError = err as NodeJS.ErrnoException
         if (fileError.code === 'EEXIST') await new Promise(res => setTimeout(res, 100))
         else {
-          console.warn('[限流] 创建锁文件失败，降级为无文件锁:', err)
-          this.lockDisabled = true
+          this.disableFileLock('Failed to create lock file', err)
           return false
         }
       }
@@ -75,6 +83,7 @@ export class RateLimiter {
 
     return new Promise((resolve, reject) => {
       this.queue.push({
+        key,
         requestFunc,
         resolve: value => resolve(value as T),
         reject
@@ -105,8 +114,7 @@ export class RateLimiter {
       const waitTime = Math.max(0, minInterval - (now - this.lastRequestTime))
       if (waitTime > 0) await new Promise(res => setTimeout(res, waitTime))
 
-      const { requestFunc, resolve, reject } = this.queue.shift()!
-      const key = crypto.randomUUID()
+      const { key, requestFunc, resolve, reject } = this.queue.shift()!
       this.inflight.add(key)
 
       try {

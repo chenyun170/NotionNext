@@ -4,6 +4,7 @@ import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
 import { shouldRedirectSearchToCustomsSkill } from '@/lib/utils/customsDataSkill'
+import { pickSearchResultPost } from '@/lib/utils/post'
 
 const Index = props => {
   const { keyword } = props
@@ -45,6 +46,7 @@ export async function getStaticProps({ params: { keyword, page }, locale }) {
     POSTS_PER_PAGE * (page - 1),
     POSTS_PER_PAGE * page
   )
+  props.posts = props.posts.map(pickSearchResultPost).filter(Boolean)
   props.keyword = keyword
   props.page = page
   delete props.allPages
@@ -131,8 +133,8 @@ async function filterByMemCache(allPosts, keyword) {
       post.category && Array.isArray(post.category)
         ? post.category.join(' ')
         : ''
-    const articleInfo = post.title + post.summary + tagContent + categoryContent
-    let hit = articleInfo.indexOf(keyword) > -1
+    const articleInfo = `${post.title || ''} ${post.summary || ''} ${tagContent} ${categoryContent}`
+    let hit = articleInfo.toLowerCase().indexOf(keyword.toLowerCase()) > -1
     let indexContent = [post.summary]
     if (page && page.block) {
       const contentIds = Object.keys(page.block)
@@ -144,20 +146,17 @@ async function filterByMemCache(allPosts, keyword) {
     }
     // console.log('全文搜索缓存', cacheKey, page != null)
     post.results = []
-    let hitCount = 0
-    for (const i of indexContent) {
-      const c = indexContent[i]
+    for (const c of indexContent) {
       if (!c) {
         continue
       }
       const index = c.toLowerCase().indexOf(keyword.toLowerCase())
       if (index > -1) {
         hit = true
-        hitCount += 1
-        post.results.push(c)
+        post.results.push(getSearchSnippet(c, keyword, index))
       } else {
-        if ((post.results.length - 1) / hitCount < 3 || i === 0) {
-          post.results.push(c)
+        if (post.results.length < 3) {
+          post.results.push(getSearchSnippet(c, keyword))
         }
       }
     }
@@ -166,6 +165,21 @@ async function filterByMemCache(allPosts, keyword) {
     }
   }
   return filterPosts
+}
+
+function getSearchSnippet(text, keyword, matchIndex) {
+  const normalized = String(text || '').replace(/\s+/g, ' ').trim()
+  if (!normalized) return ''
+
+  const index =
+    typeof matchIndex === 'number'
+      ? matchIndex
+      : normalized.toLowerCase().indexOf(String(keyword || '').toLowerCase())
+  if (index < 0) return normalized.slice(0, 240)
+
+  const start = Math.max(0, index - 80)
+  const end = Math.min(normalized.length, index + 160)
+  return `${start > 0 ? '...' : ''}${normalized.slice(start, end)}${end < normalized.length ? '...' : ''}`
 }
 
 export default Index

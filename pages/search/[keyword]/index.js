@@ -5,6 +5,7 @@ import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
 import { getPageContentText } from '@/lib/db/notion/getPageContentText'
 import { shouldRedirectSearchToCustomsSkill } from '@/lib/utils/customsDataSkill'
+import { pickSearchResultPost } from '@/lib/utils/post'
 
 const Index = props => {
   const theme = siteConfig('THEME', BLOG.THEME, props.NOTION_CONFIG)
@@ -34,8 +35,9 @@ export async function getStaticProps({ params: { keyword }, locale }) {
   const allPosts = allPages?.filter(
     page => page.type === 'Post' && page.status === 'Published'
   )
-  props.posts = await filterByMemCache(allPosts, keyword)
-  props.postCount = props.posts.length
+  const filteredPosts = await filterByMemCache(allPosts, keyword)
+  props.postCount = filteredPosts.length
+  props.posts = filteredPosts
   const POST_LIST_STYLE = siteConfig(
     'POST_LIST_STYLE',
     'Page',
@@ -49,7 +51,9 @@ export async function getStaticProps({ params: { keyword }, locale }) {
   } else if (POST_LIST_STYLE) {
     props.posts = props.posts?.slice(0, POSTS_PER_PAGE)
   }
+  props.posts = props.posts.map(pickSearchResultPost).filter(Boolean)
   props.keyword = keyword
+  delete props.allPages
   return {
     props,
     revalidate: process.env.EXPORT
@@ -89,25 +93,22 @@ async function filterByMemCache(allPosts, keyword) {
       post.category && Array.isArray(post.category)
         ? post.category.join(' ')
         : ''
-    const articleInfo = post.title + post.summary + tagContent + categoryContent
+    const articleInfo = `${post.title || ''} ${post.summary || ''} ${tagContent} ${categoryContent}`
     let hit = articleInfo.toLowerCase().indexOf(keyword) > -1
-    const contentTextList = getPageContentText(post, page)
+    const contentTextList = [getPageContentText(post, page)]
     // console.log('全文搜索缓存', cacheKey, page != null)
     post.results = []
-    let hitCount = 0
-    for (const i of contentTextList) {
-      const c = contentTextList[i]
+    for (const c of contentTextList) {
       if (!c) {
         continue
       }
       const index = c.toLowerCase().indexOf(keyword)
       if (index > -1) {
         hit = true
-        hitCount += 1
-        post.results.push(c)
+        post.results.push(getSearchSnippet(c, keyword, index))
       } else {
-        if ((post.results.length - 1) / hitCount < 3 || i === 0) {
-          post.results.push(c)
+        if (post.results.length < 3) {
+          post.results.push(getSearchSnippet(c, keyword))
         }
       }
     }
@@ -116,6 +117,21 @@ async function filterByMemCache(allPosts, keyword) {
     }
   }
   return filterPosts
+}
+
+function getSearchSnippet(text, keyword, matchIndex) {
+  const normalized = String(text || '').replace(/\s+/g, ' ').trim()
+  if (!normalized) return ''
+
+  const index =
+    typeof matchIndex === 'number'
+      ? matchIndex
+      : normalized.toLowerCase().indexOf(String(keyword || '').toLowerCase())
+  if (index < 0) return normalized.slice(0, 240)
+
+  const start = Math.max(0, index - 80)
+  const end = Math.min(normalized.length, index + 160)
+  return `${start > 0 ? '...' : ''}${normalized.slice(start, end)}${end < normalized.length ? '...' : ''}`
 }
 
 export default Index

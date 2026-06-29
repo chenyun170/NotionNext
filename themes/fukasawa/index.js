@@ -24,12 +24,19 @@ const FloatButton = dynamic(() => import('./components/FloatButton'), {
   ssr: false // 悬浮按钮不需要 SSR
 })
 
+const ArticleDetail = dynamic(() => import('./components/ArticleDetail'), {
+  loading: () => (
+    <div className='flex min-h-[60vh] items-center justify-center text-sm text-gray-400'>
+      文章加载中...
+    </div>
+  )
+})
+
 // 其他组件导入保持不变
 import { AdSlot } from '@/components/GoogleAdsense'
 import replaceSearchResult from '@/components/Mark'
 import WWAds from '@/components/WWAds'
 import SmartLink from '@/components/SmartLink'
-import ArticleDetail from './components/ArticleDetail'
 import ArticleLock from './components/ArticleLock'
 import AsideLeft from './components/AsideLeft'
 import BlogListPage from './components/BlogListPage'
@@ -165,10 +172,12 @@ const LayoutPostList = memo((props) => {
         />
       )}
       {props?.keyword && <SearchResourceLinks keyword={props.keyword} />}
-      <div className='w-full p-2 mb-4'>
-        <WWAds className='w-full' orientation='horizontal' />
-      </div>
-      <ListComponent {...props} />
+      {!showHomeIntro && (
+        <div className='w-full p-2 mb-4'>
+          <WWAds className='w-full' orientation='horizontal' />
+        </div>
+      )}
+      <ListComponent {...props} showInlineAd={showHomeIntro} />
     </div>
   )
 })

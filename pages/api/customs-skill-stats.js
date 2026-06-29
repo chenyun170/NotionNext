@@ -6,6 +6,11 @@ const CLICK_LOG_PATH = path.join(
   'logs',
   'customs-data-skill-clicks.jsonl'
 )
+const TRACKED_EVENTS = new Set([
+  'customs_data_skill_click',
+  'outbound_tool_click',
+  'site_interaction'
+])
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -54,7 +59,7 @@ const readClickRecords = async () => {
           return null
         }
       })
-      .filter(record => record?.event === 'customs_data_skill_click')
+      .filter(record => TRACKED_EVENTS.has(record?.event))
   } catch {
     return []
   }
@@ -77,6 +82,11 @@ const buildSummary = (records, rawTotal) => {
     topSources: topCounter(records, 'source', 8),
     topSourceGroups: topCounter(records, 'sourceGroup', 8),
     topPaths: topCounter(records, 'path', 8),
+    topActions: topCounter(
+      records.filter(record => record.event === 'site_interaction'),
+      'action',
+      8
+    ),
     conversion: buildConversionSummary(records),
     sourceGroupSummary: buildSourceGroupSummary(records, last7DayStart),
     daily: buildDailySeries(records, 14),
@@ -89,6 +99,8 @@ const buildSummary = (records, rawTotal) => {
         path: record.path || '',
         target: record.target || '',
         targetType: getTargetType(record.target),
+        event: record.event || '',
+        action: record.action || '',
         title: record.title || '',
         ts: Number(record.ts) || 0,
         day: formatDay(record.ts)
@@ -142,15 +154,30 @@ const buildConversionSummary = records => {
   const orasklOutboundClicks = records.filter(
     record => getTargetType(record.target) === 'oraskl_outbound'
   ).length
+  const turingsearchOutboundClicks = records.filter(
+    record => getTargetType(record.target) === 'turingsearch_outbound'
+  ).length
+  const dingyiyunOutboundClicks = records.filter(
+    record => getTargetType(record.target) === 'dingyiyun_outbound'
+  ).length
+  const toolOutboundClicks =
+    orasklOutboundClicks + turingsearchOutboundClicks + dingyiyunOutboundClicks
   const contentNavigationClicks = records.filter(
     record => getTargetType(record.target) === 'internal_content'
+  ).length
+  const siteInteractionClicks = records.filter(
+    record => record.event === 'site_interaction'
   ).length
 
   return {
     skillPageClicks,
     orasklOutboundClicks,
+    turingsearchOutboundClicks,
+    dingyiyunOutboundClicks,
+    toolOutboundClicks,
     contentNavigationClicks,
-    outboundRate: total ? Number((orasklOutboundClicks / total).toFixed(4)) : 0,
+    siteInteractionClicks,
+    outboundRate: total ? Number((toolOutboundClicks / total).toFixed(4)) : 0,
     targetTypes
   }
 }
@@ -167,6 +194,7 @@ const buildSourceGroupSummary = (records, last7DayStart) => {
       last7Days: 0,
       skillPageClicks: 0,
       orasklOutboundClicks: 0,
+      toolOutboundClicks: 0,
       topSource: '',
       sources: new Map()
     }
@@ -176,6 +204,7 @@ const buildSourceGroupSummary = (records, last7DayStart) => {
     current.last7Days += Number(record.ts) >= last7DayStart ? 1 : 0
     current.skillPageClicks += targetType === 'skill_page' ? 1 : 0
     current.orasklOutboundClicks += targetType === 'oraskl_outbound' ? 1 : 0
+    current.toolOutboundClicks += targetType.endsWith('_outbound') ? 1 : 0
     current.sources.set(
       record.source || 'unknown',
       (current.sources.get(record.source || 'unknown') || 0) + 1
@@ -196,6 +225,7 @@ const buildSourceGroupSummary = (records, last7DayStart) => {
         last7Days: group.last7Days,
         skillPageClicks: group.skillPageClicks,
         orasklOutboundClicks: group.orasklOutboundClicks,
+        toolOutboundClicks: group.toolOutboundClicks,
         topSource: topSource ? topSource[0] : ''
       }
     })
@@ -218,6 +248,18 @@ const getTargetType = target => {
       return 'oraskl_outbound'
     }
 
+    if (url.hostname === 'h.topeasysoft.com') {
+      if (url.pathname.includes('tls')) {
+        return 'turingsearch_outbound'
+      }
+
+      if (url.pathname.includes('dyy')) {
+        return 'dingyiyun_outbound'
+      }
+
+      return 'topeasysoft_outbound'
+    }
+
     if (url.pathname === '/customs-data-skill.html') {
       return 'skill_page'
     }
@@ -236,6 +278,7 @@ const getSourceGroupLabel = group => {
     topic: '专题页',
     cluster: '内容集群',
     tools: '工具页',
+    activity: '活动入口',
     article: '文章页',
     search: '搜索页',
     related: '相关推荐',

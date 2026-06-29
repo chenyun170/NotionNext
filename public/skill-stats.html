@@ -96,6 +96,10 @@
         <div id="topPaths" class="list"></div>
       </div>
       <div class="card">
+        <h2>互动行为排行</h2>
+        <div id="topActions" class="list"></div>
+      </div>
+      <div class="card">
         <h2>近 14 天趋势</h2>
         <div id="daily" class="daily"></div>
       </div>
@@ -206,7 +210,7 @@
         target.appendChild(
           createRow(
             item.source || 'unknown',
-            `${item.path || ''} · ${item.day || ''}`,
+            `${item.action || item.event || item.path || ''} · ${item.day || ''}`,
             1
           )
         )
@@ -217,6 +221,9 @@
       const labels = {
         skill_page: '进入 Skill 介绍页',
         oraskl_outbound: '直接跳转 OraSkl',
+        turingsearch_outbound: '跳转图灵搜活动',
+        dingyiyun_outbound: '跳转顶易云活动',
+        topeasysoft_outbound: '跳转顶易活动页',
         internal_content: '站内内容跳转',
         other: '其他目标',
         unknown: '未知目标'
@@ -235,14 +242,34 @@
           count: safeConversion.skillPageClicks || 0
         },
         {
-          name: '直接跳转 OraSkl',
+          name: '工具外链总点击',
           note: `外跳占比 ${Math.round((safeConversion.outboundRate || 0) * 100)}%`,
+          count: safeConversion.toolOutboundClicks || 0
+        },
+        {
+          name: '直接跳转 OraSkl',
+          note: '海关数据 Skill 外跳',
           count: safeConversion.orasklOutboundClicks || 0
+        },
+        {
+          name: '跳转图灵搜活动',
+          note: '活动外链点击',
+          count: safeConversion.turingsearchOutboundClicks || 0
+        },
+        {
+          name: '跳转顶易云活动',
+          note: '活动外链点击',
+          count: safeConversion.dingyiyunOutboundClicks || 0
         },
         {
           name: '站内内容跳转',
           note: '专题、工具和长尾页之间的路径',
           count: safeConversion.contentNavigationClicks || 0
+        },
+        {
+          name: '站内互动',
+          note: '复制微信、关闭活动等行为',
+          count: safeConversion.siteInteractionClicks || 0
         }
       ]
 
@@ -268,7 +295,7 @@
         target.appendChild(
           createRow(
             item.label || item.name || 'unknown',
-            `近 7 天 ${item.last7Days || 0} · Skill ${item.skillPageClicks || 0} · OraSkl ${item.orasklOutboundClicks || 0} · Top ${item.topSource || '-'}`,
+            `近 7 天 ${item.last7Days || 0} · Skill ${item.skillPageClicks || 0} · 外链 ${item.toolOutboundClicks || 0} · OraSkl ${item.orasklOutboundClicks || 0} · Top ${item.topSource || '-'}`,
             item.count || 0
           )
         )
@@ -307,6 +334,7 @@
         writeText('last30Days', data.last30Days || 0)
         renderList('topSources', data.topSources)
         renderList('topPaths', data.topPaths)
+        renderList('topActions', data.topActions)
         renderConversion(data.conversion)
         renderSourceGroups(data.sourceGroupSummary)
         renderDaily(data.daily || [])

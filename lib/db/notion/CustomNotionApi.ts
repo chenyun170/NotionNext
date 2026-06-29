@@ -79,13 +79,13 @@ interface NotionResponse {
 
 // 处理响应结果
 function responseResult(response: NotionResponse): void {
-  if (response.status === 200) {
-    console.log('成功...')
-    console.log(response.data)
-  } else {
-    console.log('失败...')
-    console.log(response.data)
+  if (process.env.NODE_ENV !== 'development') {
+    return
   }
+
+  const statusText = response.status === 200 ? '成功' : '失败'
+  console.log(`Notion 写入${statusText}:`, response.status)
+  console.log(response.data)
 }
 
 // 定义用户属性的接口

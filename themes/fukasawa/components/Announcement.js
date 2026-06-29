@@ -1,6 +1,10 @@
 'use client'
 
 import { useGlobal } from '@/lib/global'
+import {
+  trackSiteInteraction,
+  trackToolOutboundClick
+} from '@/lib/utils/customsDataSkillTracking'
 import dynamic from 'next/dynamic'
 import { useState, useEffect, useRef } from 'react'
 
@@ -56,7 +60,15 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
           <a 
             href={config.link}
             target='_blank'
-            rel='noopener noreferrer'
+            rel='sponsored noopener noreferrer'
+            onClick={() =>
+              trackToolOutboundClick({
+                source: config.trackSource,
+                target: config.link,
+                tool: config.tool,
+                sourceGroup: 'activity'
+              })
+            }
             className="block w-full py-2.5 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-center text-xs font-bold rounded-xl shadow-lg shadow-orange-500/30 transition-all active:scale-95"
           >
             立即参与 <i className="fas fa-arrow-right ml-1"></i>
@@ -94,7 +106,15 @@ const InlineActivityCard = ({ config, isActive }) => {
       <a 
         href={config.link} 
         target="_blank" 
-        rel="noopener noreferrer"
+        rel="sponsored noopener noreferrer"
+        onClick={() =>
+          trackToolOutboundClick({
+            source: `${config.trackSource}_inline`,
+            target: config.link,
+            tool: config.tool,
+            sourceGroup: 'activity'
+          })
+        }
         className={`ml-9 mt-3 inline-flex items-center rounded-lg border px-2.5 py-1.5 text-[11px] font-bold transition-colors ${config.buttonClass}`}>
         {config.buttonText} →
       </a>
@@ -111,6 +131,8 @@ const activityConfigs = {
     description: '价格便宜，功能升级！',
     emoji: '🔥',
     link: 'https://h.topeasysoft.com/20260618tls/index.html?i=BB54F6',
+    tool: 'turingsearch',
+    trackSource: 'activity_turingsearch',
     buttonText: '立即参与',
     bgColor: 'bg-amber-50/45 dark:bg-amber-950/20',
     borderColor: 'border-amber-100 dark:border-amber-900/50',
@@ -128,6 +150,8 @@ const activityConfigs = {
     description: '限时赠送功能升级！',
     emoji: '🚀',
     link: 'https://h.topeasysoft.com/20260618dyy/index.html?i=BB54F6',
+    tool: 'dingyiyun',
+    trackSource: 'activity_dingyiyun',
     buttonText: '查看详情',
     bgColor: 'bg-blue-50/45 dark:bg-blue-950/20',
     borderColor: 'border-blue-100 dark:border-blue-900/50',
@@ -203,6 +227,11 @@ const Announcement = ({ post, className }) => {
   const dismissFloatingAd = () => {
     setFloatingVisible(false)
     setFloatingDismissed(true)
+    trackSiteInteraction({
+      source: 'activity_floating_dismiss',
+      sourceGroup: 'activity',
+      action: 'dismiss_activity_ad'
+    })
 
     try {
       window.localStorage.setItem(FLOATING_AD_DISMISS_KEY, String(Date.now()))

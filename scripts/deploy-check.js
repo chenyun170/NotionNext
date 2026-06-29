@@ -19,6 +19,7 @@ const urlChecks = [
   {
     path: '/',
     name: '首页',
+    timeoutMs: 60000,
     contains: ['<!DOCTYPE html', '外贸获客情报局', '海关数据与外贸获客实战情报站', '海关数据免费查询']
   },
   {
@@ -174,6 +175,66 @@ const urlChecks = [
       title: 'deploy-check'
     })
   },
+  {
+    path: '/api/track-click',
+    name: '外链追踪接口',
+    method: 'POST',
+    expectedStatus: 204,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      event: 'outbound_tool_click',
+      source: 'deploy_check_activity',
+      sourceGroup: 'test',
+      path: '/deploy-check',
+      target: 'https://h.topeasysoft.com/20260618tls/index.html?i=BB54F6',
+      title: 'deploy-check',
+      tool: 'turingsearch'
+    })
+  },
+  {
+    path: '/api/track-click',
+    name: '互动追踪接口',
+    method: 'POST',
+    expectedStatus: 204,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      event: 'site_interaction',
+      source: 'deploy_check_interaction',
+      sourceGroup: 'test',
+      path: '/deploy-check',
+      target: '/deploy-check',
+      title: 'deploy-check',
+      action: 'copy_wechat'
+    })
+  },
+  {
+    path: '/api/track-click',
+    name: '互动追踪脏数据拦截',
+    method: 'POST',
+    expectedStatus: 400,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      event: 'site_interaction',
+      source: 'deploy_check_interaction',
+      sourceGroup: 'test',
+      path: '/deploy-check',
+      target: '/deploy-check',
+      title: 'deploy-check',
+      action: 'unknown_action'
+    })
+  },
+  {
+    path: '/api/diagnose',
+    name: '诊断接口长度保护',
+    method: 'POST',
+    expectedStatus: 413,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      form: {
+        letterContent: 'x'.repeat(12050)
+      }
+    })
+  },
   { path: '/skill-stats.html', name: '统计看板页面', contains: ['noindex'] },
   { path: '/api/sidebar-tools', name: '侧栏工具接口', contains: ['"ok":true'] }
 ]
@@ -183,6 +244,7 @@ function requestUrl(url, options = {}) {
 
   return new Promise(resolve => {
     const startedAt = Date.now()
+    const requestTimeoutMs = options.timeoutMs || timeoutMs
     const requestOptions = {
       method: options.method || 'GET',
       headers: options.headers || {}
@@ -212,8 +274,8 @@ function requestUrl(url, options = {}) {
       })
     })
 
-    request.setTimeout(timeoutMs, () => {
-      request.destroy(new Error(`请求超时 ${timeoutMs}ms`))
+    request.setTimeout(requestTimeoutMs, () => {
+      request.destroy(new Error(`请求超时 ${requestTimeoutMs}ms`))
     })
 
     if (options.body) {
@@ -240,6 +302,7 @@ async function checkUrls() {
   console.log(`\n检查部署地址：${baseUrl}`)
 
   const results = []
+  let connectionRefusedCount = 0
 
   for (const check of urlChecks) {
     const url = new URL(check.path, baseUrl).toString()
@@ -253,6 +316,9 @@ async function checkUrls() {
         check.contains.every(item => result.body.includes(item)))
 
     results.push(contentOk)
+    if (String(result.error || '').includes('ECONNREFUSED')) {
+      connectionRefusedCount += 1
+    }
 
     const icon = contentOk ? '✓' : '✗'
     const detail = result.error ? ` - ${result.error}` : ''
@@ -263,15 +329,27 @@ async function checkUrls() {
     )
   }
 
-  return results.every(Boolean)
+  return {
+    ok: results.every(Boolean),
+    failedCount: results.filter(item => !item).length,
+    connectionRefusedCount
+  }
 }
 
 async function main() {
   const envOk = checkEnvVars()
-  const urlsOk = await checkUrls()
+  const urlResult = await checkUrls()
 
-  if (!envOk || !urlsOk) {
-    console.error('\n部署检查未通过：请补齐环境变量或修复失败页面后再上线。')
+  if (!envOk || !urlResult.ok) {
+    if (urlResult.connectionRefusedCount > 0) {
+      console.error(
+        `\n部署检查未通过：${baseUrl} 无法连接。请先运行 npm run dev，确认本地 3000 服务启动后再执行 npm run deploy-check。`
+      )
+    } else {
+      console.error(
+        `\n部署检查未通过：${urlResult.failedCount} 个检查项失败。请补齐环境变量或修复失败页面后再上线。`
+      )
+    }
     process.exit(1)
   }
 

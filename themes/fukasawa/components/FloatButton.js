@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { trackSiteInteraction } from '@/lib/utils/customsDataSkillTracking'
 
 const GIFT_DISMISS_KEY = 'fukasawa_gift_dismissed_at'
 const GIFT_DISMISS_DAYS = 3
@@ -68,6 +69,12 @@ const FloatButton = () => {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopyText('已复制！')
+      trackSiteInteraction({
+        source: 'gift_wechat_copy',
+        sourceGroup: 'lead',
+        action: 'copy_wechat',
+        tool: 'wechat'
+      })
       setTimeout(() => setCopyText('复制微信号'), 2000)
     })
   }
@@ -76,6 +83,11 @@ const FloatButton = () => {
     event?.stopPropagation()
     setShowPopup(false)
     setGiftDismissed(true)
+    trackSiteInteraction({
+      source: 'gift_widget_dismiss',
+      sourceGroup: 'lead',
+      action: 'dismiss_gift_widget'
+    })
 
     try {
       window.localStorage.setItem(GIFT_DISMISS_KEY, String(Date.now()))
@@ -89,7 +101,7 @@ const FloatButton = () => {
   const strokeDashoffset = circumference - (scrollProgress / 100) * circumference
 
   return (
-    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 md:bottom-7 md:right-9 lg:bottom-8 lg:right-10 flex flex-col items-center space-y-4 md:space-y-5" style={{ zIndex: 9999 }}>
+    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[80] flex flex-col items-center space-y-4 print:hidden md:bottom-7 md:right-9 md:space-y-5 lg:bottom-8 lg:right-10">
       
       {/* 1. 返回顶部按钮 - 加进度圆环 */}
       <div 

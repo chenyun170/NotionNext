@@ -1,12 +1,13 @@
 'use client'
 
+import WWAds from '@/components/WWAds'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { Fragment, useEffect, useRef, useState, useMemo } from 'react'
 import BlogCard from './BlogCard'
 import BlogPostListEmpty from './BlogListEmpty'
 
-const BlogListScroll = ({ posts, postsPerPage }) => {
+const BlogListScroll = ({ posts, postsPerPage, showInlineAd = false }) => {
   const { locale, NOTION_CONFIG } = useGlobal()
   const [page, setPage] = useState(1)
   const POSTS_PER_PAGE =
@@ -46,17 +47,23 @@ const BlogListScroll = ({ posts, postsPerPage }) => {
       {/* 2. 统一放入一个容器，保证 CSS column-count 布局不中断 */}
       <div id="posts-wrapper" className="grid-container w-full">
         {postsToShow.map((post, index) => (
-          <div
-            key={post.id}
-            className="grid-item w-full flex justify-center mb-6"
-            style={{ breakInside: 'avoid' }}
-          >
-            <BlogCard 
-                post={post} 
-                // 仅为新分页的文章添加动画效果
-                showAnimate={index >= (page - 1) * POSTS_PER_PAGE} 
-            />
-          </div>
+          <Fragment key={post.id}>
+            <div
+              className="grid-item w-full flex justify-center mb-6"
+              style={{ breakInside: 'avoid' }}
+            >
+              <BlogCard 
+                  post={post} 
+                  // 仅为新分页的文章添加动画效果
+                  showAnimate={index >= (page - 1) * POSTS_PER_PAGE} 
+              />
+            </div>
+            {showInlineAd && index === 3 && (
+              <div className='grid-item mb-6 w-full' style={{ breakInside: 'avoid' }}>
+                <WWAds className='w-full' orientation='horizontal' />
+              </div>
+            )}
+          </Fragment>
         ))}
       </div>
 

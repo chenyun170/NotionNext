@@ -18,6 +18,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "npm run seo:generate && cross-env BUILD_MODE=true next build",
+    "build:clean": "node scripts/clean-next-build.js && npm run build",
+    "release-check": "node scripts/release-check.js",
     "start": "next start",
     "post-build": "npm run seo:generate",
     "export": "npm run seo:generate && cross-env BUILD_MODE=true EXPORT=true next build",

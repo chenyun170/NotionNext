@@ -1,4 +1,5 @@
 import Collapse from '@/components/Collapse'
+import { trackToolOutboundClick } from '@/lib/utils/customsDataSkillTracking'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import Logo from './Logo'
 import { MenuList } from './MenuList'
@@ -14,12 +15,16 @@ const ACTIVITIES = [
   {
     icon: '🔥',
     text: '139届全球采购商数据新鲜出炉！¥300/行业，¥600/3个行业！',
-    link: 'https://h.topeasysoft.com/20260618tls/index.html?i=BB54F6'
+    link: 'https://h.topeasysoft.com/20260618tls/index.html?i=BB54F6',
+    tool: 'turingsearch',
+    trackSource: 'mobile_marquee_turingsearch'
   },
   {
     icon: '🚀',
     text: '顶易云 618 活动进行中，6月30日24时截止',
-    link: 'https://h.topeasysoft.com/20260618dyy/index.html?i=BB54F6'
+    link: 'https://h.topeasysoft.com/20260618dyy/index.html?i=BB54F6',
+    tool: 'dingyiyun',
+    trackSource: 'mobile_marquee_dingyiyun'
   }
 ]
 
@@ -111,7 +116,15 @@ const Header = props => {
           <a 
             href={activity.link}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="sponsored noopener noreferrer"
+            onClick={() =>
+              trackToolOutboundClick({
+                source: activity.trackSource,
+                target: activity.link,
+                tool: activity.tool,
+                sourceGroup: 'activity'
+              })
+            }
             className='marquee-item no-underline flex items-center hover:opacity-80 transition-opacity'
           >
             <span className='marquee-icon'>{activity.icon}</span>
@@ -139,7 +152,15 @@ const Header = props => {
               key={idx}
               href={activity.link}
               target='_blank'
-              rel='noopener noreferrer'
+              rel='sponsored noopener noreferrer'
+              onClick={() =>
+                trackToolOutboundClick({
+                  source: activity.trackSource,
+                  target: activity.link,
+                  tool: activity.tool,
+                  sourceGroup: 'activity'
+                })
+              }
               className={`${idx > 0 ? 'hidden sm:flex' : 'flex'} flex-shrink-0 items-center gap-1 rounded-full border border-amber-200 bg-white/75 px-2 py-0.5 text-[10px] font-bold text-amber-800 no-underline dark:border-amber-800 dark:bg-amber-900/50 dark:text-amber-100`}>
               <span>{activity.icon}</span>
               <span>{idx === 0 ? '618 活动' : '顶易云活动'}</span>

@@ -1,8 +1,18 @@
-import { mkdir, appendFile } from 'fs/promises'
+import { mkdir, appendFile, readFile, stat, writeFile } from 'fs/promises'
 import path from 'path'
 
-const ALLOWED_EVENTS = new Set(['customs_data_skill_click'])
-const ALLOWED_TARGET_HOSTS = new Set(['www.oraskl.com', 'oraskl.com'])
+const ALLOWED_EVENTS = new Set([
+  'customs_data_skill_click',
+  'outbound_tool_click',
+  'site_interaction'
+])
+const ALLOWED_TARGET_HOSTS = new Set([
+  'www.oraskl.com',
+  'oraskl.com',
+  'h.topeasysoft.com',
+  'topeasysoft.com',
+  'www.topeasysoft.com'
+])
 const ALLOWED_SITE_HOSTS = new Set(['www.123170.xyz', '123170.xyz'])
 const BLOCKED_INTERNAL_TARGET_PREFIXES = ['/api/', '/_next/', '/js/', '/fonts/']
 const ALLOWED_SOURCE_GROUPS = new Set([
@@ -14,12 +24,23 @@ const ALLOWED_SOURCE_GROUPS = new Set([
   'topic',
   'brand',
   'tools',
+  'activity',
+  'lead',
   'cluster',
   'test',
   'other'
 ])
+const ALLOWED_TOOLS = new Set(['', 'oraskl', 'turingsearch', 'dingyiyun', 'wechat'])
+const ALLOWED_ACTIONS = new Set([
+  '',
+  'copy_wechat',
+  'dismiss_gift_widget',
+  'dismiss_activity_ad'
+])
 const RATE_LIMIT_WINDOW_MS = 60 * 1000
 const RATE_LIMIT_MAX = 20
+const CLICK_LOG_MAX_BYTES = Number(process.env.CLICK_LOG_MAX_BYTES || 2 * 1024 * 1024)
+const CLICK_LOG_MAX_LINES = Number(process.env.CLICK_LOG_MAX_LINES || 5000)
 const rateLimitStore = new Map()
 const CLICK_LOG_PATH = path.join(
   process.cwd(),
@@ -47,17 +68,35 @@ export default async function handler(req, res) {
   const pagePath = sanitizeValue(payload.path, 160)
   const target = sanitizeValue(payload.target, 220)
   const title = sanitizeValue(payload.title, 160)
+  const tool = sanitizeValue(payload.tool, 60)
+  const action = sanitizeValue(payload.action, 80)
+  const resolvedSourceGroup = sourceGroup || 'other'
   const clientIp = getClientIp(req)
   const userAgent = sanitizeValue(req.headers['user-agent'], 240)
   const userAgentType = getUserAgentType(userAgent)
 
-  if (!ALLOWED_SOURCE_GROUPS.has(sourceGroup || 'other')) {
+  if (!ALLOWED_SOURCE_GROUPS.has(resolvedSourceGroup)) {
+    res.status(400).json({ ok: false })
+    return
+  }
+
+  if (!ALLOWED_TOOLS.has(tool)) {
+    res.status(400).json({ ok: false })
+    return
+  }
+
+  if (event === 'site_interaction' && !ALLOWED_ACTIONS.has(action)) {
     res.status(400).json({ ok: false })
     return
   }
 
   if (!isAllowedTarget(target)) {
     res.status(400).json({ ok: false })
+    return
+  }
+
+  if (isHealthCheckEvent(resolvedSourceGroup, source)) {
+    res.status(204).end()
     return
   }
 
@@ -74,10 +113,12 @@ export default async function handler(req, res) {
   const record = {
     event,
     source,
-    sourceGroup,
+    sourceGroup: resolvedSourceGroup,
     path: pagePath,
-    target,
+    target: normalizeLoggedTarget(target),
     title,
+    tool,
+    action,
     ts: Number(payload.ts) || Date.now(),
     isLocal: isLocalIp(clientIp),
     userAgentType
@@ -90,6 +131,7 @@ export default async function handler(req, res) {
   try {
     await mkdir(path.dirname(CLICK_LOG_PATH), { recursive: true })
     await appendFile(CLICK_LOG_PATH, `${JSON.stringify(record)}\n`, 'utf8')
+    await trimClickLogIfNeeded()
   } catch (error) {
     console.warn('[track-click] failed to write local log', error?.message)
   }
@@ -101,6 +143,10 @@ const sanitizeValue = (value, maxLength) => {
   return String(value || '')
     .replace(/[\r\n\t]/g, ' ')
     .slice(0, maxLength)
+}
+
+const isHealthCheckEvent = (sourceGroup, source) => {
+  return sourceGroup === 'test' || source.startsWith('deploy_check')
 }
 
 const isAllowedTarget = target => {
@@ -160,6 +206,35 @@ const cleanupRateLimitStore = now => {
     if (now - value.startedAt > RATE_LIMIT_WINDOW_MS) {
       rateLimitStore.delete(key)
     }
+  }
+}
+
+const trimClickLogIfNeeded = async () => {
+  const info = await stat(CLICK_LOG_PATH)
+
+  if (info.size <= CLICK_LOG_MAX_BYTES) {
+    return
+  }
+
+  const content = await readFile(CLICK_LOG_PATH, 'utf8')
+  const lines = content.split('\n').filter(Boolean)
+  const nextContent = `${lines.slice(-CLICK_LOG_MAX_LINES).join('\n')}\n`
+
+  await writeFile(CLICK_LOG_PATH, nextContent, 'utf8')
+}
+
+const normalizeLoggedTarget = target => {
+  const value = String(target || '').trim()
+
+  if (!value || value.startsWith('/')) {
+    return value.split('?')[0].split('#')[0]
+  }
+
+  try {
+    const url = new URL(value)
+    return `${url.origin}${url.pathname}`
+  } catch {
+    return ''
   }
 }
 

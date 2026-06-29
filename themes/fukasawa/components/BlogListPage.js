@@ -1,17 +1,25 @@
 'use client'
 
 import { AdSlot } from '@/components/GoogleAdsense'
+import WWAds from '@/components/WWAds'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
 import { isBrowser } from '@/lib/utils'
-import { useEffect, useState, useMemo } from 'react'
+import { Fragment, useEffect, useState, useMemo } from 'react'
 import BlogCard from './BlogCard'
 import BlogPostListEmpty from './BlogListEmpty'
 import PaginationSimple from './PaginationSimple'
 
 const DEFAULT_COLUMNS = 3
 
-const BlogListPage = ({ page = 1, posts = [], postCount, postsPerPage, siteInfo }) => {
+const BlogListPage = ({
+  page = 1,
+  posts = [],
+  postCount,
+  postsPerPage,
+  siteInfo,
+  showInlineAd = false
+}) => {
   const { NOTION_CONFIG } = useGlobal()
   const resolvedPostsPerPage =
     Number.parseInt(postsPerPage || siteConfig('POSTS_PER_PAGE', 12, NOTION_CONFIG), 10) || 12
@@ -66,17 +74,23 @@ const BlogListPage = ({ page = 1, posts = [], postCount, postsPerPage, siteInfo 
         }}
       >
         {filterPosts.map((post, index) => (
-          <div
-            key={post.id}
-            className='opacity-0 animate-fade-in-up mb-8'
-            style={{ 
-              animationDelay: `${(index % 6) * 100}ms`,
-              animationFillMode: 'forwards',
-              breakInside: 'avoid' // 防止卡片被跨列截断
-            }}
-          >
-            <BlogCard index={index} post={post} siteInfo={siteInfo} />
-          </div>
+          <Fragment key={post.id}>
+            <div
+              className='opacity-0 animate-fade-in-up mb-8'
+              style={{ 
+                animationDelay: `${(index % 6) * 100}ms`,
+                animationFillMode: 'forwards',
+                breakInside: 'avoid' // 防止卡片被跨列截断
+              }}
+            >
+              <BlogCard index={index} post={post} siteInfo={siteInfo} />
+            </div>
+            {showInlineAd && Number(page) === 1 && index === 3 && (
+              <div className='mb-8 w-full' style={{ breakInside: 'avoid' }}>
+                <WWAds className='w-full' orientation='horizontal' />
+              </div>
+            )}
+          </Fragment>
         ))}
 
         {siteConfig('ADSENSE_GOOGLE_ID') && (

@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from 'react'
 const NotionPage = dynamic(() => import('@/components/NotionPage'))
 
 const FLOATING_AD_DISMISS_KEY = 'fukasawa_floating_activity_dismissed_at'
-const FLOATING_AD_DISMISS_DAYS = 7
+const FLOATING_AD_DISMISS_DAYS = 3
 const FLOATING_AD_DISMISS_MS = FLOATING_AD_DISMISS_DAYS * 24 * 60 * 60 * 1000
 
 /**

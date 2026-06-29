@@ -57,6 +57,12 @@ const toolKeywordResources = [
     icon: 'fa-code-compare'
   },
   {
+    title: '图灵搜线索验证',
+    description: '图灵搜找到客户后，用海关数据判断谁值得优先开发。',
+    href: '/turingsearch-customs-data-lead-validation.html',
+    icon: 'fa-search'
+  },
+  {
     title: '顶易云工具观察',
     description: '围绕顶易云、海关数据和外贸客户开发，判断工具组合方式。',
     href: '/dingyiyun.html',
@@ -67,6 +73,12 @@ const toolKeywordResources = [
     description: '用工具管理线索，用海关数据验证采购，再进入跟进动作。',
     href: '/dingyiyun-customs-data.html',
     icon: 'fa-diagram-project'
+  },
+  {
+    title: '顶易云线索验证',
+    description: '顶易云获客后，用海关数据做客户分层和跟进优先级。',
+    href: '/dingyiyun-customs-data-lead-validation.html',
+    icon: 'fa-cloud'
   },
   {
     title: '顶易云工作流',
@@ -144,6 +156,7 @@ const SearchResourceLinks = ({ keyword }) => {
     : /海关数据|进口商|买家|采购商|HS|hs/i.test(keywordText)
       ? customsKeywordResources
       : resources
+  const displayedResources = activeResources.slice(0, 6)
 
   return (
     <section
@@ -155,11 +168,11 @@ const SearchResourceLinks = ({ keyword }) => {
           <span>相关资源</span>
         </div>
         <p className='text-sm leading-6 text-zinc-500 dark:text-zinc-400'>
-          搜索「{keyword}」时，也可以从专题、工具和 FAQ 入口继续查找可执行路径。
+          搜索「{keyword}」时，也可以从这些精选入口继续查找可执行路径。
         </p>
       </div>
       <div className='grid gap-0 md:grid-cols-3'>
-        {activeResources.map(resource => (
+        {displayedResources.map(resource => (
           <a
             key={resource.href}
             href={resource.href}

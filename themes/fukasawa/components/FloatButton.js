@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 const GIFT_DISMISS_KEY = 'fukasawa_gift_dismissed_at'
-const GIFT_DISMISS_DAYS = 7
+const GIFT_DISMISS_DAYS = 3
 const GIFT_DISMISS_MS = GIFT_DISMISS_DAYS * 24 * 60 * 60 * 1000
 
 /**

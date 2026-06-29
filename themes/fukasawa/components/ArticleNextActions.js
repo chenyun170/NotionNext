@@ -39,6 +39,11 @@ const resourceLinks = [
     description: '一个找线索，一个验证真实采购。'
   },
   {
+    title: '图灵搜线索验证',
+    href: '/turingsearch-customs-data-lead-validation.html',
+    description: '图灵搜找到客户后，用海关数据判断开发优先级。'
+  },
+  {
     title: '顶易云工具观察',
     href: '/dingyiyun.html',
     description: '看顶易云如何配合海关数据和跟进流程。'
@@ -47,6 +52,11 @@ const resourceLinks = [
     title: '顶易云工作流',
     href: '/dingyiyun-foreign-trade-workflow.html',
     description: '把线索管理、海关验证和跟进复盘接起来。'
+  },
+  {
+    title: '顶易云线索验证',
+    href: '/dingyiyun-customs-data-lead-validation.html',
+    description: '把顶易云客户池接上海关数据，再回流到跟进流程。'
   },
   {
     title: '顶易工具选型',
@@ -68,10 +78,11 @@ const ArticleNextActions = ({ post }) => {
   const categoryHref = post?.category
     ? `/category/${encodeURIComponent(post.category)}`
     : '/archive'
+  const visibleResourceLinks = resourceLinks.slice(0, 8)
 
   return (
     <section
-      className='mt-12 overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4 print:hidden dark:border-blue-900/50 dark:from-blue-950/30 dark:via-[#111113] dark:to-cyan-950/20 sm:p-6'
+      className='mt-12 overflow-hidden rounded-[8px] border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4 print:hidden dark:border-blue-900/50 dark:from-blue-950/30 dark:via-[#111113] dark:to-cyan-950/20 sm:p-6'
       aria-labelledby='article-next-actions-title'>
       <div className='mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-blue-700 dark:text-blue-300'>
         <i className='fas fa-route' />
@@ -94,7 +105,7 @@ const ArticleNextActions = ({ post }) => {
           <a
             href={CUSTOMS_DATA_SKILL.href}
             onClick={() => trackCustomsDataSkillClick('article_skill_card')}
-            className='inline-flex flex-col rounded-[10px] border border-blue-200 bg-white/85 px-4 py-3 text-left transition hover:border-blue-300 hover:bg-blue-50 dark:border-blue-900/70 dark:bg-blue-950/20 dark:hover:bg-blue-950/50'>
+            className='inline-flex flex-col rounded-[8px] border border-blue-200 bg-white/85 px-4 py-3 text-left transition hover:border-blue-300 hover:bg-blue-50 dark:border-blue-900/70 dark:bg-blue-950/20 dark:hover:bg-blue-950/50'>
             <span className='text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-300'>
               海关数据工具入口
             </span>
@@ -104,20 +115,20 @@ const ArticleNextActions = ({ post }) => {
           </a>
           <a
             href='/customs-data.html'
-            className='inline-flex h-10 items-center justify-center rounded-[10px] bg-zinc-950 px-3 text-[13px] font-bold text-white transition hover:bg-blue-700 dark:bg-white dark:text-zinc-950 dark:hover:bg-blue-300 sm:h-11 sm:px-4 sm:text-sm'>
+            className='inline-flex h-10 items-center justify-center rounded-[8px] bg-zinc-950 px-3 text-[13px] font-bold text-white transition hover:bg-blue-700 dark:bg-white dark:text-zinc-950 dark:hover:bg-blue-300 sm:h-11 sm:px-4 sm:text-sm'>
             <i className='fas fa-layer-group mr-2 text-xs' />
             看海关数据专题
           </a>
           <a
             href={CUSTOMS_DATA_SKILL.href}
             onClick={() => trackCustomsDataSkillClick('article_next_actions')}
-            className='inline-flex h-10 items-center justify-center rounded-[10px] border border-blue-200 bg-white/80 px-3 text-[13px] font-bold text-blue-700 transition hover:border-blue-300 hover:bg-blue-50 dark:border-blue-900/70 dark:bg-blue-950/20 dark:text-blue-300 dark:hover:bg-blue-950/50 sm:h-11 sm:px-4 sm:text-sm'>
+            className='inline-flex h-10 items-center justify-center rounded-[8px] border border-blue-200 bg-white/80 px-3 text-[13px] font-bold text-blue-700 transition hover:border-blue-300 hover:bg-blue-50 dark:border-blue-900/70 dark:bg-blue-950/20 dark:text-blue-300 dark:hover:bg-blue-950/50 sm:h-11 sm:px-4 sm:text-sm'>
             <i className='fas fa-database mr-2 text-xs' />
             免费查海关数据
           </a>
           <SmartLink
             href={categoryHref}
-            className='inline-flex h-10 items-center justify-center rounded-[10px] border border-zinc-200 bg-white/70 px-3 text-[13px] font-bold text-zinc-700 transition hover:border-zinc-300 hover:text-zinc-950 dark:border-zinc-800 dark:bg-zinc-950/30 dark:text-zinc-200 dark:hover:text-white sm:h-11 sm:px-4 sm:text-sm'>
+            className='inline-flex h-10 items-center justify-center rounded-[8px] border border-zinc-200 bg-white/70 px-3 text-[13px] font-bold text-zinc-700 transition hover:border-zinc-300 hover:text-zinc-950 dark:border-zinc-800 dark:bg-zinc-950/30 dark:text-zinc-200 dark:hover:text-white sm:h-11 sm:px-4 sm:text-sm'>
             <i className='fas fa-compass mr-2 text-xs' />
             继续看相关主题
           </SmartLink>
@@ -129,11 +140,11 @@ const ArticleNextActions = ({ post }) => {
           继续阅读
         </div>
         <div className='grid gap-2 sm:grid-cols-2'>
-          {resourceLinks.map(resource => (
+          {visibleResourceLinks.map(resource => (
             <a
               key={resource.href}
               href={resource.href}
-              className='group rounded-[10px] border border-zinc-200 bg-white/80 p-3 transition hover:border-blue-300 hover:bg-blue-50 dark:border-zinc-800 dark:bg-zinc-950/30 dark:hover:border-blue-700 dark:hover:bg-blue-950/30'>
+              className='group rounded-[8px] border border-zinc-200 bg-white/80 p-3 transition hover:border-blue-300 hover:bg-blue-50 dark:border-zinc-800 dark:bg-zinc-950/30 dark:hover:border-blue-700 dark:hover:bg-blue-950/30'>
               <span className='text-sm font-black text-zinc-900 group-hover:text-blue-700 dark:text-zinc-50 dark:group-hover:text-blue-300'>
                 {resource.title}
               </span>

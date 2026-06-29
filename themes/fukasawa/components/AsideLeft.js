@@ -14,6 +14,7 @@ import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
 import TagItemMini from './TagItemMini' 
+import { isHomepageListPost } from '@/lib/utils/postVisibility'
 // ✅ 引入组件
 const SidebarTools = dynamic(() => import('./SidebarTools'), {
   ssr: false,
@@ -33,6 +34,7 @@ const SidebarChatWidget = dynamic(() => import('./SidebarChatWidget'), {
 
 function AsideLeft(props) {
   const { post, notice, latestPosts = [], tagOptions = [] } = props 
+  const visibleLatestPosts = latestPosts.filter(isHomepageListPost)
   const [runtime, setRuntime] = useState('')
   const [isCollapsed, setIsCollapse] = useState(false)
   // ✅ 新增：控制手机端 AI 助手的展开/收起状态
@@ -239,14 +241,14 @@ function AsideLeft(props) {
           )}
 
           {/* 热门文章 */}
-          {latestPosts?.length > 0 && (
+          {visibleLatestPosts?.length > 0 && (
             <section className="flex flex-col mb-8 rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
               <div className="flex items-center text-[11px] font-bold text-zinc-500 dark:text-zinc-400 tracking-[0.18em] uppercase mb-4 px-1">
                 <i className="fas fa-fire-alt mr-2 text-orange-500 opacity-50"></i>
                 <span>热门文章</span>
               </div>
               <ul className="space-y-3">
-                {latestPosts.slice(0, 5).map((p, index) => {
+                {visibleLatestPosts.slice(0, 5).map((p, index) => {
                   const isTopThree = index < 3;
                   return (
                     <li 

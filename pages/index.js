@@ -4,6 +4,7 @@ import { getGlobalData, getPostBlocks } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
 import { checkDataFromAlgolia } from '@/lib/plugins/algolia'
 import { getHomePostsPerPage } from '@/lib/utils/homePosts'
+import { isHomepageListPost } from '@/lib/utils/postVisibility'
 
 /**
  * 首页布局组件
@@ -46,15 +47,17 @@ export async function getStaticProps(context) {
     props.allPages?.filter(
       page => page.type === 'Post' && page.status === BLOG.NOTION_PROPERTY_NAME.status_publish
     ) || []
+  const homePosts = allPosts.filter(isHomepageListPost)
 
   // 3) 根据布局风格截取文章
   if (POST_LIST_STYLE === 'scroll') {
-    props.posts = allPosts
+    props.posts = homePosts
     props.postsPerPage = POSTS_PER_PAGE
   } else {
-    props.posts = allPosts.slice(0, HOME_POSTS_PER_PAGE)
+    props.posts = homePosts.slice(0, HOME_POSTS_PER_PAGE)
     props.postsPerPage = HOME_POSTS_PER_PAGE
   }
+  props.postCount = homePosts.length
 
   // 4) 并行抓取预览摘要（失败不阻断构建）
   const shouldPreview = siteConfig('POST_LIST_PREVIEW', false, NOTION_CONFIG)

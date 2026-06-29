@@ -36,6 +36,7 @@ import BlogListPage from './components/BlogListPage'
 import BlogListScroll from './components/BlogListScroll'
 import BlogArchiveItem from './components/BlogPostArchive'
 import Header from './components/Header'
+import HomeFeaturedLinks from './components/HomeFeaturedLinks'
 import HomeIntro from './components/HomeIntro'
 import SearchResourceLinks from './components/SearchResourceLinks'
 import SkillSearchPromo from './components/SkillSearchPromo'
@@ -153,6 +154,7 @@ const LayoutPostList = memo((props) => {
   return (
     <div className='w-full'>
       {showHomeIntro && <HomeIntro {...props} />}
+      {showHomeIntro && <HomeFeaturedLinks />}
       {showTopicIntro && <TopicIntro {...props} />}
       {topicKeyword && (
         <SkillSearchPromo

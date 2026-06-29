@@ -2,6 +2,7 @@ import BLOG from '@/blog.config'
 import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData, getPostBlocks } from '@/lib/db/SiteDataApi'
 import { getHomePostsPerPage } from '@/lib/utils/homePosts'
+import { isHomepageListPost } from '@/lib/utils/postVisibility'
 import { DynamicLayout } from '@/themes/theme'
 
 /**
@@ -16,8 +17,11 @@ const Page = props => {
 
 export async function getStaticPaths({ locale }) {
   const from = 'page-paths'
-  const { postCount, NOTION_CONFIG } = await fetchGlobalAllData({ from, locale })
+  const { allPages, NOTION_CONFIG } = await fetchGlobalAllData({ from, locale })
   const HOME_POSTS_PER_PAGE = getHomePostsPerPage(NOTION_CONFIG)
+  const postCount = allPages?.filter(
+    page => page.type === 'Post' && page.status === 'Published' && isHomepageListPost(page)
+  ).length || 0
   const totalPages = Math.ceil(
     postCount / HOME_POSTS_PER_PAGE
   )
@@ -41,7 +45,7 @@ export async function getStaticProps({ params: { page }, locale }) {
   )
 
   const allPosts = allPages?.filter(
-    page => page.type === 'Post' && page.status === 'Published'
+    page => page.type === 'Post' && page.status === 'Published' && isHomepageListPost(page)
   )
   const HOME_POSTS_PER_PAGE = getHomePostsPerPage(props?.NOTION_CONFIG)
   const currentPage = Number.parseInt(page, 10)
@@ -52,6 +56,7 @@ export async function getStaticProps({ params: { page }, locale }) {
   )
   props.page = currentPage
   props.postsPerPage = HOME_POSTS_PER_PAGE
+  props.postCount = allPosts.length
 
   // 处理预览
   if (siteConfig('POST_LIST_PREVIEW', false, props?.NOTION_CONFIG)) {

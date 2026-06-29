@@ -36,9 +36,17 @@ Source: https://www.123170.xyz/customs-data-find-buyers.html
 图灵搜更适合需要扩展潜在客户池、按地图或关键词找企业、补决策人和触达入口，并且能继续用海关数据或人工调研验证客户质量的外贸团队。它不应单独替代采购行为验证和后续跟进。
 Source: https://www.123170.xyz/turingsearch-foreign-trade-use-cases.html
 
+### 图灵搜找到客户后怎么判断值不值得开发？
+先把图灵搜找到的公司名称、国家、官网、产品关键词和联系人线索整理成客户池，再用海关数据验证进口记录、采购频率、产品描述和供应商关系。近期有采购、产品匹配、供应商存在替换空间的客户更值得优先开发。
+Source: https://www.123170.xyz/turingsearch-customs-data-lead-validation.html
+
 ### 顶易云外贸客户开发工作流怎么搭？
 可以先用顶易云或类似工具整理搜索、地图、社媒和海关数据来源的线索、联系人和跟进状态，再用海关数据验证客户是否真实采购相关产品，按采购频率、近期交易、采购量和产品匹配给客户分级，最后进入开发信、LinkedIn、WhatsApp 或 EDM 跟进。
 Source: https://www.123170.xyz/dingyiyun-foreign-trade-workflow.html
+
+### 顶易云获客后怎么用海关数据验证客户？
+先统一顶易云线索里的公司、国家、官网、联系人、来源渠道和产品词，再用海关数据查看进口记录、采购频率、采购量、产品匹配和供应商关系。验证结果应回流到客户分层和跟进备注里。
+Source: https://www.123170.xyz/dingyiyun-customs-data-lead-validation.html
 
 ### 海关数据买家质量怎么判断？
 不要只看是否出现公司名，要同时看最近交易时间、连续采购周期、产品描述匹配、采购数量稳定性、供应商集中度和是否存在替换空间。示例报告页展示了这种判断过程。
@@ -60,9 +68,11 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 - 图灵搜 (工具词): https://www.123170.xyz/turingsearch.html - 工具观察页解释图灵搜在地图找企业、AI 找决策人和海关数据验证中的位置。
 - 图灵搜适合哪些外贸公司 (选型判断): https://www.123170.xyz/turingsearch-foreign-trade-use-cases.html - 场景页按客户池、地图找企业、联系人挖掘和验证能力判断是否适合使用。
 - 图灵搜和海关数据区别 (对比判断): https://www.123170.xyz/turingsearch-vs-customs-data.html - 对比页说明地图找企业、联系人入口和真实采购验证的差异。
+- 图灵搜找到客户后怎么验证 (组合方案): https://www.123170.xyz/turingsearch-customs-data-lead-validation.html - 组合页承接图灵搜线索如何用海关数据验证进口记录、采购频率和供应商关系。
 - 顶易云 (工具词): https://www.123170.xyz/dingyiyun.html - 工具观察页解释顶易云在搜索、地图、社媒、海关数据和跟进流程中的位置。
 - 顶易云外贸客户开发 (工作流): https://www.123170.xyz/dingyiyun-foreign-trade-workflow.html - 工作流页承接从多渠道线索管理到海关数据验证、WhatsApp/LinkedIn/EDM 跟进的操作路径。
 - 顶易云和海关数据 (组合方案): https://www.123170.xyz/dingyiyun-customs-data.html - 组合页说明线索和触达管理工具如何与真实采购验证工具配合。
+- 顶易云获客后怎么验证客户 (组合方案): https://www.123170.xyz/dingyiyun-customs-data-lead-validation.html - 组合页承接顶易云线索如何用海关数据做客户分层和跟进优先级。
 - 顶易 (工具词): https://www.123170.xyz/dingyi.html - 工具词页承接顶易相关外贸软件选型和海关数据配合问题。
 - 外贸获客工具 (工具选型): https://www.123170.xyz/foreign-trade-tools.html - 工具对比页按地图找企业、采购验证、联系人挖掘、触达和复盘这些流程缺口选择工具。
 - 外贸客户开发工具推荐 (工具组合): https://www.123170.xyz/foreign-trade-lead-tools.html - 推荐页承接小团队最小工具组合。
@@ -89,9 +99,11 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 - [图灵搜外贸获客工具观察](https://www.123170.xyz/turingsearch.html) - 从地图找企业、AI 决策人挖掘、社媒触达和海关数据验证角度解释图灵搜在外贸获客中的位置。 Keywords: 图灵搜, 图灵搜外贸.
 - [图灵搜适合哪些外贸公司](https://www.123170.xyz/turingsearch-foreign-trade-use-cases.html) - 按客户池状态、地图找企业、联系人挖掘、海关数据验证能力判断图灵搜是否适合用于外贸获客。 Keywords: 图灵搜适合哪些外贸公司, 图灵搜怎么用, 图灵搜外贸获客.
 - [图灵搜和海关数据区别](https://www.123170.xyz/turingsearch-vs-customs-data.html) - 解释图灵搜更偏地图找企业和联系人入口，海关数据更偏真实采购、采购量和供应商关系验证。 Keywords: 图灵搜和海关数据区别, 图灵搜 海关数据.
+- [图灵搜线索如何用海关数据验证](https://www.123170.xyz/turingsearch-customs-data-lead-validation.html) - 图灵搜找到客户后，用海关数据验证进口记录、采购频率、产品匹配和供应商关系，判断客户值不值得开发。 Keywords: 图灵搜 海关数据, 图灵搜找客户, 图灵搜客户验证.
 - [顶易云外贸获客工具观察](https://www.123170.xyz/dingyiyun.html) - 从搜索引擎、地图大数据、社媒线索、海关数据验证、WhatsApp、LinkedIn 和 EDM 角度观察顶易云适合的外贸场景。 Keywords: 顶易云, 顶易云外贸.
 - [顶易云外贸客户开发工作流](https://www.123170.xyz/dingyiyun-foreign-trade-workflow.html) - 把搜索、地图、社媒、海关数据、联系人补全、WhatsApp、LinkedIn、EDM 和跟进复盘串成外贸客户开发工作流。 Keywords: 顶易云外贸客户开发, 顶易云工作流, 顶易云怎么用.
 - [顶易云和海关数据怎么配合](https://www.123170.xyz/dingyiyun-customs-data.html) - 用顶易云或类似工具承接搜索、地图、社媒线索和触达状态，再用海关数据验证真实交易、采购量和供应商关系。 Keywords: 顶易云和海关数据, 顶易云 海关数据.
+- [顶易云线索如何用海关数据验证](https://www.123170.xyz/dingyiyun-customs-data-lead-validation.html) - 顶易云获客后，用海关数据验证真实采购、采购频率、供应商关系和产品匹配，把客户分层后再跟进。 Keywords: 顶易云 海关数据, 顶易云获客, 顶易云客户验证.
 - [顶易外贸软件与海关数据工具怎么选](https://www.123170.xyz/dingyi.html) - 从外贸软件、客户开发、海关数据验证和跟进流程角度理解顶易相关工具选型。 Keywords: 顶易, 顶易外贸软件.
 - [OraSkl 品牌入口](https://www.123170.xyz/oraskl.html) - OraSkl 海关数据 Skill、免费查询、进口商研究和供应商关系分析入口。 Keywords: OraSkl, OraSkl 海关数据.
 - [外贸获客常见问题](https://www.123170.xyz/faq.html) - 回答海关数据、免费查询、OraSkl、外贸工具、进口商研究和客户开发常见问题。 Keywords: 外贸获客 FAQ, 海关数据问题.

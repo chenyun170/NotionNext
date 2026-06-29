@@ -19,7 +19,7 @@ const urlChecks = [
   {
     path: '/',
     name: '首页',
-    contains: ['<!DOCTYPE html', '外贸获客情报局：帮外贸人用海关数据找到真实进口商', '海关数据免费查询 Skill']
+    contains: ['<!DOCTYPE html', '外贸获客情报局', '海关数据与外贸获客实战情报站', '海关数据免费查询']
   },
   {
     path: '/customs-data-skill.html',

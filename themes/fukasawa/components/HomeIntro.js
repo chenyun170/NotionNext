@@ -50,22 +50,26 @@ const flagshipTopics = [
   }
 ]
 
-const trustSignals = [
+const acquisitionSteps = [
   {
-    label: '核心线索',
-    value: '进口商 / 供应商 / HS 编码'
+    label: '01 查进口商',
+    value: '谁在进口你的产品'
   },
   {
-    label: '判断方式',
-    value: '采购频次 / 近期活跃 / 产品匹配'
+    label: '02 验采购力',
+    value: '采购量 / 频率 / 供应商'
   },
   {
-    label: '转化路径',
-    value: '查数据 / 筛客户 / 做跟进'
+    label: '03 做跟进',
+    value: '开发信 / 社媒 / 复盘'
   }
 ]
 
 const quickLinks = [
+  {
+    name: '海关数据',
+    href: '/customs-data.html'
+  },
   {
     name: '图灵搜',
     href: '/turingsearch.html'
@@ -86,14 +90,13 @@ const quickLinks = [
 ]
 
 const HomeIntro = ({
-  postCount = 0,
   categoryOptions = []
 }) => {
   const topics = buildTopics(categoryOptions)
   const homeDescription = buildHomeDescription()
 
   return (
-    <section className='mb-8 overflow-hidden rounded-[8px] border border-zinc-300 bg-white shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-[#111113] dark:shadow-none'>
+    <section className='mx-auto mb-8 w-full max-w-[calc(100vw-2rem)] overflow-hidden rounded-[8px] border border-zinc-300 bg-white shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-[#111113] dark:shadow-none sm:max-w-full'>
       <div className='px-5 py-6 sm:px-7 sm:py-8'>
         <div className='mb-4 flex min-w-0 flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em] text-blue-700 dark:text-blue-300 sm:text-[11px] sm:tracking-[0.18em]'>
           <span className='h-2 w-2 rounded-full bg-blue-700 dark:bg-blue-300' />
@@ -103,7 +106,7 @@ const HomeIntro = ({
         <div className='grid gap-5 lg:grid-cols-[minmax(0,1fr)_240px] lg:items-center'>
           <div className='min-w-0 max-w-[326px] sm:max-w-none'>
             <h1 className='max-w-3xl break-words text-[22px] font-black leading-tight text-zinc-950 [overflow-wrap:anywhere] dark:text-zinc-50 sm:text-3xl'>
-              外贸获客情报局：帮外贸人用海关数据找到真实进口商
+              外贸获客情报局：查谁在进口你的产品
             </h1>
             <p className='mt-3 max-w-2xl break-words text-sm font-medium leading-7 text-zinc-700 dark:text-zinc-300'>
               {homeDescription}
@@ -114,18 +117,18 @@ const HomeIntro = ({
                 onClick={() => trackCustomsDataSkillClick('home_intro_primary')}
                 className='inline-flex h-10 w-full max-w-full items-center justify-center rounded-[8px] bg-blue-700 px-4 text-sm font-bold text-white shadow-sm shadow-blue-900/20 transition hover:bg-blue-800 dark:bg-blue-400 dark:text-zinc-950 dark:hover:bg-blue-300 sm:w-auto'>
                 <i className='fas fa-database mr-2 text-xs' />
-                海关数据免费查询 Skill
+                免费查海关数据
               </a>
               <SmartLink
-                href='/customs-data.html'
+                href='/foreign-trade-tools.html'
                 className='inline-flex h-10 w-full max-w-full items-center justify-center rounded-[8px] border border-zinc-300 bg-white px-4 text-sm font-bold text-zinc-800 transition hover:border-blue-300 hover:text-blue-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-blue-700 dark:hover:text-blue-300 sm:w-auto'>
-                <i className='fas fa-layer-group mr-2 text-xs' />
-                看海关数据专题
+                <i className='fas fa-route mr-2 text-xs' />
+                看工具怎么选
               </SmartLink>
             </div>
 
             <div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-zinc-600 dark:text-zinc-400'>
-              <span className='font-bold text-zinc-800 dark:text-zinc-300'>快捷入口</span>
+              <span className='font-bold text-zinc-800 dark:text-zinc-300'>常用入口</span>
               {quickLinks.map(item => (
                 <a
                   key={item.href}
@@ -140,18 +143,18 @@ const HomeIntro = ({
 
           <div className='min-w-0 max-w-[326px] rounded-[8px] border border-zinc-300 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-950/50 sm:max-w-none'>
             <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400'>
-              核心判断
+              获客主线
             </div>
             <div className='mt-3'>
-              <div className='text-3xl font-black text-zinc-950 dark:text-zinc-50'>
-                {postCount || 0}
+              <div className='break-words text-2xl font-black leading-tight text-zinc-950 dark:text-zinc-50'>
+                查客户 / 验采购 / 做跟进
               </div>
               <div className='text-xs font-medium text-zinc-600 dark:text-zinc-400'>
-                篇实战文章
+                先判断客户值不值得开发
               </div>
             </div>
             <div className='mt-4 grid gap-2 border-t border-dashed border-zinc-300 pt-4 dark:border-zinc-800'>
-              {trustSignals.map(signal => (
+              {acquisitionSteps.map(signal => (
                 <div key={signal.label} className='flex min-w-0 flex-col gap-1 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-3'>
                   <span className='font-medium text-zinc-500 dark:text-zinc-400'>{signal.label}</span>
                   <span className='break-words font-bold text-zinc-800 dark:text-zinc-200 sm:text-right'>
@@ -171,7 +174,7 @@ const HomeIntro = ({
             <TopicLink
               key={topic.name}
               href={topic.href}
-              className='group min-h-[112px] border-b border-zinc-300 p-4 transition hover:bg-blue-50 dark:border-zinc-800 dark:hover:bg-blue-950/20 md:border-b-0 md:border-r last:md:border-r-0'>
+              className='group block min-h-[112px] min-w-0 border-b border-zinc-300 p-4 transition hover:bg-blue-50 dark:border-zinc-800 dark:hover:bg-blue-950/20 md:border-b-0 md:border-r last:md:border-r-0'>
               <div className='mb-3 flex items-center justify-between'>
                 <span className='flex h-8 w-8 items-center justify-center rounded-[8px] bg-zinc-100 text-sm text-zinc-700 transition group-hover:bg-blue-700 group-hover:text-white dark:bg-zinc-900 dark:text-zinc-300'>
                   <i className={`fas ${topic.icon}`} />
@@ -182,10 +185,10 @@ const HomeIntro = ({
                   </span>
                 )}
               </div>
-              <h2 className='text-base font-black text-zinc-950 group-hover:text-blue-800 dark:text-zinc-50 dark:group-hover:text-blue-300'>
+              <h2 className='break-words text-base font-black text-zinc-950 [overflow-wrap:anywhere] group-hover:text-blue-800 dark:text-zinc-50 dark:group-hover:text-blue-300'>
                 {topic.name}
               </h2>
-              <p className='mt-2 text-sm font-medium leading-6 text-zinc-600 dark:text-zinc-400'>
+              <p className='mt-2 max-w-[calc(100vw-4rem)] break-all text-sm font-medium leading-6 text-zinc-600 [overflow-wrap:anywhere] dark:text-zinc-400 sm:max-w-none'>
                 {topic.description}
               </p>
             </TopicLink>
@@ -215,7 +218,7 @@ const buildTopics = categoryOptions => {
 }
 
 const buildHomeDescription = () =>
-  '查谁在进口你的产品，判断买家是谁、采购量多少、采购频率如何，再把线索变成可执行的客户开发路径。'
+  '用海关数据判断买家是谁、从哪进口、采购量多少、采购频率如何，再把线索变成可执行的客户开发路径。'
 
 const buildTopicDescription = (name, fallbackDescription) => {
   if (/海关|数据|贸易/.test(name)) {

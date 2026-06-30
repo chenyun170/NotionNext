@@ -1,6 +1,7 @@
 import BLOG from '@/blog.config'
 import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
+import { getStaticFallbackMode, limitStaticPaths } from '@/lib/utils/staticPaths'
 import { DynamicLayout } from '@/themes/theme'
 
 const Tag = props => {
@@ -60,8 +61,8 @@ export async function getStaticPaths() {
     }
   })
   return {
-    paths: paths,
-    fallback: true
+    paths: limitStaticPaths(paths, 'NEXT_PREBUILD_TAG_PAGE_PATH_LIMIT', 0),
+    fallback: getStaticFallbackMode()
   }
 }
 

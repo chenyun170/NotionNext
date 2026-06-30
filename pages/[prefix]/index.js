@@ -7,6 +7,7 @@ import { useGlobal } from '@/lib/global'
 import { getPageTableOfContents } from '@/lib/db/notion/getPageTableOfContents'
 import { getPasswordQuery } from '@/lib/utils/password'
 import { checkSlugHasMorThanTwoSlash, checkSlugHasNoSlash, processPostData } from '@/lib/utils/post'
+import { getStaticFallbackMode, limitStaticPaths } from '@/lib/utils/staticPaths'
 import { DynamicLayout } from '@/themes/theme'
 import md5 from 'js-md5'
 import { useRouter } from 'next/router'
@@ -103,7 +104,7 @@ export async function getStaticPaths() {
   if (!BLOG.isProd) {
     return {
       paths: [],
-      fallback: true
+      fallback: getStaticFallbackMode()
     }
   }
 
@@ -113,8 +114,8 @@ export async function getStaticPaths() {
     ?.filter(row => checkSlugHasNoSlash(row))
     .map(row => ({ params: { prefix: row.slug } }))
   return {
-    paths: paths,
-    fallback: true
+    paths: limitStaticPaths(paths, 'NEXT_PREBUILD_TOP_LEVEL_PATH_LIMIT', 6),
+    fallback: getStaticFallbackMode()
   }
 }
 

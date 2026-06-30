@@ -4,6 +4,7 @@ import { fetchGlobalAllData, resolvePostProps } from '@/lib/db/SiteDataApi'
 import { checkSlugHasMorThanTwoSlash, processPostData } from '@/lib/utils/post'
 import { idToUuid } from 'notion-utils'
 import Slug from '..'
+import { getStaticFallbackMode, limitStaticPaths } from '@/lib/utils/staticPaths'
 
 /**
  * 根据notion的slug访问页面
@@ -23,7 +24,7 @@ export async function getStaticPaths() {
   if (!BLOG.isProd) {
     return {
       paths: [],
-      fallback: true
+      fallback: getStaticFallbackMode()
     }
   }
 
@@ -39,8 +40,8 @@ export async function getStaticPaths() {
       }
     }))
   return {
-    paths: paths,
-    fallback: true
+    paths: limitStaticPaths(paths, 'NEXT_PREBUILD_NESTED_SLUG_PATH_LIMIT', 0),
+    fallback: getStaticFallbackMode()
   }
 }
 

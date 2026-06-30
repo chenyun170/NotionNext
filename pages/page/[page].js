@@ -3,6 +3,7 @@ import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData, getPostBlocks } from '@/lib/db/SiteDataApi'
 import { getHomePostsPerPage } from '@/lib/utils/homePosts'
 import { isHomepageListPost } from '@/lib/utils/postVisibility'
+import { getStaticFallbackMode, limitStaticPaths } from '@/lib/utils/staticPaths'
 import { DynamicLayout } from '@/themes/theme'
 
 /**
@@ -25,12 +26,13 @@ export async function getStaticPaths({ locale }) {
   const totalPages = Math.ceil(
     postCount / HOME_POSTS_PER_PAGE
   )
+  const paths = Array.from({ length: totalPages - 1 }, (_, i) => ({
+      params: { page: '' + (i + 2) }
+    }))
   return {
     // remove first page, we 're not gonna handle that.
-    paths: Array.from({ length: totalPages - 1 }, (_, i) => ({
-      params: { page: '' + (i + 2) }
-    })),
-    fallback: true
+    paths: limitStaticPaths(paths, 'NEXT_PREBUILD_HOME_PAGE_PATH_LIMIT', 0),
+    fallback: getStaticFallbackMode()
   }
 }
 

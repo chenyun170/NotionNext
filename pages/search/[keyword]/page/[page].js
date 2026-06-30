@@ -5,6 +5,7 @@ import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
 import { shouldRedirectSearchToCustomsSkill } from '@/lib/utils/customsDataSkill'
 import { pickSearchResultPost } from '@/lib/utils/post'
+import { getStaticFallbackMode } from '@/lib/utils/staticPaths'
 
 const Index = props => {
   const { keyword } = props
@@ -64,8 +65,10 @@ export async function getStaticProps({ params: { keyword, page }, locale }) {
 
 export function getStaticPaths() {
   return {
-    paths: [{ params: { keyword: 'NotionNext', page: '1' } }],
-    fallback: true
+    paths: process.env.EXPORT
+      ? [{ params: { keyword: 'NotionNext', page: '1' } }]
+      : [],
+    fallback: getStaticFallbackMode()
   }
 }
 

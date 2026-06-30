@@ -1,6 +1,11 @@
 import BLOG from '@/blog.config'
 import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
+import {
+  getStaticFallbackMode,
+  limitStaticPaths,
+  prioritizeStaticPaths
+} from '@/lib/utils/staticPaths'
 import { DynamicLayout } from '@/themes/theme'
 
 /**
@@ -71,12 +76,17 @@ export async function getStaticPaths() {
   const from = 'tag-static-path'
   const { tagOptions } = await fetchGlobalAllData({ from })
   const tagNames = getTagNames(tagOptions)
+  const paths = Object.keys(tagNames).map(index => ({
+    params: { tag: tagNames[index] }
+  }))
 
   return {
-    paths: Object.keys(tagNames).map(index => ({
-      params: { tag: tagNames[index] }
-    })),
-    fallback: true
+    paths: limitStaticPaths(
+      prioritizeStaticPaths(paths, 'tag', ['海关数据', '外贸', '图灵搜', '顶易云']),
+      'NEXT_PREBUILD_TAG_PATH_LIMIT',
+      2
+    ),
+    fallback: getStaticFallbackMode()
   }
 }
 

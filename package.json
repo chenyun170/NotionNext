@@ -53,6 +53,7 @@
     "llms:generate": "node scripts/generate-static-llms.js",
     "sitemap:generate": "node scripts/generate-static-sitemaps.js",
     "deploy-check": "node scripts/deploy-check.js",
+    "warmup:isr": "node scripts/warmup-isr.js",
     "validate": "npm run health-check",
     "final-validation": "node scripts/final-validation.js"
   },

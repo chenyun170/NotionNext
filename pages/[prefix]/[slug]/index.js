@@ -3,6 +3,7 @@ import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData, resolvePostProps } from '@/lib/db/SiteDataApi'
 import Slug from '..'
 import { checkSlugHasOneSlash } from '@/lib/utils/post'
+import { getStaticFallbackMode, limitStaticPaths } from '@/lib/utils/staticPaths'
 
 /**
  * 根据notion的slug访问页面
@@ -31,8 +32,8 @@ export async function getStaticPaths() {
   // 则除了 [domain]/[slug] 以外，还支持分类名访问: [domain]/[category]/[slug]
 
   return {
-    paths: paths,
-    fallback: true
+    paths: limitStaticPaths(paths, 'NEXT_PREBUILD_SLUG_PATH_LIMIT', 2),
+    fallback: getStaticFallbackMode()
   }
 }
 

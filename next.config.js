@@ -324,33 +324,15 @@ const nextConfig = {
               { key: 'X-Content-Type-Options', value: 'nosniff' },
               { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
               { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-              { key: 'Content-Security-Policy', value: SAFE_CONTENT_SECURITY_POLICY },
-              { key: 'Access-Control-Allow-Credentials', value: 'false' },
-              { key: 'Access-Control-Allow-Origin', value: BLOG.LINK || 'https://www.123170.xyz' },
-              {
-                key: 'Access-Control-Allow-Methods',
-                value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT'
-              },
-              {
-                key: 'Access-Control-Allow-Headers',
-                value:
-                  'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-              }
+              { key: 'Content-Security-Policy', value: SAFE_CONTENT_SECURITY_POLICY }
             ]
           },
-            //   {
-            //     source: '/api/:path*',
-            //     headers: [
-            //       // API 特定的安全头部
-            //       { key: 'X-Frame-Options', value: 'DENY' },
-            //       { key: 'X-Content-Type-Options', value: 'nosniff' },
-            //       { key: 'Cache-Control', value: 'no-store, max-age=0' },
-            //       {
-            //         key: 'Access-Control-Allow-Methods',
-            //         value: 'GET,POST,PUT,DELETE,OPTIONS'
-            //       }
-            //     ]
-            //   }
+          {
+            source: '/api/:path*',
+            headers: [
+              { key: 'Cache-Control', value: 'no-store, max-age=0' }
+            ]
+          }
         ]
       },
   webpack: (config, { dev, isServer }) => {

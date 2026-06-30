@@ -117,6 +117,16 @@ export default function DiagnosePage() {
     background: '#fff', border: '1px solid #e5e7eb',
     borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 12,
   }
+  const privacyNoticeStyle = {
+    fontSize: 12,
+    color: '#92400e',
+    background: '#fffbeb',
+    border: '1px solid #fde68a',
+    borderRadius: 8,
+    padding: '8px 10px',
+    margin: '8px 0 0',
+    lineHeight: 1.6,
+  }
 
   const nextBtnStyle = (active) => ({
     padding: '10px 24px', borderRadius: 8, fontWeight: 600, fontSize: 14,
@@ -224,6 +234,9 @@ export default function DiagnosePage() {
               <p style={{ fontSize: 12, color: form.letterContent.length < 50 ? '#ef4444' : '#9ca3af', margin: '4px 0 0' }}>
                 已输入 {form.letterContent.length} 字符 {form.letterContent.length >= 50 ? '✓' : '（至少50字符）'}
               </p>
+              <p style={privacyNoticeStyle}>
+                隐私提示：点击 AI 诊断后，开发信内容会发送给第三方 AI 诊断接口用于分析。请勿提交密码、报价底价、客户隐私、未公开合同等敏感信息。
+              </p>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -277,6 +290,9 @@ export default function DiagnosePage() {
             </div>
 
             {error && <p style={{ color: '#ef4444', fontSize: 13 }}>{error}</p>}
+            <p style={{ ...privacyNoticeStyle, margin: '0 0 12px' }}>
+              提交即表示你确认已移除敏感信息，并同意将上述内容用于本次 AI 诊断分析。
+            </p>
 
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <button onClick={() => setStep(1)} style={{ padding: '10px 20px', borderRadius: 8, background: 'transparent', border: '1px solid #d1d5db', cursor: 'pointer', fontSize: 14 }}>

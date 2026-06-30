@@ -117,11 +117,14 @@ export default async function handler(req, res) {
     const rawText = await response.text()
     if (process.env.NODE_ENV === 'development') {
       console.log('[diagnose] status:', response.status)
-      console.log('[diagnose] raw:', rawText.slice(0, 300))
+      console.log('[diagnose] upstream response length:', rawText.length)
     }
 
     if (!response.ok) {
-      console.warn('[diagnose] upstream failed:', response.status, rawText.slice(0, 200))
+      console.warn('[diagnose] upstream failed:', {
+        status: response.status,
+        responseLength: rawText.length
+      })
       return res.status(response.status === 429 ? 429 : 502).json({
         error:
           response.status === 429
@@ -134,7 +137,9 @@ export default async function handler(req, res) {
     try {
       data = JSON.parse(rawText)
     } catch {
-      console.warn('[diagnose] upstream response is not json:', rawText.slice(0, 200))
+      console.warn('[diagnose] upstream response is not json:', {
+        responseLength: rawText.length
+      })
       return res.status(502).json({ error: '诊断服务返回异常，请稍后再试' })
     }
 
@@ -149,7 +154,9 @@ export default async function handler(req, res) {
     try {
       parsed = JSON.parse(clean)
     } catch {
-      console.warn('[diagnose] ai output is not json:', clean.slice(0, 200))
+      console.warn('[diagnose] ai output is not json:', {
+        outputLength: clean.length
+      })
       return res.status(502).json({ error: '诊断结果生成异常，请稍后再试' })
     }
 

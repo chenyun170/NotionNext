@@ -119,8 +119,8 @@ const urlChecks = [
   },
   {
     path: '/dingyi.html',
-    name: '顶易工具词页面',
-    contains: ['顶易外贸软件与海关数据工具怎么选', '外贸获客情报局', '最后更新', '核心结论']
+    name: '顶易品牌词页面',
+    contains: ['顶易品牌相关外贸软件与海关数据怎么配合', '外贸获客情报局', '最后更新', '核心结论']
   },
   {
     path: '/methodology.html',

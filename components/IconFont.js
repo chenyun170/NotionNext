@@ -11,9 +11,7 @@ export default function IconFont() {
 
     useEffect(() => {
         loadExternalResource('/webfonts/iconfont.js')
-            .then(u => {
-                console.log('iconfont loaded:', u);
-
+            .then(() => {
                 // 查找所有 <i> 标签且 class 包含 'icon-'
                 const iElements = document.querySelectorAll('i[class*="icon-"]');
                 iElements.forEach(element => {

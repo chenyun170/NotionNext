@@ -6,7 +6,7 @@ const resourceLinks = [
   {
     title: '外贸工具对比',
     href: '/foreign-trade-tools.html',
-    description: '图灵搜、顶易云、顶易、海关数据工具怎么选。'
+    description: '图灵搜、顶易云、顶易相关产品服务和海关数据怎么配合。'
   },
   {
     title: '客户开发工具推荐',
@@ -59,9 +59,9 @@ const resourceLinks = [
     description: '把顶易云客户池接上海关数据，再回流到跟进流程。'
   },
   {
-    title: '顶易工具选型',
+    title: '顶易品牌观察',
     href: '/dingyi.html',
-    description: '从外贸软件、客户开发和数据验证角度判断。'
+    description: '从品牌相关软件、客户开发和数据验证角度判断。'
   },
   {
     title: '数据来源与边界',

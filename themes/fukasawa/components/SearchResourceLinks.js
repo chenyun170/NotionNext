@@ -87,10 +87,10 @@ const toolKeywordResources = [
     icon: 'fa-route'
   },
   {
-    title: '顶易工具选型',
-    description: '把顶易、顶易云、图灵搜和海关数据放到同一条获客链路里比较。',
+    title: '顶易品牌观察',
+    description: '把顶易相关产品服务、顶易云、图灵搜和海关数据放到同一条获客链路里看。',
     href: '/dingyi.html',
-    icon: 'fa-screwdriver-wrench'
+    icon: 'fa-building'
   }
 ]
 

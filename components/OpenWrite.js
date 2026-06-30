@@ -26,6 +26,7 @@ const OpenWrite = () => {
   const whiteList = siteConfig('OPEN_WRITE_WHITE_LIST', '')
   // 黄名单，优先级最高，设置后只有这里的路径会被上锁，其他页面自动全部放行
   const yellowList = siteConfig('OPEN_WRITE_YELLOW_LIST', '')
+  const isDebug = process.env.NEXT_PUBLIC_DEBUG === 'true'
 
   // 登录信息
   const { isLoaded, isSignedIn } = useGlobal()
@@ -79,24 +80,32 @@ const OpenWrite = () => {
     // 优先判断黄名单
     if (yellowList && yellowList.length > 0) {
       if (!isInYellowList) {
-        console.log('当前路径不在黄名单中，放行')
+        if (isDebug) {
+          console.log('当前路径不在黄名单中，放行')
+        }
         return
       }
     } else if (isInWhiteList) {
       // 白名单中，免检
-      console.log('当前路径在白名单中，放行')
+      if (isDebug) {
+        console.log('当前路径在白名单中，放行')
+      }
       return
     }
   
     if (isSignedIn) {
       // 用户已登录免检
-      console.log('用户已登录，放行')
+      if (isDebug) {
+        console.log('用户已登录，放行')
+      }
       return
     }
   
     if (process.env.NODE_ENV === 'development') {
       // 开发环境免检
-      console.log('开发环境:屏蔽OpenWrite')
+      if (isDebug) {
+        console.log('开发环境:屏蔽OpenWrite')
+      }
       return
     }
   

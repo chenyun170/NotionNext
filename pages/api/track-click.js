@@ -36,7 +36,10 @@ const ALLOWED_ACTIONS = new Set([
   '',
   'copy_wechat',
   'dismiss_gift_widget',
-  'dismiss_activity_ad'
+  'dismiss_activity_ad',
+  'start_light_diagnosis',
+  'choose_customs_data_path',
+  'choose_email_diagnosis_path'
 ])
 const RATE_LIMIT_WINDOW_MS = 60 * 1000
 const RATE_LIMIT_MAX = 20

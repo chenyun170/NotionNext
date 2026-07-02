@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { trackSiteInteraction } from '@/lib/utils/customsDataSkillTracking'
 
 const STEPS = ['基本信息', '开发信内容', '目标受众', '诊断报告']
 
@@ -162,14 +163,22 @@ export default function DiagnosePage() {
         <meta name="description" content="外贸获客轻诊断：先判断应该从海关数据、客户名单验证，还是开发信话术优化开始。隐私提示：开发信内容会发送给第三方 AI 诊断接口，请先移除敏感信息。" />
       </Head>
 
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '2rem 1rem', fontFamily: 'system-ui, sans-serif', color: '#111827' }}>
+      <div style={{
+        width: 'min(720px, calc(100% - 32px))',
+        margin: '0 auto',
+        padding: '2rem 0',
+        boxSizing: 'border-box',
+        fontFamily: 'system-ui, sans-serif',
+        color: '#111827',
+        overflowWrap: 'anywhere'
+      }}>
 
         {/* Header */}
         <div style={{ marginBottom: '1.5rem' }}>
           <p style={{ fontSize: 12, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>
             🔬 外贸获客轻诊断
           </p>
-          <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 6px' }}>先判断问题出在线索、验证，还是话术</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 700, lineHeight: 1.25, margin: '0 0 6px', overflowWrap: 'anywhere' }}>先判断问题出在线索、验证，还是话术</h1>
           <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>
             不确定先查海关数据、图灵搜还是顶易云时，可以先把产品和开发信放进来，看看问题更像出在线索、采购验证，还是触达话术。
           </p>
@@ -194,6 +203,14 @@ export default function DiagnosePage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12, marginBottom: '1.5rem' }}>
             <a
               href={customsSkillHref}
+              onClick={() =>
+                trackSiteInteraction({
+                  source: 'diagnose_choose_customs_data',
+                  sourceGroup: 'lead',
+                  target: customsSkillHref,
+                  action: 'choose_customs_data_path'
+                })
+              }
               style={{
                 ...cardStyle,
                 display: 'block',
@@ -211,7 +228,15 @@ export default function DiagnosePage() {
 
             <button
               type="button"
-              onClick={() => document.getElementById('diagnose-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              onClick={() => {
+                trackSiteInteraction({
+                  source: 'diagnose_choose_email_review',
+                  sourceGroup: 'lead',
+                  target: '/diagnose#diagnose-form',
+                  action: 'choose_email_diagnosis_path'
+                })
+                document.getElementById('diagnose-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
               style={{
                 ...cardStyle,
                 marginBottom: 0,
@@ -276,7 +301,7 @@ export default function DiagnosePage() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginBottom: 12 }}>
               {[['currentOpenRate', '当前开信率（%）', '如：25'], ['currentReplyRate', '当前回复率（%）', '如：3']].map(([k, label, ph]) => (
                 <div key={k} style={cardStyle}>
                   <label style={{ display: 'block', fontSize: 13, color: '#6b7280', marginBottom: 6 }}>{label}</label>

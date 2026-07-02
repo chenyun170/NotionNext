@@ -1,6 +1,9 @@
 import SmartLink from '@/components/SmartLink'
 import { CUSTOMS_DATA_SKILL } from '@/lib/utils/customsDataSkill'
-import { trackCustomsDataSkillClick } from '@/lib/utils/customsDataSkillTracking'
+import {
+  trackCustomsDataSkillClick,
+  trackSiteInteraction
+} from '@/lib/utils/customsDataSkillTracking'
 
 const fallbackTopics = [
   {
@@ -106,6 +109,14 @@ const HomeIntro = ({
             <form
               action='/diagnose'
               method='get'
+              onSubmit={() =>
+                trackSiteInteraction({
+                  source: 'home_light_diagnosis_submit',
+                  sourceGroup: 'home',
+                  target: '/diagnose',
+                  action: 'start_light_diagnosis'
+                })
+              }
               className='mt-4 flex min-w-0 flex-col gap-2 rounded-[8px] border border-blue-100 bg-blue-50/50 p-3 dark:border-blue-900/50 dark:bg-blue-950/20 sm:flex-row sm:items-center'>
               <label className='min-w-0 flex-1 text-xs font-bold leading-5 text-zinc-700 dark:text-zinc-300'>
                 不确定先查什么？

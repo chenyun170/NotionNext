@@ -20,7 +20,8 @@ const urlChecks = [
     path: '/',
     name: '首页',
     timeoutMs: 60000,
-    contains: ['<!DOCTYPE html', '外贸获客情报局', '海关数据与外贸获客实战情报站', '海关数据免费查询']
+    contains: ['<!DOCTYPE html', '外贸获客情报局', '海关数据与外贸获客实战情报站', '海关数据免费查询'],
+    disallowHeaders: ['access-control-allow-origin']
   },
   {
     path: '/customs-data-skill.html',
@@ -230,10 +231,30 @@ const urlChecks = [
     expectedStatus: 413,
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
+      privacyConfirmed: true,
       form: {
         letterContent: 'x'.repeat(12050)
       }
-    })
+    }),
+    disallowHeaders: ['access-control-allow-origin']
+  },
+  {
+    path: '/api/diagnose',
+    name: '诊断接口隐私确认保护',
+    method: 'POST',
+    expectedStatus: 400,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      form: {
+        letterContent: 'This is a deploy-check sample email with enough length to pass the minimum content validation.'
+      }
+    }),
+    contains: ['请先确认已移除敏感信息']
+  },
+  {
+    path: '/diagnose',
+    name: '诊断页隐私提示',
+    contains: ['隐私提示', '第三方 AI 诊断接口', '密码', '报价底价', '客户隐私']
   },
   { path: '/skill-stats.html', name: '统计看板页面', contains: ['noindex'] },
   { path: '/api/sidebar-tools', name: '侧栏工具接口', contains: ['"ok":true'] }
@@ -257,6 +278,7 @@ function requestUrl(url, options = {}) {
         const body = Buffer.concat(chunks).toString('utf8')
         resolve({
           body,
+          headers: response.headers,
           ok: response.statusCode >= 200 && response.statusCode < 400,
           status: response.statusCode,
           duration: Date.now() - startedAt
@@ -314,18 +336,24 @@ async function checkUrls() {
       statusOk &&
       (!check.contains ||
         check.contains.every(item => result.body.includes(item)))
+    const headersOk =
+      statusOk &&
+      (!check.disallowHeaders ||
+        check.disallowHeaders.every(header => result.headers?.[header] === undefined))
 
-    results.push(contentOk)
+    const checkOk = contentOk && headersOk
+    results.push(checkOk)
     if (String(result.error || '').includes('ECONNREFUSED')) {
       connectionRefusedCount += 1
     }
 
-    const icon = contentOk ? '✓' : '✗'
+    const icon = checkOk ? '✓' : '✗'
     const detail = result.error ? ` - ${result.error}` : ''
     const contentNote = result.ok && !contentOk ? ' - 内容校验未通过' : ''
+    const headerNote = statusOk && !headersOk ? ' - 响应头校验未通过' : ''
 
     console.log(
-      `${icon} ${check.name} ${result.status} ${result.duration}ms ${url}${detail}${contentNote}`
+      `${icon} ${check.name} ${result.status} ${result.duration}ms ${url}${detail}${contentNote}${headerNote}`
     )
   }
 

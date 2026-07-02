@@ -68,6 +68,7 @@ export default function DiagnosePage() {
   const [loading, setLoading] = useState(false)
   const [report, setReport] = useState(null)
   const [error, setError] = useState('')
+  const [privacyConfirmed, setPrivacyConfirmed] = useState(false)
 
   const [form, setForm] = useState({
     productName: '', industry: '', letterContent: '',
@@ -88,7 +89,7 @@ export default function DiagnosePage() {
       const res = await fetch('/api/diagnose', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ form }),
+        body: JSON.stringify({ form, privacyConfirmed }),
       })
       const data = await res.json()
       if (data.error) throw new Error(data.error)
@@ -103,7 +104,7 @@ export default function DiagnosePage() {
 
   const canNext0 = form.productName && form.industry
   const canNext1 = form.letterContent.trim().length > 50
-  const canNext2 = form.targetMarket && form.targetRole
+  const canNext2 = form.targetMarket && form.targetRole && privacyConfirmed
 
   const btnStyle = (active) => ({
     padding: '8px 16px', fontSize: 13, borderRadius: 8,
@@ -139,7 +140,7 @@ export default function DiagnosePage() {
     <>
       <Head>
         <title>开发信转化率诊断 | 外贸获客情报局</title>
-        <meta name="description" content="AI 深度分析外贸开发信，找出转化瓶颈，给出可操作的优化建议" />
+        <meta name="description" content="AI 深度分析外贸开发信，找出转化瓶颈，给出可操作的优化建议。隐私提示：开发信内容会发送给第三方 AI 诊断接口，请先移除密码、报价底价、客户隐私和未公开合同等敏感信息。" />
       </Head>
 
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '2rem 1rem', fontFamily: 'system-ui, sans-serif', color: '#111827' }}>
@@ -290,9 +291,17 @@ export default function DiagnosePage() {
             </div>
 
             {error && <p style={{ color: '#ef4444', fontSize: 13 }}>{error}</p>}
-            <p style={{ ...privacyNoticeStyle, margin: '0 0 12px' }}>
-              提交即表示你确认已移除敏感信息，并同意将上述内容用于本次 AI 诊断分析。
-            </p>
+            <label style={{ ...privacyNoticeStyle, margin: '0 0 12px', display: 'flex', gap: 8, alignItems: 'flex-start', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={privacyConfirmed}
+                onChange={e => setPrivacyConfirmed(e.target.checked)}
+                style={{ marginTop: 3 }}
+              />
+              <span>
+                我已移除密码、报价底价、客户隐私、未公开合同等敏感信息，并同意将上述内容发送给第三方 AI 诊断接口用于本次分析。
+              </span>
+            </label>
 
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <button onClick={() => setStep(1)} style={{ padding: '10px 20px', borderRadius: 8, background: 'transparent', border: '1px solid #d1d5db', cursor: 'pointer', fontSize: 14 }}>
@@ -421,7 +430,7 @@ export default function DiagnosePage() {
             )}
 
             <div style={{ textAlign: 'center' }}>
-              <button onClick={() => { setStep(0); setReport(null); setForm({ productName: '', industry: '', letterContent: '', currentOpenRate: '', currentReplyRate: '', targetMarket: '', targetRole: '', painPoints: '', uniqueAdvantage: '' }) }}
+              <button onClick={() => { setStep(0); setReport(null); setPrivacyConfirmed(false); setForm({ productName: '', industry: '', letterContent: '', currentOpenRate: '', currentReplyRate: '', targetMarket: '', targetRole: '', painPoints: '', uniqueAdvantage: '' }) }}
                 style={{ padding: '10px 24px', borderRadius: 8, background: 'transparent', border: '1px solid #d1d5db', cursor: 'pointer', fontSize: 13, color: '#6b7280' }}>
                 🔄 重新诊断另一封开发信
               </button>

@@ -14,6 +14,10 @@ const DIAGNOSE_API_TIMEOUT_MS = readPositiveInteger(
   'DIAGNOSE_API_TIMEOUT_MS',
   20000
 )
+const DIAGNOSE_API_URL =
+  process.env.DIAGNOSE_API_URL ||
+  'https://blazeai.boxu.dev/api/chat/completions'
+const DIAGNOSE_MODEL = process.env.DIAGNOSE_MODEL || 'grok-4.1-fast'
 const diagnoseRateLimitStore = new Map()
 
 export const config = {
@@ -32,6 +36,12 @@ export default async function handler(req, res) {
   const form = req.body?.form
   if (!form || !form.letterContent) {
     return res.status(400).json({ error: '缺少开发信内容' })
+  }
+
+  if (req.body?.privacyConfirmed !== true) {
+    return res.status(400).json({
+      error: '请先确认已移除敏感信息，并同意用于本次 AI 诊断'
+    })
   }
 
   const letterContent = normalizeText(
@@ -94,7 +104,7 @@ export default async function handler(req, res) {
   try {
     const controller = new AbortController()
     timeout = setTimeout(() => controller.abort(), DIAGNOSE_API_TIMEOUT_MS)
-    const response = await fetch('https://blazeai.boxu.dev/api/chat/completions', {
+    const response = await fetch(DIAGNOSE_API_URL, {
       method: 'POST',
       signal: controller.signal,
       headers: {
@@ -102,7 +112,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.BLAZEAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'grok-4.1-fast',
+        model: DIAGNOSE_MODEL,
         stream: false,
         max_tokens: 2000,
         messages: [

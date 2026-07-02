@@ -104,6 +104,11 @@ const urlChecks = [
     contains: ['图灵搜和海关数据区别', '核心结论', '免费查海关数据']
   },
   {
+    path: '/turingsearch-customs-data-lead-validation.html',
+    name: '图灵搜线索验证组合页',
+    contains: ['图灵搜找到客户后，怎么判断值不值得开发', '核心结论', '免费查海关数据']
+  },
+  {
     path: '/dingyiyun.html',
     name: '顶易云工具词页面',
     contains: ['顶易云外贸获客工具观察', '外贸获客情报局', '最后更新', '核心结论']
@@ -117,6 +122,11 @@ const urlChecks = [
     path: '/dingyiyun-customs-data.html',
     name: '顶易云和海关数据配合页面',
     contains: ['顶易云和海关数据', '核心结论', '免费查海关数据']
+  },
+  {
+    path: '/dingyiyun-customs-data-lead-validation.html',
+    name: '顶易云线索验证组合页',
+    contains: ['顶易云获客后，怎么判断客户值不值得开发', '核心结论', '免费查海关数据']
   },
   {
     path: '/dingyi.html',

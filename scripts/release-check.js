@@ -9,6 +9,7 @@ const releaseBaseUrl =
 
 async function main() {
   await runCommand('类型检查', 'npm run type-check')
+  await runCommand('结构化数据校验', 'npm run seo-jsonld')
   await runCommand('干净构建', 'npm run build:clean')
 
   const server = spawn(`npm run start -- -p ${releasePort}`, {

@@ -248,8 +248,18 @@ const nextConfig = {
             permanent: true
           },
           {
+            source: '/turingsearch-customs-data-lead-validation',
+            destination: '/turingsearch-customs-data-lead-validation.html',
+            permanent: true
+          },
+          {
             source: '/dingyiyun-customs-data',
             destination: '/dingyiyun-customs-data.html',
+            permanent: true
+          },
+          {
+            source: '/dingyiyun-customs-data-lead-validation',
+            destination: '/dingyiyun-customs-data-lead-validation.html',
             permanent: true
           },
           {

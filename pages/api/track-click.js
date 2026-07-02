@@ -11,7 +11,8 @@ const ALLOWED_TARGET_HOSTS = new Set([
   'oraskl.com',
   'h.topeasysoft.com',
   'topeasysoft.com',
-  'www.topeasysoft.com'
+  'www.topeasysoft.com',
+  't.smartsousou.com'
 ])
 const ALLOWED_SITE_HOSTS = new Set(['www.123170.xyz', '123170.xyz'])
 const BLOCKED_INTERNAL_TARGET_PREFIXES = ['/api/', '/_next/', '/js/', '/fonts/']

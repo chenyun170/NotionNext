@@ -65,30 +65,6 @@ const acquisitionSteps = [
   }
 ]
 
-const quickLinks = [
-  {
-    name: '海关数据',
-    href: '/customs-data.html'
-  },
-  {
-    name: '图灵搜',
-    href: '/turingsearch.html'
-  },
-  {
-    name: '顶易云',
-    href: '/dingyiyun.html'
-  },
-  {
-    name: '顶易品牌观察',
-    href: '/dingyi.html',
-    title: '顶易是公司/品牌名，这里用于观察其相关外贸软件、线索管理、触达跟进和海关数据如何组合。'
-  },
-  {
-    name: '工具对比',
-    href: '/foreign-trade-tools.html'
-  }
-]
-
 const HomeIntro = ({
   categoryOptions = []
 }) => {
@@ -123,22 +99,30 @@ const HomeIntro = ({
                 href='/foreign-trade-tools.html'
                 className='inline-flex h-10 w-full max-w-full items-center justify-center rounded-[8px] border border-zinc-300 bg-white px-4 text-sm font-bold text-zinc-800 transition hover:border-blue-300 hover:text-blue-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-blue-700 dark:hover:text-blue-300 sm:w-auto'>
                 <i className='fas fa-route mr-2 text-xs' />
-                看工具怎么选
+                看工具怎么搭配
               </SmartLink>
             </div>
 
-            <div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-zinc-600 dark:text-zinc-400'>
-              <span className='font-bold text-zinc-800 dark:text-zinc-300'>常用入口</span>
-              {quickLinks.map(item => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  title={item.title || item.name}
-                  className='font-semibold text-zinc-600 transition hover:text-blue-700 dark:text-zinc-400 dark:hover:text-blue-300'>
-                  {item.name}
-                </a>
-              ))}
-            </div>
+            <form
+              action='/diagnose'
+              method='get'
+              className='mt-4 flex min-w-0 flex-col gap-2 rounded-[8px] border border-blue-100 bg-blue-50/50 p-3 dark:border-blue-900/50 dark:bg-blue-950/20 sm:flex-row sm:items-center'>
+              <label className='min-w-0 flex-1 text-xs font-bold leading-5 text-zinc-700 dark:text-zinc-300'>
+                不确定先查什么？
+                <input
+                  name='product'
+                  type='text'
+                  placeholder='输入产品词，比如 LED 灯、轴承'
+                  className='mt-2 h-9 w-full rounded-[8px] border border-blue-100 bg-white px-3 text-xs font-semibold text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-blue-400 dark:border-blue-900/60 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500'
+                />
+              </label>
+              <button
+                type='submit'
+                className='inline-flex h-9 shrink-0 items-center justify-center rounded-[8px] bg-zinc-950 px-3 text-xs font-bold text-white transition hover:bg-blue-800 dark:bg-blue-300 dark:text-zinc-950 dark:hover:bg-blue-200'>
+                先做轻诊断
+              </button>
+            </form>
+
           </div>
 
           <div className='min-w-0 max-w-[326px] rounded-[8px] border border-zinc-300 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-950/50 sm:max-w-none'>
@@ -150,7 +134,7 @@ const HomeIntro = ({
                 查客户 / 验采购 / 做跟进
               </div>
               <div className='text-xs font-medium text-zinc-600 dark:text-zinc-400'>
-                先判断客户值不值得开发
+                把精力先放在真正买过的人身上
               </div>
             </div>
             <div className='mt-4 grid gap-2 border-t border-dashed border-zinc-300 pt-4 dark:border-zinc-800'>
@@ -218,7 +202,7 @@ const buildTopics = categoryOptions => {
 }
 
 const buildHomeDescription = () =>
-  '用海关数据判断买家是谁、从哪进口、采购量多少、采购频率如何，再把线索变成可执行的客户开发路径。'
+  '别先急着群发开发信。先看看哪些公司真的在进口类似产品、买了多少、多久买一次，再决定谁值得优先跟进。'
 
 const buildTopicDescription = (name, fallbackDescription) => {
   if (/海关|数据|贸易/.test(name)) {

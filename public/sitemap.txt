@@ -28,7 +28,3 @@ https://www.123170.xyz/faq.html
 https://www.123170.xyz/about.html
 https://www.123170.xyz/methodology.html
 https://www.123170.xyz/data-sources-limitations.html
-https://www.123170.xyz/archive
-https://www.123170.xyz/category
-https://www.123170.xyz/tag
-https://www.123170.xyz/search

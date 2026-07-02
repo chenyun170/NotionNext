@@ -248,6 +248,10 @@ const getTargetType = target => {
       return 'oraskl_outbound'
     }
 
+    if (url.hostname === 't.smartsousou.com') {
+      return 'turingsearch_outbound'
+    }
+
     if (url.hostname === 'h.topeasysoft.com') {
       if (url.pathname.includes('tls')) {
         return 'turingsearch_outbound'

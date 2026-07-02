@@ -2,8 +2,9 @@
 // 这个文件放在你 GitHub 项目的 pages/ 目录下
 // 访问地址：https://www.123170.xyz/diagnose
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 const STEPS = ['基本信息', '开发信内容', '目标受众', '诊断报告']
 
@@ -64,6 +65,7 @@ function ScoreRing({ score, size = 90 }) {
 }
 
 export default function DiagnosePage() {
+  const router = useRouter()
   const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [report, setReport] = useState(null)
@@ -77,6 +79,20 @@ export default function DiagnosePage() {
   })
 
   const up = (k, v) => setForm(f => ({ ...f, [k]: v }))
+
+  useEffect(() => {
+    if (!router.isReady || form.productName) return
+    const product = Array.isArray(router.query.product)
+      ? router.query.product[0]
+      : router.query.product
+
+    if (product) {
+      setForm(current => ({
+        ...current,
+        productName: product.slice(0, 80)
+      }))
+    }
+  }, [router.isReady, router.query.product, form.productName])
 
   const industries = ['机械设备', '电子元器件', '纺织服装', '化工原料', '家具家居', '食品农产品', '医疗器械', '汽车配件', '其他']
   const markets = ['北美', '欧洲', '东南亚', '中东', '南美', '非洲', '日韩', '澳洲']
@@ -105,6 +121,9 @@ export default function DiagnosePage() {
   const canNext0 = form.productName && form.industry
   const canNext1 = form.letterContent.trim().length > 50
   const canNext2 = form.targetMarket && form.targetRole && privacyConfirmed
+  const customsSkillHref = form.productName
+    ? `/customs-data-skill.html?product=${encodeURIComponent(form.productName)}`
+    : '/customs-data-skill.html'
 
   const btnStyle = (active) => ({
     padding: '8px 16px', fontSize: 13, borderRadius: 8,
@@ -139,8 +158,8 @@ export default function DiagnosePage() {
   return (
     <>
       <Head>
-        <title>开发信转化率诊断 | 外贸获客情报局</title>
-        <meta name="description" content="AI 深度分析外贸开发信，找出转化瓶颈，给出可操作的优化建议。隐私提示：开发信内容会发送给第三方 AI 诊断接口，请先移除密码、报价底价、客户隐私和未公开合同等敏感信息。" />
+        <title>外贸获客轻诊断 | 外贸获客情报局</title>
+        <meta name="description" content="外贸获客轻诊断：先判断应该从海关数据、客户名单验证，还是开发信话术优化开始。隐私提示：开发信内容会发送给第三方 AI 诊断接口，请先移除敏感信息。" />
       </Head>
 
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '2rem 1rem', fontFamily: 'system-ui, sans-serif', color: '#111827' }}>
@@ -148,13 +167,68 @@ export default function DiagnosePage() {
         {/* Header */}
         <div style={{ marginBottom: '1.5rem' }}>
           <p style={{ fontSize: 12, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>
-            🔬 外贸开发信诊断
+            🔬 外贸获客轻诊断
           </p>
-          <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 6px' }}>落地页转化率诊断报告</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 6px' }}>先判断问题出在线索、验证，还是话术</h1>
           <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>
-            输入开发信内容，AI 深度分析转化瓶颈，给出可操作的优化建议
+            不确定先查海关数据、图灵搜还是顶易云时，可以先把产品和开发信放进来，看看问题更像出在线索、采购验证，还是触达话术。
+          </p>
+          <div style={{
+            marginTop: 12,
+            border: '1px solid #dbeafe',
+            background: '#eff6ff',
+            borderRadius: 10,
+            padding: '10px 12px',
+            color: '#1e3a8a',
+            fontSize: 13,
+            lineHeight: 1.7
+          }}>
+            简单判断：还没有客户名单，先从海关数据看谁真的在进口；已经有名单，先用采购记录验证优先级；已经在发开发信，就重点看话术和跟进节奏。
+          </div>
+          <p style={{ fontSize: 12, color: '#92400e', margin: '8px 0 0', lineHeight: 1.6 }}>
+            隐私提示：提交开发信前，请先删除密码、报价底价、客户隐私、未公开合同等敏感信息。
           </p>
         </div>
+
+        {step < 3 && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12, marginBottom: '1.5rem' }}>
+            <a
+              href={customsSkillHref}
+              style={{
+                ...cardStyle,
+                display: 'block',
+                textDecoration: 'none',
+                borderColor: '#bfdbfe',
+                background: '#eff6ff',
+                color: '#111827'
+              }}>
+              <p style={{ margin: '0 0 4px', fontSize: 12, fontWeight: 700, color: '#1d4ed8' }}>还没有客户名单</p>
+              <h2 style={{ margin: '0 0 8px', fontSize: 16 }}>先查谁真的在进口</h2>
+              <p style={{ margin: 0, fontSize: 13, color: '#475569', lineHeight: 1.7 }}>
+                先用产品词或 HS 编码查真实进口商，再看采购量、采购频率和供应商关系。
+              </p>
+            </a>
+
+            <button
+              type="button"
+              onClick={() => document.getElementById('diagnose-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              style={{
+                ...cardStyle,
+                marginBottom: 0,
+                textAlign: 'left',
+                cursor: 'pointer',
+                borderColor: '#bbf7d0',
+                background: '#f0fdf4',
+                color: '#111827'
+              }}>
+              <p style={{ margin: '0 0 4px', fontSize: 12, fontWeight: 700, color: '#15803d' }}>已有名单或开发信</p>
+              <h2 style={{ margin: '0 0 8px', fontSize: 16 }}>继续做开发信诊断</h2>
+              <p style={{ margin: 0, fontSize: 13, color: '#475569', lineHeight: 1.7 }}>
+                如果已经在发邮件，重点看目标客户、痛点、价值主张和跟进动作是否清楚。
+              </p>
+            </button>
+          </div>
+        )}
 
         {/* Step indicator */}
         {step < 3 && (
@@ -181,7 +255,7 @@ export default function DiagnosePage() {
 
         {/* Step 0: 基本信息 */}
         {step === 0 && (
-          <div>
+          <div id="diagnose-form">
             <div style={cardStyle}>
               <label style={{ display: 'block', fontSize: 13, color: '#6b7280', marginBottom: 6 }}>
                 产品 / 公司名称 <span style={{ color: '#ef4444' }}>*</span>

@@ -30,7 +30,7 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
       <div className={`relative overflow-hidden p-5 rounded-2xl border border-white/20 shadow-2xl backdrop-blur-md bg-white/70 dark:bg-[#1a1a1a]/70`}>
         <button
           type='button'
-          aria-label='关闭活动广告'
+          aria-label='关闭工具入口'
           onClick={onDismiss}
           className='absolute right-2 top-2 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[11px] text-gray-500 shadow-sm transition hover:bg-orange-50 hover:text-orange-600 dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-orange-300'
         >
@@ -44,17 +44,17 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[10px] font-black bg-orange-500 text-white px-2 py-0.5 rounded-md uppercase tracking-tighter">
-              Limited Offer
+              先试一下
             </span>
             <i className="fas fa-bullhorn text-orange-500 animate-bounce text-xs"></i>
           </div>
           
           <h3 className="text-sm font-black text-gray-800 dark:text-white mb-2 leading-tight">
-            {config.title || '图灵搜618优惠'}
+            {config.title || '图灵搜免费体验'}
           </h3>
           
           <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
-            🔥 不仅价格便宜， <span className="text-orange-600 font-bold">还赠送功能!</span>
+            {config.floatingDescription || '找到客户后，先用数据确认它是不是真的在买。'}
           </p>
           
           <a 
@@ -71,7 +71,7 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
             }
             className="block w-full py-2.5 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-center text-xs font-bold rounded-xl shadow-lg shadow-orange-500/30 transition-all active:scale-95"
           >
-            立即参与 <i className="fas fa-arrow-right ml-1"></i>
+            {config.buttonText || '去看看'} <i className="fas fa-arrow-right ml-1"></i>
           </a>
         </div>
       </div>
@@ -97,7 +97,7 @@ const InlineActivityCard = ({ config, isActive }) => {
           <span className='line-clamp-1'>{config.title}</span>
         </div>
         <span className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${config.badgeClass}`}>
-          限时
+          {config.badgeText || '入口'}
         </span>
       </div>
       <p className='pl-9 text-xs leading-5 text-zinc-600 dark:text-zinc-400'>
@@ -125,15 +125,16 @@ const InlineActivityCard = ({ config, isActive }) => {
 // --- 活动配置 (统一管理) ---
 const activityConfigs = {
   activity1: {
-    deadline: new Date('2026-07-01T00:00:00+08:00'),
-    title: '618图灵搜优惠',
-    productName: '外贸获客工具',
-    description: '价格便宜，功能升级！',
-    emoji: '🔥',
-    link: 'https://h.topeasysoft.com/20260618tls/index.html?i=BB54F6',
+    title: '图灵搜免费体验',
+    productName: '图灵搜',
+    description: '找到公司名单后，先用海关数据确认它有没有真实采购。',
+    floatingDescription: '先找一批潜在客户，再用海关数据筛掉不值得跟进的名单。',
+    emoji: '🔎',
+    link: 'https://t.smartsousou.com/m?i=BB54F6',
     tool: 'turingsearch',
     trackSource: 'activity_turingsearch',
-    buttonText: '立即参与',
+    buttonText: '去体验',
+    badgeText: '先试',
     bgColor: 'bg-amber-50/45 dark:bg-amber-950/20',
     borderColor: 'border-amber-100 dark:border-amber-900/50',
     textColor: 'text-amber-700 dark:text-amber-300',
@@ -144,15 +145,16 @@ const activityConfigs = {
     animation: 'animate-bounce'
   },
   activity2: {
-    deadline: new Date('2026-07-01T00:00:00+08:00'),
-    title: '活动二：顶易云618活动',
-    productName: '高阶获客工具',
-    description: '限时赠送功能升级！',
-    emoji: '🚀',
+    title: '顶易云工具入口',
+    productName: '顶易云',
+    description: '适合把线索、触达和后续跟进放在同一条流程里。',
+    floatingDescription: '如果客户线索已经不少，可以用工具把跟进节奏管起来。',
+    emoji: '☁️',
     link: 'https://h.topeasysoft.com/20260618dyy/index.html?i=BB54F6',
     tool: 'dingyiyun',
     trackSource: 'activity_dingyiyun',
-    buttonText: '查看详情',
+    buttonText: '了解一下',
+    badgeText: '工具',
     bgColor: 'bg-blue-50/45 dark:bg-blue-950/20',
     borderColor: 'border-blue-100 dark:border-blue-900/50',
     textColor: 'text-blue-600 dark:text-blue-400',
@@ -168,7 +170,8 @@ const getActiveActivities = () => {
   const now = new Date()
   const activeActivities = {}
   Object.keys(activityConfigs).forEach(key => {
-    activeActivities[key] = now < activityConfigs[key].deadline
+    activeActivities[key] =
+      !activityConfigs[key].deadline || now < activityConfigs[key].deadline
   })
   return activeActivities
 }

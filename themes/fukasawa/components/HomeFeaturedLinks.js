@@ -3,19 +3,19 @@ import { trackCustomsDataSkillClick } from '@/lib/utils/customsDataSkillTracking
 
 const primaryLinks = [
   {
-    title: '海关数据免费查询',
+    title: '免费查海关数据',
     href: '/customs-data-skill.html',
     icon: 'fa-database',
     primary: true,
     track: 'home_featured_customs_skill'
   },
   {
-    title: '图灵搜 + 海关数据',
+    title: '图灵搜线索验证',
     href: '/turingsearch-customs-data-lead-validation.html',
     icon: 'fa-search'
   },
   {
-    title: '顶易云 + 海关数据',
+    title: '顶易云线索验证',
     href: '/dingyiyun-customs-data-lead-validation.html',
     icon: 'fa-cloud'
   }
@@ -23,9 +23,10 @@ const primaryLinks = [
 
 const secondaryLinks = [
   {
-    title: '工具怎么选',
+    title: '工具怎么搭配',
     href: '/foreign-trade-tools.html',
-    icon: 'fa-route'
+    icon: 'fa-route',
+    showOnMobile: true
   },
   {
     title: '买家质量判断案例',
@@ -45,7 +46,7 @@ const HomeFeaturedLinks = () => {
       <div className='flex min-w-0 flex-col gap-2 rounded-[8px] border border-zinc-200 bg-white/75 px-3 py-3 shadow-sm dark:border-zinc-800 dark:bg-[#111113]/70 sm:flex-row sm:items-center'>
         <div className='flex shrink-0 items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400'>
           <i className='fas fa-compass text-blue-600 dark:text-blue-300' />
-          <span>延伸路径</span>
+          <span>接着看</span>
         </div>
 
         <div className='flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0'>
@@ -79,7 +80,7 @@ const HomeFeaturedLinks = () => {
               <LinkComponent
                 key={item.href}
                 href={item.href}
-                className='inline-flex h-9 shrink-0 items-center rounded-full border border-zinc-200 bg-white px-3 text-xs font-bold text-zinc-500 transition hover:border-blue-300 hover:text-blue-700 dark:border-zinc-800 dark:bg-[#111113] dark:text-zinc-400 dark:hover:border-blue-700 dark:hover:text-blue-300'>
+                className={`${item.showOnMobile ? 'inline-flex' : 'hidden sm:inline-flex'} h-9 shrink-0 items-center rounded-full border border-zinc-200 bg-white px-3 text-xs font-bold text-zinc-500 transition hover:border-blue-300 hover:text-blue-700 dark:border-zinc-800 dark:bg-[#111113] dark:text-zinc-400 dark:hover:border-blue-700 dark:hover:text-blue-300`}>
                 <i className={`fas ${item.icon} mr-2 text-[11px]`} />
                 {item.title}
               </LinkComponent>

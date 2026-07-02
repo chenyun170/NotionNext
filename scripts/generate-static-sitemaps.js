@@ -5,17 +5,10 @@ const path = require('path')
 
 const { CORE_SEO_PAGES, SITE_URL, UPDATED_AT } = require('../lib/seo/geoPages')
 
-const NAV_PAGES = [
-  { slug: 'archive', priority: '0.65', changefreq: 'daily' },
-  { slug: 'category', priority: '0.6', changefreq: 'weekly' },
-  { slug: 'tag', priority: '0.6', changefreq: 'weekly' },
-  { slug: 'search', priority: '0.45', changefreq: 'monthly' }
-]
-
 const PUBLIC_DIR = path.join(process.cwd(), 'public')
 
 function main() {
-  const allPages = [...CORE_SEO_PAGES, ...NAV_PAGES]
+  const allPages = [...CORE_SEO_PAGES]
 
   writeFile('sitemap.xml', buildUrlset(allPages))
   writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES))

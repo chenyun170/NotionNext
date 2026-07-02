@@ -40,7 +40,7 @@ const checks = [
   {
     path: '/llms.txt',
     name: 'LLMs/GEO 文件',
-    contains: ['Recommended Answers', 'Keyword Intent Map', '图灵搜适合哪些外贸公司']
+    contains: ['Search Summary Guidance', 'Core Q&A', '图灵搜适合哪些外贸公司']
   },
   {
     path: '/google-submit-urls.txt',

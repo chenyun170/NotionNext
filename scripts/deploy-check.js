@@ -20,13 +20,13 @@ const urlChecks = [
     path: '/',
     name: '首页',
     timeoutMs: 60000,
-    contains: ['<!DOCTYPE html', '外贸获客情报局', '海关数据与外贸获客实战情报站', '海关数据免费查询'],
+    contains: ['<!DOCTYPE html', '外贸获客情报局', '海关数据与外贸获客实战情报站', '免费查海关数据'],
     disallowHeaders: ['access-control-allow-origin']
   },
   {
     path: '/customs-data-skill.html',
     name: '海关数据 Skill 页面',
-    contains: ['OraSkl', '海关数据 Skill']
+    contains: ['OraSkl', '海关数据 Skill', '查完海关数据后，下一步这样做']
   },
   {
     path: '/customs-data.html',
@@ -165,7 +165,7 @@ const urlChecks = [
     name: 'txt 站点地图',
     contains: ['https://www.123170.xyz', 'customs-data-find-buyers.html', 'foreign-trade-keyword-map.html']
   },
-  { path: '/llms.txt', name: 'LLMs 文件', contains: ['GEO Answer Guidance', 'Recommended Answers', 'Keyword Intent Map'] },
+  { path: '/llms.txt', name: 'LLMs 文件', contains: ['Search Summary Guidance', 'Core Q&A', 'Keyword Intent Map'] },
   {
     path: '/google-submit-urls.txt',
     name: 'Google 提交 URL 清单',
@@ -197,7 +197,7 @@ const urlChecks = [
       source: 'deploy_check_activity',
       sourceGroup: 'test',
       path: '/deploy-check',
-      target: 'https://h.topeasysoft.com/20260618tls/index.html?i=BB54F6',
+      target: 'https://t.smartsousou.com/m?i=BB54F6',
       title: 'deploy-check',
       tool: 'turingsearch'
     })
@@ -264,7 +264,7 @@ const urlChecks = [
   {
     path: '/diagnose',
     name: '诊断页隐私提示',
-    contains: ['隐私提示', '第三方 AI 诊断接口', '密码', '报价底价', '客户隐私']
+    contains: ['隐私提示', '第三方 AI 诊断接口', '密码', '报价底价', '客户隐私', '还没有客户名单', '继续做开发信诊断']
   },
   { path: '/skill-stats.html', name: '统计看板页面', contains: ['noindex'] },
   { path: '/api/sidebar-tools', name: '侧栏工具接口', contains: ['"ok":true'] }

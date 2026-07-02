@@ -236,6 +236,22 @@ const urlChecks = [
   },
   {
     path: '/api/track-click',
+    name: '诊断结果转化追踪接口',
+    method: 'POST',
+    expectedStatus: 204,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      event: 'site_interaction',
+      source: 'deploy_check_diagnosis_result',
+      sourceGroup: 'test',
+      path: '/deploy-check',
+      target: '/customs-data-skill.html',
+      title: 'deploy-check',
+      action: 'diagnose_result_open_customs_data'
+    })
+  },
+  {
+    path: '/api/track-click',
     name: '互动追踪脏数据拦截',
     method: 'POST',
     expectedStatus: 400,

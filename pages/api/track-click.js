@@ -39,7 +39,10 @@ const ALLOWED_ACTIONS = new Set([
   'dismiss_activity_ad',
   'start_light_diagnosis',
   'choose_customs_data_path',
-  'choose_email_diagnosis_path'
+  'choose_email_diagnosis_path',
+  'diagnose_error_open_customs_data',
+  'diagnose_result_open_customs_data',
+  'restart_diagnosis'
 ])
 const RATE_LIMIT_WINDOW_MS = 60 * 1000
 const RATE_LIMIT_MAX = 20

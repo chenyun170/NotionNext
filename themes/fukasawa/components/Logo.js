@@ -48,10 +48,10 @@ const Logo = props => {
       <SmartLink href='/' className='flex flex-row items-center gap-2 group cursor-pointer lg:flex-col lg:items-start lg:gap-0'>
         
 {/* Logo 图标容器 */}
-<div className='relative'> 
+<div className='relative overflow-hidden rounded-full'>
   <img 
     src='/logo.png' 
-    className='h-10 w-10 min-w-10 object-contain transition-all duration-500 ease-in-out transform hover:rotate-12 inline-block lg:mb-2 lg:h-16 lg:w-16 lg:min-w-[72px]'
+    className='h-10 w-10 min-w-10 rounded-full object-cover transition-all duration-500 ease-in-out transform hover:rotate-12 inline-block lg:mb-2 lg:h-16 lg:w-16 lg:min-w-[72px]'
     alt={siteConfig('TITLE')} 
   />
 </div>

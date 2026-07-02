@@ -5,7 +5,10 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { trackSiteInteraction } from '@/lib/utils/customsDataSkillTracking'
+import {
+  trackSiteInteraction,
+  trackToolOutboundClick
+} from '@/lib/utils/customsDataSkillTracking'
 
 const STEPS = ['基本信息', '开发信内容', '目标受众', '诊断报告']
 
@@ -30,6 +33,8 @@ const categoryIcons = {
   clarity: '👁️',
   urgency: '⏰',
 }
+
+const TURINGSEARCH_TRIAL_URL = 'https://t.smartsousou.com/m?i=BB54F6'
 
 function ScoreBar({ score }) {
   const color =
@@ -126,6 +131,30 @@ export default function DiagnosePage() {
     ? `/customs-data-skill.html?product=${encodeURIComponent(form.productName)}`
     : '/customs-data-skill.html'
 
+  const resetDiagnosis = (source = 'diagnose_reset') => {
+    trackSiteInteraction({
+      source,
+      sourceGroup: 'lead',
+      target: '/diagnose',
+      action: 'restart_diagnosis'
+    })
+    setStep(0)
+    setReport(null)
+    setError('')
+    setPrivacyConfirmed(false)
+    setForm({
+      productName: '',
+      industry: '',
+      letterContent: '',
+      currentOpenRate: '',
+      currentReplyRate: '',
+      targetMarket: '',
+      targetRole: '',
+      painPoints: '',
+      uniqueAdvantage: ''
+    })
+  }
+
   const btnStyle = (active) => ({
     padding: '8px 16px', fontSize: 13, borderRadius: 8,
     background: active ? '#1D9E75' : 'transparent',
@@ -155,6 +184,23 @@ export default function DiagnosePage() {
     color: active ? '#fff' : '#9ca3af',
     border: 'none', cursor: active ? 'pointer' : 'not-allowed',
   })
+
+  const ctaLinkStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 42,
+    padding: '10px 14px',
+    borderRadius: 8,
+    border: '1px solid #d1d5db',
+    background: '#fff',
+    color: '#111827',
+    fontSize: 13,
+    fontWeight: 700,
+    textDecoration: 'none',
+    cursor: 'pointer',
+    boxSizing: 'border-box'
+  }
 
   return (
     <>
@@ -389,7 +435,52 @@ export default function DiagnosePage() {
                 style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 13, resize: 'vertical', boxSizing: 'border-box' }} />
             </div>
 
-            {error && <p style={{ color: '#ef4444', fontSize: 13 }}>{error}</p>}
+            {error && (
+              <div style={{
+                border: '1px solid #fecaca',
+                background: '#fef2f2',
+                borderRadius: 12,
+                padding: '1rem 1.25rem',
+                marginBottom: 12
+              }}>
+                <p style={{ color: '#991b1b', fontSize: 13, fontWeight: 700, margin: '0 0 4px' }}>
+                  诊断暂时没有跑通
+                </p>
+                <p style={{ color: '#7f1d1d', fontSize: 13, lineHeight: 1.7, margin: '0 0 10px' }}>
+                  {error}。你可以稍后再试，也可以先去查谁真的在进口你的产品，先把目标客户名单跑出来。
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 8 }}>
+                  <a
+                    href={customsSkillHref}
+                    onClick={() =>
+                      trackSiteInteraction({
+                        source: 'diagnose_error_customs_data',
+                        sourceGroup: 'lead',
+                        target: customsSkillHref,
+                        action: 'diagnose_error_open_customs_data'
+                      })
+                    }
+                    style={{ ...ctaLinkStyle, borderColor: '#bfdbfe', background: '#eff6ff', color: '#1d4ed8' }}>
+                    先查进口商
+                  </a>
+                  <a
+                    href={TURINGSEARCH_TRIAL_URL}
+                    target="_blank"
+                    rel="sponsored noopener noreferrer"
+                    onClick={() =>
+                      trackToolOutboundClick({
+                        source: 'diagnose_error_turingsearch_trial',
+                        sourceGroup: 'lead',
+                        target: TURINGSEARCH_TRIAL_URL,
+                        tool: 'turingsearch'
+                      })
+                    }
+                    style={{ ...ctaLinkStyle, borderColor: '#bbf7d0', background: '#f0fdf4', color: '#15803d' }}>
+                    体验图灵搜
+                  </a>
+                </div>
+              </div>
+            )}
             <label style={{ ...privacyNoticeStyle, margin: '0 0 12px', display: 'flex', gap: 8, alignItems: 'flex-start', cursor: 'pointer' }}>
               <input
                 type="checkbox"
@@ -528,11 +619,49 @@ export default function DiagnosePage() {
               </div>
             )}
 
-            <div style={{ textAlign: 'center' }}>
-              <button onClick={() => { setStep(0); setReport(null); setPrivacyConfirmed(false); setForm({ productName: '', industry: '', letterContent: '', currentOpenRate: '', currentReplyRate: '', targetMarket: '', targetRole: '', painPoints: '', uniqueAdvantage: '' }) }}
-                style={{ padding: '10px 24px', borderRadius: 8, background: 'transparent', border: '1px solid #d1d5db', cursor: 'pointer', fontSize: 13, color: '#6b7280' }}>
-                🔄 重新诊断另一封开发信
-              </button>
+            <div style={{ ...cardStyle, background: '#f8fafc', borderColor: '#dbeafe' }}>
+              <p style={{ fontSize: 15, fontWeight: 700, margin: '0 0 6px', color: '#111827' }}>
+                诊断之后，下一步这样做
+              </p>
+              <p style={{ fontSize: 13, color: '#475569', lineHeight: 1.7, margin: '0 0 12px' }}>
+                先把开发信问题记下来，再用真实采购记录验证目标客户。线索、联系人和话术连起来，后续跟进会更稳。
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 10 }}>
+                <a
+                  href={customsSkillHref}
+                  onClick={() =>
+                    trackSiteInteraction({
+                      source: 'diagnose_result_customs_data',
+                      sourceGroup: 'lead',
+                      target: customsSkillHref,
+                      action: 'diagnose_result_open_customs_data'
+                    })
+                  }
+                  style={{ ...ctaLinkStyle, borderColor: '#93c5fd', background: '#2563eb', color: '#fff' }}>
+                  根据产品查进口商
+                </a>
+                <a
+                  href={TURINGSEARCH_TRIAL_URL}
+                  target="_blank"
+                  rel="sponsored noopener noreferrer"
+                  onClick={() =>
+                    trackToolOutboundClick({
+                      source: 'diagnose_result_turingsearch_trial',
+                      sourceGroup: 'lead',
+                      target: TURINGSEARCH_TRIAL_URL,
+                      tool: 'turingsearch'
+                    })
+                  }
+                  style={{ ...ctaLinkStyle, borderColor: '#bbf7d0', background: '#f0fdf4', color: '#15803d' }}>
+                  免费体验图灵搜
+                </a>
+                <button
+                  type="button"
+                  onClick={() => resetDiagnosis('diagnose_result_restart')}
+                  style={{ ...ctaLinkStyle, color: '#6b7280' }}>
+                  重新诊断另一封
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -94,13 +94,13 @@ const HomeIntro = ({
               <a
                 href={CUSTOMS_DATA_SKILL.href}
                 onClick={() => trackCustomsDataSkillClick('home_intro_primary')}
-                className='inline-flex h-10 w-full max-w-full items-center justify-center rounded-[8px] bg-blue-700 px-4 text-sm font-bold text-white shadow-sm shadow-blue-900/20 transition hover:bg-blue-800 dark:bg-blue-400 dark:text-zinc-950 dark:hover:bg-blue-300 sm:w-auto'>
+                className='brand-btn brand-btn-primary h-10 w-full max-w-full px-4 text-sm sm:w-auto'>
                 <i className='fas fa-database mr-2 text-xs' />
                 免费查海关数据
               </a>
               <SmartLink
                 href='/foreign-trade-tools.html'
-                className='inline-flex h-10 w-full max-w-full items-center justify-center rounded-[8px] border border-zinc-300 bg-white px-4 text-sm font-bold text-zinc-800 transition hover:border-blue-300 hover:text-blue-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-blue-700 dark:hover:text-blue-300 sm:w-auto'>
+                className='brand-btn brand-btn-secondary h-10 w-full max-w-full px-4 text-sm sm:w-auto'>
                 <i className='fas fa-route mr-2 text-xs' />
                 看工具怎么搭配
               </SmartLink>
@@ -124,12 +124,12 @@ const HomeIntro = ({
                   name='product'
                   type='text'
                   placeholder='输入产品词，比如 LED 灯、轴承'
-                  className='mt-2 h-9 w-full rounded-[8px] border border-blue-100 bg-white px-3 text-xs font-semibold text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-blue-400 dark:border-blue-900/60 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500'
+                  className='mt-2 h-9 w-full rounded-[8px] border border-blue-100 bg-white px-3 text-xs font-semibold text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-[color:var(--brand-primary)] dark:border-blue-900/60 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500'
                 />
               </label>
               <button
                 type='submit'
-                className='inline-flex h-9 shrink-0 items-center justify-center rounded-[8px] bg-zinc-950 px-3 text-xs font-bold text-white transition hover:bg-blue-800 dark:bg-blue-300 dark:text-zinc-950 dark:hover:bg-blue-200'>
+                className='brand-btn brand-btn-accent h-9 shrink-0 px-3 text-xs'>
                 先做轻诊断
               </button>
             </form>

@@ -32,21 +32,18 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
           type='button'
           aria-label='关闭工具入口'
           onClick={onDismiss}
-          className='absolute right-2 top-2 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[11px] text-gray-500 shadow-sm transition hover:bg-orange-50 hover:text-orange-600 dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-orange-300'
+          className='absolute right-2 top-2 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[11px] text-gray-500 shadow-sm transition hover:bg-blue-50 hover:text-blue-600 dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-blue-300'
         >
           <i className='fas fa-times' aria-hidden='true' />
         </button>
-        
-        {/* 装饰性背景光晕 */}
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl"></div>
-        
+
         {/* 内容区域 */}
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] font-black bg-orange-500 text-white px-2 py-0.5 rounded-md uppercase tracking-tighter">
+            <span className="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-md uppercase tracking-tighter">
               先试一下
             </span>
-            <i className="fas fa-bullhorn text-orange-500 animate-bounce text-xs"></i>
+            <i className="fas fa-bullhorn text-cyan-600 animate-bounce text-xs"></i>
           </div>
           
           <h3 className="text-sm font-black text-gray-800 dark:text-white mb-2 leading-tight">
@@ -69,7 +66,7 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
                 sourceGroup: 'activity'
               })
             }
-            className="block w-full py-2.5 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-center text-xs font-bold rounded-xl shadow-lg shadow-orange-500/30 transition-all active:scale-95"
+            className="brand-btn brand-btn-primary w-full py-2.5 text-xs"
           >
             {config.buttonText || '去看看'} <i className="fas fa-arrow-right ml-1"></i>
           </a>
@@ -115,7 +112,7 @@ const InlineActivityCard = ({ config, isActive }) => {
             sourceGroup: 'activity'
           })
         }
-        className={`ml-9 mt-3 inline-flex items-center rounded-lg border px-2.5 py-1.5 text-[11px] font-bold transition-colors ${config.buttonClass}`}>
+        className={`brand-btn ml-9 mt-3 px-2.5 py-1.5 text-[11px] ${config.buttonClass}`}>
         {config.buttonText} →
       </a>
     </div>
@@ -135,12 +132,12 @@ const activityConfigs = {
     trackSource: 'activity_turingsearch',
     buttonText: '去体验',
     badgeText: '先试',
-    bgColor: 'bg-amber-50/45 dark:bg-amber-950/20',
-    borderColor: 'border-amber-100 dark:border-amber-900/50',
-    textColor: 'text-amber-700 dark:text-amber-300',
-    iconBg: 'bg-amber-100/80 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-    badgeClass: 'bg-amber-100/70 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-    buttonClass: 'border-amber-200 bg-white/70 text-amber-700 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-900/60 dark:bg-amber-950/20 dark:text-amber-300 dark:hover:bg-amber-950/50',
+    bgColor: 'bg-cyan-50/45 dark:bg-cyan-950/20',
+    borderColor: 'border-cyan-100 dark:border-cyan-900/50',
+    textColor: 'text-cyan-700 dark:text-cyan-300',
+    iconBg: 'bg-cyan-100/80 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
+    badgeClass: 'bg-cyan-100/70 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
+    buttonClass: 'brand-btn-accent',
     icon: 'fas fa-gift',
     animation: 'animate-bounce'
   },
@@ -160,7 +157,7 @@ const activityConfigs = {
     textColor: 'text-blue-600 dark:text-blue-400',
     iconBg: 'bg-blue-100/80 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
     badgeClass: 'bg-blue-100/70 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
-    buttonClass: 'border-blue-200 bg-white/70 text-blue-700 hover:border-blue-300 hover:bg-blue-100 dark:border-blue-900/60 dark:bg-blue-950/20 dark:text-blue-300 dark:hover:bg-blue-950/50',
+    buttonClass: 'brand-btn-secondary',
     icon: 'fas fa-fire',
     animation: 'animate-pulse'
   }

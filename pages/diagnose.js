@@ -35,10 +35,25 @@ const categoryIcons = {
 }
 
 const TURINGSEARCH_TRIAL_URL = 'https://t.smartsousou.com/m?i=BB54F6'
+const COLORS = {
+  primary: 'var(--brand-primary)',
+  primaryDark: 'var(--brand-primary-hover)',
+  primarySoft: 'var(--brand-primary-soft)',
+  primaryBorder: 'var(--brand-primary-border)',
+  accent: 'var(--brand-accent)',
+  accentDark: 'var(--brand-accent-hover)',
+  accentSoft: 'var(--brand-accent-soft)',
+  accentBorder: 'var(--brand-accent-border)',
+  success: 'var(--brand-success)',
+  warning: 'var(--brand-warning)',
+  danger: 'var(--brand-danger)',
+  ink: 'var(--brand-ink)',
+  muted: 'var(--brand-muted)'
+}
 
 function ScoreBar({ score }) {
   const color =
-    score >= 75 ? '#1D9E75' : score >= 50 ? '#BA7517' : '#E24B4A'
+    score >= 75 ? COLORS.success : score >= 50 ? COLORS.warning : COLORS.danger
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <div style={{ flex: 1, height: 6, background: '#e5e7eb', borderRadius: 3, overflow: 'hidden' }}>
@@ -55,7 +70,7 @@ function ScoreRing({ score, size = 90 }) {
   const cy = size / 2
   const circ = 2 * Math.PI * r
   const filled = (score / 100) * circ
-  const color = score >= 75 ? '#1D9E75' : score >= 50 ? '#BA7517' : '#E24B4A'
+  const color = score >= 75 ? COLORS.success : score >= 50 ? COLORS.warning : COLORS.danger
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
       <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e5e7eb" strokeWidth="5" />
@@ -157,9 +172,9 @@ export default function DiagnosePage() {
 
   const btnStyle = (active) => ({
     padding: '8px 16px', fontSize: 13, borderRadius: 8,
-    background: active ? '#1D9E75' : 'transparent',
+    background: active ? COLORS.primary : 'transparent',
     color: active ? '#fff' : '#374151',
-    border: `1px solid ${active ? '#1D9E75' : '#d1d5db'}`,
+    border: `1px solid ${active ? COLORS.primary : '#d1d5db'}`,
     cursor: 'pointer', transition: 'all 0.15s',
   })
 
@@ -180,7 +195,7 @@ export default function DiagnosePage() {
 
   const nextBtnStyle = (active) => ({
     padding: '10px 24px', borderRadius: 8, fontWeight: 600, fontSize: 14,
-    background: active ? '#1D9E75' : '#f3f4f6',
+    background: active ? COLORS.primary : '#f3f4f6',
     color: active ? '#fff' : '#9ca3af',
     border: 'none', cursor: active ? 'pointer' : 'not-allowed',
   })
@@ -288,11 +303,11 @@ export default function DiagnosePage() {
                 marginBottom: 0,
                 textAlign: 'left',
                 cursor: 'pointer',
-                borderColor: '#bbf7d0',
-                background: '#f0fdf4',
+                borderColor: COLORS.accentBorder,
+                background: COLORS.accentSoft,
                 color: '#111827'
               }}>
-              <p style={{ margin: '0 0 4px', fontSize: 12, fontWeight: 700, color: '#15803d' }}>已有名单或开发信</p>
+              <p style={{ margin: '0 0 4px', fontSize: 12, fontWeight: 700, color: COLORS.accentDark }}>已有名单或开发信</p>
               <h2 style={{ margin: '0 0 8px', fontSize: 16 }}>继续做开发信诊断</h2>
               <p style={{ margin: 0, fontSize: 13, color: '#475569', lineHeight: 1.7 }}>
                 如果已经在发邮件，重点看目标客户、痛点、价值主张和跟进动作是否清楚。
@@ -310,8 +325,8 @@ export default function DiagnosePage() {
                   <div style={{
                     width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center',
                     justifyContent: 'center', fontSize: 12, fontWeight: 600,
-                    background: i < step ? '#1D9E75' : i === step ? '#111827' : 'transparent',
-                    border: `1px solid ${i < step ? '#1D9E75' : i === step ? '#111827' : '#d1d5db'}`,
+                    background: i < step ? COLORS.primary : i === step ? COLORS.ink : 'transparent',
+                    border: `1px solid ${i < step ? COLORS.primary : i === step ? COLORS.ink : '#d1d5db'}`,
                     color: i <= step ? '#fff' : '#9ca3af',
                   }}>
                     {i < step ? '✓' : i + 1}
@@ -460,7 +475,7 @@ export default function DiagnosePage() {
                         action: 'diagnose_error_open_customs_data'
                       })
                     }
-                    style={{ ...ctaLinkStyle, borderColor: '#bfdbfe', background: '#eff6ff', color: '#1d4ed8' }}>
+                    style={{ ...ctaLinkStyle, borderColor: COLORS.primaryBorder, background: COLORS.primarySoft, color: COLORS.primaryDark }}>
                     先查进口商
                   </a>
                   <a
@@ -475,7 +490,7 @@ export default function DiagnosePage() {
                         tool: 'turingsearch'
                       })
                     }
-                    style={{ ...ctaLinkStyle, borderColor: '#bbf7d0', background: '#f0fdf4', color: '#15803d' }}>
+                    style={{ ...ctaLinkStyle, borderColor: COLORS.accentBorder, background: COLORS.accentSoft, color: COLORS.accentDark }}>
                     体验图灵搜
                   </a>
                 </div>
@@ -588,7 +603,7 @@ export default function DiagnosePage() {
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{categoryLabels[key]}</span>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: val.score >= 75 ? '#1D9E75' : val.score >= 50 ? '#BA7517' : '#E24B4A' }}>{val.score}分</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: val.score >= 75 ? COLORS.success : val.score >= 50 ? COLORS.warning : COLORS.danger }}>{val.score}分</span>
                       </div>
                       <p style={{ fontSize: 12, color: '#ef4444', margin: '0 0 3px' }}>⚠️ {val.issue}</p>
                       <p style={{ fontSize: 12, color: '#4b5563', margin: 0, lineHeight: 1.6 }}>💡 {val.suggestion}</p>
@@ -602,7 +617,7 @@ export default function DiagnosePage() {
             {report.rewriteSample && (
               <div style={cardStyle}>
                 <h3 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 8px' }}>✨ 优化示例（开头片段）</h3>
-                <div style={{ background: '#f0fdf4', borderRadius: 8, padding: '0.875rem', fontFamily: 'monospace', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                <div style={{ background: COLORS.accentSoft, borderRadius: 8, padding: '0.875rem', fontFamily: 'monospace', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
                   {report.rewriteSample}
                 </div>
               </div>
@@ -610,11 +625,11 @@ export default function DiagnosePage() {
 
             {/* Expected improvement */}
             {report.expectedImprovement && (
-              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: '1rem 1.25rem', display: 'flex', gap: 10, marginBottom: 12 }}>
+              <div style={{ background: COLORS.accentSoft, border: `1px solid ${COLORS.accentBorder}`, borderRadius: 12, padding: '1rem 1.25rem', display: 'flex', gap: 10, marginBottom: 12 }}>
                 <span style={{ fontSize: 20 }}>📈</span>
                 <div>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: '#166534', margin: '0 0 2px' }}>预期优化效果</p>
-                  <p style={{ fontSize: 13, color: '#166534', margin: 0, lineHeight: 1.6 }}>{report.expectedImprovement}</p>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: COLORS.accentDark, margin: '0 0 2px' }}>预期优化效果</p>
+                  <p style={{ fontSize: 13, color: COLORS.accentDark, margin: 0, lineHeight: 1.6 }}>{report.expectedImprovement}</p>
                 </div>
               </div>
             )}
@@ -637,7 +652,7 @@ export default function DiagnosePage() {
                       action: 'diagnose_result_open_customs_data'
                     })
                   }
-                  style={{ ...ctaLinkStyle, borderColor: '#93c5fd', background: '#2563eb', color: '#fff' }}>
+                  style={{ ...ctaLinkStyle, borderColor: COLORS.primary, background: COLORS.primary, color: '#fff' }}>
                   根据产品查进口商
                 </a>
                 <a
@@ -652,7 +667,7 @@ export default function DiagnosePage() {
                       tool: 'turingsearch'
                     })
                   }
-                  style={{ ...ctaLinkStyle, borderColor: '#bbf7d0', background: '#f0fdf4', color: '#15803d' }}>
+                  style={{ ...ctaLinkStyle, borderColor: COLORS.accentBorder, background: COLORS.accentSoft, color: COLORS.accentDark }}>
                   免费体验图灵搜
                 </a>
                 <button

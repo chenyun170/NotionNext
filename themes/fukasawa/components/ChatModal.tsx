@@ -51,12 +51,23 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
     if (!input.trim() || loading) return
 
     const userMsg = input.trim()
+    // 超长输入保护：避免模型上下文异常导致回复中断
+    if (userMsg.length > 6000) {
+      setHistory(prev => [
+        ...prev,
+        { role: 'assistant', text: '输入内容过长（超过 6000 字），请精简后重试，以免回复中断。' },
+      ])
+      return
+    }
+
     setInput('')
     setLoading(true)
     setReply('')
-
     // 将用户消息加入历史
     setHistory(prev => [...prev, { role: 'user', text: userMsg }])
+
+    let fullReply = ''
+    let finished = false
 
     try {
       const response = await fetch('/api/chat', {
@@ -65,42 +76,60 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
         body: JSON.stringify({ message: userMsg }),
       })
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      if (!response.ok) {
+        const errData = await response.json().catch(() => null)
+        throw new Error(errData?.error || `HTTP ${response.status}`)
+      }
       if (!response.body) throw new Error('Response body is null')
 
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
-      let fullReply = ''
+      let buffer = '' // SSE 缓冲：防止流被拆包导致 JSON 解析失败、内容丢失
 
-      while (true) {
+      while (!finished) {
         const { done, value } = await reader.read()
         if (done) break
 
-        const raw = decoder.decode(value, { stream: true })
-        for (const line of raw.split('\n')) {
-          if (!line.startsWith('data:')) continue
-          const text = line.slice(5).trim()
-          if (text === '[DONE]') break
-          if (!text) continue
-          try {
-            const { content } = JSON.parse(text)
-            if (content) {
-              fullReply += content
-              setReply(fullReply)
+        buffer += decoder.decode(value, { stream: true })
+        // 按 SSE 事件分隔符 \n\n 切分；末尾不完整片段留到下一轮拼接
+        const events = buffer.split('\n\n')
+        buffer = events.pop() || ''
+
+        for (const event of events) {
+          for (const line of event.split('\n')) {
+            if (!line.startsWith('data:')) continue
+            const text = line.slice(5).trim()
+            if (text === '[DONE]') { finished = true; break }
+            if (!text) continue
+            try {
+              const data = JSON.parse(text)
+              if (data.error) throw new Error(data.error)
+              if (data.content) {
+                fullReply += data.content
+                setReply(fullReply)
+              }
+            } catch (err) {
+              // 忽略被拆包的残缺 JSON，等下一块补齐后再解析
+              console.warn('SSE parse skip:', err)
             }
-          } catch (_) { /* skip malformed */ }
+          }
+          if (finished) break
         }
       }
 
-      // 将助手回复加入历史
+      // 正常结束：将完整回复加入历史
       if (fullReply) {
         setHistory(prev => [...prev, { role: 'assistant', text: fullReply }])
       }
       setReply('')
     } catch (e) {
       console.error(e)
-      const errMsg = '请求出错，请稍后再试。'
-      setHistory(prev => [...prev, { role: 'assistant', text: errMsg }])
+      // 断流时保留已收到的部分，避免"一半内容丢失"
+      const partial = fullReply
+        ? fullReply + '\n\n> ⚠️ 回复被中断，内容可能不完整，请重试。'
+        : '请求出错，请稍后再试。'
+      setHistory(prev => [...prev, { role: 'assistant', text: partial }])
+      setReply('')
     } finally {
       setLoading(false)
     }
@@ -121,9 +150,9 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
       <div
         className="fixed z-[201] flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-zinc-200/60 dark:border-zinc-700/60 bg-white dark:bg-zinc-900 animate-in fade-in slide-in-from-bottom-4 duration-300"
         style={{
-          // 桌面端居中偏下，移动端全宽贴底
-          width: 'min(480px, calc(100vw - 24px))',
-          height: 'min(600px, calc(100vh - 80px))',
+          // 桌面端居中偏下，移动端全宽贴底；宽度高度尽量放大，保证内容完整显示
+          width: 'min(780px, calc(100vw - 16px))',
+          height: 'min(820px, calc(100vh - 32px))',
           bottom: '40px',
           left: '50%',
           transform: 'translateX(-50%)',
@@ -165,7 +194,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
         </div>
 
         {/* 消息区域 */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 no-scrollbar">
+        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 no-scrollbar break-words overflow-wrap-anywhere w-full min-w-0">
           {history.length === 0 && !loading && !reply && (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-3 py-8">
               <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-500 text-xl shadow-sm">
@@ -200,7 +229,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
           {history.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
-                className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed ${
+                className={`w-full max-w-full rounded-2xl px-4 py-3 text-sm leading-relaxed break-words overflow-wrap-anywhere ${
                   msg.role === 'user'
                     ? 'bg-blue-500 text-white rounded-br-md'
                     : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 rounded-bl-md'
@@ -235,7 +264,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
           {/* 正在输入的流式回复 */}
           {reply && (
             <div className="flex justify-start">
-              <div className="max-w-[80%] rounded-2xl rounded-bl-md bg-zinc-100 dark:bg-zinc-800 px-3.5 py-2.5 text-xs leading-relaxed text-zinc-700 dark:text-zinc-200">
+              <div className="w-full max-w-full rounded-2xl rounded-bl-md bg-zinc-100 dark:bg-zinc-800 px-4 py-3 text-sm leading-relaxed break-words overflow-wrap-anywhere text-zinc-700 dark:text-zinc-200">
                 <ReactMarkdown
                   components={{
                     strong: ({ node, ...p }) => <span className="font-bold text-zinc-900 dark:text-white" {...p} />,
@@ -267,7 +296,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
           <div className="flex items-end gap-2">
             <textarea
               ref={inputRef}
-              className="flex-1 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs resize-none outline-none focus:border-blue-400 dark:focus:border-blue-500 transition-colors text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400"
+              className="flex-1 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-sm resize-none outline-none focus:border-blue-400 dark:focus:border-blue-500 transition-colors text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400"
               rows={2}
               placeholder="输入您的问题，回车发送..."
               value={input}

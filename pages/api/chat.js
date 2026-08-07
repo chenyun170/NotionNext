@@ -1,5 +1,6 @@
 // /api/chat.js
 import OpenAI from "openai";
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -18,12 +19,25 @@ export default async function handler(req, res) {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
+
+    // 请求级超时保护：60s 无响应则中断，避免客户端一直等待
+    const timer = setTimeout(() => {
+      if (!res.writableEnded) {
+        res.write(`data: ${JSON.stringify({ error: '请求超时，请重试' })}\n\n`);
+        res.write('data: [DONE]\n\n');
+        res.end();
+      }
+    }, 60000);
+
     const stream = await client.chat.completions.create({
-      model: "openai/gpt-oss-120b", // ⚠️ 改成你实际有权限的模型名
+      model: process.env.CHAT_MODEL || "openai/gpt-oss-120b", // ⚠️ 改成你实际有权限的模型名
       messages: [
-        { role: "system", content: "你是一个乐于助人的 AI 助手。" },
+        { role: "system", content: "你是一个乐于助人的 AI 助手。请完整回答用户的问题，不要截断内容。" },
         { role: "user", content: message }
       ],
+      // 提高输出上限：长邮件、分析报告不再被模型默认上限截断
+      max_tokens: 4096,
+      temperature: 0.7,
       stream: true,
     });
     for await (const chunk of stream) {
@@ -33,10 +47,14 @@ export default async function handler(req, res) {
       }
     }
     // 流结束标志
-    res.write('data: [DONE]\n\n');
-    res.end();
+    if (!res.writableEnded) {
+      res.write('data: [DONE]\n\n');
+      res.end();
+    }
+    clearTimeout(timer);
   } catch (error) {
     console.error("API 调用失败:", error);
+    clearTimeout(timer);
     // 如果头还没发送，返回 JSON 错误
     if (!res.headersSent) {
       res.status(500).json({ error: error.message || error.toString() });

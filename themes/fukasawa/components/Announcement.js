@@ -14,6 +14,10 @@ const FLOATING_AD_DISMISS_KEY = 'fukasawa_floating_activity_dismissed_at'
 const FLOATING_AD_DISMISS_DAYS = 3
 const FLOATING_AD_DISMISS_MS = FLOATING_AD_DISMISS_DAYS * 24 * 60 * 60 * 1000
 
+// 活动提醒整体关闭：24 小时内不再显示
+const ANNOUNCEMENT_DISMISS_KEY = 'fukasawa_activity_announcement_dismissed_at'
+const ANNOUNCEMENT_DISMISS_MS = 24 * 60 * 60 * 1000
+
 /**
  * 悬浮活动卡片 - 毛玻璃版
  */
@@ -178,6 +182,7 @@ const Announcement = ({ post, className }) => {
   const [activities, setActivities] = useState(getActiveActivities)
   const [floatingVisible, setFloatingVisible] = useState(false)
   const [floatingDismissed, setFloatingDismissed] = useState(false)
+  const [announcementDismissed, setAnnouncementDismissed] = useState(false)
   const announcementRef = useRef(null)
 
   useEffect(() => {
@@ -192,6 +197,18 @@ const Announcement = ({ post, className }) => {
       }
     } catch (error) {
       console.warn('Failed to read floating activity dismiss state:', error)
+    }
+  }, [])
+
+  // 读取活动提醒整体关闭状态（24 小时内不再显示）
+  useEffect(() => {
+    try {
+      const dismissedAt = Number(window.localStorage.getItem(ANNOUNCEMENT_DISMISS_KEY))
+      if (dismissedAt && Date.now() - dismissedAt < ANNOUNCEMENT_DISMISS_MS) {
+        setAnnouncementDismissed(true)
+      }
+    } catch (error) {
+      console.warn('Failed to read announcement dismiss state:', error)
     }
   }, [])
 
@@ -214,10 +231,8 @@ const Announcement = ({ post, className }) => {
       // 当侧边栏内的活动卡片滚出视野后显示悬浮版
       const isOutOfView = announcementRect.bottom < 0
       
-      // 检查屏幕宽度，防止在窄屏遮挡内容
-      const isWideScreen = typeof window !== 'undefined' && window.innerWidth > 1024
-      
-      setFloatingVisible(!floatingDismissed && isOutOfView && isWideScreen && (activities.activity1 || activities.activity2))
+      // 不限制屏幕宽度：移动端只要滚动也会显示悬浮活动卡
+      setFloatingVisible(!floatingDismissed && isOutOfView && (activities.activity1 || activities.activity2))
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -240,6 +255,24 @@ const Announcement = ({ post, className }) => {
     }
   }
 
+  const dismissAnnouncement = () => {
+    setAnnouncementDismissed(true)
+    trackSiteInteraction({
+      source: 'activity_announcement_dismiss',
+      sourceGroup: 'activity',
+      action: 'dismiss_announcement'
+    })
+
+    try {
+      window.localStorage.setItem(ANNOUNCEMENT_DISMISS_KEY, String(Date.now()))
+    } catch (error) {
+      console.warn('Failed to save announcement dismiss state:', error)
+    }
+  }
+
+  // 用户点击关闭后，整个活动提醒（内嵌 + 悬浮）24 小时内不再显示
+  if (announcementDismissed) return null
+
   return (
     <>
       <div className={className} ref={announcementRef}>
@@ -247,7 +280,31 @@ const Announcement = ({ post, className }) => {
           id='announcement-wrapper' 
           className="dark:text-gray-300 rounded-xl px-1 py-2"
           role="complementary">
-          
+
+          {/* 标题栏 + 关闭按钮 */}
+          <div className="mb-3 flex items-center justify-between gap-2 px-1">
+            <div className="flex items-center text-[11px] font-bold text-amber-700 dark:text-amber-300 tracking-[0.18em] uppercase">
+              <span className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-amber-50 text-amber-600 ring-1 ring-amber-100 dark:bg-amber-950/40 dark:text-amber-300 dark:ring-amber-900/60">
+                <i className="fas fa-bullhorn text-[10px]"></i>
+              </span>
+              <span>活动提醒</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="hidden sm:inline-flex rounded-full border border-amber-100 bg-amber-50/70 px-2 py-1 text-[10px] font-semibold text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
+                工具情报
+              </span>
+              <button
+                type='button'
+                aria-label='关闭活动提醒'
+                onClick={dismissAnnouncement}
+                title='关闭活动提醒（24小时内不再显示）'
+                className="flex h-6 w-6 items-center justify-center rounded-full border border-amber-100 bg-amber-50/70 text-[10px] text-amber-600 transition hover:bg-amber-100 hover:text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300 dark:hover:bg-amber-900/50 dark:hover:text-amber-200"
+              >
+                <i className="fas fa-times" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+
           {/* 活动并排/堆叠显示 */}
           <InlineActivityCard config={activityConfigs.activity1} isActive={activities.activity1} />
           <InlineActivityCard config={activityConfigs.activity2} isActive={activities.activity2} />

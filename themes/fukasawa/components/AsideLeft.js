@@ -23,6 +23,11 @@ const SidebarTools = dynamic(() => import('./SidebarTools'), {
   )
 })
 
+const ChatModal = dynamic(() => import('./ChatModal'), {
+  ssr: false,
+  loading: () => null
+})
+
 const SidebarChatWidget = dynamic(() => import('./SidebarChatWidget'), {
   ssr: false,
   loading: () => (
@@ -37,8 +42,8 @@ function AsideLeft(props) {
   const visibleLatestPosts = latestPosts.filter(isHomepageListPost)
   const [runtime, setRuntime] = useState('')
   const [isCollapsed, setIsCollapse] = useState(false)
-  // ✅ 新增：控制手机端 AI 助手的展开/收起状态
-  const [isAiOpen, setIsAiOpen] = useState(false)
+  // ✅ 新增：控制 AI 参谋独立弹窗
+  const [isChatOpen, setIsChatOpen] = useState(false)
   // ✅ 保持全局状态引入，以便其他地方使用
   const global = useGlobal()
   const { isDarkMode, updateDarkMode, siteInfo } = global
@@ -82,40 +87,20 @@ function AsideLeft(props) {
 
   return (
     <div className="flex">
-      {/* 🚀 手机端专用 AI 助手 - 已移除模式切换按钮 */}
-      <div className={`lg:hidden fixed z-[70] transition-all duration-300 ${isAiOpen ? 'inset-x-3 bottom-4' : 'left-3 bottom-4'}`}>
-        {!isAiOpen ? (
-          <>
-            {/* AI 参谋按钮 */}
-            <button 
-              onClick={() => setIsAiOpen(true)}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-blue-600 shadow-lg ring-1 ring-zinc-200/70 backdrop-blur-xl active:scale-95 dark:border-zinc-700 dark:bg-zinc-900/85 dark:text-blue-300 dark:ring-zinc-800"
-            >
-              <div className="flex items-center justify-center">
-                <i className="fas fa-robot text-sm"></i>
-              </div>
-              <div className="sr-only">
-                <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 leading-none">AI 参谋</p>
-              </div>
-            </button>
-            {/* ✅ 这里原本的太阳月亮切换按钮已被移除 */}
-          </>
-        ) : (
-          /* 展开状态：显示聊天窗口 */
-          <div className="bg-white/95 dark:bg-zinc-900/95 rounded-2xl shadow-[0_16px_44px_rgba(0,0,0,0.24)] border border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden backdrop-blur-xl animate-in fade-in slide-in-from-bottom-3 duration-300">
-             <div className="bg-zinc-50 dark:bg-zinc-800 px-4 py-3 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-700">
-                <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 flex items-center gap-2">
-                  <i className="fas fa-comment-dots text-blue-500"></i> 情报局 AI 助手
-                </span>
-                <button onClick={() => setIsAiOpen(false)} className="text-zinc-400 hover:text-red-500 transition-colors p-1">
-                  <i className="fas fa-times"></i>
-                </button>
-             </div>
-             <div className="p-3 overflow-y-auto max-h-[52vh] no-scrollbar">
-                <SidebarChatWidget />
-             </div>
-          </div>
-        )}
+      {/* 📱 手机端活动提醒（桌面侧边栏在手机上隐藏，这里单独挂载） */}
+      <div className="lg:hidden fixed left-3 bottom-24 z-[65] w-[248px] rounded-2xl border border-amber-100/80 bg-white/90 p-3 shadow-lg shadow-amber-100/40 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80 dark:shadow-none">
+        <Announcement post={notice} />
+      </div>
+
+      {/* 🚀 手机端专用 AI 参谋入口 */}
+      <div className="lg:hidden fixed left-3 bottom-4 z-[70]">
+        <button
+          onClick={() => setIsChatOpen(true)}
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-blue-600 shadow-lg ring-1 ring-zinc-200/70 backdrop-blur-xl active:scale-95 dark:border-zinc-700 dark:bg-zinc-900/85 dark:text-blue-300 dark:ring-zinc-800"
+        >
+          <i className="fas fa-robot text-sm"></i>
+          <span className="sr-only">AI 参谋</span>
+        </button>
       </div>
 
       {/* 折叠按钮 */}
@@ -171,21 +156,11 @@ function AsideLeft(props) {
             </section>
           </div>
 
-          {/* 活动公告 */}
-          <div className="mb-8 rounded-2xl border border-amber-100/80 bg-white/85 p-4 shadow-sm shadow-amber-100/50 dark:border-zinc-800 dark:bg-zinc-950/40 dark:shadow-none">
-             <div className="mb-3 flex items-center justify-between gap-3 px-1">
-                <div className="flex items-center text-[11px] font-bold text-amber-700 dark:text-amber-300 tracking-[0.18em] uppercase">
-                  <span className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-amber-50 text-amber-600 ring-1 ring-amber-100 dark:bg-amber-950/40 dark:text-amber-300 dark:ring-amber-900/60">
-                    <i className="fas fa-bullhorn text-[10px]"></i>
-                  </span>
-                  <span>活动提醒</span>
-                </div>
-                <span className="rounded-full border border-amber-100 bg-amber-50/70 px-2 py-1 text-[10px] font-semibold text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
-                  工具情报
-                </span>
-             </div>
-             <Announcement post={notice} />
-          </div>
+          {/* 活动公告（标题栏 + 关闭按钮 + 卡片都在 Announcement 内部） */}
+          <Announcement
+            post={notice}
+            className="mb-8 rounded-2xl border border-amber-100/80 bg-white/85 p-4 shadow-sm shadow-amber-100/50 dark:border-zinc-800 dark:bg-zinc-950/40 dark:shadow-none"
+          />
 
           {/* 工具台 */}
           <section className="mb-8 rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
@@ -348,6 +323,8 @@ function AsideLeft(props) {
           100% { transform: translateY(40px) rotate(360deg); opacity: 0; }
         }
       `}</style>
+      {/* AI 参谋独立弹窗 */}
+      <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   )
 }

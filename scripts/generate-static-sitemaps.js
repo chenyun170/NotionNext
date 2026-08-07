@@ -6,14 +6,22 @@ const path = require('path')
 const { CORE_SEO_PAGES, SITE_URL, UPDATED_AT } = require('../lib/seo/geoPages')
 
 const PUBLIC_DIR = path.join(process.cwd(), 'public')
+const SUBMIT_SITEMAP_FILES = [
+  'sitemap.xml',
+  'sitemap-index.xml',
+  'sitemap-core.xml',
+  'sitemap.txt'
+]
 
 function main() {
   const allPages = [...CORE_SEO_PAGES]
 
+  assertStaticHtmlPagesExist(allPages)
   writeFile('sitemap.xml', buildUrlset(allPages))
   writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES))
   writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap-core.xml', 'sitemap.xml']))
   writeFile('sitemap.txt', buildTextSitemap(allPages))
+  writeFile('google-submit-urls.txt', buildSubmitUrlList(allPages))
 }
 
 function buildUrlset(pages) {
@@ -59,6 +67,25 @@ function buildTextSitemap(pages) {
   return getUniquePages(pages)
     .map(page => (page.slug ? `${SITE_URL}/${page.slug}` : SITE_URL))
     .join('\n')
+}
+
+function buildSubmitUrlList(pages) {
+  const pageUrls = getUniquePages(pages).map(page =>
+    page.slug ? `${SITE_URL}/${page.slug}` : SITE_URL
+  )
+  const sitemapUrls = SUBMIT_SITEMAP_FILES.map(slug => `${SITE_URL}/${slug}`)
+  return Array.from(new Set([SITE_URL, ...sitemapUrls, ...pageUrls])).join('\n')
+}
+
+function assertStaticHtmlPagesExist(pages) {
+  const missingPages = getUniquePages(pages)
+    .filter(page => page.slug.endsWith('.html'))
+    .filter(page => !fs.existsSync(path.join(PUBLIC_DIR, page.slug)))
+    .map(page => page.slug)
+
+  if (missingPages.length) {
+    throw new Error(`Missing static SEO pages: ${missingPages.join(', ')}`)
+  }
 }
 
 function getUniquePages(pages) {

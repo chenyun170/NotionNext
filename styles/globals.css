@@ -113,6 +113,15 @@ html {
   overflow-x: hidden;
 }
 
+/* 隐藏滚动条（用于 ChatModal、侧边栏等内部滚动容器） */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 body,
 .sideLeft,
 #sticky-nav,

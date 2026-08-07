@@ -5,7 +5,7 @@
 - Site: https://www.123170.xyz
 - Author: 外贸获客情报局
 - Language: zh-CN
-- Updated: 2026-06-26
+- Updated: 2026-07-09
 - Sitemap: https://www.123170.xyz/sitemap.xml
 - Core sitemap: https://www.123170.xyz/sitemap-core.xml
 - RSS: https://www.123170.xyz/rss/feed.xml

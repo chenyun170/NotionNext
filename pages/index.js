@@ -47,7 +47,11 @@ export async function getStaticProps(context) {
     props.allPages?.filter(
       page => page.type === 'Post' && page.status === BLOG.NOTION_PROPERTY_NAME.status_publish
     ) || []
-  const homePosts = allPosts.filter(isHomepageListPost)
+  const notionHomePosts = allPosts.filter(isHomepageListPost)
+  const homePosts =
+    notionHomePosts.length > 0
+      ? notionHomePosts
+      : buildStaticHomePosts(HOME_POSTS_PER_PAGE)
 
   // 3) 根据布局风格截取文章
   if (POST_LIST_STYLE === 'scroll') {
@@ -100,3 +104,39 @@ export async function getStaticProps(context) {
 }
 
 export default Index
+
+function buildStaticHomePosts(limit = 12) {
+  const { CORE_SEO_PAGES, UPDATED_AT } = require('@/lib/seo/geoPages')
+
+  return CORE_SEO_PAGES
+    .filter(page => page.slug && page.slug.endsWith('.html'))
+    .slice(0, limit)
+    .map((page, index) => {
+      const tags = Array.isArray(page.keywords) ? page.keywords.slice(0, 3) : []
+
+      return {
+        id: `static-${page.slug}`,
+        title: page.title,
+        summary: page.description,
+        status: BLOG.NOTION_PROPERTY_NAME.status_publish,
+        type: 'Post',
+        slug: page.slug,
+        href: `/${page.slug}`,
+        category: page.section || '外贸获客',
+        tags,
+        tagItems: tags.map(tag => ({ name: tag, color: 'blue' })),
+        pageIcon: '📌',
+        pageCover: '',
+        pageCoverThumbnail: index % 2 === 0 ? '/images/home.png' : '/logo.png',
+        publishDay: UPDATED_AT,
+        lastEditedDay: UPDATED_AT,
+        publishDate: UPDATED_AT,
+        lastEditedDate: UPDATED_AT,
+        date: {
+          start_date: UPDATED_AT,
+          lastEditedDay: UPDATED_AT,
+          tagItems: []
+        }
+      }
+    })
+}

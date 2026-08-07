@@ -6,10 +6,25 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
   // 校验请求体
-  const { message } = req.body;
+  const { message, history } = req.body;
   if (!message) {
     return res.status(400).json({ error: '缺少 message 参数' });
   }
+
+  // 组装上下文：system + 历史对话（仅保留 user/assistant，单条截断防超限）+ 当前问题
+  const buildMessages = () => {
+    const system = {
+      role: "system",
+      content: "你是一个乐于助人的 AI 助手。请完整回答用户的问题，不要截断内容。回答时请结合对话历史中的上下文，保持话题连贯。",
+    };
+    const historyMessages = (Array.isArray(history) ? history : [])
+      .filter(m => m && (m.role === 'user' || m.role === 'assistant'))
+      .map(m => ({
+        role: m.role,
+        content: String(m.content || '').slice(0, 4000),
+      }));
+    return [system, ...historyMessages, { role: 'user', content: message }];
+  };
   const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
     baseURL: "https://integrate.api.nvidia.com/v1",
@@ -31,10 +46,7 @@ export default async function handler(req, res) {
 
     const stream = await client.chat.completions.create({
       model: process.env.CHAT_MODEL || "openai/gpt-oss-120b", // ⚠️ 改成你实际有权限的模型名
-      messages: [
-        { role: "system", content: "你是一个乐于助人的 AI 助手。请完整回答用户的问题，不要截断内容。" },
-        { role: "user", content: message }
-      ],
+      messages: buildMessages(),
       // 提高输出上限：长邮件、分析报告不再被模型默认上限截断
       max_tokens: 4096,
       temperature: 0.7,

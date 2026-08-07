@@ -73,7 +73,12 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg }),
+        body: JSON.stringify({
+          message: userMsg,
+          // 携带对话历史（不含当前消息，当前消息单独传），让模型能接上下文
+          // 只取最近 20 条，避免历史过长撑爆上下文
+          history: history.slice(-20).map(m => ({ role: m.role, content: m.text })),
+        }),
       })
 
       if (!response.ok) {

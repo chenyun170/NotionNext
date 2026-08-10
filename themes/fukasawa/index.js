@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { memo, useMemo, useCallback, useState } from 'react'
 import dynamic from 'next/dynamic'
@@ -18,6 +18,11 @@ const AlgoliaSearchModal = dynamic(() => import('@/components/AlgoliaSearchModal
 const Live2D = dynamic(() => import('@/components/Live2D'), { 
   ssr: false,
   loading: () => null // Live2D 加载时不显示任何内容
+})
+
+const ChatModal = dynamic(() => import('./components/ChatModal'), {
+  ssr: false,
+  loading: () => null
 })
 
 const FloatButton = dynamic(() => import('./components/FloatButton'), {
@@ -88,6 +93,7 @@ function getConfigValue(global, notionConfig, key, defaultValue) {
  * 4. 提取常量避免重复计算
  */
 const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
+  const [isChatOpen, setIsChatOpen] = useState(false)
   const global = useGlobal()
   const leftAreaSlot = useMemo(() => <Live2D />, [])
   const { onLoading, fullWidth } = global
@@ -136,6 +142,21 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
 
         <FloatButton floatSlot={floatSlot} {...props} />
         <AlgoliaSearchModal cRef={searchModal} {...props} />
+
+        {/* Mobile AI button */}
+        <div className="lg:hidden fixed right-4 bottom-6 z-[70]">
+          <button
+            onClick={() => setIsChatOpen(true)}
+            className="flex h-14 w-14 items-center justify-center rounded-full border border-white/60 bg-blue-600 text-white shadow-2xl ring-2 ring-white/30 backdrop-blur-xl active:scale-90 transition-transform dark:border-zinc-700 dark:bg-blue-700 dark:ring-zinc-600"
+          >
+            <i className="fas fa-robot text-base"></i>
+            <span className="sr-only">AI 参谋</span>
+          </button>
+        </div>
+
+        {/* AI 参谋弹窗 */}
+        <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+
       </div>
     </ThemeGlobalFukasawa.Provider>
   )

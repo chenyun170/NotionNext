@@ -1,4 +1,6 @@
-'use client'
+﻿'use client'
+
+import React from 'react'
 
 import BLOG from '@/blog.config'
 import { useGlobal } from '@/lib/global'
@@ -91,20 +93,9 @@ function AsideLeft(props) {
     : (isReverse ? 'right-[18.5rem]' : 'left-[18.5rem]')
 
   return (
+    <React.Fragment>
     <div className="flex">
-      {/* 📱 手机端活动提醒（整个容器受 Announcement 内部关闭逻辑控制） */}
-      <Announcement post={notice} className="lg:hidden fixed left-3 bottom-24 z-[65] w-[248px] rounded-2xl border border-amber-100/80 bg-white/90 p-3 shadow-lg shadow-amber-100/40 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80 dark:shadow-none" />
-
-      {/* 🚀 手机端 AI 参谋入口（按钮加大，位置优化，避免贴底） */}
-      <div className="lg:hidden fixed right-4 bottom-6 z-[70]">
-        <button
-          onClick={() => setIsChatOpen(true)}
-          className="flex h-14 w-14 items-center justify-center rounded-full border border-white/60 bg-blue-600 text-white shadow-2xl ring-2 ring-white/30 backdrop-blur-xl active:scale-90 transition-transform dark:border-zinc-700 dark:bg-blue-700 dark:ring-zinc-600"
-        >
-          <i className="fas fa-robot text-base"></i>
-          <span className="sr-only">AI 参谋</span>
-        </button>
-      </div>
+      
 
       {/* 折叠按钮 */}
       <button
@@ -126,7 +117,7 @@ function AsideLeft(props) {
               </div>
               
               {showFestive && (
-                <>
+                <React.Fragment>
                   <Image
                     src="https://cloudflare-imgbed-aa9.pages.dev/file/1766591515499_hat.png"
                     className="festive-hat-fixed"
@@ -151,7 +142,7 @@ function AsideLeft(props) {
                     <span className="snowflake-anim text-[10px] absolute left-1">❄</span>
                     <span className="snowflake-anim text-[8px] absolute left-6" style={{animationDelay:'1.5s'}}>❅</span>
                   </div>
-                </>
+                </React.Fragment>
               )}
             </div>
             <section className="siteInfo relative pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 mt-5 font-light text-xs italic text-zinc-500 leading-relaxed opacity-90 dark:text-zinc-400">
@@ -238,12 +229,12 @@ function AsideLeft(props) {
                       }`}
                     >
                       {isTopThree && (
-                        <>
+                        <React.Fragment>
                           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-bl from-blue-400/20 to-transparent rounded-full blur-3xl animate-pulse"></div>
                           </div>
                           <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-blue-500 via-cyan-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        </>
+                        </React.Fragment>
                       )}
 
                       <div className="relative z-10 flex items-center px-4 py-3 gap-3">
@@ -301,7 +292,10 @@ function AsideLeft(props) {
         </div>
       </div>
 
-      <style jsx global>{`
+    </div>
+
+        <style jsx global>{`
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
@@ -326,9 +320,7 @@ function AsideLeft(props) {
           100% { transform: translateY(40px) rotate(360deg); opacity: 0; }
         }
       `}</style>
-      {/* AI 参谋独立弹窗 */}
-      <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-    </div>
+    </React.Fragment>
   )
 }
 

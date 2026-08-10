@@ -25,10 +25,21 @@ export default async function handler(req, res) {
       }));
     return [system, ...historyMessages, { role: 'user', content: message }];
   };
+
+  // 超时保护（提升到外层作用域，catch 中也能安全清理）
+  let timer = null;
+  const clearTimer = () => {
+    if (timer) { clearTimeout(timer); timer = null; }
+  };
+
   const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
     baseURL: "https://integrate.api.nvidia.com/v1",
+    // 连接超时 30s，整体请求超时 115s（略小于外层 120s 保护）
+    timeout: 115000,
+    maxRetries: 2,
   });
+
   try {
     // 设置 SSE 流式响应头
     res.setHeader('Content-Type', 'text/event-stream');
@@ -36,7 +47,7 @@ export default async function handler(req, res) {
     res.setHeader('Connection', 'keep-alive');
 
     // 请求级超时保护：120s 无响应则中断，避免客户端一直等待（输出变长后需要更长等待）
-    const timer = setTimeout(() => {
+    timer = setTimeout(() => {
       if (!res.writableEnded) {
         res.write(`data: ${JSON.stringify({ error: '请求超时，请重试' })}\n\n`);
         res.write('data: [DONE]\n\n');
@@ -63,10 +74,10 @@ export default async function handler(req, res) {
       res.write('data: [DONE]\n\n');
       res.end();
     }
-    clearTimeout(timer);
+    clearTimer();
   } catch (error) {
     console.error("API 调用失败:", error);
-    clearTimeout(timer);
+    clearTimer();
     // 如果头还没发送，返回 JSON 错误
     if (!res.headersSent) {
       res.status(500).json({ error: error.message || error.toString() });

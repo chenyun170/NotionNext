@@ -35,8 +35,15 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
         <button
           type='button'
           aria-label='关闭工具入口'
-          onClick={onDismiss}
-          className='absolute right-2 top-2 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[11px] text-gray-500 shadow-sm transition hover:bg-blue-50 hover:text-blue-600 dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-blue-300'
+          onClick={() => {
+            try {
+              window.localStorage.setItem(FLOATING_AD_DISMISS_KEY, Date.now().toString())
+            } catch (e) {
+              console.warn('[FloatingActivityCard] localStorage failed:', e)
+            }
+            onDismiss()
+          }}
+          className='absolute right-2 top-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/90 text-[11px] text-gray-500 shadow-sm transition hover:bg-blue-50 hover:text-blue-600 active:bg-blue-100 active:scale-95 dark:border-gray-700 dark:bg-gray-900/90 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-blue-300'
         >
           <i className='fas fa-times' aria-hidden='true' />
         </button>

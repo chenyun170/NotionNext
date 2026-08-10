@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import Announcement from './Announcement'
 import Catalog from './Catalog'
 import Logo from './Logo'
 import MailChimpForm from './MailChimpForm'
@@ -15,7 +14,7 @@ import SearchInput from './SearchInput'
 import SocialButton from './SocialButton'
 import TagItemMini from './TagItemMini' 
 import { isHomepageListPost } from '@/lib/utils/postVisibility'
-// ✅ 引入组件
+// ✅ 引入组件（Announcement 改为动态导入，以便控制关闭状态）
 const SidebarTools = dynamic(() => import('./SidebarTools'), {
   ssr: false,
   loading: () => (
@@ -35,6 +34,12 @@ const SidebarChatWidget = dynamic(() => import('./SidebarChatWidget'), {
       AI 助手加载中...
     </div>
   )
+})
+
+// 手机端 Announcement 动态加载（控制显隐以便关闭后整个容器消失）
+const Announcement = dynamic(() => import('./Announcement'), {
+  ssr: false,
+  loading: () => null
 })
 
 function AsideLeft(props) {
@@ -87,18 +92,16 @@ function AsideLeft(props) {
 
   return (
     <div className="flex">
-      {/* 📱 手机端活动提醒（桌面侧边栏在手机上隐藏，这里单独挂载） */}
-      <div className="lg:hidden fixed left-3 bottom-24 z-[65] w-[248px] rounded-2xl border border-amber-100/80 bg-white/90 p-3 shadow-lg shadow-amber-100/40 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80 dark:shadow-none">
-        <Announcement post={notice} />
-      </div>
+      {/* 📱 手机端活动提醒（整个容器受 Announcement 内部关闭逻辑控制） */}
+      <Announcement post={notice} className="lg:hidden fixed left-3 bottom-24 z-[65] w-[248px] rounded-2xl border border-amber-100/80 bg-white/90 p-3 shadow-lg shadow-amber-100/40 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80 dark:shadow-none" />
 
-      {/* 🚀 手机端专用 AI 参谋入口 */}
-      <div className="lg:hidden fixed left-3 bottom-4 z-[70]">
+      {/* 🚀 手机端 AI 参谋入口（按钮加大，位置优化，避免贴底） */}
+      <div className="lg:hidden fixed right-4 bottom-6 z-[70]">
         <button
           onClick={() => setIsChatOpen(true)}
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-blue-600 shadow-lg ring-1 ring-zinc-200/70 backdrop-blur-xl active:scale-95 dark:border-zinc-700 dark:bg-zinc-900/85 dark:text-blue-300 dark:ring-zinc-800"
+          className="flex h-14 w-14 items-center justify-center rounded-full border border-white/60 bg-blue-600 text-white shadow-2xl ring-2 ring-white/30 backdrop-blur-xl active:scale-90 transition-transform dark:border-zinc-700 dark:bg-blue-700 dark:ring-zinc-600"
         >
-          <i className="fas fa-robot text-sm"></i>
+          <i className="fas fa-robot text-base"></i>
           <span className="sr-only">AI 参谋</span>
         </button>
       </div>

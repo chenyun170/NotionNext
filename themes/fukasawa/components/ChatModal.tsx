@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import ReactMarkdown from 'react-markdown'
 
 /**
@@ -140,13 +141,15 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
     }
   }
 
-  if (!isOpen) return null
+  if (!isOpen || typeof document === 'undefined') return null
 
-  return (
+  // 用 Portal 挂载到 document.body，彻底脱离主题容器的层叠上下文限制
+  return createPortal(
     <>
       {/* 遮罩 */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999]"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+        style={{ position: 'fixed', inset: 0, zIndex: 9999 }}
         onClick={onClose}
         aria-hidden="true"
       />
@@ -155,12 +158,16 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
       <div
         className="fixed z-[10000] flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-zinc-200/60 dark:border-zinc-700/60 bg-white dark:bg-zinc-900 animate-in fade-in slide-in-from-bottom-4 duration-300 lg:bottom-10 lg:left-1/2 lg:-translate-x-1/2 lg:w-[min(780px,calc(100vw-16px))] lg:h-[min(820px,calc(100vh-32px))]"
         style={{
+          position: 'fixed',
+          zIndex: 10000,
           // 移动端：全屏显示，确保输入框可见
           // 用 100vh 作为基准（所有浏览器都支持），dvh/svh 在旧手机 WebView 上可能不被支持导致高度塌陷、看不到输入框
           width: '100vw',
           height: '100vh',
           bottom: 0,
           left: 0,
+          top: 0,
+          right: 0,
         }}
         role="dialog"
         aria-modal="true"
@@ -331,6 +338,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
           </p>
         </div>
       </div>
-    </>
+    </>,
+    document.body
   )
 }

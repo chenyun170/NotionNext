@@ -35,20 +35,20 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
-    // 请求级超时保护：60s 无响应则中断，避免客户端一直等待
+    // 请求级超时保护：120s 无响应则中断，避免客户端一直等待（输出变长后需要更长等待）
     const timer = setTimeout(() => {
       if (!res.writableEnded) {
         res.write(`data: ${JSON.stringify({ error: '请求超时，请重试' })}\n\n`);
         res.write('data: [DONE]\n\n');
         res.end();
       }
-    }, 60000);
+    }, 120000);
 
     const stream = await client.chat.completions.create({
       model: process.env.CHAT_MODEL || "openai/gpt-oss-120b", // ⚠️ 改成你实际有权限的模型名
       messages: buildMessages(),
-      // 提高输出上限：长邮件、分析报告不再被模型默认上限截断
-      max_tokens: 4096,
+      // 提高输出上限：长邮件、分析报告不再被模型默认上限截断；gpt-oss-120b 最大输出 8192 tokens，可通过环境变量 MAX_TOKENS 覆盖
+      max_tokens: Number(process.env.MAX_TOKENS) || 8192,
       temperature: 0.7,
       stream: true,
     });

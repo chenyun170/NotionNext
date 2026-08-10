@@ -153,14 +153,13 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
 
       {/* 对话框主体 */}
       <div
-        className="fixed z-[201] flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-zinc-200/60 dark:border-zinc-700/60 bg-white dark:bg-zinc-900 animate-in fade-in slide-in-from-bottom-4 duration-300"
+        className="fixed z-[201] flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-zinc-200/60 dark:border-zinc-700/60 bg-white dark:bg-zinc-900 animate-in fade-in slide-in-from-bottom-4 duration-300 lg:bottom-10 lg:left-1/2 lg:-translate-x-1/2 lg:w-[min(780px,calc(100vw-16px))] lg:h-[min(820px,calc(100vh-32px)]"
         style={{
-          // 桌面端居中偏下，移动端全宽贴底；宽度高度尽量放大，保证内容完整显示
-          width: 'min(780px, calc(100vw - 16px))',
-          height: 'min(820px, calc(100vh - 32px))',
-          bottom: '40px',
-          left: '50%',
-          transform: 'translateX(-50%)',
+          // 移动端：全屏显示，确保输入框可见
+          width: '100vw',
+          height: '100dvh',
+          bottom: 0,
+          left: 0,
         }}
         role="dialog"
         aria-modal="true"

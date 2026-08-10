@@ -24,20 +24,6 @@ const SidebarTools = dynamic(() => import('./SidebarTools'), {
   )
 })
 
-const ChatModal = dynamic(() => import('./ChatModal'), {
-  ssr: false,
-  loading: () => null
-})
-
-const SidebarChatWidget = dynamic(() => import('./SidebarChatWidget'), {
-  ssr: false,
-  loading: () => (
-    <div className='rounded-2xl border border-dashed border-zinc-200 bg-zinc-50 p-4 text-xs text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900/40'>
-      AI 助手加载中...
-    </div>
-  )
-})
-
 // 手机端 Announcement 动态加载（控制显隐以便关闭后整个容器消失）
 const Announcement = dynamic(() => import('./Announcement'), {
   ssr: false,
@@ -49,8 +35,6 @@ function AsideLeft(props) {
   const visibleLatestPosts = latestPosts.filter(isHomepageListPost)
   const [runtime, setRuntime] = useState('')
   const [isCollapsed, setIsCollapse] = useState(false)
-  // ✅ 新增：控制 AI 参谋独立弹窗
-  const [isChatOpen, setIsChatOpen] = useState(false)
   // ✅ 保持全局状态引入，以便其他地方使用
   const global = useGlobal()
   const { isDarkMode, updateDarkMode, siteInfo } = global
@@ -267,20 +251,9 @@ function AsideLeft(props) {
                   );
                 })}
               </ul>
-
-              {/* 🚀 逻辑 2：电脑端保持在热门文章列表下方 */}
-              <div className="mt-5 hidden rounded-2xl border border-dashed border-zinc-200 bg-zinc-50/70 p-3 dark:border-zinc-800 dark:bg-zinc-900/40 lg:block">
-                  <div className="mb-3 flex items-center text-[10px] font-bold text-zinc-500 dark:text-zinc-400 tracking-[0.18em] uppercase">
-                    <i className="fas fa-robot mr-2 text-blue-500 opacity-70"></i>
-                    <span>AI 参谋</span>
-                  </div>
-                  <SidebarChatWidget />
-              </div>
-
             </section>
           )}
 
-          {/* 运行状态 */}
           <section className="mt-auto pt-10 border-t border-zinc-100 dark:border-zinc-900">
             <SocialButton />
             <div className="mt-8 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-center">
@@ -291,11 +264,9 @@ function AsideLeft(props) {
 
         </div>
       </div>
-
     </div>
 
         <style jsx global>{`
-
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         

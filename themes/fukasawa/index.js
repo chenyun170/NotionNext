@@ -144,7 +144,7 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
         <AlgoliaSearchModal cRef={searchModal} {...props} />
 
         {/* Mobile AI button */}
-        <div className="lg:hidden fixed right-4 bottom-6 z-[70]">
+        <div className="lg:hidden fixed left-4 bottom-6 z-[70]">
           <button
             onClick={() => setIsChatOpen(true)}
             className="flex h-14 w-14 items-center justify-center rounded-full border border-white/60 bg-blue-600 text-white shadow-2xl ring-2 ring-white/30 backdrop-blur-xl active:scale-90 transition-transform dark:border-zinc-700 dark:bg-blue-700 dark:ring-zinc-600"

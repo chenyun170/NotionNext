@@ -67,9 +67,9 @@ const Catalog = ({ toc }) => {
   return (
     <div
       id='catalog'
-      className='flex flex-1 flex-col overflow-hidden rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40'>
-      <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400'>
-        <i className='fas fa-stream text-blue-500' />
+      className='flex flex-1 flex-col overflow-hidden rounded-2xl border border-stone-200/80 bg-white/80 p-4 shadow-sm dark:border-stone-800 dark:bg-stone-950/40'>
+      <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
+        <i className='fas fa-stream text-amber-500' />
         <span>{locale.COMMON.TABLE_OF_CONTENTS}</span>
       </div>
       <nav
@@ -91,8 +91,8 @@ const Catalog = ({ toc }) => {
               href={`#${id}`}
               className={`catalog-item block rounded-xl border-l-2 px-3 py-2 transition-all duration-200 notion-table-of-contents-item-indent-level-${tocItem.indentLevel} ${
                 isActive
-                  ? 'border-blue-500 bg-blue-50 font-bold text-blue-700 shadow-sm dark:border-blue-400 dark:bg-blue-950/30 dark:text-blue-200'
-                  : 'border-zinc-200 text-zinc-500 hover:border-zinc-400 hover:bg-zinc-50 hover:text-zinc-800 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-900/70 dark:hover:text-zinc-100'
+                  ? 'border-amber-500 bg-amber-50 font-bold text-amber-700 shadow-sm dark:border-amber-400 dark:bg-amber-950/30 dark:text-amber-200'
+                  : 'border-stone-200 text-stone-500 hover:border-stone-400 hover:bg-stone-50 hover:text-stone-800 dark:border-stone-800 dark:text-stone-400 dark:hover:border-stone-600 dark:hover:bg-stone-900/70 dark:hover:text-stone-100'
               }`}>
               <span
                 style={{

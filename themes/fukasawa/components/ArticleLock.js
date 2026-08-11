@@ -27,9 +27,9 @@ const ArticleLock = props => {
   }, [])
 
   return (<div id='container' className="flex justify-center">
-    <div className="shadow md:hover:shadow-2xl overflow-x-auto max-w-5xl  w-screen md:w-full  py-10 px-5 lg:pt-24 md:px-24 min-h-screen dark:border-gray-700 bg-white dark:bg-gray-800 duration-200 subpixel-antialiased">
+    <div className="shadow md:hover:shadow-2xl overflow-x-auto max-w-5xl  w-screen md:w-full  py-10 px-5 lg:pt-24 md:px-24 min-h-screen dark:border-stone-700 bg-white dark:bg-stone-800 duration-200 subpixel-antialiased">
       <div className="w-full flex justify-center items-center h-96 ">
-        <div className="text-center space-y-3 dark:text-gray-300 text-black">
+        <div className="text-center space-y-3 dark:text-stone-300 text-black">
           <div className='font-bold'>{locale.COMMON.ARTICLE_LOCK_TIPS}</div>
           <div className="flex mx-4">
             <input
@@ -40,12 +40,12 @@ const ArticleLock = props => {
                 }
               }}
               ref={passwordInputRef} // 绑定ref到passwordInputRef变量
-              className="outline-none w-full text-sm pl-5 rounded-l transition focus:shadow-lg  font-light leading-10 bg-gray-100 dark:bg-gray-500"
+              className="outline-none w-full text-sm pl-5 rounded-l transition focus:shadow-lg  font-light leading-10 bg-stone-100 dark:bg-stone-500"
             ></input>
             <button
               type='button'
               onClick={submitPassword}
-              className="px-3 whitespace-nowrap cursor-pointer items-center justify-center py-2 bg-gray-700 hover:bg-gray-400 text-white rounded-r duration-300"
+              className="px-3 whitespace-nowrap cursor-pointer items-center justify-center py-2 bg-stone-700 hover:bg-stone-400 text-white rounded-r duration-300"
             >
               <i className={'duration-200 cursor-pointer fas fa-key'} >&nbsp;{locale.COMMON.SUBMIT}</i>
             </button>

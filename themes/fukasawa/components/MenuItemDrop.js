@@ -12,7 +12,7 @@ export const MenuItemDrop = ({ link }) => {
         changeShow(true)
       }}
       onMouseOut={() => changeShow(false)}
-      className='relative py-1 mb-1.5 duration-500 justify-between text-gray-500 dark:text-gray-300 hover:text-black hover:underline cursor-pointer flex flex-nowrap items-center '>
+      className='relative py-1 mb-1.5 duration-500 justify-between text-stone-500 dark:text-stone-300 hover:text-black hover:underline cursor-pointer flex flex-nowrap items-center '>
       {!hasSubMenu && (
         <LinkComponent
           href={link?.href}
@@ -45,7 +45,7 @@ export const MenuItemDrop = ({ link }) => {
       {/* 子菜单 */}
       {hasSubMenu && (
         <ul
-          className={`${show ? 'visible opacity-100 left-72' : 'invisible opacity-0 left-80'} z-20 p-2 absolute right-0 top-0 w-full border-gray-100  bg-white  dark:bg-black dark:border-gray-800 transition-all duration-300 drop-shadow-lg `}>
+          className={`${show ? 'visible opacity-100 left-72' : 'invisible opacity-0 left-80'} z-20 p-2 absolute right-0 top-0 w-full border-stone-100  bg-white  dark:bg-black dark:border-stone-800 transition-all duration-300 drop-shadow-lg `}>
           {link?.subMenus?.map((sLink, index) => {
             const SubLinkComponent = getLinkComponent(sLink.href)
             return (
@@ -53,7 +53,7 @@ export const MenuItemDrop = ({ link }) => {
                 <SubLinkComponent
                   href={sLink.href}
                   target={link?.target}
-                  className='my-auto py-1 px-2 items-center justify-start flex text-gray-500 dark:text-gray-300 hover:text-black  hover:bg-gray-50 dark:hover:bg-gray-900 tracking-widest transition-all duration-200 dark:border-gray-800 '>
+                  className='my-auto py-1 px-2 items-center justify-start flex text-stone-500 dark:text-stone-300 hover:text-black  hover:bg-stone-50 dark:hover:bg-stone-900 tracking-widest transition-all duration-200 dark:border-stone-800 '>
                   {sLink.icon && (
                     <i className={`${sLink.icon} w-4 text-center `} />
                   )}

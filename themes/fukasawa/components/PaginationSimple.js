@@ -16,7 +16,7 @@ const PaginationSimple = ({ page, showNext }) => {
   const pagePrefix =  router.asPath.split('?')[0].replace(/\/page\/[1-9]\d*/, '').replace(/\/$/, '')
 
   return (
-    <div className="my-10 flex justify-between font-medium text-black dark:text-gray-100 space-x-2">
+    <div className="my-10 flex justify-between font-medium text-black dark:text-stone-100 space-x-2">
       <SmartLink
         href={{
           pathname:

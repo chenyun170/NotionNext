@@ -1,4 +1,4 @@
-﻿const BLOG = require('./blog.config')
+const BLOG = require('./blog.config')
 const { fontFamilies } = require('./lib/utils/font')
 
 module.exports = {
@@ -51,9 +51,9 @@ module.exports = {
           7: '#D1D5DB',
           8: '#E5E7EB'
         },
-        primary: '#3758F9',
-        'blue-dark': '#1B44C8',
-        secondary: '#13C296',
+        primary: '#b97a52',
+        'blue-dark': '#a0653f',
+        secondary: '#d29a63',
         'body-color': '#637381',
         'body-secondary': '#8899A8',
         warning: '#FBBF24',

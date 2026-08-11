@@ -24,44 +24,44 @@ const TopicIntro = ({
   }
 
   return (
-    <section className='mb-8 overflow-hidden rounded-[8px] border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-[#111113]'>
+    <section className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-white dark:border-stone-800 dark:bg-[#1c1917]'>
       <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_260px]'>
         <div className='p-5 sm:p-7'>
-          <div className='mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400'>
+          <div className='mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-600 dark:text-amber-400'>
             <i className={`fas ${topic.icon}`} />
             <span>{topic.eyebrow}</span>
           </div>
-          <h1 className='text-2xl font-black leading-tight text-zinc-950 dark:text-zinc-50 sm:text-3xl'>
+          <h1 className='text-2xl font-black leading-tight text-stone-950 dark:text-stone-50 sm:text-3xl'>
             {topic.title}
           </h1>
-          <p className='mt-3 max-w-3xl text-sm leading-7 text-zinc-600 dark:text-zinc-300'>
+          <p className='mt-3 max-w-3xl text-sm leading-7 text-stone-600 dark:text-stone-300'>
             {topic.description}
           </p>
 
-          <div className='mt-5 flex flex-wrap gap-2 text-xs text-zinc-500 dark:text-zinc-400'>
-            <span className='rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 dark:border-zinc-800 dark:bg-zinc-950'>
-              <strong className='mr-1 text-zinc-900 dark:text-zinc-100'>
+          <div className='mt-5 flex flex-wrap gap-2 text-xs text-stone-500 dark:text-stone-400'>
+            <span className='rounded-full border border-stone-200 bg-stone-50 px-3 py-1 dark:border-stone-800 dark:bg-stone-950'>
+              <strong className='mr-1 text-stone-900 dark:text-stone-100'>
                 {postCount || posts?.length || 0}
               </strong>
               篇文章
             </span>
             <SmartLink
               href='/'
-              className='rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 transition hover:border-blue-300 hover:text-blue-600 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-blue-700 dark:hover:text-blue-300'
+              className='rounded-full border border-stone-200 bg-stone-50 px-3 py-1 transition hover:border-amber-300 hover:text-amber-600 dark:border-stone-800 dark:bg-stone-950 dark:hover:border-amber-700 dark:hover:text-amber-300'
             >
               全部文章
             </SmartLink>
             <SmartLink
               href='/archive'
-              className='rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 transition hover:border-blue-300 hover:text-blue-600 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-blue-700 dark:hover:text-blue-300'
+              className='rounded-full border border-stone-200 bg-stone-50 px-3 py-1 transition hover:border-amber-300 hover:text-amber-600 dark:border-stone-800 dark:bg-stone-950 dark:hover:border-amber-700 dark:hover:text-amber-300'
             >
               时间归档
             </SmartLink>
           </div>
         </div>
 
-        <div className='border-t border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-950/50 lg:border-l lg:border-t-0'>
-          <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400'>
+        <div className='border-t border-stone-200 bg-stone-50 p-5 dark:border-stone-800 dark:bg-stone-950/50 lg:border-l lg:border-t-0'>
+          <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             相关标签
           </div>
           <div className='flex flex-wrap gap-2'>
@@ -70,7 +70,7 @@ const TopicIntro = ({
                 <TagItemMini key={item.name} tag={item} />
               ))
             ) : (
-              <span className='text-sm text-zinc-400'>暂无相关标签</span>
+              <span className='text-sm text-stone-400'>暂无相关标签</span>
             )}
           </div>
         </div>

@@ -2,8 +2,8 @@
 const Style = () => {
   return <style jsx global>{`
     :root {
-        --fuka-bg: #f8f8f8;
-        --fuka-dark-bg: #0d0d0d;
+        --fuka-bg: #faf6f0;
+        --fuka-dark-bg: #171310;
         --fuka-item-gap: 1.5rem;
         --fuka-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }

@@ -68,7 +68,7 @@ const BlogListScroll = ({ posts, postsPerPage, showInlineAd = false }) => {
       </div>
 
       {/* 底部加载锚点 */}
-      <div ref={loaderRef} className="w-full py-12 text-center text-gray-400 text-sm italic">
+      <div ref={loaderRef} className="w-full py-12 text-center text-stone-400 text-sm italic">
         {page < totalPages ? (
           <div className="flex justify-center items-center space-x-2">
              <i className="fas fa-spinner animate-spin"></i>

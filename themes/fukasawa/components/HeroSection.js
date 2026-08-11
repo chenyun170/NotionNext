@@ -25,9 +25,9 @@ const HeroSection = () => {
       {/* ... 之前的定位显示代码 ... */}
 
       <div className="max-w-2xl mx-auto relative group">
-        <div className="relative bg-white dark:bg-[#1a1a1a] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-2xl p-2">
+        <div className="relative bg-white dark:bg-[#211d19] rounded-2xl border border-stone-100 dark:border-stone-800 shadow-2xl p-2">
           {/* 搜索类型切换标签 */}
-          <div className="flex gap-2 mb-2 px-3 border-b border-gray-50 dark:border-gray-800 pb-2">
+          <div className="flex gap-2 mb-2 px-3 border-b border-stone-50 dark:border-stone-800 pb-2">
             {[
               {id: 'site', label: '站内教程'},
               {id: 'hs', label: 'HS编码'},
@@ -37,7 +37,7 @@ const HeroSection = () => {
                 key={tab.id}
                 onClick={() => setSearchType(tab.id)}
                 className={`text-[10px] font-bold px-3 py-1 rounded-full transition-all ${
-                  searchType === tab.id ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
+                  searchType === tab.id ? 'bg-amber-600 text-white' : 'bg-stone-100 dark:bg-stone-800 text-stone-400'
                 }`}
               >
                 {tab.label}
@@ -55,7 +55,7 @@ const HeroSection = () => {
             />
             <button 
               onClick={handleSearch}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-xl text-xs font-bold transition-all"
+              className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-2.5 rounded-xl text-xs font-bold transition-all"
             >
               GO
             </button>

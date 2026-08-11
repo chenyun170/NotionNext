@@ -14,21 +14,21 @@ const ArticleInsightPanel = ({ post }) => {
   return (
     <section
       data-answer='article-geo-summary'
-      className='mb-8 overflow-hidden rounded-[8px] border border-zinc-200 bg-white print:hidden dark:border-zinc-800 dark:bg-[#111113]'
+      className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-white print:hidden dark:border-stone-800 dark:bg-[#1c1917]'
       aria-label='文章核心摘要'>
       <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_240px]'>
         <div className='p-5'>
-          <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400'>
+          <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-600 dark:text-amber-400'>
             <i className='fas fa-bolt' />
             <span>搜索摘要</span>
           </div>
-          <h2 className='mb-3 text-xl font-black leading-tight text-zinc-900 dark:text-zinc-50'>
+          <h2 className='mb-3 text-xl font-black leading-tight text-stone-900 dark:text-stone-50'>
             这篇文章的直接答案
           </h2>
-          <p itemProp='abstract' className='leading-7 text-zinc-600 dark:text-zinc-300'>
+          <p itemProp='abstract' className='leading-7 text-stone-600 dark:text-stone-300'>
             {directAnswer}
           </p>
-          <p className='mt-3 leading-7 text-zinc-500 dark:text-zinc-400'>
+          <p className='mt-3 leading-7 text-stone-500 dark:text-stone-400'>
             {summary}
           </p>
 
@@ -46,8 +46,8 @@ const ArticleInsightPanel = ({ post }) => {
           </div>
         </div>
 
-        <div className='border-t border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-950/60 lg:border-l lg:border-t-0'>
-          <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400'>
+        <div className='border-t border-stone-200 bg-stone-50 p-5 dark:border-stone-800 dark:bg-stone-950/60 lg:border-l lg:border-t-0'>
+          <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             内容信号
           </div>
           <dl className='space-y-3 text-sm'>
@@ -63,7 +63,7 @@ const ArticleInsightPanel = ({ post }) => {
                 <SmartLink
                   key={tag.name}
                   href={`/tag/${encodeURIComponent(tag.name)}`}
-                  className='rounded-[8px] border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-600 transition hover:border-emerald-300 hover:text-emerald-600 dark:border-zinc-800 dark:bg-[#111113] dark:text-zinc-300 dark:hover:border-emerald-700 dark:hover:text-emerald-300'>
+                  className='rounded-[8px] border border-stone-200 bg-white px-2.5 py-1 text-xs font-semibold text-stone-600 transition hover:border-amber-300 hover:text-amber-600 dark:border-stone-800 dark:bg-[#1c1917] dark:text-stone-300 dark:hover:border-amber-700 dark:hover:text-amber-300'>
                   #{tag.name}
                 </SmartLink>
               ))}
@@ -76,19 +76,19 @@ const ArticleInsightPanel = ({ post }) => {
 }
 
 const InsightItem = ({ icon, label, value }) => (
-  <div className='rounded-[8px] border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/60'>
-    <div className='mb-1 flex items-center gap-2 text-xs font-bold text-zinc-500 dark:text-zinc-400'>
-      <i className={`${icon} text-emerald-500`} />
+  <div className='rounded-[8px] border border-stone-200 bg-stone-50 p-3 dark:border-stone-800 dark:bg-stone-950/60'>
+    <div className='mb-1 flex items-center gap-2 text-xs font-bold text-stone-500 dark:text-stone-400'>
+      <i className={`${icon} text-amber-500`} />
       <span>{label}</span>
     </div>
-    <p className='text-sm leading-6 text-zinc-700 dark:text-zinc-200'>{value}</p>
+    <p className='text-sm leading-6 text-stone-700 dark:text-stone-200'>{value}</p>
   </div>
 )
 
 const SignalItem = ({ label, value }) => (
-  <div className='flex items-start justify-between gap-4 border-b border-dashed border-zinc-200 pb-2 last:border-b-0 dark:border-zinc-800'>
-    <dt className='text-zinc-400'>{label}</dt>
-    <dd className='text-right font-semibold text-zinc-700 dark:text-zinc-200'>{value}</dd>
+  <div className='flex items-start justify-between gap-4 border-b border-dashed border-stone-200 pb-2 last:border-b-0 dark:border-stone-800'>
+    <dt className='text-stone-400'>{label}</dt>
+    <dd className='text-right font-semibold text-stone-700 dark:text-stone-200'>{value}</dd>
   </div>
 )
 

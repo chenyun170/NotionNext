@@ -10,7 +10,7 @@ import TagItemMini from './TagItemMini'
 function GroupTag ({ tags, currentTag }) {
   if (!tags) return <></>
   return (
-    <div id='tags-group' className='dark:border-gray-600 w-66 space-y-2'>
+    <div id='tags-group' className='dark:border-stone-600 w-66 space-y-2'>
       {
         tags?.slice(0, 20)?.map(tag => {
           const selected = tag.name === currentTag

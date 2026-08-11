@@ -19,15 +19,15 @@ export default function SidebarChatWidget() {
       {/* 入口卡片：点击弹出独立对话框 */}
       <div
         onClick={() => setIsOpen(true)}
-        className="bg-white dark:bg-zinc-900 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-transparent hover:border-blue-100 group"
+        className="bg-white dark:bg-stone-900 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-transparent hover:border-amber-100 group"
       >
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+          <div className="w-8 h-8 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
             <i className="fas fa-robot text-sm"></i>
           </div>
 
           <div className="flex-1">
-            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1 group-hover:text-amber-600 dark:group-hover:text-amber-400">
               AI 外贸小助手
             </h4>
             <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-2">
@@ -35,7 +35,7 @@ export default function SidebarChatWidget() {
             </p>
           </div>
 
-          <i className="fas fa-external-link-alt text-xs text-blue-400/70 mt-1 shrink-0"></i>
+          <i className="fas fa-external-link-alt text-xs text-amber-400/70 mt-1 shrink-0"></i>
         </div>
       </div>
 

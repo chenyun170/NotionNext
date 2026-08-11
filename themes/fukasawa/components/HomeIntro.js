@@ -23,6 +23,12 @@ const fallbackTopics = [
     description: '反查供应商服务过哪些客户，判断竞品和渠道关系。',
     href: '/supplier-analysis.html',
     icon: 'fa-project-diagram'
+  },
+  {
+    name: '开发信与触达',
+    description: '拿到目标客户后，怎么写开发信、社媒话术和跟进节奏。',
+    href: '/client-development.html',
+    icon: 'fa-envelope-open-text'
   }
 ]
 
@@ -50,6 +56,14 @@ const flagshipTopics = [
     href: '/supplier-analysis.html',
     preferStaticHref: true,
     icon: 'fa-project-diagram'
+  },
+  {
+    name: '开发信与触达',
+    match: /开发信|触达|话术|跟进邮件|社媒|接洽/i,
+    description: '拿到目标客户后，怎么写开发信、社媒话术和跟进节奏。',
+    href: '/client-development.html',
+    preferStaticHref: true,
+    icon: 'fa-envelope-open-text'
   }
 ]
 
@@ -75,19 +89,19 @@ const HomeIntro = ({
   const homeDescription = buildHomeDescription()
 
   return (
-    <section className='mx-auto mb-8 w-full max-w-[calc(100vw-2rem)] overflow-hidden rounded-[8px] border border-zinc-300 bg-white shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-[#111113] dark:shadow-none sm:max-w-full'>
+    <section className='mx-auto mb-8 w-full max-w-[calc(100vw-2rem)] overflow-hidden rounded-[8px] border border-stone-300 bg-white shadow-sm shadow-stone-200/60 dark:border-stone-800 dark:bg-[#1c1917] dark:shadow-none sm:max-w-full'>
       <div className='px-5 py-6 sm:px-7 sm:py-8'>
-        <div className='mb-4 flex min-w-0 flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em] text-blue-700 dark:text-blue-300 sm:text-[11px] sm:tracking-[0.18em]'>
-          <span className='h-2 w-2 rounded-full bg-blue-700 dark:bg-blue-300' />
+        <div className='mb-4 flex min-w-0 flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em] text-amber-700 dark:text-amber-300 sm:text-[11px] sm:tracking-[0.18em]'>
+          <span className='h-2 w-2 rounded-full bg-amber-700 dark:bg-amber-300' />
           <span className='min-w-0 break-words leading-5'>123170.xyz · Foreign Trade Intelligence</span>
         </div>
 
         <div className='grid gap-5 lg:grid-cols-[minmax(0,1fr)_240px] lg:items-center'>
           <div className='min-w-0 max-w-[326px] sm:max-w-none'>
-            <h1 className='max-w-3xl break-words text-[22px] font-black leading-tight text-zinc-950 [overflow-wrap:anywhere] dark:text-zinc-50 sm:text-3xl'>
+            <h1 className='max-w-3xl break-words text-[22px] font-black leading-tight text-stone-950 [overflow-wrap:anywhere] dark:text-stone-50 sm:text-3xl'>
               外贸获客情报局：查谁在进口你的产品
             </h1>
-            <p className='mt-3 max-w-2xl break-words text-sm font-medium leading-7 text-zinc-700 dark:text-zinc-300'>
+            <p className='mt-3 max-w-2xl break-words text-sm font-medium leading-7 text-stone-700 dark:text-stone-300'>
               {homeDescription}
             </p>
             <div className='mt-5 flex w-full min-w-0 flex-wrap gap-2'>
@@ -117,42 +131,42 @@ const HomeIntro = ({
                   action: 'start_light_diagnosis'
                 })
               }
-              className='mt-4 flex min-w-0 flex-col gap-2 rounded-[8px] border border-blue-100 bg-blue-50/50 p-3 dark:border-blue-900/50 dark:bg-blue-950/20 sm:flex-row sm:items-center'>
-              <label className='min-w-0 flex-1 text-xs font-bold leading-5 text-zinc-700 dark:text-zinc-300'>
-                不确定先查什么？
+              className='mt-4 flex min-w-0 flex-col gap-2 rounded-[8px] border border-amber-100 bg-amber-50/50 p-3 dark:border-amber-900/50 dark:bg-amber-950/20 sm:flex-row sm:items-center'>
+              <label className='min-w-0 flex-1 text-xs font-bold leading-5 text-stone-700 dark:text-stone-300'>
+                输入产品词，看这个品类还有没有商机
                 <input
                   name='product'
                   type='text'
-                  placeholder='输入产品词，比如 LED 灯、轴承'
-                  className='mt-2 h-9 w-full rounded-[8px] border border-blue-100 bg-white px-3 text-xs font-semibold text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-[color:var(--brand-primary)] dark:border-blue-900/60 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500'
+                  placeholder='比如 LED 灯、轴承、太阳能板'
+                  className='mt-2 h-9 w-full rounded-[8px] border border-amber-100 bg-white px-3 text-xs font-semibold text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-[color:var(--brand-primary)] dark:border-amber-900/60 dark:bg-stone-950 dark:text-stone-100 dark:placeholder:text-stone-500'
                 />
               </label>
               <button
                 type='submit'
                 className='brand-btn brand-btn-accent h-9 shrink-0 px-3 text-xs'>
-                先做轻诊断
+                5 秒看商机
               </button>
             </form>
 
           </div>
 
-          <div className='min-w-0 max-w-[326px] rounded-[8px] border border-zinc-300 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-950/50 sm:max-w-none'>
-            <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400'>
+          <div className='min-w-0 max-w-[326px] rounded-[8px] border border-stone-300 bg-stone-50/80 p-4 dark:border-stone-800 dark:bg-stone-950/50 sm:max-w-none'>
+            <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
               获客主线
             </div>
             <div className='mt-3'>
-              <div className='break-words text-2xl font-black leading-tight text-zinc-950 dark:text-zinc-50'>
+              <div className='break-words text-2xl font-black leading-tight text-stone-950 dark:text-stone-50'>
                 查客户 / 验采购 / 做跟进
               </div>
-              <div className='text-xs font-medium text-zinc-600 dark:text-zinc-400'>
+              <div className='text-xs font-medium text-stone-600 dark:text-stone-400'>
                 把精力先放在真正买过的人身上
               </div>
             </div>
-            <div className='mt-4 grid gap-2 border-t border-dashed border-zinc-300 pt-4 dark:border-zinc-800'>
+            <div className='mt-4 grid gap-2 border-t border-dashed border-stone-300 pt-4 dark:border-stone-800'>
               {acquisitionSteps.map(signal => (
                 <div key={signal.label} className='flex min-w-0 flex-col gap-1 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-3'>
-                  <span className='font-medium text-zinc-500 dark:text-zinc-400'>{signal.label}</span>
-                  <span className='break-words font-bold text-zinc-800 dark:text-zinc-200 sm:text-right'>
+                  <span className='font-medium text-stone-500 dark:text-stone-400'>{signal.label}</span>
+                  <span className='break-words font-bold text-stone-800 dark:text-stone-200 sm:text-right'>
                     {signal.value}
                   </span>
                 </div>
@@ -162,28 +176,28 @@ const HomeIntro = ({
         </div>
       </div>
 
-      <div className='grid border-t border-zinc-300 dark:border-zinc-800 md:grid-cols-3'>
+      <div className='grid border-t border-stone-300 dark:border-stone-800 md:grid-cols-4'>
         {topics.map(topic => {
           const TopicLink = topic.href?.endsWith('.html') ? 'a' : SmartLink
           return (
             <TopicLink
               key={topic.name}
               href={topic.href}
-              className='group block min-h-[112px] min-w-0 border-b border-zinc-300 p-4 transition hover:bg-blue-50 dark:border-zinc-800 dark:hover:bg-blue-950/20 md:border-b-0 md:border-r last:md:border-r-0'>
+              className='group block min-h-[112px] min-w-0 border-b border-stone-300 p-4 transition hover:bg-amber-50 dark:border-stone-800 dark:hover:bg-amber-950/20 md:border-b-0 md:border-r last:md:border-r-0'>
               <div className='mb-3 flex items-center justify-between'>
-                <span className='flex h-8 w-8 items-center justify-center rounded-[8px] bg-zinc-100 text-sm text-zinc-700 transition group-hover:bg-blue-700 group-hover:text-white dark:bg-zinc-900 dark:text-zinc-300'>
+                <span className='flex h-8 w-8 items-center justify-center rounded-[8px] bg-stone-100 text-sm text-stone-700 transition group-hover:bg-amber-700 group-hover:text-white dark:bg-stone-900 dark:text-stone-300'>
                   <i className={`fas ${topic.icon}`} />
                 </span>
                 {topic.count && (
-                  <span className='text-xs font-semibold text-zinc-500 dark:text-zinc-400'>
+                  <span className='text-xs font-semibold text-stone-500 dark:text-stone-400'>
                     {topic.count} 篇
                   </span>
                 )}
               </div>
-              <h2 className='break-words text-base font-black text-zinc-950 [overflow-wrap:anywhere] group-hover:text-blue-800 dark:text-zinc-50 dark:group-hover:text-blue-300'>
+              <h2 className='break-words text-base font-black text-stone-950 [overflow-wrap:anywhere] group-hover:text-amber-800 dark:text-stone-50 dark:group-hover:text-amber-300'>
                 {topic.name}
               </h2>
-              <p className='mt-2 max-w-[calc(100vw-4rem)] break-all text-sm font-medium leading-6 text-zinc-600 [overflow-wrap:anywhere] dark:text-zinc-400 sm:max-w-none'>
+              <p className='mt-2 max-w-[calc(100vw-4rem)] break-all text-sm font-medium leading-6 text-stone-600 [overflow-wrap:anywhere] dark:text-stone-400 sm:max-w-none'>
                 {topic.description}
               </p>
             </TopicLink>

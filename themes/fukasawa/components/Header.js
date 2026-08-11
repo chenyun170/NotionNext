@@ -174,21 +174,21 @@ const Header = props => {
       {/* 2. 导航栏主体 */}
       <div
         id='sticky-nav'
-        className={`relative w-full ${Z_INDEX.nav} bg-white dark:bg-black border-b border-gray-100 dark:border-zinc-900`}
+        className={`relative w-full ${Z_INDEX.nav} bg-white dark:bg-black border-b border-stone-100 dark:border-stone-900`}
       >
         <div className='w-full flex justify-between items-center px-3 py-2.5'>
           <div className='flex flex-none flex-grow-0'>
             <Logo {...props} />
           </div>
-          <div className='mr-1 flex items-center justify-end gap-1 text-sm dark:text-gray-200'>
+          <div className='mr-1 flex items-center justify-end gap-1 text-sm dark:text-stone-200'>
             <button
               type='button'
               onClick={openSearch}
               aria-label='打开搜索'
-              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-zinc-100 hover:text-orange-500 dark:hover:bg-zinc-900 dark:hover:text-orange-400 ${
+              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-stone-100 hover:text-orange-500 dark:hover:bg-stone-900 dark:hover:text-orange-400 ${
                 isSearchActive && isOpen
                   ? 'bg-orange-50 text-orange-500 dark:bg-orange-950/40 dark:text-orange-300'
-                  : 'text-zinc-600 dark:text-zinc-200'
+                  : 'text-stone-600 dark:text-stone-200'
               }`}>
               <i className='fas fa-search text-sm' />
             </button>
@@ -196,7 +196,7 @@ const Header = props => {
               type='button'
               aria-label={isOpen ? '关闭菜单' : '打开菜单'}
               onClick={toggleMenuOpen} 
-              className='flex h-9 w-9 items-center justify-center rounded-full text-lg transition-colors hover:bg-zinc-100 hover:text-orange-500 dark:hover:bg-zinc-900 dark:hover:text-orange-400'
+              className='flex h-9 w-9 items-center justify-center rounded-full text-lg transition-colors hover:bg-stone-100 hover:text-orange-500 dark:hover:bg-stone-900 dark:hover:text-orange-400'
             >
               {isOpen ? <i className='fas fa-times' /> : <i className='fas fa-bars' />}
             </button>
@@ -204,7 +204,7 @@ const Header = props => {
         </div>
 
         {/* 3. 阅读进度条 - 优化版本 */}
-        <div className='absolute bottom-0 left-0 w-full h-[2px] bg-gray-100 dark:bg-zinc-800 overflow-hidden'>
+        <div className='absolute bottom-0 left-0 w-full h-[2px] bg-stone-100 dark:bg-stone-800 overflow-hidden'>
           <div 
             className='h-full bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 shadow-[0_0_8px_rgba(249,115,22,0.8)] transition-all duration-150 ease-out'
             style={{ 
@@ -216,11 +216,11 @@ const Header = props => {
 
         {/* 4. 折叠菜单 */}
         <Collapse type='vertical' isOpen={isOpen} collapseRef={collapseRef}>
-          <div className='max-h-[72vh] overflow-y-auto border-b border-zinc-200 bg-white/98 px-4 pb-5 pt-3 shadow-xl backdrop-blur-xl dark:border-zinc-800 dark:bg-black/95'>
-            <div className='mb-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-2 dark:border-zinc-800 dark:bg-zinc-900/70'>
+          <div className='max-h-[72vh] overflow-y-auto border-b border-stone-200 bg-white/98 px-4 pb-5 pt-3 shadow-xl backdrop-blur-xl dark:border-stone-800 dark:bg-black/95'>
+            <div className='mb-4 rounded-2xl border border-stone-200 bg-stone-50 p-2 dark:border-stone-800 dark:bg-stone-900/70'>
               <SearchInput {...props} cRef={searchInputRef} />
             </div>
-            <div className='mb-3 flex items-center justify-between px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400'>
+            <div className='mb-3 flex items-center justify-between px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-stone-400'>
               <span>Menu</span>
               <span>Trade Intelligence</span>
             </div>

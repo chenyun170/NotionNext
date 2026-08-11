@@ -14,7 +14,7 @@ export const MenuItemNormal = props => {
       title={link.href}
       href={link.href}
       className={
-        'py-0.5 duration-500 justify-between text-gray-500 dark:text-gray-300 hover:text-black hover:underline cursor-pointer flex flex-nowrap items-center ' +
+        'py-0.5 duration-500 justify-between text-stone-500 dark:text-stone-300 hover:text-black hover:underline cursor-pointer flex flex-nowrap items-center ' +
         (selected ? 'text-black' : ' ')
       }>
       <div className='my-auto items-center justify-center flex '>

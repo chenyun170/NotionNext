@@ -36,7 +36,7 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
     <article
       {...aosProps}
       style={{ maxHeight: '65rem' }}
-      className='group w-full lg:max-w-sm p-0 mb-6 mx-2 bg-white dark:bg-[#1e1e1e] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800'
+      className='group w-full lg:max-w-sm p-0 mb-6 mx-2 bg-white dark:bg-[#211d19] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-stone-100 dark:border-stone-800'
     >
       <div className='flex flex-col h-full'>
         {/* 封面图部分：锁定比例 16:10 */}
@@ -63,7 +63,7 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
             <SmartLink
               passHref
               href={post?.href}
-              className={`line-clamp-2 break-words cursor-pointer font-bold text-lg leading-snug text-gray-800 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200`}
+              className={`line-clamp-2 break-words cursor-pointer font-bold text-lg leading-snug text-stone-800 dark:text-stone-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200`}
             >
               {siteConfig('POST_TITLE_ICON') && (
                 <NotionIcon icon={post.pageIcon} />
@@ -74,18 +74,18 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
 
           {/* 摘要：强制 2 行，保持卡片整齐 */}
           {(!showPreview || showSummary) && (
-            <main className='mb-4 line-clamp-2 text-gray-500 dark:text-gray-400 text-sm font-normal leading-relaxed overflow-hidden'>
+            <main className='mb-4 line-clamp-2 text-stone-500 dark:text-stone-400 text-sm font-normal leading-relaxed overflow-hidden'>
               {post.summary}
             </main>
           )}
 
           {/* 底部：分类 & 标签 */}
-          <div className='mt-auto pt-4 border-t border-gray-50 dark:border-gray-800 flex items-center justify-between'>
+          <div className='mt-auto pt-4 border-t border-stone-50 dark:border-stone-800 flex items-center justify-between'>
             {post.category && (
               <SmartLink
                 href={`/category/${post.category}`}
                 passHref
-                className='flex items-center text-xs text-gray-400 dark:text-gray-500 hover:text-blue-500 transition-colors'
+                className='flex items-center text-xs text-stone-400 dark:text-stone-500 hover:text-amber-500 transition-colors'
               >
                 <i className='mr-1.5 far fa-folder-open' />
                 {post.category}

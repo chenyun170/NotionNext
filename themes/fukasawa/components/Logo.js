@@ -59,7 +59,7 @@ const Logo = props => {
         {/* 文字标题 */}
         <div className='text-left relative z-20 lg:mt-1'>
           <div
-            className='logo-title text-base font-black tracking-tight text-slate-800 dark:text-gray-100 flex items-center'
+            className='logo-title text-base font-black tracking-tight text-slate-800 dark:text-stone-100 flex items-center'
           >
             {characters.map((char, index) => (
               <span
@@ -74,7 +74,7 @@ const Logo = props => {
               </span>
             ))}
           </div>
-          <div className='text-[8px] font-bold text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-[0.22em] transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-400'>
+          <div className='text-[8px] font-bold text-stone-400 dark:text-stone-500 mt-1 uppercase tracking-[0.22em] transition-colors group-hover:text-stone-600 dark:group-hover:text-stone-400'>
             Trade Intelligence Bureau
           </div>
         </div>

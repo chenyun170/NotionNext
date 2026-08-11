@@ -9,7 +9,7 @@ function SiteInfo({ title }) {
     parseInt(since) < currentYear ? since + '-' + currentYear : currentYear
 
   return (
-    <footer className='relative leading-6 justify-start w-full text-gray-600 dark:text-gray-300 text-xs '>
+    <footer className='relative leading-6 justify-start w-full text-stone-600 dark:text-stone-300 text-xs '>
       <span>
         {/* 版权年份和作者 */}
         © {`${copyrightDate}`}

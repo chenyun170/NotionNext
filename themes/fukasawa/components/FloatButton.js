@@ -106,7 +106,7 @@ const FloatButton = () => {
       {/* 1. 返回顶部按钮 - 加进度圆环 */}
       <div 
         onClick={scrollToTop}
-        className={`mb-10 w-12 h-12 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md text-slate-600 dark:text-gray-300 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:text-orange-600 transition-all duration-500 border border-white/20 dark:border-gray-700 group relative ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+        className={`mb-10 w-12 h-12 bg-white/80 dark:bg-stone-800/80 backdrop-blur-md text-slate-600 dark:text-stone-300 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:text-orange-600 transition-all duration-500 border border-white/20 dark:border-stone-700 group relative ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
       >
         {/* 进度圆环背景 */}
         <svg 
@@ -160,23 +160,23 @@ const FloatButton = () => {
       {!giftDismissed && giftReady && (
       <div className="group relative flex flex-col items-center">
         {showPopup && (
-          <div className="absolute bottom-16 right-0 w-56 max-w-[calc(100vw-2rem)] backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 rounded-xl md:rounded-2xl shadow-2xl border border-white/20 dark:border-gray-800 p-4 md:p-5 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
+          <div className="absolute bottom-16 right-0 w-56 max-w-[calc(100vw-2rem)] backdrop-blur-xl bg-white/80 dark:bg-stone-900/80 rounded-xl md:rounded-2xl shadow-2xl border border-white/20 dark:border-stone-800 p-4 md:p-5 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
             <button
               type="button"
               aria-label="关闭资料包浮窗"
               onClick={dismissGift}
-              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-xs text-gray-400 shadow-sm transition hover:bg-orange-50 hover:text-orange-600 md:right-2.5 md:top-2.5 md:h-6 md:w-6 md:text-[10px] dark:bg-gray-800/80 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-orange-300"
+              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-xs text-stone-400 shadow-sm transition hover:bg-orange-50 hover:text-orange-600 md:right-2.5 md:top-2.5 md:h-6 md:w-6 md:text-[10px] dark:bg-stone-800/80 dark:text-stone-500 dark:hover:bg-stone-700 dark:hover:text-orange-300"
             >
               <i className="fas fa-times"></i>
             </button>
             <div className="text-center">
               <h3 className="font-black text-slate-800 dark:text-white text-sm tracking-tight">情报局长助手</h3>
-              <p className="text-gray-500 dark:text-gray-400 text-xs md:text-[10px] mt-1 mb-3 leading-relaxed">
+              <p className="text-stone-500 dark:text-stone-400 text-xs md:text-[10px] mt-1 mb-3 leading-relaxed">
                 扫码添加微信或点击下方按钮<br/>
                 备注<span className="text-orange-600 font-black italic">&quot;获客&quot;</span>领资料包
               </p>
               
-              <div className="bg-white dark:bg-black/20 p-2 rounded-xl mb-3 border border-gray-100 dark:border-gray-800 shadow-inner">
+              <div className="bg-white dark:bg-black/20 p-2 rounded-xl mb-3 border border-stone-100 dark:border-stone-800 shadow-inner">
                  <img src="/wechat-qr.png" alt="微信二维码" className="w-full h-auto rounded-lg" />
               </div>
 
@@ -190,7 +190,7 @@ const FloatButton = () => {
 
               <button 
                 onClick={() => setShowPopup(false)} 
-                className="text-gray-400 text-[9px] font-bold hover:text-orange-600 transition-colors uppercase tracking-[0.2em]"
+                className="text-stone-400 text-[9px] font-bold hover:text-orange-600 transition-colors uppercase tracking-[0.2em]"
               >
                 [ Close ]
               </button>
@@ -209,7 +209,7 @@ const FloatButton = () => {
           type="button"
           aria-label="关闭资料包浮窗"
           onClick={dismissGift}
-          className="absolute -right-3 -top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/70 bg-slate-900/80 text-xs text-white shadow-md transition hover:bg-orange-600 md:-right-2 md:-top-2 md:h-5 md:w-5 md:text-[9px] dark:border-gray-700"
+          className="absolute -right-3 -top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/70 bg-slate-900/80 text-xs text-white shadow-md transition hover:bg-orange-600 md:-right-2 md:-top-2 md:h-5 md:w-5 md:text-[9px] dark:border-stone-700"
         >
           <i className="fas fa-times"></i>
         </button>

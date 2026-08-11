@@ -31,7 +31,7 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
       }`}>
       
       {/* 核心毛玻璃容器 */}
-      <div className={`relative overflow-hidden p-5 rounded-2xl border border-white/20 shadow-2xl backdrop-blur-md bg-white/70 dark:bg-[#1a1a1a]/70`}>
+      <div className={`relative overflow-hidden p-5 rounded-2xl border border-white/20 shadow-2xl backdrop-blur-md bg-white/70 dark:bg-[#211d19]/70`}>
         <button
           type='button'
           aria-label='关闭工具入口'
@@ -43,7 +43,7 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
             }
             onDismiss()
           }}
-          className='absolute right-2 top-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/90 text-[11px] text-gray-500 shadow-sm transition hover:bg-blue-50 hover:text-blue-600 active:bg-blue-100 active:scale-95 dark:border-gray-700 dark:bg-gray-900/90 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-blue-300'
+          className='absolute right-2 top-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/90 text-[11px] text-stone-500 shadow-sm transition hover:bg-amber-50 hover:text-amber-600 active:bg-amber-100 active:scale-95 dark:border-stone-700 dark:bg-stone-900/90 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-amber-300'
         >
           <i className='fas fa-times' aria-hidden='true' />
         </button>
@@ -51,17 +51,17 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
         {/* 内容区域 */}
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-md uppercase tracking-tighter">
+            <span className="text-[10px] font-black bg-amber-600 text-white px-2 py-0.5 rounded-md uppercase tracking-tighter">
               先试一下
             </span>
-            <i className="fas fa-bullhorn text-cyan-600 animate-bounce text-xs"></i>
+            <i className="fas fa-bullhorn text-amber-600 animate-bounce text-xs"></i>
           </div>
           
-          <h3 className="text-sm font-black text-gray-800 dark:text-white mb-2 leading-tight">
+          <h3 className="text-sm font-black text-stone-800 dark:text-white mb-2 leading-tight">
             {config.title || '图灵搜免费体验'}
           </h3>
           
-          <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
+          <p className="text-[11px] text-stone-500 dark:text-stone-400 mb-4 leading-relaxed">
             {config.floatingDescription || '找到客户后，先用数据确认它是不是真的在买。'}
           </p>
           
@@ -108,7 +108,7 @@ const InlineActivityCard = ({ config, isActive }) => {
           {config.badgeText || '入口'}
         </span>
       </div>
-      <p className='pl-9 text-xs leading-5 text-zinc-600 dark:text-zinc-400'>
+      <p className='pl-9 text-xs leading-5 text-stone-600 dark:text-stone-400'>
         {config.emoji} <strong>{config.productName}</strong> {config.description}
       </p>
       <a 
@@ -143,11 +143,11 @@ const activityConfigs = {
     trackSource: 'activity_turingsearch',
     buttonText: '立即参与',
     badgeText: '先试',
-    bgColor: 'bg-cyan-50/45 dark:bg-cyan-950/20',
-    borderColor: 'border-cyan-100 dark:border-cyan-900/50',
-    textColor: 'text-cyan-700 dark:text-cyan-300',
-    iconBg: 'bg-cyan-100/80 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
-    badgeClass: 'bg-cyan-100/70 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
+    bgColor: 'bg-amber-50/45 dark:bg-amber-950/20',
+    borderColor: 'border-amber-100 dark:border-amber-900/50',
+    textColor: 'text-amber-700 dark:text-amber-300',
+    iconBg: 'bg-amber-100/80 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+    badgeClass: 'bg-amber-100/70 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
     buttonClass: 'brand-btn-accent',
     icon: 'fas fa-gift',
     animation: 'animate-bounce'
@@ -163,11 +163,11 @@ const activityConfigs = {
     trackSource: 'activity_dingyiyun',
     buttonText: '限时领取',
     badgeText: '工具',
-    bgColor: 'bg-blue-50/45 dark:bg-blue-950/20',
-    borderColor: 'border-blue-100 dark:border-blue-900/50',
-    textColor: 'text-blue-600 dark:text-blue-400',
-    iconBg: 'bg-blue-100/80 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
-    badgeClass: 'bg-blue-100/70 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
+    bgColor: 'bg-amber-50/45 dark:bg-amber-950/20',
+    borderColor: 'border-amber-100 dark:border-amber-900/50',
+    textColor: 'text-amber-600 dark:text-amber-400',
+    iconBg: 'bg-amber-100/80 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+    badgeClass: 'bg-amber-100/70 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
     buttonClass: 'brand-btn-secondary',
     icon: 'fas fa-fire',
     animation: 'animate-pulse'
@@ -285,7 +285,7 @@ const Announcement = ({ post, className }) => {
       <div className={className} ref={announcementRef}>
         <section 
           id='announcement-wrapper' 
-          className="dark:text-gray-300 rounded-xl px-1 py-2"
+          className="dark:text-stone-300 rounded-xl px-1 py-2"
           role="complementary">
 
           {/* 标题栏 + 关闭按钮 */}
@@ -317,8 +317,8 @@ const Announcement = ({ post, className }) => {
           <InlineActivityCard config={activityConfigs.activity2} isActive={activities.activity2} />
 
           {post?.blockMap && (
-            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-              <div className='text-[11px] font-bold mb-2 text-gray-400 uppercase tracking-widest'>
+            <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-800">
+              <div className='text-[11px] font-bold mb-2 text-stone-400 uppercase tracking-widest'>
                 <i className='mr-2 fas fa-bullhorn' />
                 {locale.COMMON.ANNOUNCEMENT}
               </div>

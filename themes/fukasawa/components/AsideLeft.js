@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React from 'react'
 
@@ -20,7 +20,7 @@ import { isHomepageListPost } from '@/lib/utils/postVisibility'
 const SidebarTools = dynamic(() => import('./SidebarTools'), {
   ssr: false,
   loading: () => (
-    <div className='h-40 rounded-2xl border border-dashed border-zinc-200 bg-zinc-50/70 dark:border-zinc-800 dark:bg-zinc-900/40' />
+    <div className='h-40 rounded-2xl border border-dashed border-stone-200 bg-stone-50/70 dark:border-stone-800 dark:bg-stone-900/40' />
   )
 })
 
@@ -84,13 +84,13 @@ function AsideLeft(props) {
       {/* 折叠按钮 */}
       <button
         onClick={toggleCollapse}
-        className={`${btnPosition} fixed top-6 z-50 hidden p-2.5 rounded-xl bg-white/90 dark:bg-zinc-800/90 backdrop-blur-md shadow-lg border border-gray-200 dark:border-zinc-700 transition-all duration-500 hover:scale-110 active:scale-95 group lg:flex`}
+        className={`${btnPosition} fixed top-6 z-50 hidden p-2.5 rounded-xl bg-white/90 dark:bg-stone-800/90 backdrop-blur-md shadow-lg border border-stone-200 dark:border-stone-700 transition-all duration-500 hover:scale-110 active:scale-95 group lg:flex`}
       >
-        <i className={`fa-solid ${isCollapsed ? 'fa-indent text-blue-500' : 'fa-chevron-left text-gray-400'} text-sm group-hover:text-blue-500 transition-colors`}></i>
+        <i className={`fa-solid ${isCollapsed ? 'fa-indent text-amber-500' : 'fa-chevron-left text-stone-400'} text-sm group-hover:text-amber-500 transition-colors`}></i>
       </button>
 
       {/* 侧边栏主体 */}
-      <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-[#fbfbfb] dark:bg-[#09090b] min-h-screen hidden lg:block z-30 border-r border-zinc-200/80 dark:border-zinc-900 shadow-[8px_0_28px_rgba(15,23,42,0.06)] dark:shadow-[8px_0_28px_rgba(0,0,0,0.24)]`}>
+      <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-[#faf6f0] dark:bg-[#171310] min-h-screen hidden lg:block z-30 border-r border-stone-200/80 dark:border-stone-900 shadow-[8px_0_28px_rgba(15,23,42,0.06)] dark:shadow-[8px_0_28px_rgba(0,0,0,0.24)]`}>
         <div className={`h-full no-scrollbar overflow-y-auto flex flex-col transition-all duration-500 ${isCollapsed ? 'opacity-0 invisible' : 'opacity-100 px-6 py-8'}`}>
 
           {/* Logo 区域 */}
@@ -129,7 +129,7 @@ function AsideLeft(props) {
                 </React.Fragment>
               )}
             </div>
-            <section className="siteInfo relative pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 mt-5 font-light text-xs italic text-zinc-500 leading-relaxed opacity-90 dark:text-zinc-400">
+            <section className="siteInfo relative pl-3 border-l-2 border-stone-200 dark:border-stone-800 mt-5 font-light text-xs italic text-stone-500 leading-relaxed opacity-90 dark:text-stone-400">
               {sidebarDescription}
             </section>
           </div>
@@ -137,12 +137,12 @@ function AsideLeft(props) {
           {/* 活动公告（标题栏 + 关闭按钮 + 卡片都在 Announcement 内部） */}
           <Announcement
             post={notice}
-            className="mb-8 rounded-2xl border border-amber-100/80 bg-white/85 p-4 shadow-sm shadow-amber-100/50 dark:border-zinc-800 dark:bg-zinc-950/40 dark:shadow-none"
+            className="mb-8 rounded-2xl border border-amber-100/80 bg-white/85 p-4 shadow-sm shadow-amber-100/50 dark:border-stone-800 dark:bg-stone-950/40 dark:shadow-none"
           />
 
           {/* 工具台 */}
-          <section className="mb-8 rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
-            <div className="flex items-center text-[11px] font-bold text-blue-600 dark:text-blue-400 tracking-[0.18em] uppercase mb-4 px-1">
+          <section className="mb-8 rounded-2xl border border-stone-200/80 bg-white/80 p-4 shadow-sm dark:border-stone-800 dark:bg-stone-950/40">
+            <div className="flex items-center text-[11px] font-bold text-amber-600 dark:text-amber-400 tracking-[0.18em] uppercase mb-4 px-1">
               <i className="fas fa-terminal mr-2 opacity-60"></i>
               <span>外贸工具台</span>
             </div>
@@ -150,24 +150,24 @@ function AsideLeft(props) {
           </section>
 
           {/* 搜索 */}
-          <section className="mb-8 rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
-            <div className="mb-4 flex items-center text-[11px] font-bold text-zinc-500 dark:text-zinc-400 tracking-[0.18em] uppercase px-1">
-              <i className="fas fa-compass mr-2 text-cyan-500 opacity-70"></i>
+          <section className="mb-8 rounded-2xl border border-stone-200/80 bg-white/80 p-4 shadow-sm dark:border-stone-800 dark:bg-stone-950/40">
+            <div className="mb-4 flex items-center text-[11px] font-bold text-stone-500 dark:text-stone-400 tracking-[0.18em] uppercase px-1">
+              <i className="fas fa-compass mr-2 text-amber-500 opacity-70"></i>
               <span>内容导航</span>
             </div>
-            <div className="bg-zinc-50 dark:bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800">
+            <div className="bg-stone-50 dark:bg-stone-900/50 p-1.5 rounded-xl border border-stone-200 dark:border-stone-800">
               <SearchInput {...props} />
             </div>
 
           {/* 菜单 */}
-          <div className="mt-4 flex flex-col border-t border-dashed border-zinc-200 pt-4 dark:border-zinc-800">
+          <div className="mt-4 flex flex-col border-t border-dashed border-stone-200 pt-4 dark:border-stone-800">
             <MenuList {...props} />
           </div>
           {showStatsLink && (
-            <div className="mt-4 grid gap-2 border-t border-dashed border-zinc-200 pt-4 dark:border-zinc-800">
-              <a href="/skill-stats.html" className="flex items-center justify-between rounded-xl border border-dashed border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-bold text-zinc-600 transition hover:border-blue-300 hover:text-blue-600 dark:border-zinc-800 dark:bg-zinc-950/30 dark:text-zinc-300 dark:hover:border-blue-700 dark:hover:text-blue-300">
+            <div className="mt-4 grid gap-2 border-t border-dashed border-stone-200 pt-4 dark:border-stone-800">
+              <a href="/skill-stats.html" className="flex items-center justify-between rounded-xl border border-dashed border-stone-200 bg-stone-50 px-3 py-2 text-xs font-bold text-stone-600 transition hover:border-amber-300 hover:text-amber-600 dark:border-stone-800 dark:bg-stone-950/30 dark:text-stone-300 dark:hover:border-amber-700 dark:hover:text-amber-300">
                 <span><i className="fas fa-chart-line mr-2 text-violet-500"></i>点击看板</span>
-                <i className="fas fa-arrow-right text-[10px] text-zinc-400"></i>
+                <i className="fas fa-arrow-right text-[10px] text-stone-400"></i>
               </a>
             </div>
           )}
@@ -175,8 +175,8 @@ function AsideLeft(props) {
 
           {/* 侧边栏热度标签云 */}
           {tagOptions?.length > 0 && (
-            <section className="flex flex-col mb-8 rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
-              <div className="flex items-center text-[11px] font-bold text-zinc-500 dark:text-zinc-400 tracking-[0.18em] uppercase mb-4 px-1">
+            <section className="flex flex-col mb-8 rounded-2xl border border-stone-200/80 bg-white/80 p-4 shadow-sm dark:border-stone-800 dark:bg-stone-950/40">
+              <div className="flex items-center text-[11px] font-bold text-stone-500 dark:text-stone-400 tracking-[0.18em] uppercase mb-4 px-1">
                 <i className="fas fa-tags mr-2 text-indigo-500 opacity-50"></i>
                 <span>热门标签</span>
               </div>
@@ -185,7 +185,7 @@ function AsideLeft(props) {
                   <TagItemMini key={tag.name} tag={tag} />
                 ))}
                 {tagOptions.length > 12 && (
-                    <Link href='/tag' className='ml-1 mt-2 text-[11px] italic text-zinc-400 transition-colors hover:text-blue-500'>
+                    <Link href='/tag' className='ml-1 mt-2 text-[11px] italic text-stone-400 transition-colors hover:text-amber-500'>
                         更多标签...
                     </Link>
                 )}
@@ -195,8 +195,8 @@ function AsideLeft(props) {
 
           {/* 热门文章 */}
           {visibleLatestPosts?.length > 0 && (
-            <section className="flex flex-col mb-8 rounded-2xl border border-zinc-200/80 bg-white/80 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
-              <div className="flex items-center text-[11px] font-bold text-zinc-500 dark:text-zinc-400 tracking-[0.18em] uppercase mb-4 px-1">
+            <section className="flex flex-col mb-8 rounded-2xl border border-stone-200/80 bg-white/80 p-4 shadow-sm dark:border-stone-800 dark:bg-stone-950/40">
+              <div className="flex items-center text-[11px] font-bold text-stone-500 dark:text-stone-400 tracking-[0.18em] uppercase mb-4 px-1">
                 <i className="fas fa-fire-alt mr-2 text-orange-500 opacity-50"></i>
                 <span>热门文章</span>
               </div>
@@ -208,16 +208,16 @@ function AsideLeft(props) {
                       key={p.id} 
                       className={`group relative overflow-hidden rounded-xl transition-all duration-300 ${
                         isTopThree 
-                          ? 'bg-blue-50/80 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 hover:border-blue-200 dark:hover:border-blue-800'
-                          : 'bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
+                          ? 'bg-amber-50/80 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/50 hover:border-amber-200 dark:hover:border-amber-800'
+                          : 'bg-stone-50 dark:bg-stone-900/50 border border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700'
                       }`}
                     >
                       {isTopThree && (
                         <React.Fragment>
                           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-bl from-blue-400/20 to-transparent rounded-full blur-3xl animate-pulse"></div>
+                            <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-bl from-amber-400/20 to-transparent rounded-full blur-3xl animate-pulse"></div>
                           </div>
-                          <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-blue-500 via-cyan-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-amber-500 via-amber-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </React.Fragment>
                       )}
 
@@ -228,10 +228,10 @@ function AsideLeft(props) {
                                 index === 0 
                                   ? 'from-yellow-400 to-orange-500 text-white shadow-sm group-hover:scale-105'
                                   : index === 1 
-                                  ? 'from-gray-300 to-gray-400 text-white shadow-sm group-hover:scale-105'
+                                  ? 'from-stone-300 to-stone-400 text-white shadow-sm group-hover:scale-105'
                                   : 'from-orange-300 to-amber-400 text-white shadow-sm group-hover:scale-105'
                               }` 
-                            : 'bg-zinc-200 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300'
+                            : 'bg-stone-200 text-stone-600 dark:bg-stone-700 dark:text-stone-300'
                         }`}>
                           {index === 0 ? '🏆' : index === 1 ? '🥈' : index === 2 ? '🥉' : `0${index + 1}`}
                         </span>
@@ -240,8 +240,8 @@ function AsideLeft(props) {
                           href={`${subPath}/${p.slug}`}
                           className={`flex-1 text-[13px] line-clamp-2 font-medium transition-all duration-300 ${
                             isTopThree
-                              ? 'text-blue-700 dark:text-blue-300 group-hover:text-blue-600 dark:group-hover:text-blue-200 group-hover:translate-x-0.5'
-                              : 'text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100'
+                              ? 'text-amber-700 dark:text-amber-300 group-hover:text-amber-600 dark:group-hover:text-amber-200 group-hover:translate-x-0.5'
+                              : 'text-stone-700 dark:text-stone-300 group-hover:text-stone-900 dark:group-hover:text-stone-100'
                           }`}
                         >
                           {p.title}
@@ -254,11 +254,11 @@ function AsideLeft(props) {
             </section>
           )}
 
-          <section className="mt-auto pt-10 border-t border-zinc-100 dark:border-zinc-900">
+          <section className="mt-auto pt-10 border-t border-stone-100 dark:border-stone-900">
             <SocialButton />
-            <div className="mt-8 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-center">
-              <div className="text-[9px] text-zinc-400 uppercase mb-2 tracking-widest font-black">站点运行</div>
-              <div className="font-mono text-xs font-bold text-zinc-700 dark:text-zinc-300">{runtime}</div>
+            <div className="mt-8 p-5 bg-stone-50 dark:bg-stone-900/50 rounded-2xl border border-stone-200 dark:border-stone-800 text-center">
+              <div className="text-[9px] text-stone-400 uppercase mb-2 tracking-widest font-black">站点运行</div>
+              <div className="font-mono text-xs font-bold text-stone-700 dark:text-stone-300">{runtime}</div>
             </div>
           </section>
 

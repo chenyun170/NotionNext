@@ -45,7 +45,7 @@ const SearchInput = (props) => {
         ref={searchInputRef}
         type='text'
         placeholder={locale.SEARCH.ARTICLES}
-        className='h-9 w-full rounded-lg border border-transparent bg-gray-100/70 pl-3.5 pr-9 text-[13px] outline-none transition-all placeholder:text-zinc-400 focus:border-[color:var(--brand-primary)] focus:bg-white dark:bg-white/5 dark:text-gray-200 dark:focus:bg-zinc-900'
+        className='h-9 w-full rounded-lg border border-transparent bg-stone-100/70 pl-3.5 pr-9 text-[13px] outline-none transition-all placeholder:text-stone-400 focus:border-[color:var(--brand-primary)] focus:bg-white dark:bg-white/5 dark:text-stone-200 dark:focus:bg-stone-900'
         onKeyUp={handleKeyUp}
         onFocus={() => siteConfig('ALGOLIA_APP_ID') && searchModal?.current?.openSearch()}
         defaultValue={keyword || ''}
@@ -56,7 +56,7 @@ const SearchInput = (props) => {
         className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center'
         onClick={handleSearch}
       >
-        <i className={`text-xs transition-colors duration-200 ${onLoading ? 'fa-spinner animate-spin text-[color:var(--brand-primary)]' : 'fa-search text-gray-400 group-hover:text-[color:var(--brand-primary)]'}`} />
+        <i className={`text-xs transition-colors duration-200 ${onLoading ? 'fa-spinner animate-spin text-[color:var(--brand-primary)]' : 'fa-search text-stone-400 group-hover:text-[color:var(--brand-primary)]'}`} />
       </div>
 
       {/* 清除按钮：仅在有搜索词时显示 */}
@@ -65,7 +65,7 @@ const SearchInput = (props) => {
           className='absolute right-7 top-1/2 -translate-y-1/2 cursor-pointer'
           onClick={() => { searchInputRef.current.value = ''; handleSearch(); }}
         >
-          <i className='fas fa-times text-xs text-gray-300 hover:text-gray-500' />
+          <i className='fas fa-times text-xs text-stone-300 hover:text-stone-500' />
         </div>
       )}
     </div>

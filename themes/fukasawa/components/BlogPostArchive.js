@@ -14,7 +14,7 @@ const BlogArchiveItem = ({ posts = [], archiveTitle }) => {
     return (
       <div>
         <div
-          className='pt-16 pb-4 text-3xl dark:text-gray-300'
+          className='pt-16 pb-4 text-3xl dark:text-stone-300'
           id={archiveTitle}>
           {archiveTitle}
         </div>
@@ -23,14 +23,14 @@ const BlogArchiveItem = ({ posts = [], archiveTitle }) => {
             return (
               <li
                 key={post.id}
-                className='border-l-2 p-1 text-xs md:text-base items-center  hover:scale-x-105 hover:border-gray-500 dark:hover:border-gray-300 dark:border-gray-400 transform duration-500'>
+                className='border-l-2 p-1 text-xs md:text-base items-center  hover:scale-x-105 hover:border-stone-500 dark:hover:border-stone-300 dark:border-stone-400 transform duration-500'>
                 <div id={post?.publishDay}>
-                  <span className='text-gray-400'>{post.date?.start_date}</span>{' '}
+                  <span className='text-stone-400'>{post.date?.start_date}</span>{' '}
                   &nbsp;
                   <SmartLink
                     href={post?.href}
                     passHref
-                    className='dark:text-gray-400  dark:hover:text-gray-300 overflow-x-hidden hover:underline cursor-pointer text-gray-600'>
+                    className='dark:text-stone-400  dark:hover:text-stone-300 overflow-x-hidden hover:underline cursor-pointer text-stone-600'>
                     {post.title}
                   </SmartLink>
                 </div>

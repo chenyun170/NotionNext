@@ -17,7 +17,7 @@ import TagItemMini from './TagItemMini'
 const Comment = dynamic(() => import('@/components/Comment'), {
   ssr: false,
   loading: () => (
-    <div className='rounded-xl border border-dashed border-zinc-200 p-6 text-sm text-zinc-400 dark:border-zinc-800'>
+    <div className='rounded-xl border border-dashed border-stone-200 p-6 text-sm text-stone-400 dark:border-stone-800'>
       Comment area loading...
     </div>
   )
@@ -74,7 +74,7 @@ export default function ArticleDetail(props) {
       <ArticleReadingProgress />
 {/* 修改后的文章封面部分 */}
 {post?.type && post?.type !== 'Page' && post?.pageCover && (
-  <div className='w-full relative aspect-[16/9] md:aspect-[21/9] max-h-[60vh] bg-zinc-100 dark:bg-zinc-900 md:flex-shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-orange-500/20'>
+  <div className='w-full relative aspect-[16/9] md:aspect-[21/9] max-h-[60vh] bg-stone-100 dark:bg-stone-900 md:flex-shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-orange-500/20'>
     <LazyImage
       alt={post.title}
       src={post?.pageCover}
@@ -90,10 +90,10 @@ export default function ArticleDetail(props) {
       <article
         itemScope
         itemType='https://schema.org/BlogPosting'
-        className='subpixel-antialiased overflow-y-hidden bg-white px-5 py-10 dark:border-gray-700 dark:bg-hexo-black-gray md:px-32 lg:pt-24'>
+        className='subpixel-antialiased overflow-y-hidden bg-white px-5 py-10 dark:border-stone-700 dark:bg-hexo-black-gray md:px-32 lg:pt-24'>
         <meta itemProp='datePublished' content={post?.publishDate} />
         <meta itemProp='dateModified' content={post?.lastEditedDate || post?.publishDate} />
-        <header className='mb-8 border-b border-dashed border-zinc-200 pb-6 dark:border-zinc-800 sm:mb-10 sm:pb-8'>
+        <header className='mb-8 border-b border-dashed border-stone-200 pb-6 dark:border-stone-800 sm:mb-10 sm:pb-8'>
           {/* 文章Title */}
           <h1 itemProp='headline' className='max-w-4xl text-[2rem] font-black leading-tight tracking-tight text-black dark:text-white sm:text-4xl md:text-5xl'>
             {showTitleIcon && (
@@ -102,14 +102,14 @@ export default function ArticleDetail(props) {
             {post.title}
           </h1>
 
-          <section className='mt-4 flex flex-wrap items-center gap-1.5 text-[13px] leading-6 text-zinc-500 dark:text-zinc-400 sm:mt-5 sm:gap-2 sm:text-sm'>
+          <section className='mt-4 flex flex-wrap items-center gap-1.5 text-[13px] leading-6 text-stone-500 dark:text-stone-400 sm:mt-5 sm:gap-2 sm:text-sm'>
             <div className='flex flex-wrap items-center gap-1.5 sm:gap-2'>
               {post?.category && (
                 <>
                   <SmartLink
                     href={`/category/${post.category}`}
                     passHref
-                    className='inline-flex cursor-pointer items-center rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 font-medium text-zinc-600 transition hover:border-zinc-300 hover:text-black dark:border-zinc-800 dark:bg-zinc-900/70 dark:text-zinc-300 dark:hover:text-white sm:px-3'>
+                    className='inline-flex cursor-pointer items-center rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 font-medium text-stone-600 transition hover:border-stone-300 hover:text-black dark:border-stone-800 dark:bg-stone-900/70 dark:text-stone-300 dark:hover:text-white sm:px-3'>
                     <i className='mr-1 fas fa-folder-open' />
                     {post.category}
                   </SmartLink>
@@ -121,11 +121,11 @@ export default function ArticleDetail(props) {
                   <SmartLink
                     href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}
                     passHref
-                    className='inline-flex cursor-pointer items-center rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 font-medium text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900/70 dark:text-zinc-400 dark:hover:text-zinc-200 sm:px-3'>
+                    className='inline-flex cursor-pointer items-center rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 font-medium text-stone-500 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-900/70 dark:text-stone-400 dark:hover:text-stone-200 sm:px-3'>
                     <i className='far fa-calendar-alt mr-1.5' />
                     {post?.publishDay}
                   </SmartLink>
-                  <span className='inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900/70 dark:text-zinc-500 sm:px-3'>
+                  <span className='inline-flex items-center rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-stone-400 dark:border-stone-800 dark:bg-stone-900/70 dark:text-stone-500 sm:px-3'>
                     <i className='far fa-clock mr-1.5' />
                     {locale.COMMON.LAST_EDITED_TIME}: {post.lastEditedDay}
                   </span>
@@ -171,7 +171,7 @@ export default function ArticleDetail(props) {
       {post?.type === 'Post' && <ArticleAround prev={prev} next={next} />}
 
       {/* 评论互动 */}
-      <div className='duration-200 shadow py-6 px-12 w-screen md:w-full overflow-x-auto dark:border-gray-700 bg-white dark:bg-hexo-black-gray'>
+      <div className='duration-200 shadow py-6 px-12 w-screen md:w-full overflow-x-auto dark:border-stone-700 bg-white dark:bg-hexo-black-gray'>
         <Comment frontMatter={post} />
       </div>
 

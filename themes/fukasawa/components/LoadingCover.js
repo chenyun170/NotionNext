@@ -14,7 +14,7 @@ export default function LoadingCover () {
         {/* 中心旋转区域 */}
         <div className='relative w-16 h-16 flex items-center justify-center'>
           {/* 背景动态光圈 */}
-          <div className='absolute inset-0 border-2 border-gray-200 dark:border-gray-800 rounded-full'></div>
+          <div className='absolute inset-0 border-2 border-stone-200 dark:border-stone-800 rounded-full'></div>
           <div className='absolute inset-0 border-t-2 border-black dark:border-white rounded-full animate-spin'></div>
           
           {/* 中心图标 */}
@@ -22,7 +22,7 @@ export default function LoadingCover () {
         </div>
         
         {/* 加载文字提示 - 增加仪式感 */}
-        <p className='mt-4 text-[10px] tracking-[0.3em] uppercase font-medium text-gray-500 dark:text-gray-400 animate-pulse'>
+        <p className='mt-4 text-[10px] tracking-[0.3em] uppercase font-medium text-stone-500 dark:text-stone-400 animate-pulse'>
           Loading Data
         </p>
       </div>

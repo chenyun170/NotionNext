@@ -10,7 +10,7 @@ const BRAND_NAME = '外贸获客情报局'
 const BRAND_DOMAIN = '123170.xyz'
 const BRAND_TAGLINE = '海关数据与外贸获客实战情报站'
 const BRAND_DESCRIPTION =
-  '外贸获客情报局（123170.xyz）专注海关数据、进口商查询、供应商关系分析和 AI 外贸工具，把真实贸易记录整理成可执行的客户开发线索。'
+  '外贸获客情报局专注海关数据与外贸获客：进口商查询、供应商关系分析、开发信模板、LinkedIn领英获客实战，用真实贸易记录帮你找到可开发的海外客户。'
 const CORE_TOPICS = [
   '海关数据',
   '进口商查询',

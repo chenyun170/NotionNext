@@ -6,7 +6,7 @@ const SidebarTools = () => {
   const [calcMode, setCalcMode] = useState('cbm');
   const [times, setTimes] = useState({});
   const [weather, setWeather] = useState({ temp: '--', text: '定位中', city: '..' });
-  const [realRate, setRealRate] = useState(7.03); 
+  const [realRate, setRealRate] = useState('--'); 
   const [dims, setDims] = useState({ l: '', w: '', h: '', pcs: '' });
   const [exVal, setExVal] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,7 +54,7 @@ const SidebarTools = () => {
         if (process.env.NODE_ENV === 'development') {
           console.error("Sidebar tools API error", e);
         }
-        setWeather({ temp: '20', text: '多云', city: '南昌' });
+        setWeather({ temp: '--', text: '获取失败', city: '..' });
       }
     };
 

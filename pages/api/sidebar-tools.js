@@ -1,10 +1,11 @@
 const DEFAULT_WEATHER = {
-  temp: '20',
-  text: '多云',
+  temp: '--',
+  text: '获取失败',
   city: getCityName()
 }
 
-const DEFAULT_RATE = '7.03'
+// 兜底汇率：接口全部失败时才使用（2026-08 实际值）
+const DEFAULT_RATE = '6.76'
 const RESPONSE_CACHE_CONTROL = 'public, s-maxage=1800, stale-while-revalidate=3600'
 const CACHE_TTL_MS = getPositiveNumber(
   process.env.SIDEBAR_TOOLS_CACHE_TTL_MS,
@@ -100,33 +101,66 @@ const loadSidebarToolsPayload = async () => {
 }
 
 const fetchWeather = async () => {
-  const key = process.env.AMAP_WEATHER_KEY
-  const cityCode = process.env.SIDEBAR_WEATHER_CITY || '360100'
+  // 免费接口：Open-Meteo，无需 API key
+  // 城市经纬度可用 SIDEBAR_WEATHER_LAT / SIDEBAR_WEATHER_LON 覆盖，默认南昌
+  const lat = process.env.SIDEBAR_WEATHER_LAT || '28.682'
+  const lon = process.env.SIDEBAR_WEATHER_LON || '115.858'
   const cityName = getCityName()
-
-  if (!key) {
-    return { ...DEFAULT_WEATHER, city: cityName }
-  }
 
   try {
     const data = await fetchJsonWithTimeout(
-      `https://restapi.amap.com/v3/weather/weatherInfo?city=${encodeURIComponent(cityCode)}&key=${encodeURIComponent(key)}`
+      `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current=temperature_2m,weather_code&timezone=Asia%2FShanghai&forecast_days=1`
     )
-    const live = data?.lives?.[0]
+    const current = data?.current
 
-    if (!live) {
+    if (!current || current.temperature_2m === undefined) {
       return { ...DEFAULT_WEATHER, city: cityName }
     }
 
     return {
-      temp: String(live.temperature || DEFAULT_WEATHER.temp),
-      text: String(live.weather || DEFAULT_WEATHER.text),
+      temp: String(Math.round(current.temperature_2m)),
+      text: weatherCodeToText(current.weather_code),
       city: cityName
     }
   } catch (error) {
     console.warn('[sidebar-tools] weather fetch failed', getErrorMessage(error))
     return { ...DEFAULT_WEATHER, city: cityName }
   }
+}
+
+// Open-Meteo WMO weather code → 中文描述
+function weatherCodeToText(code) {
+  const map = {
+    0: '晴',
+    1: '大部晴',
+    2: '多云',
+    3: '阴',
+    45: '雾',
+    48: '雾凇',
+    51: '毛毛雨',
+    53: '小毛毛雨',
+    55: '大毛毛雨',
+    56: '冻雨',
+    57: '强冻雨',
+    61: '小雨',
+    63: '中雨',
+    65: '大雨',
+    66: '冻雨',
+    67: '强冻雨',
+    71: '小雪',
+    73: '中雪',
+    75: '大雪',
+    77: '雪粒',
+    80: '小阵雨',
+    81: '中阵雨',
+    82: '强阵雨',
+    85: '小阵雪',
+    86: '大阵雪',
+    95: '雷暴',
+    96: '雷暴伴冰雹',
+    99: '强雷暴伴冰雹'
+  }
+  return map[code] || '多云'
 }
 
 function getCityName() {
@@ -140,17 +174,10 @@ function getCityName() {
 }
 
 const fetchUsdCnyRate = async () => {
-  const key = process.env.EXCHANGE_RATE_API_KEY
-
-  if (!key) {
-    return DEFAULT_RATE
-  }
-
+  // 免费接口：open.er-api.com，无需 API key
   try {
-    const data = await fetchJsonWithTimeout(
-      `https://v6.exchangerate-api.com/v6/${encodeURIComponent(key)}/latest/USD`
-    )
-    const rate = Number(data?.conversion_rates?.CNY)
+    const data = await fetchJsonWithTimeout('https://open.er-api.com/v6/latest/USD')
+    const rate = Number(data?.rates?.CNY)
 
     if (!Number.isFinite(rate)) {
       return DEFAULT_RATE

@@ -143,7 +143,7 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
         <FloatButton floatSlot={floatSlot} {...props} />
         <AlgoliaSearchModal cRef={searchModal} {...props} />
 
-        {/* Mobile AI button */}
+        {/* AI 参谋按钮 - 手机端左下角 */}
         <div className="lg:hidden fixed left-4 bottom-6 z-[70]">
           <button
             onClick={() => setIsChatOpen(true)}
@@ -152,6 +152,19 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
             <i className="fas fa-robot text-base"></i>
             <span className="sr-only">AI 参谋</span>
           </button>
+        </div>
+
+        {/* AI 参谋按钮 - 桌面端左下角(避开右侧一键置顶/礼品包) */}
+        <div className="hidden lg:flex fixed left-10 bottom-8 z-[70] flex-col items-center">
+          <button
+            onClick={() => setIsChatOpen(true)}
+            className="group flex h-12 w-12 items-center justify-center rounded-full border border-blue-200 bg-blue-600 text-white shadow-xl ring-2 ring-white/40 backdrop-blur-xl hover:bg-blue-500 hover:scale-105 active:scale-95 transition-all dark:border-zinc-700 dark:bg-blue-700 dark:ring-zinc-600"
+          >
+            <i className="fas fa-robot text-base"></i>
+          </button>
+          <span className="mt-1.5 rounded-full bg-slate-900/70 px-2 py-0.5 text-[10px] font-bold tracking-wide text-white/90">
+            AI 参谋
+          </span>
         </div>
 
         {/* AI 参谋弹窗 */}

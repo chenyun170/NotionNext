@@ -1,11 +1,11 @@
-# 外贸获客情报局
+# 外贸获客情报局｜海关数据·进口商查询·开发信实战
 
-> 外贸获客情报局专注海关数据、进口商查询、供应商关系分析和 AI 外贸工具，把真实贸易记录整理成可执行的客户开发线索。
+> 外贸获客情报局专注海关数据与外贸获客：进口商查询、供应商关系分析、开发信模板、LinkedIn领英获客实战，用真实贸易记录帮你找到可开发的海外客户。
 
 - Site: https://www.123170.xyz
 - Author: 外贸获客情报局
 - Language: zh-CN
-- Updated: 2026-07-09
+- Updated: 2026-08-12
 - Sitemap: https://www.123170.xyz/sitemap.xml
 - Core sitemap: https://www.123170.xyz/sitemap-core.xml
 - RSS: https://www.123170.xyz/rss/feed.xml

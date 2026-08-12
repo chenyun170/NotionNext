@@ -30,8 +30,10 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
         isVisible ? 'translate-x-0 opacity-100' : 'translate-x-[400px] opacity-0 pointer-events-none'
       }`}>
       
-      {/* 核心毛玻璃容器 */}
-      <div className={`relative overflow-hidden p-5 rounded-2xl border border-white/20 shadow-2xl backdrop-blur-md bg-white/70 dark:bg-[#211d19]/70`}>
+      {/* 悬浮促销卡：实色暖橙，比侧栏更抢眼 */}
+      <div className='relative overflow-hidden rounded-2xl border-2 border-orange-400/80 bg-gradient-to-br from-orange-500 via-amber-500 to-orange-600 p-5 shadow-[0_12px_40px_rgba(234,88,12,0.35)] dark:border-orange-500/70 dark:from-orange-700 dark:via-amber-700 dark:to-orange-800'>
+        <div className='pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/20 blur-xl' aria-hidden='true' />
+        <div className='pointer-events-none absolute -bottom-8 -left-4 h-20 w-20 rounded-full bg-amber-200/30 blur-lg' aria-hidden='true' />
         <button
           type='button'
           aria-label='关闭工具入口'
@@ -43,29 +45,29 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
             }
             onDismiss()
           }}
-          className='absolute right-2 top-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/90 text-[11px] text-stone-500 shadow-sm transition hover:bg-amber-50 hover:text-amber-600 active:bg-amber-100 active:scale-95 dark:border-stone-700 dark:bg-stone-900/90 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-amber-300'
+          className='absolute right-2 top-2 z-[60] flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/25 text-[11px] text-white shadow-sm transition hover:bg-white/40 active:scale-95'
         >
           <i className='fas fa-times' aria-hidden='true' />
         </button>
 
         {/* 内容区域 */}
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] font-black bg-amber-600 text-white px-2 py-0.5 rounded-md uppercase tracking-tighter">
-              先试一下
+        <div className='relative z-10'>
+          <div className='mb-3 flex items-center justify-between'>
+            <span className='rounded-md bg-white px-2 py-0.5 text-[10px] font-black uppercase tracking-tighter text-orange-600 shadow-sm'>
+              限时活动
             </span>
-            <i className="fas fa-bullhorn text-amber-600 animate-bounce text-xs"></i>
+            <i className='fas fa-bullhorn animate-bounce text-xs text-white/90'></i>
           </div>
-          
-          <h3 className="text-sm font-black text-stone-800 dark:text-white mb-2 leading-tight">
+
+          <h3 className='mb-2 text-sm font-black leading-tight text-white drop-shadow-sm'>
             {config.title || '图灵搜免费体验'}
           </h3>
-          
-          <p className="text-[11px] text-stone-500 dark:text-stone-400 mb-4 leading-relaxed">
+
+          <p className='mb-4 text-[11px] leading-relaxed text-orange-50/95'>
             {config.floatingDescription || '找到客户后，先用数据确认它是不是真的在买。'}
           </p>
-          
-          <a 
+
+          <a
             href={config.link}
             target='_blank'
             rel='sponsored noopener noreferrer'
@@ -77,9 +79,9 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
                 sourceGroup: 'activity'
               })
             }
-            className="brand-btn brand-btn-primary w-full py-2.5 text-xs"
+            className='inline-flex w-full items-center justify-center rounded-lg bg-white py-2.5 text-xs font-bold text-orange-600 shadow-md transition hover:bg-orange-50 active:scale-[0.98]'
           >
-            {config.buttonText || '去看看'} <i className="fas fa-arrow-right ml-1"></i>
+            {config.buttonText || '去看看'} <i className='fas fa-arrow-right ml-1'></i>
           </a>
         </div>
       </div>
@@ -95,25 +97,26 @@ const InlineActivityCard = ({ config, isActive }) => {
 
   return (
     <div
-      className={`group mb-3 rounded-xl border ${config.borderColor} ${config.bgColor} p-3 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md`}
+      className={`group relative mb-3 overflow-hidden rounded-xl border-2 ${config.borderColor} ${config.bgColor} p-3.5 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg`}
       role="region">
+      <div className={`pointer-events-none absolute inset-x-0 top-0 h-1 ${config.topBarClass}`} aria-hidden='true' />
       <div className='mb-2 flex items-start justify-between gap-2'>
-        <div className={`flex min-w-0 items-center ${config.textColor} font-bold text-sm`}>
-          <span className={`mr-2 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg ${config.iconBg}`}>
+        <div className={`flex min-w-0 items-center ${config.textColor} text-sm font-bold`}>
+          <span className={`mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg shadow-sm ${config.iconBg}`}>
             <i className={`${config.icon} text-xs`} aria-hidden="true" />
           </span>
           <span className='line-clamp-1'>{config.title}</span>
         </div>
-        <span className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${config.badgeClass}`}>
+        <span className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide shadow-sm ${config.badgeClass}`}>
           {config.badgeText || '入口'}
         </span>
       </div>
-      <p className='pl-9 text-xs leading-5 text-stone-600 dark:text-stone-400'>
+      <p className='pl-10 text-xs leading-5 text-stone-700 dark:text-stone-300'>
         {config.emoji} <strong>{config.productName}</strong> {config.description}
       </p>
-      <a 
-        href={config.link} 
-        target="_blank" 
+      <a
+        href={config.link}
+        target="_blank"
         rel="sponsored noopener noreferrer"
         onClick={() =>
           trackToolOutboundClick({
@@ -123,7 +126,7 @@ const InlineActivityCard = ({ config, isActive }) => {
             sourceGroup: 'activity'
           })
         }
-        className={`brand-btn ml-9 mt-3 px-2.5 py-1.5 text-[11px] ${config.buttonClass}`}>
+        className={`brand-btn ml-10 mt-3 px-3 py-1.5 text-[11px] font-bold shadow-sm ${config.buttonClass}`}>
         {config.buttonText} →
       </a>
     </div>
@@ -142,13 +145,14 @@ const activityConfigs = {
     tool: 'turingsearch',
     trackSource: 'activity_turingsearch',
     buttonText: '立即参与',
-    badgeText: '先试',
-    bgColor: 'bg-amber-50/45 dark:bg-amber-950/20',
-    borderColor: 'border-amber-100 dark:border-amber-900/50',
-    textColor: 'text-amber-700 dark:text-amber-300',
-    iconBg: 'bg-amber-100/80 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-    badgeClass: 'bg-amber-100/70 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-    buttonClass: 'brand-btn-accent',
+    badgeText: 'HOT',
+    bgColor: 'bg-gradient-to-br from-orange-50 to-amber-100/90 dark:from-orange-950/50 dark:to-amber-950/40',
+    borderColor: 'border-orange-300 dark:border-orange-700/80',
+    textColor: 'text-orange-800 dark:text-orange-200',
+    iconBg: 'bg-orange-500 text-white dark:bg-orange-600',
+    badgeClass: 'bg-orange-500 text-white dark:bg-orange-600',
+    topBarClass: 'bg-gradient-to-r from-orange-500 to-amber-400',
+    buttonClass: 'brand-btn-primary',
     icon: 'fas fa-gift',
     animation: 'animate-bounce'
   },
@@ -162,13 +166,14 @@ const activityConfigs = {
     tool: 'dingyiyun',
     trackSource: 'activity_dingyiyun',
     buttonText: '限时领取',
-    badgeText: '工具',
-    bgColor: 'bg-amber-50/45 dark:bg-amber-950/20',
-    borderColor: 'border-amber-100 dark:border-amber-900/50',
-    textColor: 'text-amber-600 dark:text-amber-400',
-    iconBg: 'bg-amber-100/80 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-    badgeClass: 'bg-amber-100/70 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-    buttonClass: 'brand-btn-secondary',
+    badgeText: '限时',
+    bgColor: 'bg-gradient-to-br from-amber-50 to-orange-100/90 dark:from-amber-950/45 dark:to-orange-950/40',
+    borderColor: 'border-amber-300 dark:border-amber-700/80',
+    textColor: 'text-amber-900 dark:text-amber-200',
+    iconBg: 'bg-amber-600 text-white dark:bg-amber-500',
+    badgeClass: 'bg-amber-600 text-white dark:bg-amber-500',
+    topBarClass: 'bg-gradient-to-r from-amber-500 to-orange-400',
+    buttonClass: 'brand-btn-primary',
     icon: 'fas fa-fire',
     animation: 'animate-pulse'
   }
@@ -283,29 +288,29 @@ const Announcement = ({ post, className }) => {
   return (
     <>
       <div className={className} ref={announcementRef}>
-        <section 
-          id='announcement-wrapper' 
-          className="dark:text-stone-300 rounded-xl px-1 py-2"
+        <section
+          id='announcement-wrapper'
+          className="rounded-xl border border-orange-200/80 bg-gradient-to-b from-orange-50/90 to-amber-50/50 px-2 py-3 dark:border-orange-900/50 dark:from-orange-950/30 dark:to-amber-950/20 dark:text-stone-300"
           role="complementary">
 
           {/* 标题栏 + 关闭按钮 */}
           <div className="mb-3 flex items-center justify-between gap-2 px-1">
-            <div className="flex items-center text-[11px] font-bold text-amber-700 dark:text-amber-300 tracking-[0.18em] uppercase">
-              <span className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-amber-50 text-amber-600 ring-1 ring-amber-100 dark:bg-amber-950/40 dark:text-amber-300 dark:ring-amber-900/60">
-                <i className="fas fa-bullhorn text-[10px]"></i>
+            <div className="flex items-center text-[12px] font-black tracking-wide text-orange-700 dark:text-orange-300">
+              <span className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-orange-500 text-white shadow-sm ring-2 ring-orange-200 dark:bg-orange-600 dark:ring-orange-800">
+                <i className="fas fa-bullhorn text-[11px]"></i>
               </span>
               <span>活动提醒</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="hidden sm:inline-flex rounded-full border border-amber-100 bg-amber-50/70 px-2 py-1 text-[10px] font-semibold text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
-                工具情报
+              <span className="hidden sm:inline-flex rounded-full bg-orange-500 px-2.5 py-1 text-[10px] font-black text-white shadow-sm dark:bg-orange-600">
+                818 进行中
               </span>
               <button
                 type='button'
                 aria-label='关闭活动提醒'
                 onClick={dismissAnnouncement}
                 title='关闭活动提醒（24小时内不再显示）'
-                className="flex h-6 w-6 items-center justify-center rounded-full border border-amber-100 bg-amber-50/70 text-[10px] text-amber-600 transition hover:bg-amber-100 hover:text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300 dark:hover:bg-amber-900/50 dark:hover:text-amber-200"
+                className="flex h-7 w-7 items-center justify-center rounded-full border border-orange-200 bg-white text-[10px] text-orange-600 transition hover:bg-orange-100 hover:text-orange-800 dark:border-orange-800 dark:bg-orange-950/40 dark:text-orange-300 dark:hover:bg-orange-900/50"
               >
                 <i className="fas fa-times" aria-hidden="true" />
               </button>

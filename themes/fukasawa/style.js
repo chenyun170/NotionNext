@@ -91,11 +91,22 @@ const Style = () => {
 
     /* 方案 A：黑白灰为主，琥珀橙只承担交互强调 */
     #theme-fukasawa {
+        --fuka-bg: #f7f5f1;
         --fuka-surface: #ffffff;
+        --fuka-surface-soft: #f5f5f4;
         --fuka-border: #ebe7e2;
+        --fuka-line: #e7e5e4;
+        --fuka-track: #a8a29e;
         --fuka-text: #1c1917;
+        --fuka-ink: #1c1917;
+        --fuka-ink-soft: #292524;
         --fuka-muted: #78716c;
         --fuka-orange: #d97706;
+        --fuka-accent: #d97706;
+        --fuka-accent-hover: #b45309;
+        --fuka-shadow: 0 1px 2px rgba(23, 23, 23, 0.06);
+        --fuka-title-font: 'PingFang SC', 'Noto Serif SC', 'Songti SC', SimSun, serif;
+        --fuka-body-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
     }
     #theme-fukasawa .bg-\[\#faf6f0\] { background-color: var(--fuka-bg) !important; }
     #theme-fukasawa .bg-white { background-color: var(--fuka-surface) !important; }
@@ -215,6 +226,27 @@ const Style = () => {
     #theme-fukasawa #posts-wrapper { gap: 0 3.5rem !important; }
     #theme-fukasawa #posts-wrapper article { margin: 0 !important; }
     #theme-fukasawa #posts-wrapper article img { aspect-ratio: 3 / 2; filter: saturate(0.88); }
+    /* --- 第三轮排版：标题走衬线、正文走无衬线，弱化卡片感 --- */
+    #theme-fukasawa body { font-family: var(--fuka-body-font); }
+    #theme-fukasawa h1,
+    #theme-fukasawa h2,
+    #theme-fukasawa h3,
+    #theme-fukasawa h4,
+    #theme-fukasawa .notion-h {
+      font-family: var(--fuka-title-font);
+      letter-spacing: -0.015em;
+    }
+    #theme-fukasawa #article-wrapper #notion-article { line-height: 1.9; }
+    #theme-fukasawa #article-wrapper .notion-text { letter-spacing: 0; }
+    #theme-fukasawa [class*="shadow-lg"],
+    #theme-fukasawa [class*="shadow-xl"],
+    #theme-fukasawa [class*="shadow-2xl"] {
+      box-shadow: var(--fuka-shadow) !important;
+    }
+    #theme-fukasawa :focus-visible {
+      outline: 2px solid var(--fuka-track);
+      outline-offset: 3px;
+    }
     #theme-fukasawa .home-intro { border-width: 1px !important; }
     #theme-fukasawa .home-intro .home-diagnosis { border: 0 !important; background: transparent !important; padding: 0 !important; }
     #theme-fukasawa .home-intro .home-signal-panel { border: 0 !important; border-left: 1px solid #d4d4d4 !important; border-radius: 0 !important; background: transparent !important; }

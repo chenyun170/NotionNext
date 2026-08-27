@@ -27,7 +27,7 @@ const TopicIntro = ({
     <section className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-white dark:border-stone-800 dark:bg-[#1c1917]'>
       <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_260px]'>
         <div className='p-5 sm:p-7'>
-          <div className='mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-600 dark:text-amber-400'>
+          <div className='mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             <i className={`fas ${topic.icon}`} />
             <span>{topic.eyebrow}</span>
           </div>
@@ -47,13 +47,13 @@ const TopicIntro = ({
             </span>
             <SmartLink
               href='/'
-              className='rounded-full border border-stone-200 bg-stone-50 px-3 py-1 transition hover:border-amber-300 hover:text-amber-600 dark:border-stone-800 dark:bg-stone-950 dark:hover:border-amber-700 dark:hover:text-amber-300'
+              className='rounded-full border border-stone-200 bg-stone-50 px-3 py-1 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-950 dark:hover:border-stone-600 dark:hover:text-stone-200'
             >
               全部文章
             </SmartLink>
             <SmartLink
               href='/archive'
-              className='rounded-full border border-stone-200 bg-stone-50 px-3 py-1 transition hover:border-amber-300 hover:text-amber-600 dark:border-stone-800 dark:bg-stone-950 dark:hover:border-amber-700 dark:hover:text-amber-300'
+              className='rounded-full border border-stone-200 bg-stone-50 px-3 py-1 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-950 dark:hover:border-stone-600 dark:hover:text-stone-200'
             >
               时间归档
             </SmartLink>

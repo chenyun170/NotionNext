@@ -30,7 +30,7 @@ const ArticleReadingProgress = () => {
   return (
     <div className='fixed left-0 top-0 z-50 h-1 w-full bg-transparent print:hidden'>
       <div
-        className='h-full bg-amber-500 transition-[width] duration-150 ease-out dark:bg-amber-400'
+        className='h-full bg-stone-950 transition-[width] duration-150 ease-out dark:bg-stone-300'
         style={{ width: `${progress}%` }}
       />
     </div>

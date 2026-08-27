@@ -42,7 +42,7 @@ export default function ArticleCopyrightNotice({ post }) {
 
   return (
     <div className='group mt-14 print:hidden'>
-      <div className='relative overflow-hidden rounded-2xl border border-stone-100 bg-stone-50 p-8 transition-all hover:border-amber-500/30 hover:shadow-xl dark:border-stone-800 dark:bg-stone-900/50'>
+      <div className='relative overflow-hidden rounded-2xl border border-stone-100 bg-stone-50 p-8 transition-all hover:border-stone-400/50 hover:shadow-xl dark:border-stone-800 dark:bg-stone-900/50'>
         <div className='pointer-events-none absolute -right-6 -top-6 opacity-[0.03] transition-opacity group-hover:opacity-10 dark:opacity-[0.05]'>
           <i className='fas fa-shield-alt rotate-12 text-9xl text-slate-900 dark:text-white'></i>
         </div>
@@ -50,8 +50,8 @@ export default function ArticleCopyrightNotice({ post }) {
         <div className='relative z-10'>
           <div className='mb-8 flex items-center space-x-3'>
             <div className='flex space-x-1'>
-              <div className='h-4 w-1 rounded-full bg-amber-600'></div>
-              <div className='h-4 w-1 rounded-full bg-amber-600/40'></div>
+              <div className='h-4 w-1 rounded-full bg-stone-500'></div>
+              <div className='h-4 w-1 rounded-full bg-stone-500/40'></div>
             </div>
             <h3 className='text-xs font-black uppercase tracking-[0.2em] text-slate-800 dark:text-stone-200'>
               版权与引用说明
@@ -59,19 +59,19 @@ export default function ArticleCopyrightNotice({ post }) {
           </div>
 
           <div className='grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-2'>
-            <div className='flex flex-col border-l-2 border-stone-200 pl-4 transition-colors group-hover:border-amber-600/50 dark:border-stone-800'>
+            <div className='flex flex-col border-l-2 border-stone-200 pl-4 transition-colors group-hover:border-stone-500/50 dark:border-stone-800'>
               <span className='mb-1 text-[10px] uppercase tracking-widest text-stone-400'>
                 内容来源
               </span>
               <span className='flex items-center text-sm font-bold dark:text-stone-300'>
                 外贸获客情报局
                 <i
-                  className='fas fa-check-circle ml-2 text-[10px] text-amber-500'
+                  className='fas fa-check-circle ml-2 text-[10px] text-stone-500'
                   title='本站原创整理'></i>
               </span>
             </div>
 
-            <div className='flex flex-col border-l-2 border-stone-200 pl-4 transition-colors group-hover:border-amber-600/50 dark:border-stone-800'>
+            <div className='flex flex-col border-l-2 border-stone-200 pl-4 transition-colors group-hover:border-stone-500/50 dark:border-stone-800'>
               <span className='mb-1 text-[10px] uppercase tracking-widest text-stone-400'>
                 分享链接
               </span>
@@ -79,13 +79,13 @@ export default function ArticleCopyrightNotice({ post }) {
                 onClick={() => {
                   copyArticleLink()
                 }}
-                className='group/link flex items-center text-left font-mono text-sm text-amber-600 transition-colors hover:text-amber-500'>
+                className='group/link flex items-center text-left font-mono text-sm text-stone-600 transition-colors hover:text-stone-500'>
                 <span className='truncate'>点击复制本文永久链接</span>
                 <i className='fas fa-copy ml-2 text-[10px] opacity-0 transition-opacity group-hover/link:opacity-100'></i>
               </button>
             </div>
 
-            <div className='flex flex-col border-l-2 border-stone-200 pl-4 transition-colors group-hover:border-amber-600/50 dark:border-stone-800'>
+            <div className='flex flex-col border-l-2 border-stone-200 pl-4 transition-colors group-hover:border-stone-500/50 dark:border-stone-800'>
               <span className='mb-1 text-[10px] uppercase tracking-widest text-stone-400'>
                 转载许可
               </span>
@@ -97,7 +97,7 @@ export default function ArticleCopyrightNotice({ post }) {
               </span>
             </div>
 
-            <div className='flex flex-col border-l-2 border-stone-200 pl-4 transition-colors group-hover:border-amber-600/50 dark:border-stone-800'>
+            <div className='flex flex-col border-l-2 border-stone-200 pl-4 transition-colors group-hover:border-stone-500/50 dark:border-stone-800'>
               <span className='mb-1 text-[10px] uppercase tracking-widest text-stone-400'>
                 情报索引
               </span>

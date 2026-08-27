@@ -36,19 +36,19 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
     <article
       {...aosProps}
       style={{ maxHeight: '65rem' }}
-      className='group w-full lg:max-w-sm p-0 mb-6 mx-2 bg-white dark:bg-[#211d19] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-stone-100 dark:border-stone-800'
+      className='group flex w-full flex-col gap-5 border-t border-stone-300 py-6 transition-colors duration-300 dark:border-stone-800 md:flex-row md:gap-6'
     >
-      <div className='flex flex-col h-full'>
+      <div className='flex w-full flex-col md:flex-row md:items-start'>
         {/* 封面图部分：锁定比例 16:10 */}
         {showPageCover && (
           <SmartLink href={post?.href} passHref legacyBehavior>
-            <div className='relative w-full pt-[62.5%] cursor-pointer overflow-hidden'>
+            <div className='relative w-full shrink-0 cursor-pointer overflow-hidden md:w-[38%] md:pt-[24%]'>
               <LazyImage
                 src={pageCoverThumbnail}
                 alt={post?.title || siteConfig('TITLE')}
                 width={640}
                 height={400}
-                className='absolute top-0 left-0 object-cover w-full h-full group-hover:scale-110 transition-transform duration-700 ease-in-out'
+                className='absolute left-0 top-0 h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-[1.03]'
               />
               {/* 图片遮罩：暗色模式下降低亮度 */}
               <div className='absolute inset-0 bg-black opacity-0 dark:group-hover:opacity-10 transition-opacity duration-300'></div>
@@ -57,13 +57,13 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
         )}
 
         {/* 文字内容部分 */}
-        <div className='flex flex-col p-5 w-full flex-grow'>
+        <div className='flex w-full flex-grow flex-col px-0 py-1 md:px-1'>
           {/* 标题 */}
           <h2 className='mb-2'>
             <SmartLink
               passHref
               href={post?.href}
-              className={`line-clamp-2 break-words cursor-pointer font-bold text-lg leading-snug text-stone-800 dark:text-stone-100 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-200`}
+              className={`line-clamp-2 break-words cursor-pointer text-xl font-semibold leading-snug tracking-tight text-stone-900 transition-colors duration-200 hover:text-stone-500 dark:text-stone-100 dark:hover:text-stone-300`}
             >
               {siteConfig('POST_TITLE_ICON') && (
                 <NotionIcon icon={post.pageIcon} />
@@ -74,18 +74,18 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
 
           {/* 摘要：强制 2 行，保持卡片整齐 */}
           {(!showPreview || showSummary) && (
-            <main className='mb-4 line-clamp-2 text-stone-500 dark:text-stone-400 text-sm font-normal leading-relaxed overflow-hidden'>
+            <main className='mb-5 line-clamp-3 text-sm font-normal leading-7 text-stone-500 dark:text-stone-400'>
               {post.summary}
             </main>
           )}
 
           {/* 底部：分类 & 标签 */}
-          <div className='mt-auto pt-4 border-t border-stone-50 dark:border-stone-800 flex items-center justify-between'>
+          <div className='mt-auto flex items-center justify-between border-t border-stone-200 pt-3 dark:border-stone-800'>
             {post.category && (
               <SmartLink
                 href={`/category/${post.category}`}
                 passHref
-                className='flex items-center text-xs text-stone-400 dark:text-stone-500 hover:text-amber-500 transition-colors'
+                className='flex items-center text-xs text-stone-400 transition-colors hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300'
               >
                 <i className='mr-1.5 far fa-folder-open' />
                 {post.category}

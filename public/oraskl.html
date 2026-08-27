@@ -47,34 +47,34 @@
     body {
       min-height: 100vh;
       font-family: "Inter", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-      color: #3d3229;
-      background: linear-gradient(180deg, #faf6f0, #fdf4ea 48%, #ffffff);
+      color: #1c1917;
+      background: linear-gradient(180deg, #f7f5f1, #f5f5f4 48%, #ffffff);
       padding: 48px 16px;
     }
     a { color: inherit; text-decoration: none; }
     .wrap { max-width: 1080px; margin: 0 auto; }
     .card {
       overflow: hidden;
-      border: 1px solid rgba(185, 122, 82, .12);
+      border: 1px solid rgba(28, 25, 23, .12);
       border-radius: 28px;
       background: rgba(255,255,255,.92);
-      box-shadow: 0 30px 80px rgba(15, 23, 42, .12);
+      box-shadow: 0 30px 80px rgba(28, 25, 23, .12);
     }
     .grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; }
     .main { padding: 40px; }
     .aside {
-      border-left: 1px solid rgba(185, 122, 82, .1);
-      background: rgba(185, 122, 82, .06);
+      border-left: 1px solid rgba(28, 25, 23, .1);
+      background: rgba(28, 25, 23, .06);
       padding: 32px;
     }
     .eyebrow {
       display: inline-flex;
       margin-bottom: 18px;
-      border: 1px solid rgba(185, 122, 82, .14);
+      border: 1px solid rgba(28, 25, 23, .14);
       border-radius: 999px;
-      background: #faf3ea;
+      background: #f5f5f4;
       padding: 8px 12px;
-      color: #a0653f;
+      color: #1c1917;
       font-size: 12px;
       font-weight: 900;
       letter-spacing: .16em;
@@ -86,7 +86,7 @@
       line-height: .96;
       letter-spacing: 0;
     }
-    p { margin-top: 20px; max-width: 700px; color: #6f6154; font-size: 18px; line-height: 1.9; }
+    p { margin-top: 20px; max-width: 700px; color: #78716c; font-size: 18px; line-height: 1.9; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
     .btn {
       display: inline-flex;
@@ -97,16 +97,27 @@
       font-size: 15px;
       font-weight: 900;
     }
-    .btn-primary { color: #fff; background: linear-gradient(135deg, #b97a52, #d29a63); }
-    .btn-secondary { border: 1px solid rgba(15, 23, 42, .12); color: #334155; background: #fff; }
-    .aside-title { color: #a0653f; font-size: 12px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    .btn-primary { color: #fff; background: linear-gradient(135deg, #292524, #57534e); }
+    .btn-secondary { border: 1px solid rgba(28, 25, 23, .12); color: #78716c; background: #fff; }
+    .aside-title { color: #1c1917; font-size: 12px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
     .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
-    .tags span { border: 1px solid rgba(185, 122, 82, .12); border-radius: 999px; background: #fff; padding: 8px 12px; color: #a0653f; font-size: 13px; font-weight: 800; }
+    .tags span { border: 1px solid rgba(28, 25, 23, .12); border-radius: 999px; background: #fff; padding: 8px 12px; color: #1c1917; font-size: 13px; font-weight: 800; }
+    .related-title { margin-top: 34px; color: #1c1917; font-size: 18px; font-weight: 900; }
+    .related { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .related a {
+      display: flex; flex-direction: column; justify-content: space-between; min-height: 96px;
+      border: 1px solid rgba(28, 25, 23, .12); border-radius: 6px; background: #fff;
+      padding: 16px; color: #1c1917; text-decoration: none; transition: border-color .18s ease, transform .18s ease;
+    }
+    .related a:hover { border-color: #78716c; transform: translateY(-2px); }
+    .related strong { font-size: 14px; line-height: 1.4; }
+    .related span { margin-top: 8px; color: #78716c; font-size: 12px; }
+    @media (max-width: 760px) { .related { grid-template-columns: 1fr; } }
     @media (max-width: 760px) {
       body { padding: 24px 12px; }
       .grid { grid-template-columns: 1fr; }
       .main, .aside { padding: 24px; }
-      .aside { border-left: 0; border-top: 1px solid rgba(185, 122, 82, .1); }
+      .aside { border-left: 0; border-top: 1px solid rgba(28, 25, 23, .1); }
       .btn { width: 100%; }
     }
   </style>
@@ -157,7 +168,15 @@
         </aside>
       </div>
     </section>
-    </main>
+    <section class="wrap related">
+    <div class="related-title">继续学习</div>
+    <div class="related">
+      <a href="/customs-data.html"><strong>海关数据专题</strong><span>从进口商、HS 编码到供应商关系</span></a>
+      <a href="/us-importers.html"><strong>美国进口商查询指南</strong><span>筛选近期活跃的真实买家</span></a>
+      <a href="/hs-code-lookup.html"><strong>HS 编码与海关数据联用</strong><span>减少漏查和产品误判</span></a>
+    </div>
+  </section>
+  </main>
 
     <script>
       (function () {

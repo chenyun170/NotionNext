@@ -168,7 +168,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
         {/* 顶部标题栏 */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-stone-100 dark:border-stone-800 bg-stone-50/80 dark:bg-stone-900/80 backdrop-blur-sm shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm shadow-sm">
+            <div className="w-8 h-8 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 flex items-center justify-center text-sm shadow-sm">
               <i className="fas fa-robot"></i>
             </div>
             <div>
@@ -189,7 +189,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
             )}
             <button
               onClick={onClose}
-              className="text-stone-400 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800"
+              className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800"
               aria-label="关闭"
             >
               <i className="fas fa-times text-sm"></i>
@@ -201,7 +201,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
         <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 no-scrollbar break-words overflow-wrap-anywhere w-full min-w-0">
           {history.length === 0 && !loading && !reply && (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-3 py-8">
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-500 text-xl shadow-sm">
+              <div className="w-12 h-12 rounded-2xl bg-stone-50 dark:bg-stone-900/30 flex items-center justify-center text-stone-500 text-xl shadow-sm">
                 <i className="fas fa-headset"></i>
               </div>
               <div>
@@ -221,7 +221,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
                   <button
                     key={hint}
                     onClick={() => setInput(hint)}
-                    className="text-[10px] px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-amber-50 dark:hover:bg-amber-900/30 hover:text-amber-600 dark:hover:text-amber-400 border border-transparent hover:border-amber-200 dark:hover:border-amber-800 transition-all"
+                    className="text-[10px] px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-800 dark:hover:text-stone-200 border border-transparent hover:border-stone-300 dark:hover:border-stone-600 transition-all"
                   >
                     {hint}
                   </button>
@@ -235,7 +235,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
               <div
                 className={`w-full max-w-full rounded-2xl px-4 py-3 text-sm leading-relaxed break-words overflow-wrap-anywhere ${
                   msg.role === 'user'
-                    ? 'bg-amber-500 text-white rounded-br-md'
+                    ? 'bg-stone-950 text-white rounded-br-md'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 rounded-bl-md'
                 }`}
               >
@@ -252,10 +252,10 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
                     ),
                     p: ({ node, ...p }) => <p className="mb-1 last:mb-0" {...p} />,
                     code: ({ node, ...p }) => (
-                      <code className={`text-[10px] px-1 py-0.5 rounded font-mono ${msg.role === 'user' ? 'bg-amber-400/30' : 'bg-stone-200 dark:bg-stone-700'}`} {...p} />
+                      <code className={`text-[10px] px-1 py-0.5 rounded font-mono ${msg.role === 'user' ? 'bg-stone-600/30' : 'bg-stone-200 dark:bg-stone-700'}`} {...p} />
                     ),
                     a: ({ node, ...p }) => (
-                      <a className="text-amber-500 underline underline-offset-2" target="_blank" rel="noopener noreferrer" {...p} />
+                      <a className="text-stone-800 dark:text-stone-200 underline underline-offset-2" target="_blank" rel="noopener noreferrer" {...p} />
                     ),
                   }}
                 >
@@ -278,7 +278,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
                 >
                   {reply}
                 </ReactMarkdown>
-                <span className="inline-block ml-1 animate-pulse text-amber-400">▊</span>
+                <span className="inline-block ml-1 animate-pulse text-stone-400">▊</span>
               </div>
             </div>
           )}
@@ -300,7 +300,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
           <div className="flex items-end gap-2">
             <textarea
               ref={inputRef}
-              className="flex-1 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl px-3 py-2 text-sm resize-none outline-none focus:border-amber-400 dark:focus:border-amber-500 transition-colors text-stone-800 dark:text-stone-100 placeholder:text-stone-400"
+              className="flex-1 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl px-3 py-2 text-sm resize-none outline-none focus:border-stone-400 dark:focus:border-stone-500 transition-colors text-stone-800 dark:text-stone-100 placeholder:text-stone-400"
               rows={2}
               placeholder="输入您的问题，回车发送..."
               value={input}
@@ -315,7 +315,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
             <button
               onClick={handleSend}
               disabled={loading || !input.trim()}
-              className="shrink-0 w-9 h-9 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 disabled:bg-stone-200 disabled:text-stone-400 text-white transition-all flex items-center justify-center shadow-sm"
+              className="shrink-0 w-9 h-9 rounded-xl bg-stone-950 hover:bg-stone-700 dark:bg-stone-200 dark:text-stone-950 dark:hover:bg-stone-100 active:scale-95 disabled:bg-stone-200 disabled:text-stone-400 text-white transition-all flex items-center justify-center shadow-sm"
               aria-label="发送"
             >
               {loading ? (

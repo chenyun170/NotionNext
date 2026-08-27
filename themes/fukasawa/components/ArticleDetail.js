@@ -74,7 +74,7 @@ export default function ArticleDetail(props) {
       <ArticleReadingProgress />
 {/* 修改后的文章封面部分 */}
 {post?.type && post?.type !== 'Page' && post?.pageCover && (
-  <div className='w-full relative aspect-[16/9] md:aspect-[21/9] max-h-[60vh] bg-stone-100 dark:bg-stone-900 md:flex-shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-orange-500/20'>
+  <div className='w-full relative aspect-[16/9] md:aspect-[21/9] max-h-[60vh] bg-stone-100 dark:bg-stone-900 md:flex-shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-stone-400/20'>
     <LazyImage
       alt={post.title}
       src={post?.pageCover}
@@ -201,9 +201,9 @@ export default function ArticleDetail(props) {
         #article-wrapper .notion-quote {
           margin: 1.25rem 0;
           border-left-width: 4px;
-          border-left-color: rgb(37 99 235);
+          border-left-color: rgb(217 119 6);
           border-radius: 0 0.75rem 0.75rem 0;
-          background: rgba(37, 99, 235, 0.06);
+          background: rgba(217, 119, 6, 0.08);
           padding: 0.85rem 1rem;
         }
 

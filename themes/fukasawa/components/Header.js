@@ -143,10 +143,10 @@ const Header = props => {
       {/* 1. 顶部跑马灯横幅 - 时间控制显隐 */}
       {showMarquee && (
       <div
-        className='w-full border-b border-amber-100 bg-amber-50/95 px-2 py-1 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/80 dark:text-amber-100'
+        className='w-full border-b border-stone-200 bg-stone-50/95 px-2 py-1 text-stone-700 dark:border-stone-800 dark:bg-stone-950/80 dark:text-stone-200'
         style={{ zIndex: 100 }}>
         <div className='flex items-center gap-1.5 overflow-x-auto no-scrollbar'>
-          <i className='fas fa-bullhorn flex-shrink-0 text-[10px] text-amber-600 dark:text-amber-300'></i>
+          <i className='fas fa-bullhorn flex-shrink-0 text-[10px] text-stone-500 dark:text-stone-300'></i>
           {ACTIVITIES.map((activity, idx) => (
             <a
               key={idx}
@@ -161,7 +161,7 @@ const Header = props => {
                   sourceGroup: 'activity'
                 })
               }
-              className={`${idx > 0 ? 'hidden sm:flex' : 'flex'} flex-shrink-0 items-center gap-1 rounded-full border border-amber-200 bg-white/75 px-2 py-0.5 text-[10px] font-bold text-amber-800 no-underline dark:border-amber-800 dark:bg-amber-900/50 dark:text-amber-100`}>
+              className={`${idx > 0 ? 'hidden sm:flex' : 'flex'} flex-shrink-0 items-center gap-1 rounded-full border border-stone-200 bg-white/75 px-2 py-0.5 text-[10px] font-bold text-stone-700 no-underline dark:border-stone-800 dark:bg-stone-900/50 dark:text-stone-200`}>
               <span>{activity.icon}</span>
               <span>{idx === 0 ? '618 活动' : '顶易云活动'}</span>
               <i className='fas fa-arrow-up-right-from-square text-[9px] opacity-60'></i>
@@ -185,9 +185,9 @@ const Header = props => {
               type='button'
               onClick={openSearch}
               aria-label='打开搜索'
-              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-stone-100 hover:text-orange-500 dark:hover:bg-stone-900 dark:hover:text-orange-400 ${
+              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-stone-100 hover:text-stone-800 dark:hover:bg-stone-900 dark:hover:text-stone-200 ${
                 isSearchActive && isOpen
-                  ? 'bg-orange-50 text-orange-500 dark:bg-orange-950/40 dark:text-orange-300'
+                  ? 'bg-stone-50 text-stone-700 dark:bg-stone-950/40 dark:text-stone-200'
                   : 'text-stone-600 dark:text-stone-200'
               }`}>
               <i className='fas fa-search text-sm' />
@@ -196,7 +196,7 @@ const Header = props => {
               type='button'
               aria-label={isOpen ? '关闭菜单' : '打开菜单'}
               onClick={toggleMenuOpen} 
-              className='flex h-9 w-9 items-center justify-center rounded-full text-lg transition-colors hover:bg-stone-100 hover:text-orange-500 dark:hover:bg-stone-900 dark:hover:text-orange-400'
+              className='flex h-9 w-9 items-center justify-center rounded-full text-lg transition-colors hover:bg-stone-100 hover:text-stone-800 dark:hover:bg-stone-900 dark:hover:text-stone-200'
             >
               {isOpen ? <i className='fas fa-times' /> : <i className='fas fa-bars' />}
             </button>
@@ -206,7 +206,7 @@ const Header = props => {
         {/* 3. 阅读进度条 - 优化版本 */}
         <div className='absolute bottom-0 left-0 w-full h-[2px] bg-stone-100 dark:bg-stone-800 overflow-hidden'>
           <div 
-            className='h-full bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 shadow-[0_0_8px_rgba(249,115,22,0.8)] transition-all duration-150 ease-out'
+            className='h-full bg-gradient-to-r from-stone-300 via-stone-400 to-stone-500 shadow-[0_0_8px_rgba(120,113,108,0.5)] transition-all duration-150 ease-out'
             style={{ 
               width: `${scrollProgress}%`,
               willChange: 'width'
@@ -286,19 +286,19 @@ const Header = props => {
         }
 
         .marquee-item:hover .detail-badge {
-          background: #ff6b00;
+          background: #78716c;
           transform: scale(1.05);
         }
 
         /* ===== 进度条流光效果 ===== */
-        .bg-gradient-to-r.from-orange-400 {
+        .bg-gradient-to-r.from-stone-300 {
           background: linear-gradient(
             90deg,
-            #fb923c 0%,
-            #f97316 25%,
-            #ea580c 50%,
-            #f97316 75%,
-            #fb923c 100%
+            #d6d3d1 0%,
+            #a8a29e 25%,
+            #78716c 50%,
+            #a8a29e 75%,
+            #d6d3d1 100%
           );
           background-size: 200% 100%;
           animation: progress-shimmer 2.5s ease-in-out infinite;

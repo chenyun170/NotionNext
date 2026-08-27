@@ -11,11 +11,11 @@ const SkillSearchPromo = ({ keyword, forceShow = false }) => {
 
   return (
     <section
-      className='mb-6 overflow-hidden rounded-[8px] border border-amber-200 bg-amber-50/80 shadow-sm dark:border-amber-900/70 dark:bg-amber-950/30'
+      className='mb-6 overflow-hidden rounded-[8px] border border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-950/40'
       aria-labelledby='customs-data-skill-search-title'>
       <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_220px]'>
         <div className='p-5 sm:p-6'>
-          <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-700 dark:text-amber-300'>
+          <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             <i className='fas fa-database' />
             <span>Recommended Skill</span>
           </div>
@@ -32,11 +32,11 @@ const SkillSearchPromo = ({ keyword, forceShow = false }) => {
           </p>
         </div>
 
-        <div className='flex items-center border-t border-amber-100 p-5 dark:border-amber-900/60 lg:border-l lg:border-t-0'>
+        <div className='flex items-center border-t border-stone-100 p-5 dark:border-stone-800/60 lg:border-l lg:border-t-0'>
           <a
             href={CUSTOMS_DATA_SKILL.href}
             onClick={() => trackCustomsDataSkillClick('fukasawa_topic_promo')}
-            className='inline-flex w-full items-center justify-center rounded-[8px] bg-amber-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-400'>
+            className='inline-flex w-full items-center justify-center rounded-[8px] bg-stone-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-stone-700 dark:bg-white dark:text-stone-950 dark:hover:bg-stone-300'>
             <i className='fas fa-arrow-up-right-from-square mr-2 text-xs' />
             打开免费查询
           </a>

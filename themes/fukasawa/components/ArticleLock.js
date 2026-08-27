@@ -52,7 +52,7 @@ const ArticleLock = props => {
           </div>
           <div aria-live='polite'>
             {passwordError && (
-              <div className='text-red-500 animate__shakeX animate__animated'>
+              <div className='text-stone-700 dark:text-stone-200 animate__shakeX animate__animated'>
                 {passwordError}
               </div>
             )}

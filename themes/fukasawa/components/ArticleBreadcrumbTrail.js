@@ -9,7 +9,7 @@ const ArticleBreadcrumbTrail = ({ post }) => {
       className='mb-5 flex flex-wrap items-center gap-2 text-xs font-medium text-stone-400 dark:text-stone-500'>
       <SmartLink
         href='/'
-        className='transition hover:text-amber-600 dark:hover:text-amber-300'>
+        className='transition hover:text-stone-800 dark:hover:text-stone-200'>
         首页
       </SmartLink>
       {post?.category && (
@@ -17,7 +17,7 @@ const ArticleBreadcrumbTrail = ({ post }) => {
           <span aria-hidden='true'>/</span>
           <SmartLink
             href={`/category/${encodeURIComponent(post.category)}`}
-            className='transition hover:text-amber-600 dark:hover:text-amber-300'>
+            className='transition hover:text-stone-800 dark:hover:text-stone-200'>
             {post.category}
           </SmartLink>
         </>

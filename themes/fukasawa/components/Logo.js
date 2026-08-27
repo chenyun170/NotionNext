@@ -22,7 +22,7 @@ const Logo = props => {
           animation: logoSmokeIn 1.2s cubic-bezier(0.2, 0.65, 0.3, 0.9) forwards;
         }
         .shimmer-text {
-          background: linear-gradient(90deg, transparent 0%, #ff8c00 50%, transparent 100%);
+          background: linear-gradient(90deg, transparent 0%, #a8a29e 50%, transparent 100%);
           background-size: 200% 100%;
           background-clip: text;
           -webkit-background-clip: text;
@@ -64,12 +64,12 @@ const Logo = props => {
             {characters.map((char, index) => (
               <span
                 key={index}
-                className={`logo-char relative ${index >= 4 ? 'text-orange-600 shimmer-text ml-0.5' : ''}`}
+                className={`logo-char relative ${index >= 4 ? 'text-stone-700 shimmer-text ml-0.5' : ''}`}
                 style={{ animationDelay: `${0.2 + index * 0.15}s` }}
               >
                 {char}
                 {index < 4 && (
-                  <div className='absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left'></div>
+                  <div className='absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-stone-400 to-stone-600 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left'></div>
                 )}
               </span>
             ))}

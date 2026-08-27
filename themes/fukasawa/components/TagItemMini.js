@@ -14,11 +14,11 @@ const TagItemMini = ({ tag, selected = false }) => {
       className={`group cursor-pointer inline-flex items-center transition-all duration-300
         mr-2 mb-2 py-1 px-3 rounded-md text-[10px] tracking-widest uppercase font-bold
         ${selected
-          ? 'bg-amber-600 text-white shadow-lg shadow-amber-500/30 transform -translate-y-0.5' 
-          : 'bg-white/80 text-stone-500 border border-stone-100 hover:border-amber-500 hover:text-amber-600 hover:shadow-md hover:-translate-y-0.5'
+          ? 'bg-stone-900 text-white shadow-none transform -translate-y-0.5' 
+          : 'bg-white/80 text-stone-500 border border-stone-100 hover:border-stone-400 hover:text-stone-800 hover:shadow-md hover:-translate-y-0.5'
         } 
         /* 💡 核心修复：暗黑模式下的背景与边框 */
-        dark:bg-stone-900/80 dark:border-stone-800 dark:text-stone-400 dark:hover:border-amber-400 dark:hover:text-amber-400`}
+        dark:bg-stone-900/80 dark:border-stone-800 dark:text-stone-400 dark:hover:border-stone-400 dark:hover:text-stone-200`}
     >
       <div className='flex items-center'>
         {selected && <i className='mr-1.5 fas fa-tag text-[8px] animate-pulse' />}

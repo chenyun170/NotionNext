@@ -63,27 +63,35 @@
   </script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { min-height:100vh; font-family:"Inter","Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; color:#3d3229; background:linear-gradient(180deg,#faf6f0,#fdf4ea 45%,#fff); line-height:1.75; }
+    body { min-height:100vh; font-family:"Inter","Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; color:#1c1917; background:linear-gradient(180deg,#f7f5f1,#f5f5f4 45%,#fff); line-height:1.75; }
     a { color:inherit; text-decoration:none; }
     .container { width:min(980px, calc(100% - 32px)); margin:0 auto; }
     header { padding:26px 0; }
     .nav { display:flex; justify-content:space-between; align-items:center; gap:16px; }
-    .brand { display:inline-flex; align-items:center; gap:10px; font-size:20px; font-weight:900; color:#3d3229; }
-    .brand-icon { display:grid; place-items:center; width:36px; height:36px; border-radius:12px; color:#fff; background:linear-gradient(135deg,#b97a52,#d29a63); }
-    .back { border:1px solid rgba(15,23,42,.12); border-radius:999px; padding:9px 14px; color:#6f6154; font-size:14px; font-weight:800; background:rgba(255,255,255,.76); }
+    .brand { display:inline-flex; align-items:center; gap:10px; font-size:20px; font-weight:900; color:#1c1917; }
+    .brand-icon { display:grid; place-items:center; width:36px; height:36px; border-radius:12px; color:#fff; background:linear-gradient(135deg,#292524,#57534e); }
+    .back { border:1px solid rgba(28,25,23,.12); border-radius:999px; padding:9px 14px; color:#78716c; font-size:14px; font-weight:800; background:rgba(255,255,255,.76); }
     .hero { padding:54px 0 28px; }
-    .eyebrow { display:inline-flex; margin-bottom:18px; border:1px solid rgba(185,122,82,.16); border-radius:999px; background:rgba(185,122,82,.08); padding:7px 12px; color:#a0653f; font-size:13px; font-weight:900; }
-    h1 { color:#3d3229; font-size:clamp(38px,6vw,64px); line-height:1; letter-spacing:0; }
-    .lead { max-width:760px; margin-top:22px; color:#6f6154; font-size:18px; line-height:1.9; }
+    .eyebrow { display:inline-flex; margin-bottom:18px; border:1px solid rgba(28,25,23,.16); border-radius:999px; background:rgba(28,25,23,.08); padding:7px 12px; color:#1c1917; font-size:13px; font-weight:900; }
+    h1 { color:#1c1917; font-size:clamp(38px,6vw,64px); line-height:1; letter-spacing:0; }
+    .lead { max-width:760px; margin-top:22px; color:#78716c; font-size:18px; line-height:1.9; }
     .faq { display:grid; gap:14px; padding:24px 0 44px; }
-    details { border:1px solid rgba(15,23,42,.08); border-radius:20px; background:#fff; padding:18px 20px; box-shadow:0 16px 45px rgba(15,23,42,.055); }
-    summary { cursor:pointer; color:#3d3229; font-size:17px; font-weight:900; }
-    details p { margin-top:12px; color:#8a7a6b; font-size:15px; }
+    details { border:1px solid rgba(28,25,23,.08); border-radius:20px; background:#fff; padding:18px 20px; box-shadow:0 16px 45px rgba(28,25,23,.055); }
+    summary { cursor:pointer; color:#1c1917; font-size:17px; font-weight:900; }
+    details p { margin-top:12px; color:#78716c; font-size:15px; }
     .actions { display:flex; flex-wrap:wrap; gap:12px; padding-bottom:48px; }
     .btn { display:inline-flex; justify-content:center; align-items:center; min-height:46px; border-radius:14px; padding:12px 18px; font-size:15px; font-weight:900; }
-    .btn-primary { color:#fff; background:linear-gradient(135deg,#b97a52,#d29a63); }
-    .btn-secondary { border:1px solid rgba(185,122,82,.18); color:#a0653f; background:#fff; }
-    footer { border-top:1px solid rgba(15,23,42,.08); padding:28px 0 40px; color:#8a7a6b; font-size:14px; }
+    .btn-primary { color:#fff; background:linear-gradient(135deg,#292524,#57534e); }
+    .btn-secondary { border:1px solid rgba(28,25,23,.18); color:#1c1917; background:#fff; }
+    footer { border-top:1px solid rgba(28,25,23,.08); padding:28px 0 40px; color:#78716c; font-size:14px; }
+    .link-list { display: grid; gap: 12px; margin-top: 20px; padding-bottom: 48px; }
+    .link-list a {
+      display: flex; justify-content: space-between; gap: 14px;
+      border: 1px solid rgba(28,25,23,.08); border-radius: 6px; background: #fff;
+      padding: 14px 18px; color: #1c1917; font-size: 14px; font-weight: 800; text-decoration: none;
+    }
+    .link-list a:hover { border-color: #78716c; }
+    .link-list span { color: #78716c; font-size: 12px; white-space: nowrap; }
     @media (max-width:720px) { .btn { width:100%; } .lead { font-size:16px; } }
   </style>
   <script type="application/ld+json" data-geo-breadcrumb>
@@ -152,6 +160,10 @@
       <a class="btn btn-primary" href="/customs-data.html">看海关数据专题</a>
       <a class="btn btn-secondary" href="/tools.html">打开工具导航</a>
       <a class="btn btn-secondary" href="/customs-data-skill.html">免费查海关数据</a>
+    </section>
+    <section class="container link-list">
+      <a href="/methodology.html">内容方法论与利益关系说明 <span>信任说明</span></a>
+      <a href="/data-sources-limitations.html">数据来源与适用边界 <span>内容边界</span></a>
     </section>
   </main>
   <footer class="container">FAQ · 外贸获客情报局。让问题更清楚，执行才更快。</footer>

@@ -91,15 +91,15 @@ const SidebarTools = () => {
       
       {/* 顶部状态：天气与汇率 */}
       <div className="flex justify-between items-center px-1 text-[9px] font-bold border-b border-stone-100 dark:border-stone-800 pb-1 text-stone-500">
-        <span className="text-amber-600 dark:text-amber-400">📍{weather.city} {weather.text} {weather.temp}°</span>
-        <span className="text-emerald-600 dark:text-emerald-400 font-mono">USD/CNY {realRate}</span>
+        <span className="text-stone-400 dark:text-stone-500">📍{weather.city} {weather.text} {weather.temp}°</span>
+        <span className="text-stone-400 dark:text-stone-400 font-mono">USD/CNY {realRate}</span>
       </div>
 
       {/* 核心时间网格 */}
       <div className="grid grid-cols-4 gap-1">
         {Object.values(times).map(v => (
           <div key={v.n} className="flex flex-col items-center py-0.5 bg-stone-100/50 dark:bg-white/5 rounded border border-black/5">
-            <span className={`text-[9px] font-black scale-90 leading-none transition-colors duration-1000 ${v.work ? 'text-emerald-500 animate-breath-green' : 'text-rose-500 animate-breath-red'}`}>
+            <span className={`text-[9px] font-black scale-90 leading-none transition-colors duration-1000 ${v.work ? 'text-stone-900 animate-breath-on' : 'text-stone-400 animate-breath-off'}`}>
               {v.n}
             </span>
             <span className="font-mono font-bold text-[10px] leading-none mt-0.5">{v.time}</span>
@@ -110,7 +110,7 @@ const SidebarTools = () => {
       {/* 功能切换栏 */}
       <div className="flex bg-stone-200/50 dark:bg-stone-800 p-0.5 rounded">
         {['cbm', 'ex', 'conv', 'hs'].map(m => (
-          <button key={m} onClick={() => setCalcMode(m)} className={`flex-1 py-0.5 text-[9px] font-bold rounded transition-all ${calcMode === m ? 'bg-white dark:bg-stone-700 text-amber-600 shadow-xs' : 'text-stone-400'}`}>
+          <button key={m} onClick={() => setCalcMode(m)} className={`flex-1 py-0.5 text-[9px] font-bold rounded transition-all ${calcMode === m ? 'bg-white dark:bg-stone-700 text-stone-900 shadow-xs' : 'text-stone-400'}`}>
             {m === 'cbm' ? '算柜' : m === 'ex' ? '汇率' : m === 'conv' ? '换算' : 'HS'}
           </button>
         ))}
@@ -122,27 +122,27 @@ const SidebarTools = () => {
           <div className="flex gap-1 items-center w-full relative">
             <div className="grid grid-cols-4 gap-0.5 flex-grow">
               {['l', 'w', 'h', 'pcs'].map(f => (
-                <input key={f} type="number" placeholder={f.toUpperCase()} className="w-full bg-white dark:bg-black/40 border border-stone-200 dark:border-white/10 rounded px-1 h-5 text-[9px] outline-none focus:border-amber-400" value={dims[f]} onChange={e => setDims({...dims, [f]: e.target.value})}/>
+                <input key={f} type="number" placeholder={f.toUpperCase()} className="w-full bg-white dark:bg-black/40 border border-stone-200 dark:border-white/10 rounded px-1 h-5 text-[9px] outline-none focus:border-stone-400" value={dims[f]} onChange={e => setDims({...dims, [f]: e.target.value})}/>
               ))}
             </div>
             
             {/* 体积结果与 Tooltip 详情提示 */}
-            <div className="group relative text-[9px] font-black text-amber-600 min-w-[68px] text-right cursor-help">
+            <div className="group relative text-[9px] font-black text-stone-500 min-w-[68px] text-right cursor-help">
               <span className="truncate">
                 {totalCBM}m³ <span className="text-[7px] opacity-60 font-normal">{loadingSuggestion()}</span>
               </span>
 
               {/* 悬停弹出的装箱建议卡片 */}
               <div className="absolute bottom-full right-0 mb-2 w-36 hidden group-hover:block z-[100] animate-in fade-in slide-in-from-bottom-1">
-                <div className="bg-white dark:bg-stone-800 border border-amber-100 dark:border-amber-900 rounded-lg shadow-xl p-2 text-left">
-                  <div className="text-[9px] text-amber-600 font-bold mb-1 border-b border-amber-50 dark:border-stone-700 pb-1">装载容量参考</div>
+                <div className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-800 rounded-lg shadow-xl p-2 text-left">
+                  <div className="text-[9px] text-stone-500 font-bold mb-1 border-b border-stone-100 dark:border-stone-700 pb-1">装载容量参考</div>
                   <div className="space-y-1 text-[8px] text-stone-600 dark:text-stone-300 font-medium">
-                    <div className="flex justify-between"><span>20GP (28m³):</span><span className={totalCBM > 28 ? 'text-rose-500' : 'text-emerald-500'}>{(totalCBM / 28 * 100).toFixed(1)}%</span></div>
-                    <div className="flex justify-between"><span>40GP (58m³):</span><span className={totalCBM > 58 ? 'text-rose-500' : 'text-emerald-500'}>{(totalCBM / 58 * 100).toFixed(1)}%</span></div>
-                    <div className="flex justify-between"><span>40HQ (68m³):</span><span className={totalCBM > 68 ? 'text-rose-500' : 'text-emerald-500'}>{(totalCBM / 68 * 100).toFixed(1)}%</span></div>
+                    <div className="flex justify-between"><span>20GP (28m³):</span><span className={totalCBM > 28 ? 'text-stone-300' : 'text-stone-500'}>{(totalCBM / 28 * 100).toFixed(1)}%</span></div>
+                    <div className="flex justify-between"><span>40GP (58m³):</span><span className={totalCBM > 58 ? 'text-stone-300' : 'text-stone-500'}>{(totalCBM / 58 * 100).toFixed(1)}%</span></div>
+                    <div className="flex justify-between"><span>40HQ (68m³):</span><span className={totalCBM > 68 ? 'text-stone-300' : 'text-stone-500'}>{(totalCBM / 68 * 100).toFixed(1)}%</span></div>
                   </div>
                   {/* 小三角 */}
-                  <div className="absolute top-full right-3 w-2 h-2 bg-white dark:bg-stone-800 border-r border-b border-amber-100 dark:border-amber-900 rotate-45 -translate-y-1"></div>
+                  <div className="absolute top-full right-3 w-2 h-2 bg-white dark:bg-stone-800 border-r border-b border-stone-200 dark:border-stone-800 rotate-45 -translate-y-1"></div>
                 </div>
               </div>
             </div>
@@ -152,7 +152,7 @@ const SidebarTools = () => {
         {calcMode === 'ex' && (
           <div className="flex gap-2 items-center w-full">
             <input type="number" className="w-1/2 bg-white dark:bg-black/40 border border-stone-200 dark:border-white/10 rounded px-1 h-5 outline-none text-[9px]" placeholder="USD$" value={exVal} onChange={e=>setExVal(e.target.value)}/>
-            <div className="flex-1 text-center font-black text-emerald-600 text-[10px]">≈ ¥ {(exVal * realRate).toFixed(2)}</div>
+            <div className="flex-1 text-center font-black text-stone-500 text-[10px]">≈ ¥ {(exVal * realRate).toFixed(2)}</div>
           </div>
         )}
 
@@ -162,7 +162,7 @@ const SidebarTools = () => {
               <option value="inch-cm">吋➔厘</option><option value="lb-kg">磅➔斤</option>
             </select>
             <input type="number" className="w-10 bg-white dark:bg-black/40 border border-stone-200 dark:border-white/10 rounded px-1 h-5 outline-none text-[9px]" value={convVal} onChange={e => setConvVal(e.target.value)} placeholder="值"/>
-            <div className="flex-1 text-right font-black text-amber-500 text-[9px] truncate">{(parseFloat(convVal) * (convType === 'inch-cm' ? 2.54 : 0.4536) || 0).toFixed(2)}</div>
+            <div className="flex-1 text-right font-black text-stone-500 text-[9px] truncate">{(parseFloat(convVal) * (convType === 'inch-cm' ? 2.54 : 0.4536) || 0).toFixed(2)}</div>
           </div>
         )}
 
@@ -172,21 +172,21 @@ const SidebarTools = () => {
             {/* HS/Google 引擎切换开关 */}
             <button 
               onClick={() => setHsToGoogle(!hsToGoogle)} 
-              className={`w-5 h-5 rounded flex items-center justify-center transition-colors shadow-sm ${hsToGoogle ? 'bg-orange-500 text-white' : 'bg-amber-100 text-amber-600 hover:bg-amber-200'}`}
+              className={`w-5 h-5 rounded flex items-center justify-center transition-colors shadow-sm ${hsToGoogle ? 'bg-stone-800 text-white' : 'bg-stone-100 text-stone-500 hover:bg-stone-200'}`}
               title={hsToGoogle ? "切换到专业库查询" : "切换到Google搜索"}
             >
               <span className="text-[8px] font-bold uppercase">{hsToGoogle ? 'G' : 'HS'}</span>
             </button>
-            <button onClick={handleSearch} className="px-1.5 bg-amber-600 text-white rounded h-5 text-[8px] font-bold active:scale-95 transition-transform">GO</button>
+            <button onClick={handleSearch} className="px-1.5 bg-stone-800 text-white rounded h-5 text-[8px] font-bold active:scale-95 transition-transform">GO</button>
           </div>
         )}
       </div>
 
       <style jsx>{`
-        .animate-breath-green { animation: breath-green 3s ease-in-out infinite; }
-        .animate-breath-red { animation: breath-red 3s ease-in-out infinite; }
-        @keyframes breath-green { 0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(16, 185, 129, 0.3); } 50% { opacity: 0.4; text-shadow: 0 0 0px rgba(16, 185, 129, 0); } }
-        @keyframes breath-red { 0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(244, 63, 94, 0.3); } 50% { opacity: 0.4; text-shadow: 0 0 0px rgba(244, 63, 94, 0); } }
+        .animate-breath-on { animation: breath-on 3s ease-in-out infinite; }
+        .animate-breath-off { animation: breath-off 3s ease-in-out infinite; }
+        @keyframes breath-on { 0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(234, 88, 12, 0.35); } 50% { opacity: 0.45; text-shadow: 0 0 0px rgba(234, 88, 12, 0); } }
+        @keyframes breath-off { 0%, 100% { opacity: 0.7; } 50% { opacity: 0.35; } }
       `}</style>
     </div>
   );

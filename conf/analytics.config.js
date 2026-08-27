@@ -7,7 +7,10 @@ module.exports = {
     process.env.NEXT_PUBLIC_ANALYTICS_BUSUANZI_ENABLE || true, // 展示网站阅读量、访问数 see http://busuanzi.ibruce.info/
   ANALYTICS_BAIDU_ID: process.env.NEXT_PUBLIC_ANALYTICS_BAIDU_ID || '', // e.g 只需要填写百度统计的id，[baidu_id] -> https://hm.baidu.com/hm.js?[baidu_id]
   ANALYTICS_CNZZ_ID: process.env.NEXT_PUBLIC_ANALYTICS_CNZZ_ID || '', // 只需要填写站长统计的id, [cnzz_id] -> https://s9.cnzz.com/z_stat.php?id=[cnzz_id]&web_id=[cnzz_id]
-  ANALYTICS_GOOGLE_ID: process.env.NEXT_PUBLIC_ANALYTICS_GOOGLE_ID || '', // 谷歌Analytics的id e.g: G-XXXXXXXXXX
+  // Google Analytics 4：用于看真实流量、来源、跳出率和转化路径。
+  // 到 https://marketingplatform.google.com/about/analytics/ 创建 GA4 数据流后，复制“衡量 ID”（G-开头）。
+  // 在 Vercel 环境变量填 NEXT_PUBLIC_ANALYTICS_GOOGLE_ID，本地可临时写在这里测试。
+  ANALYTICS_GOOGLE_ID: process.env.NEXT_PUBLIC_ANALYTICS_GOOGLE_ID || '', // 例：G-XXXXXXXXXX
 
   // 51la 站点统计 https://www.51.la/
   ANALYTICS_51LA_ID: process.env.NEXT_PUBLIC_ANALYTICS_51LA_ID || '', // id，在51la后台获取 参阅 https://docs.tangly1024.com/article/notion-next-51-la
@@ -30,9 +33,14 @@ module.exports = {
   SEO_BAIDU_SITE_VERIFICATION:
     process.env.NEXT_PUBLIC_SEO_BAIDU_SITE_VERIFICATION || '', // Remove the value or replace it with your own google site verification code
 
-  // 微软 Clarity 站点分析
-  CLARITY_ID: process.env.NEXT_PUBLIC_CLARITY_ID || null, // 只需要复制Clarity脚本中的ID部分，ID是一个十位的英文数字组合
+  // 微软 Clarity：可免费看访客热力图、会话回放和点击路径，适合替代/补充 GA4。
+  // 到 https://clarity.microsoft.com 新建项目，复制 Clarity 脚本里的 project ID（通常是十位字母数字）。
+  // 在 Vercel 环境变量填 NEXT_PUBLIC_CLARITY_ID。
+  CLARITY_ID: process.env.NEXT_PUBLIC_CLARITY_ID || null, // 例：abcd1234ef
 
+  // Umami：开源、隐私友好、自部署或使用云服务的轻量统计。
+  // 到 https://cloud.umami.is 或用自建实例新建站点，复制 website id。
+  // 在 Vercel 环境变量填 NEXT_PUBLIC_UMAMI_ID；自部署时再改 NEXT_PUBLIC_UMAMI_HOST。
   UMAMI_HOST: process.env.NEXT_PUBLIC_UMAMI_HOST || 'https://cloud.umami.is/script.js', // umami的服务地址
   UMAMI_ID: process.env.NEXT_PUBLIC_UMAMI_ID || '', // umami的id
 

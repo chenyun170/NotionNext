@@ -3,22 +3,59 @@
 @tailwind utilities;
 
 :root {
-  --brand-primary: #b97a52;
-  --brand-primary-hover: #a0653f;
-  --brand-primary-soft: #faf3ea;
-  --brand-primary-border: #e7d2bd;
-  --brand-accent: #d29a63;
-  --brand-accent-hover: #b98249;
-  --brand-accent-soft: #fbf4ec;
-  --brand-accent-border: #ecdcc4;
-  --brand-ink: #3d3229;
-  --brand-muted: #6f6154;
+  --brand-primary: #292524;
+  --brand-primary-hover: #1c1917;
+  --brand-primary-soft: #f5f5f4;
+  --brand-primary-border: #d6d3d1;
+  --brand-accent: #d97706;
+  --brand-accent-hover: #b45309;
+  --brand-accent-soft: #fef7f0;
+  --brand-accent-border: #f8d8bd;
+  --brand-ink: #1c1917;
+  --brand-muted: #78716c;
   --brand-warning: #b45309;
   --brand-danger: #dc2626;
-  --brand-success: #0f766e;
+  --brand-success: #525252;
 }
 
 @layer components {
+  #theme-fukasawa .sideLeft .brand-btn-primary {
+    border-color: var(--brand-accent);
+    background: var(--brand-accent);
+    color: #ffffff;
+  }
+  #theme-fukasawa .sideLeft .brand-btn-primary:hover {
+    border-color: var(--brand-accent-hover);
+    background: var(--brand-accent-hover);
+  }
+  #theme-fukasawa .dark .sideLeft .brand-btn-primary {
+    background: #d97706;
+    border-color: #d97706;
+    color: #ffffff;
+  }
+  #theme-fukasawa .dark .sideLeft .brand-btn-primary:hover {
+    background: #b45309;
+    border-color: #b45309;
+  }
+  #theme-fukasawa .sideLeft .brand-btn-accent {
+    border-color: var(--brand-accent);
+    background: var(--brand-accent);
+    color: #ffffff;
+  }
+  #theme-fukasawa .sideLeft .brand-btn-accent:hover {
+    border-color: var(--brand-accent-hover);
+    background: var(--brand-accent-hover);
+  }
+  #theme-fukasawa .dark .sideLeft .brand-btn-accent {
+    background: #d97706;
+    border-color: #d97706;
+    color: #ffffff;
+  }
+  #theme-fukasawa .dark .sideLeft .brand-btn-accent:hover {
+    background: #b45309;
+    border-color: #b45309;
+  }
+
   .brand-btn {
     display: inline-flex;
     align-items: center;
@@ -75,14 +112,14 @@
   }
 
   .dark .brand-btn-primary {
-    background: #c98d63;
-    border-color: #c98d63;
-    color: #1c140e;
+    background: #e7e5e4;
+    border-color: #e7e5e4;
+    color: #111827;
   }
 
   .dark .brand-btn-primary:hover {
-    background: #d8a37d;
-    border-color: #d8a37d;
+    background: #f5f5f4;
+    border-color: #f5f5f4;
   }
 
   .dark .brand-btn-secondary {
@@ -92,20 +129,20 @@
   }
 
   .dark .brand-btn-secondary:hover {
-    border-color: #b97a52;
-    color: #d8a37d;
-    background: rgba(185, 122, 82, 0.18);
+    border-color: #f8d8bd;
+    color: #d97706;
+    background: rgba(217, 119, 6, 0.11);
   }
 
   .dark .brand-btn-accent {
-    background: #d8a37d;
-    border-color: #d8a37d;
-    color: #1c140e;
+    background: #d97706;
+    border-color: #d97706;
+    color: #ffffff;
   }
 
   .dark .brand-btn-accent:hover {
-    background: #e2b594;
-    border-color: #e2b594;
+    background: #b45309;
+    border-color: #b45309;
   }
 }
 
@@ -296,7 +333,7 @@ nav {
 
 /* twikoo 评论区超链接样式 */
 .tk-main a {
-  @apply text-blue-700;
+  @apply text-amber-700;
 }
 
 /* twikoo 内置的 element-ui 加载样式 */
@@ -306,7 +343,7 @@ nav {
 
 /* Webmention style */
 .webmention-block {
-  background: rgba(0, 116, 222, 0.2);
+  background: rgba(217, 119, 6, 0.10);
   padding: 1rem 2rem;
   border-radius: 5px;
 }
@@ -319,7 +356,7 @@ nav {
 }
 
 .webmention-block-intro a {
-  color: #0000ee;
+  color: #b45309;
   text-decoration: underline;
 }
 

@@ -82,9 +82,9 @@ const ArticleNextActions = ({ post }) => {
 
   return (
     <section
-      className='mt-12 overflow-hidden rounded-[8px] border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-amber-50 p-4 print:hidden dark:border-amber-900/50 dark:from-amber-950/30 dark:via-[#1c1917] dark:to-amber-950/20 sm:p-6'
+      className='mt-12 overflow-hidden rounded-[8px] border border-stone-200 bg-stone-50 p-4 print:hidden dark:border-stone-800 dark:bg-stone-900/40 sm:p-6'
       aria-labelledby='article-next-actions-title'>
-      <div className='mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-700 dark:text-amber-300'>
+      <div className='mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
         <i className='fas fa-route' />
         <span>下一步行动</span>
       </div>
@@ -105,8 +105,8 @@ const ArticleNextActions = ({ post }) => {
           <a
             href={CUSTOMS_DATA_SKILL.href}
             onClick={() => trackCustomsDataSkillClick('article_skill_card')}
-            className='inline-flex flex-col rounded-[8px] border border-amber-200 bg-white/85 px-4 py-3 text-left transition hover:border-amber-300 hover:bg-amber-50 dark:border-amber-900/70 dark:bg-amber-950/20 dark:hover:bg-amber-950/50'>
-            <span className='text-[11px] font-bold uppercase tracking-[0.18em] text-amber-600 dark:text-amber-300'>
+            className='inline-flex flex-col rounded-[8px] border border-stone-200 bg-white px-4 py-3 text-left transition hover:border-stone-300 hover:bg-white dark:border-stone-800 dark:bg-stone-950/40 dark:hover:bg-stone-800/70'>
+            <span className='text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
               海关数据工具入口
             </span>
             <span className='mt-1 text-sm font-black text-stone-950 dark:text-stone-50'>
@@ -115,14 +115,14 @@ const ArticleNextActions = ({ post }) => {
           </a>
           <a
             href='/customs-data.html'
-            className='inline-flex h-10 items-center justify-center rounded-[8px] bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-amber-700 dark:bg-white dark:text-stone-950 dark:hover:bg-amber-300 sm:h-11 sm:px-4 sm:text-sm'>
+            className='inline-flex h-10 items-center justify-center rounded-[8px] bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-stone-700 dark:bg-white dark:text-stone-950 dark:hover:bg-stone-300 sm:h-11 sm:px-4 sm:text-sm'>
             <i className='fas fa-layer-group mr-2 text-xs' />
             看海关数据专题
           </a>
           <a
             href={CUSTOMS_DATA_SKILL.href}
             onClick={() => trackCustomsDataSkillClick('article_next_actions')}
-            className='inline-flex h-10 items-center justify-center rounded-[8px] border border-amber-200 bg-white/80 px-3 text-[13px] font-bold text-amber-700 transition hover:border-amber-300 hover:bg-amber-50 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-300 dark:hover:bg-amber-950/50 sm:h-11 sm:px-4 sm:text-sm'>
+            className='inline-flex h-10 items-center justify-center rounded-[8px] border bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-stone-700 dark:bg-stone-950 dark:hover:bg-stone-200 sm:h-11 sm:px-4 sm:text-sm'>
             <i className='fas fa-database mr-2 text-xs' />
             免费查海关数据
           </a>
@@ -135,7 +135,7 @@ const ArticleNextActions = ({ post }) => {
         </div>
       </div>
 
-      <div className='mt-5 border-t border-amber-100 pt-4 dark:border-amber-900/50'>
+      <div className='mt-5 border-t border-stone-200 pt-4 dark:border-stone-800'>
         <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-400'>
           继续阅读
         </div>
@@ -144,8 +144,8 @@ const ArticleNextActions = ({ post }) => {
             <a
               key={resource.href}
               href={resource.href}
-              className='group rounded-[8px] border border-stone-200 bg-white/80 p-3 transition hover:border-amber-300 hover:bg-amber-50 dark:border-stone-800 dark:bg-stone-950/30 dark:hover:border-amber-700 dark:hover:bg-amber-950/30'>
-              <span className='text-sm font-black text-stone-900 group-hover:text-amber-700 dark:text-stone-50 dark:group-hover:text-amber-300'>
+              className='group rounded-[8px] border border-stone-200 bg-white p-3 transition hover:border-stone-300 hover:bg-white dark:border-stone-800 dark:bg-stone-950/40 dark:hover:bg-stone-800/70'>
+              <span className='text-sm font-black text-stone-900 group-hover:text-stone-800 dark:text-stone-50 dark:group-hover:text-stone-200'>
                 {resource.title}
               </span>
               <span className='mt-1 block text-xs leading-5 text-stone-500 dark:text-stone-400'>

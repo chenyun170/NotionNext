@@ -163,7 +163,7 @@ const SearchResourceLinks = ({ keyword }) => {
       className='mb-6 overflow-hidden rounded-[8px] border border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-[#1c1917]'
       aria-label='搜索相关资源'>
       <div className='border-b border-stone-200 px-5 py-4 dark:border-stone-800'>
-        <div className='mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-600 dark:text-amber-400'>
+        <div className='mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
           <i className='fas fa-compass' />
           <span>相关资源</span>
         </div>
@@ -176,11 +176,11 @@ const SearchResourceLinks = ({ keyword }) => {
           <a
             key={resource.href}
             href={resource.href}
-            className='group border-b border-stone-200 p-5 transition hover:bg-amber-50 dark:border-stone-800 dark:hover:bg-amber-950/20 md:border-b-0 md:border-r last:md:border-r-0'>
-            <span className='mb-4 flex h-9 w-9 items-center justify-center rounded-[8px] bg-stone-100 text-stone-600 transition group-hover:bg-amber-600 group-hover:text-white dark:bg-stone-900 dark:text-stone-300'>
+            className='group border-b border-stone-200 p-5 transition hover:bg-stone-50 dark:border-stone-800 dark:hover:bg-stone-900/50 md:border-b-0 md:border-r last:md:border-r-0'>
+            <span className='mb-4 flex h-9 w-9 items-center justify-center rounded-[8px] bg-stone-100 text-stone-600 transition group-hover:bg-stone-900 group-hover:text-white dark:bg-stone-900 dark:text-stone-300'>
               <i className={`fas ${resource.icon}`} />
             </span>
-            <h2 className='text-base font-black text-stone-900 group-hover:text-amber-700 dark:text-stone-50 dark:group-hover:text-amber-300'>
+            <h2 className='text-base font-black text-stone-900 group-hover:text-stone-800 dark:text-stone-50 dark:group-hover:text-stone-300'>
               {resource.title}
             </h2>
             <p className='mt-2 text-sm leading-6 text-stone-500 dark:text-stone-400'>

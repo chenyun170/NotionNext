@@ -15,7 +15,7 @@ const ArticleQuickNav = ({ post }) => {
     <aside className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-stone-50 text-sm dark:border-stone-800 dark:bg-stone-950/60 print:hidden'>
       <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_260px]'>
         <div className='p-5'>
-          <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-600 dark:text-amber-400'>
+          <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             <i className='fas fa-route' />
             <span>Reading Path</span>
           </div>
@@ -28,9 +28,9 @@ const ArticleQuickNav = ({ post }) => {
                   <a
                     key={id}
                     href={`#${id}`}
-                    className='group flex min-h-[44px] items-center rounded-[8px] border border-stone-200 bg-white px-3 py-2 transition hover:border-amber-300 hover:text-amber-600 dark:border-stone-800 dark:bg-[#1c1917] dark:hover:border-amber-700 dark:hover:text-amber-300'
+                    className='group flex min-h-[44px] items-center rounded-[8px] border border-stone-200 bg-white px-3 py-2 transition hover:border-stone-400 hover:text-stone-800 dark:border-stone-800 dark:bg-[#1c1917] dark:hover:border-stone-600 dark:hover:text-stone-100'
                   >
-                    <span className='mr-2 h-1.5 w-1.5 flex-none rounded-full bg-stone-300 transition group-hover:bg-amber-500 dark:bg-stone-700' />
+                    <span className='mr-2 h-1.5 w-1.5 flex-none rounded-full bg-stone-300 transition group-hover:bg-stone-500 dark:bg-stone-700' />
                     <span className='line-clamp-2 leading-5'>{item.text}</span>
                   </a>
                 )
@@ -51,7 +51,7 @@ const ArticleQuickNav = ({ post }) => {
           {post?.category && (
             <SmartLink
               href={`/category/${encodeURIComponent(post.category)}`}
-              className='mb-3 flex items-center justify-between rounded-[8px] border border-stone-200 px-3 py-2 font-semibold text-stone-700 transition hover:border-amber-300 hover:text-amber-600 dark:border-stone-800 dark:text-stone-200 dark:hover:border-amber-700 dark:hover:text-amber-300'
+              className='mb-3 flex items-center justify-between rounded-[8px] border border-stone-200 px-3 py-2 font-semibold text-stone-700 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:text-stone-200 dark:hover:border-stone-600 dark:hover:text-stone-300'
             >
               <span className='min-w-0 truncate'>
                 <i className='fas fa-folder-open mr-2 text-stone-400' />
@@ -63,7 +63,7 @@ const ArticleQuickNav = ({ post }) => {
           {!post?.category && (
             <SmartLink
               href='/archive'
-              className='mb-3 flex items-center justify-between rounded-[8px] border border-stone-200 px-3 py-2 font-semibold text-stone-700 transition hover:border-amber-300 hover:text-amber-600 dark:border-stone-800 dark:text-stone-200 dark:hover:border-amber-700 dark:hover:text-amber-300'
+              className='mb-3 flex items-center justify-between rounded-[8px] border border-stone-200 px-3 py-2 font-semibold text-stone-700 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:text-stone-200 dark:hover:border-stone-600 dark:hover:text-stone-200'
             >
               <span>
                 <i className='fas fa-clock-rotate-left mr-2 text-stone-400' />
@@ -83,7 +83,7 @@ const ArticleQuickNav = ({ post }) => {
           {tags.length === 0 && (
             <SmartLink
               href='/'
-              className='inline-flex items-center text-xs font-semibold text-stone-500 transition hover:text-amber-600 dark:text-stone-400 dark:hover:text-amber-300'
+              className='inline-flex items-center text-xs font-semibold text-stone-500 transition hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-200'
             >
               查看全部文章
               <i className='fas fa-arrow-right ml-2 text-[10px]' />

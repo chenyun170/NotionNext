@@ -217,7 +217,7 @@ const FloatButton = () => {
         <div 
           onClick={() => setShowPopup(!showPopup)}
           className={`w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-2xl transition-all duration-500 active:scale-90 ${
-            showPopup ? 'bg-stone-800 rotate-90' : 'bg-stone-950 shadow-stone-500/30 animate-pulse-stone'
+            showPopup ? 'bg-[#b45309] rotate-90' : 'bg-[#d97706] shadow-orange-600/30 animate-pulse-stone'
           }`}
         >
           <i className={`fas ${showPopup ? 'fa-times' : 'fa-gift'} text-white text-lg`}></i>

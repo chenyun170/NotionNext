@@ -106,7 +106,7 @@ const FloatButton = () => {
       {/* 1. 返回顶部按钮 - 加进度圆环 */}
       <div 
         onClick={scrollToTop}
-        className={`mb-10 w-12 h-12 bg-white/80 dark:bg-stone-800/80 backdrop-blur-md text-slate-600 dark:text-stone-300 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:text-stone-800 transition-all duration-500 border border-white/20 dark:border-stone-700 group relative ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+        className={`mb-10 w-12 h-12 bg-white/90 backdrop-blur-md text-stone-500 rounded-full flex items-center justify-center cursor-pointer shadow-md hover:text-stone-800 transition-all duration-500 border border-stone-200 group relative ${showScrollTop && !showPopup ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
       >
         {/* 进度圆环背景 */}
         <svg 
@@ -160,7 +160,7 @@ const FloatButton = () => {
       {!giftDismissed && giftReady && (
       <div className="group relative flex flex-col items-center">
         {showPopup && (
-          <div className="absolute bottom-16 right-0 w-56 max-w-[calc(100vw-2rem)] bg-white dark:bg-[#1c1917] rounded-xl md:rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-700 p-4 md:p-5 text-stone-900 dark:text-stone-100 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
+          <div className="absolute bottom-16 right-0 w-56 max-w-[calc(100vw-2rem)] bg-white dark:bg-stone-900 rounded-xl md:rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-700 p-4 md:p-5 text-stone-900 dark:text-stone-100 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
             <button
               type="button"
               aria-label="关闭资料包浮窗"
@@ -176,7 +176,7 @@ const FloatButton = () => {
                 备注<span className="text-stone-700 font-black italic dark:text-stone-200">&quot;获客&quot;</span>领资料包
               </p>
               
-              <div className="bg-stone-50 dark:bg-black/20 p-2 rounded-xl mb-3 border border-stone-200 dark:border-stone-800">
+              <div className="bg-stone-50 dark:bg-stone-900/40 p-2 rounded-xl mb-3 border border-stone-200 dark:border-stone-700">
                  <img src="/wechat-qr.png" alt="微信二维码" className="w-full h-auto rounded-lg" />
               </div>
 
@@ -217,7 +217,7 @@ const FloatButton = () => {
         <div 
           onClick={() => setShowPopup(!showPopup)}
           className={`w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-2xl transition-all duration-500 active:scale-90 ${
-            showPopup ? 'bg-[#b45309] rotate-90' : 'bg-[#d97706] shadow-orange-600/30 animate-pulse-stone'
+            showPopup ? 'bg-[#b45309] rotate-90' : 'bg-[#d97706] shadow-md border border-white/40 animate-pulse-stone'
           }`}
         >
           <i className={`fas ${showPopup ? 'fa-times' : 'fa-gift'} text-white text-lg`}></i>

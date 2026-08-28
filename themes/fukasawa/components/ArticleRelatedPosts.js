@@ -33,7 +33,7 @@ const ArticleRelatedPosts = ({ posts = [] }) => {
           <SmartLink
             key={post.id || post.slug}
             href={post.href || `/${post.slug}`}
-            className='group overflow-hidden rounded-[8px] border border-stone-200 bg-white transition hover:-translate-y-0.5 hover:border-stone-400 hover:shadow-lg dark:border-stone-800 dark:bg-[#1c1917] dark:hover:border-stone-600'>
+            className='group overflow-hidden rounded-[8px] border border-stone-200 bg-white transition hover:-translate-y-0.5 hover:border-stone-400 hover:shadow-lg dark:border-stone-800 dark:bg-stone-900 dark:hover:border-stone-600'>
             {post.pageCoverThumbnail && (
               <div className='relative h-32 overflow-hidden bg-stone-100 dark:bg-stone-900'>
                 <LazyImage

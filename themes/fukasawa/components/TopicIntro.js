@@ -24,7 +24,7 @@ const TopicIntro = ({
   }
 
   return (
-    <section className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-white dark:border-stone-800 dark:bg-[#1c1917]'>
+    <section className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900'>
       <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_260px]'>
         <div className='p-5 sm:p-7'>
           <div className='mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>

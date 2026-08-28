@@ -43,7 +43,7 @@ const secondaryLinks = [
 const HomeFeaturedLinks = () => {
   return (
     <section className='mx-auto mb-5 w-full max-w-[calc(100vw-2rem)] sm:max-w-full'>
-      <div className='flex min-w-0 flex-col gap-2 rounded-[8px] border border-stone-200 bg-white/75 px-3 py-3 shadow-sm dark:border-stone-800 dark:bg-[#1c1917]/85 sm:flex-row sm:items-center'>
+      <div className='flex min-w-0 flex-col gap-2 rounded-[8px] border border-stone-200 bg-white/75 px-3 py-3 shadow-sm dark:border-stone-800 dark:bg-stone-900/85 sm:flex-row sm:items-center'>
         <div className='flex shrink-0 items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-stone-500 dark:text-stone-400'>
           <i className='fas fa-compass text-stone-400 dark:text-stone-500' />
           <span>接着看</span>

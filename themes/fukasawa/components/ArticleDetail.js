@@ -90,7 +90,7 @@ export default function ArticleDetail(props) {
       <article
         itemScope
         itemType='https://schema.org/BlogPosting'
-        className='subpixel-antialiased overflow-y-hidden bg-white px-5 py-10 dark:border-stone-700 dark:bg-hexo-black-gray md:px-32 lg:pt-24'>
+        className='subpixel-antialiased overflow-y-hidden bg-white px-5 py-10 dark:border-stone-700 dark:bg-stone-900 md:px-32 lg:pt-24'>
         <meta itemProp='datePublished' content={post?.publishDate} />
         <meta itemProp='dateModified' content={post?.lastEditedDate || post?.publishDate} />
         <header className='mb-8 border-b border-dashed border-stone-200 pb-6 dark:border-stone-800 sm:mb-10 sm:pb-8'>
@@ -171,7 +171,7 @@ export default function ArticleDetail(props) {
       {post?.type === 'Post' && <ArticleAround prev={prev} next={next} />}
 
       {/* 评论互动 */}
-      <div className='duration-200 shadow py-6 px-12 w-screen md:w-full overflow-x-auto dark:border-stone-700 bg-white dark:bg-hexo-black-gray'>
+      <div className='duration-200 shadow py-6 px-12 w-screen md:w-full overflow-x-auto dark:border-stone-700 bg-white dark:bg-stone-900'>
         <Comment frontMatter={post} />
       </div>
 

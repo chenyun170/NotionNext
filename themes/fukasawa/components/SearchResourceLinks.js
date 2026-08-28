@@ -160,7 +160,7 @@ const SearchResourceLinks = ({ keyword }) => {
 
   return (
     <section
-      className='mb-6 overflow-hidden rounded-[8px] border border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-[#1c1917]'
+      className='mb-6 overflow-hidden rounded-[8px] border border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900'
       aria-label='搜索相关资源'>
       <div className='border-b border-stone-200 px-5 py-4 dark:border-stone-800'>
         <div className='mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>

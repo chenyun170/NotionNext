@@ -36,7 +36,8 @@ const flagshipTopics = [
   {
     name: '海关数据专题',
     match: /海关|数据|进口|贸易/i,
-    description: '围绕进口商、供应商、HS 编码和采购记录，判断真实买家与市场机会。',
+    description:
+      '围绕进口商、供应商、HS 编码和采购记录，判断真实买家与市场机会。',
     href: '/customs-data.html',
     preferStaticHref: true,
     icon: 'fa-database'
@@ -82,9 +83,7 @@ const acquisitionSteps = [
   }
 ]
 
-const HomeIntro = ({
-  categoryOptions = []
-}) => {
+const HomeIntro = ({ categoryOptions = [] }) => {
   const topics = buildTopics(categoryOptions)
   const homeDescription = buildHomeDescription()
 
@@ -107,16 +106,34 @@ const HomeIntro = ({
             <div className='mt-5 flex w-full min-w-0 flex-wrap gap-2'>
               <a
                 href={CUSTOMS_DATA_SKILL.href}
-                onClick={() => trackCustomsDataSkillClick('home_intro_primary')}
-                className='brand-btn brand-btn-primary h-10 w-full max-w-full px-4 text-sm sm:w-auto'>
+                onClick={() => {
+                  trackCustomsDataSkillClick('home_intro_primary')
+                  trackSiteInteraction({
+                    source: 'home_primary_cta',
+                    sourceGroup: 'home',
+                    target: CUSTOMS_DATA_SKILL.href,
+                    action: 'click_customs_data'
+                  })
+                }}
+                className='brand-btn brand-btn-primary h-10 w-full max-w-full px-4 text-sm sm:w-auto'
+              >
                 <i className='fas fa-database mr-2 text-xs' />
-                免费查海关数据
+                免费查：谁在进口你的产品
               </a>
               <SmartLink
                 href='/foreign-trade-tools.html'
-                className='brand-btn brand-btn-secondary h-10 w-full max-w-full px-4 text-sm sm:w-auto'>
+                onClick={() =>
+                  trackSiteInteraction({
+                    source: 'home_secondary_cta',
+                    sourceGroup: 'home',
+                    target: '/foreign-trade-tools.html',
+                    action: 'click_tool_workflow'
+                  })
+                }
+                className='brand-btn brand-btn-secondary h-10 w-full max-w-full px-4 text-sm sm:w-auto'
+              >
                 <i className='fas fa-route mr-2 text-xs' />
-                看工具怎么搭配
+                图灵搜 + 顶易云 + 海关数据怎么用
               </SmartLink>
             </div>
 
@@ -131,7 +148,8 @@ const HomeIntro = ({
                   action: 'start_light_diagnosis'
                 })
               }
-              className='home-diagnosis mt-4 flex min-w-0 flex-col gap-2 rounded-[8px] border border-stone-200 bg-stone-50 p-3 dark:border-stone-800 dark:bg-stone-900 sm:flex-row sm:items-center'>
+              className='home-diagnosis mt-4 flex min-w-0 flex-col gap-2 rounded-[8px] border border-stone-200 bg-stone-50 p-3 dark:border-stone-800 dark:bg-stone-900 sm:flex-row sm:items-center'
+            >
               <label className='min-w-0 flex-1 text-xs font-bold leading-5 text-stone-700 dark:text-stone-300'>
                 输入产品词，看这个品类还有没有商机
                 <input
@@ -143,11 +161,11 @@ const HomeIntro = ({
               </label>
               <button
                 type='submit'
-                className='brand-btn brand-btn-accent h-9 shrink-0 px-3 text-xs'>
+                className='brand-btn brand-btn-accent h-9 shrink-0 px-3 text-xs'
+              >
                 5 秒看商机
               </button>
             </form>
-
           </div>
 
           <div className='home-signal-panel min-w-0 max-w-[326px] border-l border-stone-200 pl-4 dark:border-stone-800 sm:max-w-none sm:pl-6'>
@@ -164,8 +182,13 @@ const HomeIntro = ({
             </div>
             <div className='mt-4 grid gap-2 border-t border-dashed border-stone-300 pt-4 dark:border-stone-800'>
               {acquisitionSteps.map(signal => (
-                <div key={signal.label} className='flex min-w-0 flex-col gap-1 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-3'>
-                  <span className='font-medium text-stone-500 dark:text-stone-400'>{signal.label}</span>
+                <div
+                  key={signal.label}
+                  className='flex min-w-0 flex-col gap-1 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-3'
+                >
+                  <span className='font-medium text-stone-500 dark:text-stone-400'>
+                    {signal.label}
+                  </span>
                   <span className='break-words font-bold text-stone-800 dark:text-stone-200 sm:text-right'>
                     {signal.value}
                   </span>
@@ -183,7 +206,8 @@ const HomeIntro = ({
             <TopicLink
               key={topic.name}
               href={topic.href}
-              className='group block min-h-[112px] min-w-0 border-b border-stone-200 py-5 pr-4 transition-colors dark:border-stone-800 md:border-b-0 md:border-r last:md:border-r-0'>
+              className='group block min-h-[112px] min-w-0 border-b border-stone-200 py-5 pr-4 transition-colors dark:border-stone-800 md:border-b-0 md:border-r last:md:border-r-0'
+            >
               <div className='mb-3 flex items-center justify-between'>
                 <span className='flex h-8 w-8 items-center justify-center text-sm text-stone-400 transition-colors group-hover:text-stone-800 dark:text-stone-500 dark:group-hover:text-stone-200'>
                   <i className={`fas ${topic.icon}`} />
@@ -211,13 +235,19 @@ const HomeIntro = ({
 const buildTopics = categoryOptions => {
   const categories = categoryOptions?.filter(category => category?.name) || []
   const topics = flagshipTopics.map(topic => {
-    const matchedCategory = categories.find(category => topic.match.test(category.name))
+    const matchedCategory = categories.find(category =>
+      topic.match.test(category.name)
+    )
     return {
       name: topic.name,
-      description: buildTopicDescription(matchedCategory?.name || topic.name, topic.description),
-      href: matchedCategory?.name && !topic.preferStaticHref
-        ? `/category/${encodeURIComponent(matchedCategory.name)}`
-        : topic.href,
+      description: buildTopicDescription(
+        matchedCategory?.name || topic.name,
+        topic.description
+      ),
+      href:
+        matchedCategory?.name && !topic.preferStaticHref
+          ? `/category/${encodeURIComponent(matchedCategory.name)}`
+          : topic.href,
       icon: topic.icon,
       count: matchedCategory?.count
     }
@@ -227,7 +257,7 @@ const buildTopics = categoryOptions => {
 }
 
 const buildHomeDescription = () =>
-  '别先急着群发开发信。先看看哪些公司真的在进口类似产品、买了多少、多久买一次，再决定谁值得优先跟进。'
+  '海关数据 + 图灵搜 + 顶易云怎么配合：先用海关数据找到真的在进口你产品的公司，再看采购量和频率，最后决定谁值得优先跟进。'
 
 const buildTopicDescription = (name, fallbackDescription) => {
   if (/海关|数据|贸易/.test(name)) {

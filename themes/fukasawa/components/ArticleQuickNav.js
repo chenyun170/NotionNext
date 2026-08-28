@@ -28,7 +28,7 @@ const ArticleQuickNav = ({ post }) => {
                   <a
                     key={id}
                     href={`#${id}`}
-                    className='group flex min-h-[44px] items-center rounded-[8px] border border-stone-200 bg-white px-3 py-2 transition hover:border-stone-400 hover:text-stone-800 dark:border-stone-800 dark:bg-[#1c1917] dark:hover:border-stone-600 dark:hover:text-stone-100'
+                    className='group flex min-h-[44px] items-center rounded-[8px] border border-stone-200 bg-white px-3 py-2 transition hover:border-stone-400 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-900 dark:hover:border-stone-600 dark:hover:text-stone-100'
                   >
                     <span className='mr-2 h-1.5 w-1.5 flex-none rounded-full bg-stone-300 transition group-hover:bg-stone-500 dark:bg-stone-700' />
                     <span className='line-clamp-2 leading-5'>{item.text}</span>
@@ -43,7 +43,7 @@ const ArticleQuickNav = ({ post }) => {
           )}
         </div>
 
-        <div className='border-t border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-[#1c1917] lg:border-l lg:border-t-0'>
+        <div className='border-t border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-stone-900 lg:border-l lg:border-t-0'>
           <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             Explore More
           </div>

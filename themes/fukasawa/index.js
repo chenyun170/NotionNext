@@ -413,7 +413,7 @@ const Layout404 = memo((props) => {
       </Head>
       <div className='min-h-screen bg-[#f7f5f1] px-4 py-10 text-stone-900 dark:bg-[#161412] dark:text-stone-100 sm:px-6 lg:px-8'>
       <main className='mx-auto max-w-6xl'>
-        <section className='overflow-hidden rounded-[8px] border border-stone-200 bg-white dark:border-stone-800 dark:bg-[#1c1917]'>
+        <section className='overflow-hidden rounded-[8px] border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900'>
           <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_320px]'>
             <div className='p-6 sm:p-8 lg:p-10'>
               <div className='mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
@@ -478,7 +478,7 @@ const Layout404 = memo((props) => {
         </section>
 
         <section className='mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)]'>
-          <div className='rounded-[8px] border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-[#1c1917]'>
+          <div className='rounded-[8px] border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-stone-900'>
             <div className='mb-4'>
               <div className='mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
                 <i className='fas fa-fire-alt' />
@@ -522,7 +522,7 @@ const Layout404 = memo((props) => {
 
           <div className='space-y-6'>
             {categories.length > 0 && (
-              <section className='rounded-[8px] border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-[#1c1917]'>
+              <section className='rounded-[8px] border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-stone-900'>
                 <div className='mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
                   <i className='fas fa-folder-open' />
                   <span>Categories</span>
@@ -542,7 +542,7 @@ const Layout404 = memo((props) => {
             )}
 
             {tags.length > 0 && (
-              <section className='rounded-[8px] border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-[#1c1917]'>
+              <section className='rounded-[8px] border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-stone-900'>
                 <div className='mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
                   <i className='fas fa-tags' />
                   <span>Hot Tags</span>

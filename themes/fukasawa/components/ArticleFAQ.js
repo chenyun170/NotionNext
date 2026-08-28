@@ -23,7 +23,7 @@ const ArticleFAQ = ({ post }) => {
         {faqs.map(item => (
           <details
             key={item.question}
-            className='group rounded-[8px] border border-stone-200 bg-white p-4 open:border-stone-400 dark:border-stone-800 dark:bg-[#1c1917] dark:open:border-stone-700'>
+            className='group rounded-[8px] border border-stone-200 bg-white p-4 open:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:open:border-stone-700'>
             <summary className='flex cursor-pointer list-none items-center justify-between gap-4 font-bold text-stone-900 dark:text-stone-100'>
               <span>{item.question}</span>
               <i className='fas fa-chevron-down text-xs text-stone-400 transition group-open:rotate-180' />

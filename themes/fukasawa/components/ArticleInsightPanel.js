@@ -14,7 +14,7 @@ const ArticleInsightPanel = ({ post }) => {
   return (
     <section
       data-answer='article-geo-summary'
-      className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-white print:hidden dark:border-stone-800 dark:bg-[#1c1917]'
+      className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-white print:hidden dark:border-stone-800 dark:bg-stone-900'
       aria-label='文章核心摘要'>
       <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_240px]'>
         <div className='p-5'>
@@ -63,7 +63,7 @@ const ArticleInsightPanel = ({ post }) => {
                 <SmartLink
                   key={tag.name}
                   href={`/tag/${encodeURIComponent(tag.name)}`}
-                  className='rounded-[8px] border border-stone-200 bg-white px-2.5 py-1 text-xs font-semibold text-stone-600 transition hover:border-stone-400 hover:text-stone-800 dark:border-stone-800 dark:bg-[#1c1917] dark:text-stone-300 dark:hover:border-stone-600 dark:hover:text-stone-100'>
+                  className='rounded-[8px] border border-stone-200 bg-white px-2.5 py-1 text-xs font-semibold text-stone-600 transition hover:border-stone-400 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 dark:hover:border-stone-600 dark:hover:text-stone-100'>
                   #{tag.name}
                 </SmartLink>
               ))}

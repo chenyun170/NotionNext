@@ -39,7 +39,7 @@ export const MenuItemCollapse = props => {
           (selected
             ? 'bg-stone-600 text-white hover:text-white'
             : 'hover:text-stone-600') +
-          ' px-5 w-full text-left duration-200 dark:bg-hexo-black-gray dark:border-black'
+          ' px-5 w-full text-left duration-200 dark:bg-stone-900 dark:border-black'
         }
         onClick={toggleShow}>
         {!hasSubMenu && (

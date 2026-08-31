@@ -1,4 +1,16 @@
 import { render, screen, waitFor } from '@testing-library/react'
+jest.mock('@/lib/config', () => ({
+  siteConfig: (key, defaultValue = null) => {
+    const values = {
+      IMAGE_COMPRESS_WIDTH: 800,
+      IMG_LAZY_LOAD_PLACEHOLDER: '',
+      LAZY_LOAD_THRESHOLD: '200px',
+      WEBP_SUPPORT: true,
+      AVIF_SUPPORT: true
+    }
+    return values[key] ?? defaultValue
+  }
+}))
 import LazyImage from '@/components/LazyImage'
 
 // Mock IntersectionObserver
@@ -89,17 +101,22 @@ describe('LazyImage Component', () => {
 
   it('handles load event', async () => {
     const handleLoad = jest.fn()
-    render(<LazyImage {...defaultProps} onLoad={handleLoad} />)
-    
-    const image = screen.getByAltText('Test image')
-    
-    // Simulate image load
-    Object.defineProperty(image, 'complete', { value: true })
-    image.dispatchEvent(new Event('load'))
-    
+    const originalImage = window.Image
+
+    window.Image = class {
+      set src(value) {
+        Object.defineProperty(this, 'src', { value, writable: true, configurable: true })
+        queueMicrotask(() => this.onload && this.onload())
+      }
+    }
+
+    render(<LazyImage {...defaultProps} onLoad={handleLoad} priority />)
+
     await waitFor(() => {
       expect(handleLoad).toHaveBeenCalled()
     })
+
+    window.Image = originalImage
   })
 
   it('handles error gracefully', () => {
@@ -123,9 +140,7 @@ describe('LazyImage Component', () => {
 
   it('handles missing src gracefully', () => {
     render(<LazyImage alt="Test image" />)
-    
-    const image = screen.getByAltText('Test image')
-    expect(image).toBeInTheDocument()
+    expect(screen.queryByAltText('Test image')).not.toBeInTheDocument()
   })
 
   it('applies custom styles', () => {

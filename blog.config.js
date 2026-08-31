@@ -77,7 +77,7 @@ const BLOG = {
   // 欢迎语打字效果,Hexo,Matery主题支持, 英文逗号隔开多个欢迎语。
   GREETING_WORDS:
     process.env.NEXT_PUBLIC_GREETING_WORDS ||
-    'Hi，我是江西人, Hi，我在江西顶易,Hi，我是一个打工人,欢迎来到我的博客🎉',
+    'Hi，这里是外贸获客情报局, 专注海关数据与进口商查询, 帮你找到真正在采购的海外客户, 欢迎交流图灵搜 / 顶易云 / 开发信实战',
 
   // uuid重定向至 slug
   UUID_REDIRECT: process.env.UUID_REDIRECT || false

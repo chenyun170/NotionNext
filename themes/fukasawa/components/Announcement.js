@@ -25,21 +25,32 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
   if (!isActive) return null
 
   return (
-    <div 
+    <div
       className={`floating-activity-card fixed bottom-48 right-6 z-[70] w-72 transition-all duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${
-        isVisible ? 'translate-x-0 opacity-100' : 'translate-x-[400px] opacity-0 pointer-events-none'
-      }`}>
-      
+        isVisible
+          ? 'translate-x-0 opacity-100'
+          : 'translate-x-[400px] opacity-0 pointer-events-none'
+      }`}
+    >
       {/* 悬浮促销卡：实色暖橙，比侧栏更抢眼 */}
       <div className='relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-6 shadow-[0_18px_50px_rgba(28,25,23,0.18)] dark:border-stone-700 dark:bg-stone-900'>
-        <div className='pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/20 blur-xl' aria-hidden='true' />
-        <div className='pointer-events-none absolute -bottom-8 -left-4 h-20 w-20 rounded-full bg-stone-300/40 blur-lg' aria-hidden='true' />
+        <div
+          className='pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/20 blur-xl'
+          aria-hidden='true'
+        />
+        <div
+          className='pointer-events-none absolute -bottom-8 -left-4 h-20 w-20 rounded-full bg-stone-300/40 blur-lg'
+          aria-hidden='true'
+        />
         <button
           type='button'
           aria-label='关闭工具入口'
           onClick={() => {
             try {
-              window.localStorage.setItem(FLOATING_AD_DISMISS_KEY, Date.now().toString())
+              window.localStorage.setItem(
+                FLOATING_AD_DISMISS_KEY,
+                Date.now().toString()
+              )
             } catch (e) {
               console.warn('[FloatingActivityCard] localStorage failed:', e)
             }
@@ -54,7 +65,7 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
         <div className='relative z-10'>
           <div className='mb-3 flex items-center justify-between'>
             <span className='rounded-md bg-stone-950 px-2 py-0.5 text-[10px] font-black uppercase tracking-tighter text-white'>
-              限时活动
+              推荐
             </span>
             <i className='fas fa-bullhorn animate-bounce text-xs text-stone-500'></i>
           </div>
@@ -64,7 +75,8 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
           </h3>
 
           <p className='mb-4 text-[11px] leading-relaxed text-stone-600 dark:text-stone-400'>
-            {config.floatingDescription || '找到客户后，先用数据确认它是不是真的在买。'}
+            {config.floatingDescription ||
+              '找到客户后，先用数据确认它是不是真的在买。'}
           </p>
 
           <a
@@ -81,7 +93,8 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
             }
             className='inline-flex w-full items-center justify-center rounded-lg bg-stone-950 py-2.5 text-xs font-bold text-white shadow-none transition hover:bg-stone-700 active:scale-[0.98]'
           >
-            {config.buttonText || '去看看'} <i className='fas fa-arrow-right ml-1'></i>
+            {config.buttonText || '去看看'}{' '}
+            <i className='fas fa-arrow-right ml-1'></i>
           </a>
         </div>
       </div>
@@ -98,26 +111,37 @@ const InlineActivityCard = ({ config, isActive }) => {
   return (
     <div
       className={`group relative mb-3 overflow-hidden rounded-xl border-2 ${config.borderColor} ${config.bgColor} p-3.5 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg`}
-      role="region">
-      <div className={`pointer-events-none absolute inset-x-0 top-0 h-1 ${config.topBarClass}`} aria-hidden='true' />
+      role='region'
+    >
+      <div
+        className={`pointer-events-none absolute inset-x-0 top-0 h-1 ${config.topBarClass}`}
+        aria-hidden='true'
+      />
       <div className='mb-2 flex items-start justify-between gap-2'>
-        <div className={`flex min-w-0 items-center ${config.textColor} text-sm font-bold`}>
-          <span className={`mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg shadow-sm ${config.iconBg}`}>
-            <i className={`${config.icon} text-xs`} aria-hidden="true" />
+        <div
+          className={`flex min-w-0 items-center ${config.textColor} text-sm font-bold`}
+        >
+          <span
+            className={`mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg shadow-sm ${config.iconBg}`}
+          >
+            <i className={`${config.icon} text-xs`} aria-hidden='true' />
           </span>
           <span className='line-clamp-1'>{config.title}</span>
         </div>
-        <span className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide shadow-sm ${config.badgeClass}`}>
+        <span
+          className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide shadow-sm ${config.badgeClass}`}
+        >
           {config.badgeText || '入口'}
         </span>
       </div>
       <p className='pl-10 text-xs leading-5 text-stone-700 dark:text-stone-300'>
-        {config.emoji} <strong>{config.productName}</strong> {config.description}
+        {config.emoji} <strong>{config.productName}</strong>{' '}
+        {config.description}
       </p>
       <a
         href={config.link}
-        target="_blank"
-        rel="sponsored noopener noreferrer"
+        target='_blank'
+        rel='sponsored noopener noreferrer'
         onClick={() =>
           trackToolOutboundClick({
             source: `${config.trackSource}_inline`,
@@ -126,7 +150,8 @@ const InlineActivityCard = ({ config, isActive }) => {
             sourceGroup: 'activity'
           })
         }
-        className={`brand-btn ml-10 mt-3 px-3 py-1.5 text-[11px] font-bold shadow-sm ${config.buttonClass}`}>
+        className={`brand-btn ml-10 mt-3 px-3 py-1.5 text-[11px] font-bold shadow-sm ${config.buttonClass}`}
+      >
         {config.buttonText} →
       </a>
     </div>
@@ -136,16 +161,16 @@ const InlineActivityCard = ({ config, isActive }) => {
 // --- 活动配置 (统一管理) ---
 const activityConfigs = {
   activity1: {
-    title: '818活动图灵搜升级ORA',
-    productName: '图灵搜升级ORA',
-    description: '818活动期间，图灵搜升级ORA享专属优惠，先到先得。',
-    floatingDescription: '818活动期间，图灵搜升级ORA，海关数据+AI开发一条龙。',
+    title: '图灵搜',
+    productName: '图灵搜',
+    description: '地图搜索 + 客户线索，主动开发外贸客户的线索工具。',
+    floatingDescription: '图灵搜：地图搜索 + 客户线索，快速拓展外贸客户。',
     emoji: '🎯',
-    link: 'https://h.topeasysoft.com/20260818tls/index.html?i=BB54F6',
+    link: 'http://t.smartsousou.com/m?i=BB54F6',
     tool: 'turingsearch',
-    trackSource: 'activity_turingsearch',
-    buttonText: '立即参与',
-    badgeText: 'HOT',
+    trackSource: 'tool_turingsearch',
+    buttonText: '去看看',
+    badgeText: '推荐',
     bgColor: 'bg-white dark:bg-stone-900',
     borderColor: 'border-stone-200 dark:border-stone-700',
     textColor: 'text-stone-900 dark:text-stone-100',
@@ -157,16 +182,17 @@ const activityConfigs = {
     animation: 'animate-bounce'
   },
   activity2: {
-    title: '818顶易云ora',
-    productName: '顶易云',
-    description: '818活动，顶易云+OraAgent联合特惠，外贸开发效率翻倍。',
-    floatingDescription: '818活动，顶易云+OraAgent联合特惠，外贸开发效率翻倍。',
-    emoji: '☁️',
-    link: 'https://h.topeasysoft.com/20260818dyy/index.html?i=BB54F6',
-    tool: 'dingyiyun',
-    trackSource: 'activity_dingyiyun',
-    buttonText: '限时领取',
-    badgeText: '限时',
+    title: '海关数据 ORA',
+    productName: '海关数据 ORA',
+    description: '查询真实进口记录，验证采购公司、供应商关系和采购频率。',
+    floatingDescription:
+      '海关数据 ORA：用真实贸易记录帮你锁定可开发的海外买家。',
+    emoji: '🔎',
+    link: 'https://oraskl.com/referrer/?i=BB54F6',
+    tool: 'oraskl',
+    trackSource: 'tool_oraskl',
+    buttonText: '去查询',
+    badgeText: '推荐',
     bgColor: 'bg-white dark:bg-stone-900',
     borderColor: 'border-stone-300 dark:border-stone-700/80',
     textColor: 'text-stone-900 dark:text-stone-100',
@@ -199,8 +225,11 @@ const Announcement = ({ post, className }) => {
 
   useEffect(() => {
     try {
-      const dismissedAt = Number(window.localStorage.getItem(FLOATING_AD_DISMISS_KEY))
-      const stillDismissed = dismissedAt && Date.now() - dismissedAt < FLOATING_AD_DISMISS_MS
+      const dismissedAt = Number(
+        window.localStorage.getItem(FLOATING_AD_DISMISS_KEY)
+      )
+      const stillDismissed =
+        dismissedAt && Date.now() - dismissedAt < FLOATING_AD_DISMISS_MS
 
       if (stillDismissed) {
         setFloatingDismissed(true)
@@ -215,7 +244,9 @@ const Announcement = ({ post, className }) => {
   // 读取活动提醒整体关闭状态（24 小时内不再显示）
   useEffect(() => {
     try {
-      const dismissedAt = Number(window.localStorage.getItem(ANNOUNCEMENT_DISMISS_KEY))
+      const dismissedAt = Number(
+        window.localStorage.getItem(ANNOUNCEMENT_DISMISS_KEY)
+      )
       if (dismissedAt && Date.now() - dismissedAt < ANNOUNCEMENT_DISMISS_MS) {
         setAnnouncementDismissed(true)
       }
@@ -239,12 +270,16 @@ const Announcement = ({ post, className }) => {
     const handleScroll = () => {
       if (!announcementRef.current) return
       const announcementRect = announcementRef.current.getBoundingClientRect()
-      
+
       // 当侧边栏内的活动卡片滚出视野后显示悬浮版
       const isOutOfView = announcementRect.bottom < 0
-      
+
       // 不限制屏幕宽度：移动端只要滚动也会显示悬浮活动卡
-      setFloatingVisible(!floatingDismissed && isOutOfView && (activities.activity1 || activities.activity2))
+      setFloatingVisible(
+        !floatingDismissed &&
+          isOutOfView &&
+          (activities.activity1 || activities.activity2)
+      )
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -290,39 +325,45 @@ const Announcement = ({ post, className }) => {
       <div className={className} ref={announcementRef}>
         <section
           id='announcement-wrapper'
-          className="rounded-xl border border-stone-200 bg-stone-50 px-2 py-3 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300"
-          role="complementary">
-
+          className='rounded-xl border border-stone-200 bg-stone-50 px-2 py-3 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300'
+          role='complementary'
+        >
           {/* 标题栏 + 关闭按钮 */}
-          <div className="mb-3 flex items-center justify-between gap-2 px-1">
-            <div className="flex items-center text-[12px] font-black tracking-wide text-stone-700 dark:text-stone-300">
-              <span className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-stone-900 text-white shadow-none ring-1 ring-stone-700 dark:bg-stone-100 dark:text-stone-900 dark:ring-stone-600">
-                <i className="fas fa-bullhorn text-[11px]"></i>
+          <div className='mb-3 flex items-center justify-between gap-2 px-1'>
+            <div className='flex items-center text-[12px] font-black tracking-wide text-stone-700 dark:text-stone-300'>
+              <span className='mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-stone-900 text-white shadow-none ring-1 ring-stone-700 dark:bg-stone-100 dark:text-stone-900 dark:ring-stone-600'>
+                <i className='fas fa-star text-[11px]'></i>
               </span>
-              <span>活动提醒</span>
+              <span>常用工具</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="hidden sm:inline-flex rounded-full bg-stone-950 px-2.5 py-1 text-[10px] font-black text-white shadow-none dark:bg-stone-300 dark:text-stone-950">
-                818 进行中
+            <div className='flex items-center gap-2'>
+              <span className='hidden sm:inline-flex rounded-full bg-stone-950 px-2.5 py-1 text-[10px] font-black text-white shadow-none dark:bg-stone-300 dark:text-stone-950'>
+                推荐
               </span>
               <button
                 type='button'
                 aria-label='关闭活动提醒'
                 onClick={dismissAnnouncement}
                 title='关闭活动提醒（24小时内不再显示）'
-                className="flex h-7 w-7 items-center justify-center rounded-full border border-stone-200 bg-white text-[10px] text-stone-500 transition hover:bg-stone-100 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-950/40 dark:text-stone-300 dark:hover:bg-stone-800/60"
+                className='flex h-7 w-7 items-center justify-center rounded-full border border-stone-200 bg-white text-[10px] text-stone-500 transition hover:bg-stone-100 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-950/40 dark:text-stone-300 dark:hover:bg-stone-800/60'
               >
-                <i className="fas fa-times" aria-hidden="true" />
+                <i className='fas fa-times' aria-hidden='true' />
               </button>
             </div>
           </div>
 
           {/* 活动并排/堆叠显示 */}
-          <InlineActivityCard config={activityConfigs.activity1} isActive={activities.activity1} />
-          <InlineActivityCard config={activityConfigs.activity2} isActive={activities.activity2} />
+          <InlineActivityCard
+            config={activityConfigs.activity1}
+            isActive={activities.activity1}
+          />
+          <InlineActivityCard
+            config={activityConfigs.activity2}
+            isActive={activities.activity2}
+          />
 
           {post?.blockMap && (
-            <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-800">
+            <div className='mt-4 pt-4 border-t border-stone-100 dark:border-stone-800'>
               <div className='text-[11px] font-bold mb-2 text-stone-400 uppercase tracking-widest'>
                 <i className='mr-2 fas fa-bullhorn' />
                 {locale.COMMON.ANNOUNCEMENT}
@@ -335,10 +376,10 @@ const Announcement = ({ post, className }) => {
 
       {/* 悬浮活动卡片 - 仅在活动有效且滚动到下方时显示 */}
       {activities.activity1 && (
-        <FloatingActivityCard 
-          config={activityConfigs.activity1} 
+        <FloatingActivityCard
+          config={activityConfigs.activity1}
           isActive={activities.activity1}
-          isVisible={floatingVisible} 
+          isVisible={floatingVisible}
           onDismiss={dismissFloatingAd}
         />
       )}

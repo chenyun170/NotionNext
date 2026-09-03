@@ -63,12 +63,6 @@ const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
 
         {/* 内容区域 */}
         <div className='relative z-10'>
-          <div className='mb-3 flex items-center justify-between'>
-            <span className='rounded-md bg-stone-950 px-2 py-0.5 text-[10px] font-black uppercase tracking-tighter text-white'>
-              推荐
-            </span>
-            <i className='fas fa-bullhorn animate-bounce text-xs text-stone-500'></i>
-          </div>
 
           <h3 className='mb-2 text-sm font-black leading-tight text-stone-950 dark:text-stone-50'>
             {config.title || '图灵搜免费体验'}
@@ -128,11 +122,6 @@ const InlineActivityCard = ({ config, isActive }) => {
           </span>
           <span className='line-clamp-1'>{config.title}</span>
         </div>
-        <span
-          className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide shadow-sm ${config.badgeClass}`}
-        >
-          {config.badgeText || '入口'}
-        </span>
       </div>
       <p className='pl-10 text-xs leading-5 text-stone-700 dark:text-stone-300'>
         {config.emoji} <strong>{config.productName}</strong>{' '}
@@ -337,9 +326,6 @@ const Announcement = ({ post, className }) => {
               <span>常用工具</span>
             </div>
             <div className='flex items-center gap-2'>
-              <span className='hidden sm:inline-flex rounded-full bg-stone-950 px-2.5 py-1 text-[10px] font-black text-white shadow-none dark:bg-stone-300 dark:text-stone-950'>
-                推荐
-              </span>
               <button
                 type='button'
                 aria-label='关闭活动提醒'

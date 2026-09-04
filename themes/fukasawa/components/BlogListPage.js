@@ -34,7 +34,7 @@ const BlogListPage = ({
 
   return (
     <div className='w-full'>
-      <div id='posts-wrapper' className='grid w-full gap-x-10 md:grid-cols-2'>
+      <div id='posts-wrapper' className='grid w-full gap-x-6 gap-y-6 md:grid-cols-2'>
         {filterPosts.map((post, index) => (
           <Fragment key={post.id}>
             <div

@@ -36,7 +36,7 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
     <article
       {...aosProps}
       style={{ maxHeight: '65rem' }}
-      className='group flex w-full flex-col gap-5 border-t border-stone-300 py-6 transition-colors duration-300 dark:border-stone-800 md:flex-row md:gap-6'
+      className='group flex w-full flex-col gap-5 rounded-xl border border-stone-200 bg-white p-5 shadow-[0_1px_2px_rgba(23,23,23,0.06)] transition-all duration-300 hover:border-stone-300 dark:border-stone-800 dark:bg-stone-900 md:flex-row md:gap-6'
     >
       <div className='flex w-full flex-col md:flex-row md:items-start'>
         {/* 封面图部分：锁定比例 16:10 */}

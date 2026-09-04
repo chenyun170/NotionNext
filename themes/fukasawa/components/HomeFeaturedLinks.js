@@ -36,7 +36,8 @@ const secondaryLinks = [
   {
     title: '关于本站',
     href: '/about.html',
-    icon: 'fa-info-circle'
+    icon: 'fa-info-circle',
+    desktopOnly: true
   }
 ]
 
@@ -80,7 +81,7 @@ const HomeFeaturedLinks = () => {
               <LinkComponent
                 key={item.href}
                 href={item.href}
-                className={`${item.showOnMobile ? 'inline-flex' : 'hidden sm:inline-flex'} h-9 shrink-0 items-center rounded-full border border-stone-200 bg-white px-3 text-xs font-bold text-stone-500 transition hover:border-stone-300 hover:text-stone-900 dark:border-stone-800 dark:bg-transparent dark:text-stone-400 dark:hover:border-stone-600 dark:hover:text-stone-100`}>
+                className={`${item.desktopOnly ? 'hidden lg:inline-flex' : item.showOnMobile ? 'inline-flex' : 'hidden sm:inline-flex'} h-9 shrink-0 items-center rounded-full border border-stone-200 bg-white px-3 text-xs font-bold text-stone-500 transition hover:border-stone-300 hover:text-stone-900 dark:border-stone-800 dark:bg-transparent dark:text-stone-400 dark:hover:border-stone-600 dark:hover:text-stone-100`}>
                 <i className={`fas ${item.icon} mr-2 text-[11px]`} />
                 {item.title}
               </LinkComponent>

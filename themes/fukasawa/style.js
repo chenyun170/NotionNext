@@ -52,23 +52,24 @@ const Style = () => {
         display: inline-block;
         width: 100%;
         break-inside: avoid;
-        margin-bottom: var(--fuka-item-gap);
+        margin-bottom: 1.75rem;
         transition: var(--fuka-transition);
     }
-    #theme-fukasawa .grid-item:hover { transform: translateY(-6px); }
+    #theme-fukasawa .grid-item:hover { transform: translateY(-2px); }
 
-    /* --- 3. 图片立体倒角 (首页+详情页) --- */
+    /* --- 3. 图片统一为浅阴影 + 细边框 (首页+详情页) --- */
     #theme-fukasawa .grid-item img,
     #article-wrapper img {
-        border-radius: 16px !important; 
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 2px rgba(17,24,39,0.06) !important;
         transition: all 0.3s ease !important;
-        border: 1px solid rgba(0,0,0,0.05);
+        border: 1px solid rgba(17,24,39,0.05);
     }
+
     .dark #theme-fukasawa .grid-item img,
     .dark #article-wrapper img {
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.5) !important;
-        border-color: rgba(255,255,255,0.1);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.45) !important;
+        border-color: rgba(255,255,255,0.08);
     }
 
     /* --- 4. 标签尺寸精修 (缩小海关数据等标签) --- */
@@ -211,7 +212,16 @@ const Style = () => {
     #theme-fukasawa .grid-item { border-bottom: 1px solid #e5e5e5; padding-bottom: 1.25rem; }
     #theme-fukasawa .grid-item:hover { transform: translateY(-2px); }
     #theme-fukasawa .grid-item img,
-    #theme-fukasawa #article-wrapper img { border-radius: 6px !important; box-shadow: 0 1px 2px rgba(17,24,39,0.08) !important; }
+    #theme-fukasawa #article-wrapper img {
+      border-radius: 8px !important;
+      box-shadow: 0 1px 2px rgba(17,24,39,0.06) !important;
+      border: 1px solid rgba(17,24,39,0.05);
+    }
+    .dark #theme-fukasawa .grid-item img,
+    .dark #theme-fukasawa #article-wrapper img {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.45) !important;
+      border-color: rgba(255,255,255,0.08);
+    }
     #theme-fukasawa [class*="bg-gradient"] { background-image: none !important; }
     #theme-fukasawa .sideLeft section { border-radius: 4px !important; box-shadow: none !important; }
     #theme-fukasawa #sticky-nav { box-shadow: none !important; background: rgba(255,255,255,0.94) !important; }

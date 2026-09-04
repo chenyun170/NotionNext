@@ -79,7 +79,7 @@
     border: 1px solid var(--brand-primary);
     background: var(--brand-primary);
     color: #ffffff;
-    box-shadow: 0 10px 24px rgba(185, 122, 82, 0.18);
+    box-shadow: 0 1px 2px rgba(23, 23, 23, 0.08);
   }
 
   .brand-btn-primary:hover {
@@ -88,7 +88,7 @@
   }
 
   .brand-btn-secondary {
-    border: 1px solid #d4dbe7;
+    border: 1px solid var(--brand-primary-border);
     background: #ffffff;
     color: var(--brand-ink);
   }
@@ -103,7 +103,7 @@
     border: 1px solid var(--brand-accent);
     background: var(--brand-accent);
     color: #ffffff;
-    box-shadow: 0 10px 24px rgba(210, 154, 99, 0.16);
+    box-shadow: 0 1px 2px rgba(23, 23, 23, 0.08);
   }
 
   .brand-btn-accent:hover {

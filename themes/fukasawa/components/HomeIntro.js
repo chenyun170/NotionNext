@@ -148,7 +148,7 @@ const HomeIntro = ({ categoryOptions = [] }) => {
                   action: 'start_light_diagnosis'
                 })
               }
-              className='home-diagnosis mt-4 flex min-w-0 flex-col gap-2 rounded-[8px] border border-stone-200 bg-stone-50 p-3 dark:border-stone-800 dark:bg-stone-900 sm:flex-row sm:items-center'
+              className='home-diagnosis mt-5 flex min-w-0 flex-col gap-3 border-b border-stone-200 pb-4 dark:border-stone-800 sm:flex-row sm:items-center'
             >
               <label className='min-w-0 flex-1 text-xs font-bold leading-5 text-stone-700 dark:text-stone-300'>
                 输入产品词，看这个品类还有没有商机
@@ -156,12 +156,12 @@ const HomeIntro = ({ categoryOptions = [] }) => {
                   name='product'
                   type='text'
                   placeholder='比如 LED 灯、轴承、太阳能板'
-                  className='mt-2 h-9 w-full rounded-[8px] border border-stone-200 bg-white px-3 text-xs font-semibold text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-stone-400 dark:border-stone-800 dark:bg-stone-950 dark:text-stone-100 dark:placeholder:text-stone-500'
+                  className='mt-2 h-10 w-full border-0 border-b border-stone-300 bg-transparent px-0 text-sm font-normal text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-stone-600 dark:border-stone-700 dark:text-stone-100 dark:placeholder:text-stone-500 dark:focus:border-stone-400'
                 />
               </label>
               <button
                 type='submit'
-                className='brand-btn brand-btn-accent h-9 shrink-0 px-3 text-xs'
+                className='brand-btn brand-btn-primary h-9 shrink-0 px-4 text-xs'
               >
                 5 秒看商机
               </button>

@@ -26,7 +26,7 @@ const BLOG = {
   KEYWORDS:
     process.env.NEXT_PUBLIC_KEYWORD ||
     '外贸获客情报局,123170,123170.xyz,图灵搜,顶易云,顶易,海关数据,进口商查询,美国进口商,供应商关系分析,外贸获客,外贸找客户,客户开发,AI外贸工具,开发信,外贸开发信,LinkedIn获客,领英获客,海外客户开发', // 网站关键词 英文逗号隔开
-  BLOG_FAVICON: process.env.NEXT_PUBLIC_FAVICON || 'https://cloudflare-imgbed-aa9.pages.dev/file/1766201108426_logo.png', // blog favicon 配置, 默认使用 /public/favicon.ico，支持在线图片，如 https://img.imesong.com/favicon.png
+  BLOG_FAVICON: process.env.NEXT_PUBLIC_FAVICON || '/favicon.ico', // blog favicon 配置, 默认使用 /public/favicon.ico，支持在线图片，如 https://img.imesong.com/favicon.png
   BEI_AN: process.env.NEXT_PUBLIC_BEI_AN || '', // 备案号 闽ICP备XXXXXX
   BEI_AN_LINK: process.env.NEXT_PUBLIC_BEI_AN_LINK || 'https://beian.miit.gov.cn/', // 备案查询链接，如果用了萌备等备案请在这里填写
   BEI_AN_GONGAN: process.env.NEXT_PUBLIC_BEI_AN_GONGAN || '', // 公安备案号，例如 '浙公网安备3xxxxxxxx8号'

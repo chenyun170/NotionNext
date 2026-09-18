@@ -1,4 +1,169 @@
+# ============================================================
+# 123170.xyz - 外贸获客情报局 robots.txt
+# 最后更新：2026-09-18
+# ============================================================
+
+# ---------- 通用规则 ----------
 User-agent: *
 Allow: /
+Allow: /customs-data.html
+Allow: /customs-data-skill.html
+Allow: /free-customs-data.html
+Allow: /us-importers.html
+Allow: /turingsearch.html
+Allow: /dingyiyun.html
+Allow: /foreign-trade-tools.html
+Allow: /faq.html
+Allow: /about.html
+Allow: /llms.txt
 
+# 禁止抓取：API 接口
+Disallow: /api/
+
+# 禁止抓取：后台/认证页面
+Disallow: /auth/
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /dashboard/
+Disallow: /admin/
+
+# 禁止抓取：诊断/调试页面
+Disallow: /diagnose
+
+# 禁止抓取：搜索参数页（避免重复内容）
+Disallow: /search/?
+
+# 禁止抓取：静态资源（不需要索引）
+Disallow: /fonts/
+Disallow: /images/
+Disallow: /css/
+Disallow: /js/
+Disallow: /svg/
+Disallow: /videos/
+Disallow: /games-external/
+
+# ---------- Baidu 专属规则 ----------
+User-agent: Baiduspider
+Allow: /
+Allow: /customs-data.html
+Allow: /customs-data-skill.html
+Allow: /free-customs-data.html
+Allow: /us-importers.html
+Allow: /turingsearch.html
+Allow: /dingyiyun.html
+Allow: /foreign-trade-tools.html
+Allow: /faq.html
+Allow: /about.html
+Disallow: /api/
+Disallow: /auth/
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /dashboard/
+Disallow: /diagnose
+Disallow: /search/?
+Disallow: /fonts/
+Disallow: /css/
+Disallow: /js/
+Disallow: /svg/
+Disallow: /videos/
+Crawl-delay: 1
+
+# ---------- Google 专属规则 ----------
+User-agent: Googlebot
+Allow: /
+Allow: /customs-data.html
+Allow: /customs-data-skill.html
+Allow: /free-customs-data.html
+Allow: /us-importers.html
+Allow: /turingsearch.html
+Allow: /dingyiyun.html
+Allow: /foreign-trade-tools.html
+Allow: /faq.html
+Allow: /about.html
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /auth/
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /dashboard/
+Disallow: /diagnose
+Disallow: /search/?
+Disallow: /fonts/
+Disallow: /css/
+Disallow: /js/
+Disallow: /svg/
+Disallow: /videos/
+
+# ---------- Bing 专属规则 ----------
+User-agent: bingbot
+Allow: /
+Allow: /customs-data.html
+Allow: /customs-data-skill.html
+Allow: /free-customs-data.html
+Allow: /us-importers.html
+Allow: /turingsearch.html
+Allow: /dingyiyun.html
+Allow: /foreign-trade-tools.html
+Allow: /faq.html
+Allow: /about.html
+Disallow: /api/
+Disallow: /auth/
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /dashboard/
+Disallow: /diagnose
+Disallow: /search/?
+Disallow: /fonts/
+Disallow: /css/
+Disallow: /js/
+Disallow: /svg/
+Disallow: /videos/
+Crawl-delay: 1
+
+# ---------- Yandex 专属规则 ----------
+User-agent: Yandex
+Allow: /
+Allow: /customs-data.html
+Allow: /customs-data-skill.html
+Allow: /free-customs-data.html
+Allow: /us-importers.html
+Allow: /turingsearch.html
+Allow: /dingyiyun.html
+Allow: /foreign-trade-tools.html
+Allow: /faq.html
+Allow: /about.html
+Disallow: /api/
+Disallow: /auth/
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /dashboard/
+Disallow: /diagnose
+Disallow: /search/?
+Disallow: /fonts/
+Disallow: /css/
+Disallow: /js/
+Disallow: /svg/
+Disallow: /videos/
+Crawl-delay: 1
+
+# ---------- 其他爬虫（限制更严） ----------
+User-agent: Semrushbot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: petalbot
+Disallow: /
+
+# ---------- Sitemap 列表 ----------
 Sitemap: https://www.123170.xyz/sitemap.xml
+Sitemap: https://www.123170.xyz/sitemap-core.xml
+Sitemap: https://www.123170.xyz/sitemap-index.xml
+Sitemap: https://www.123170.xyz/sitemap.txt

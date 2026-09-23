@@ -8,9 +8,7 @@ const { CORE_SEO_PAGES, SITE_URL, UPDATED_AT } = require('../lib/seo/geoPages')
 const PUBLIC_DIR = path.join(process.cwd(), 'public')
 const SUBMIT_SITEMAP_FILES = [
   'sitemap.xml',
-  'sitemap-index.xml',
-  'sitemap-core.xml',
-  'sitemap.txt'
+  'sitemap-index.xml'
 ]
 
 function main() {
@@ -19,7 +17,8 @@ function main() {
   assertStaticHtmlPagesExist(allPages)
   writeFile('sitemap.xml', buildUrlset(allPages))
   writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES))
-  writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap-core.xml', 'sitemap.xml']))
+  // 索引只收录主表 sitemap.xml，避免 core 与 xml 内容重复导致 Google 判无法抓取
+  writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml']))
   writeFile('sitemap.txt', buildTextSitemap(allPages))
   writeFile('google-submit-urls.txt', buildSubmitUrlList(allPages))
 }

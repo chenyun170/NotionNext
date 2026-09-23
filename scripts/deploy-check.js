@@ -148,12 +148,12 @@ const urlChecks = [
     name: '数据来源与边界页面',
     contains: ['数据来源、适用边界与更新说明', '核心结论', '第三方工具内容只做场景说明']
   },
-  { path: '/robots.txt', name: 'robots 文件', contains: ['sitemap.xml', 'sitemap-index.xml', 'sitemap-core.xml', 'sitemap.txt'] },
+  { path: '/robots.txt', name: 'robots 文件', contains: ['sitemap.xml', 'sitemap-index.xml'] },
   { path: '/sitemap.xml', name: '站点地图', contains: ['<urlset'] },
   {
     path: '/sitemap-index.xml',
     name: '站点地图索引',
-    contains: ['<sitemapindex', 'sitemap-core.xml', 'sitemap.xml']
+    contains: ['<sitemapindex', 'sitemap.xml']
   },
   {
     path: '/sitemap-core.xml',
@@ -166,11 +166,7 @@ const urlChecks = [
     contains: ['https://www.123170.xyz', 'customs-data-find-buyers.html', 'foreign-trade-keyword-map.html']
   },
   { path: '/llms.txt', name: 'LLMs 文件', contains: ['Search Summary Guidance', 'Core Q&A', 'Keyword Intent Map'] },
-  {
-    path: '/google-submit-urls.txt',
-    name: 'Google 提交 URL 清单',
-    contains: ['sitemap-index.xml', 'sitemap-core.xml', 'sitemap.txt', 'foreign-trade-keyword-map.html', 'data-sources-limitations.html']
-  },
+  { path: '/google-submit-urls.txt', name: 'Google 提交 URL 清单', contains: ['sitemap.xml', 'foreign-trade-keyword-map.html', 'data-sources-limitations.html'] },
   {
     path: '/api/track-click',
     name: '点击追踪接口',

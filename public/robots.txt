@@ -162,8 +162,6 @@ Disallow: /
 User-agent: petalbot
 Disallow: /
 
-# ---------- Sitemap 列表 ----------
+# ---------- Sitemap 列表（只提交主表 + 索引，避免重复表被判无法抓取） ----------
 Sitemap: https://www.123170.xyz/sitemap.xml
-Sitemap: https://www.123170.xyz/sitemap-core.xml
 Sitemap: https://www.123170.xyz/sitemap-index.xml
-Sitemap: https://www.123170.xyz/sitemap.txt

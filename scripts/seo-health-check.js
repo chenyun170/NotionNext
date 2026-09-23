@@ -12,15 +12,13 @@ const checks = [
     name: 'robots.txt',
     contains: [
       'Sitemap: https://www.123170.xyz/sitemap.xml',
-      'sitemap-index.xml',
-      'sitemap-core.xml',
-      'sitemap.txt'
+      'sitemap-index.xml'
     ]
   },
   {
     path: '/sitemap-index.xml',
     name: 'sitemap 索引',
-    contains: ['<sitemapindex', 'sitemap-core.xml', 'sitemap.xml']
+    contains: ['<sitemapindex', 'sitemap.xml']
   },
   {
     path: '/sitemap.xml',
@@ -47,9 +45,7 @@ const checks = [
     name: 'Google 提交 URL 清单',
     contains: [
       'customs-data-skill.html',
-      'sitemap-index.xml',
-      'sitemap-core.xml',
-      'sitemap.txt',
+      'sitemap.xml',
       'foreign-trade-keyword-map.html'
     ]
   },
@@ -144,7 +140,7 @@ async function main() {
     process.exit(1)
   }
 
-  console.log('\nSEO 健康检查通过。下一步：在 Google Search Console 提交 sitemap.xml、sitemap-index.xml、sitemap-core.xml、sitemap.txt，并按 google-submit-urls.txt 检查核心 URL。')
+  console.log('\nSEO 健康检查通过。下一步：在 Google Search Console 提交 sitemap.xml，并在 sitemap-index.xml 中确认主表可抓取。')
 }
 
 function requestUrl(url) {

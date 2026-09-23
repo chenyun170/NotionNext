@@ -1,8 +1,6 @@
 https://www.123170.xyz
 https://www.123170.xyz/sitemap.xml
 https://www.123170.xyz/sitemap-index.xml
-https://www.123170.xyz/sitemap-core.xml
-https://www.123170.xyz/sitemap.txt
 https://www.123170.xyz/customs-data.html
 https://www.123170.xyz/customs-data-skill.html
 https://www.123170.xyz/customs-data-importers.html

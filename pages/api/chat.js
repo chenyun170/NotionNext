@@ -56,7 +56,7 @@ export default async function handler(req, res) {
     }, 120000);
 
     const stream = await client.chat.completions.create({
-      model: process.env.CHAT_MODEL || "openai/gpt-oss-120b", // ⚠️ 改成你实际有权限的模型名
+      model: process.env.CHAT_MODEL || "google/diffusiongemma-26b-a4b-it", // ⚠️ 当前默认模型：改成你实际有权限的模型名。注意：本接口是文本对话(chat completions)，若要稳定回复请使用文本对话模型(如 openai/gpt-oss-120b)；diffusiongemma 为图像生成模型，仅当你的账号确实为此开通且接受不可回复时使用。生产上建议通过环境变量 CHAT_MODEL 指定。
       messages: buildMessages(),
       // 提高输出上限：长邮件、分析报告不再被模型默认上限截断；gpt-oss-120b 最大输出 8192 tokens，可通过环境变量 MAX_TOKENS 覆盖
       max_tokens: Number(process.env.MAX_TOKENS) || 8192,

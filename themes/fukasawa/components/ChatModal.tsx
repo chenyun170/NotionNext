@@ -156,7 +156,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
 
       {/* 对话框主体 */}
       <div
-        className="fixed z-[10000] inset-0 flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-stone-200/60 dark:border-stone-700/60 bg-white dark:bg-stone-900 animate-in fade-in slide-in-from-bottom-4 duration-300 lg:inset-auto lg:bottom-10 lg:left-1/2 lg:top-auto lg:right-auto lg:-translate-x-1/2 lg:w-[min(780px,calc(100vw-16px))] lg:h-[min(820px,calc(100vh-32px))]"
+        className="fixed z-[10000] inset-0 flex flex-col overflow-hidden rounded-2xl shadow-2xl border border-stone-200/60 dark:border-stone-700/60 bg-white dark:bg-stone-900 animate-in fade-in duration-300 lg:inset-auto lg:top-auto lg:bottom-10 lg:left-0 lg:right-0 lg:mx-auto lg:w-[min(780px,calc(100vw-16px))] lg:h-[min(820px,calc(100vh-80px))]"
         style={{
           position: 'fixed',
           zIndex: 10000,

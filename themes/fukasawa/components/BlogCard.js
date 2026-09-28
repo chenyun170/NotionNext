@@ -57,7 +57,7 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
         )}
 
         {/* 文字内容部分 */}
-        <div className='flex w-full flex-grow flex-col px-0 py-1 md:px-1'>
+        <div className={`flex w-full flex-col px-0 py-1 md:px-1 ${showPageCover ? 'flex-grow' : ''}`}>
           {/* 标题 */}
           <h2 className='mb-2'>
             <SmartLink

@@ -260,8 +260,8 @@ const Style = () => {
     #theme-fukasawa .home-intro { border-width: 1px !important; }
     #theme-fukasawa .home-intro .home-diagnosis { border: 0 !important; background: transparent !important; padding: 0 !important; }
     #theme-fukasawa .home-intro .home-signal-panel { border: 0 !important; border-left: 1px solid #d4d4d4 !important; border-radius: 0 !important; background: transparent !important; }
-    #theme-fukasawa .home-intro > div:first-child { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
-    #theme-fukasawa .home-intro > div:last-child a { min-height: 96px !important; padding: 1rem 0 !important; }
+    #theme-fukasawa .home-intro > div:first-child { padding: 1.5rem 1.5rem !important; }
+    #theme-fukasawa .home-intro > div:last-child a { min-height: 96px !important; padding: 1rem 1.5rem !important; }
     #theme-fukasawa .floating-activity-card { width: min(18rem, calc(100vw - 2rem)) !important; right: 1rem !important; }
     #theme-fukasawa .floating-activity-card > div { border-radius: 4px !important; box-shadow: 0 12px 30px rgba(23,23,23,0.18) !important; }
     #theme-fukasawa .animate-pulse-orange { animation: none !important; }

@@ -199,14 +199,14 @@ const HomeIntro = ({ categoryOptions = [] }) => {
         </div>
       </div>
 
-      <div className='mt-10 grid border-t border-stone-200 dark:border-stone-800 md:grid-cols-4'>
+      <div className='mt-10 grid gap-4 border-t border-stone-200 dark:border-stone-800 md:grid-cols-4'>
         {topics.map(topic => {
           const TopicLink = topic.href?.endsWith('.html') ? 'a' : SmartLink
           return (
             <TopicLink
               key={topic.name}
               href={topic.href}
-              className='group block min-h-[112px] min-w-0 border-b border-stone-200 py-5 pr-4 transition-colors dark:border-stone-800 md:border-b-0 md:border-r last:md:border-r-0'
+              className='group block min-h-[112px] min-w-0 rounded-lg border border-stone-200 bg-white p-5 transition-colors dark:border-stone-800 dark:bg-stone-900/60 md:border-b-0 md:border-r last:md:border-r-0'
             >
               <div className='mb-3 flex items-center justify-between'>
                 <span className='flex h-8 w-8 items-center justify-center text-sm text-stone-400 transition-colors group-hover:text-stone-800 dark:text-stone-500 dark:group-hover:text-stone-200'>

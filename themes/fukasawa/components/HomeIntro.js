@@ -89,7 +89,7 @@ const HomeIntro = ({ categoryOptions = [] }) => {
 
   return (
     <section className='home-intro mx-auto mb-10 w-full max-w-[calc(100vw-2rem)] sm:max-w-full'>
-      <div className='px-1 py-2 sm:px-2 sm:py-4 sm:pb-8'>
+      <div className='px-4 py-2 sm:px-6 sm:py-4 sm:pb-8'>
         <div className='mb-8 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500'>
           <span className='h-px w-8 bg-stone-300 dark:bg-stone-700' />
           <span>123170.xyz · Foreign Trade Intelligence</span>

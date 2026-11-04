@@ -21,8 +21,8 @@ const ACTIVITIES = [
   },
   {
     icon: '🚀',
-    text: '顶易云 618 活动进行中，6月30日24时截止',
-    link: 'https://h.topeasysoft.com/20260618dyy/index.html?i=BB54F6',
+    text: '顶易云双十一活动进行中，查看活动方案与优惠信息',
+    link: 'https://h.topeasysoft.com/20261111dyy/index.html?i=BB54F6',
     tool: 'dingyiyun',
     trackSource: 'mobile_marquee_dingyiyun'
   }

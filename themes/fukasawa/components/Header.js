@@ -14,8 +14,8 @@ import SearchInput from './SearchInput'
 const ACTIVITIES = [
   {
     icon: '🔥',
-    text: '139届全球采购商数据新鲜出炉！¥300/行业，¥600/3个行业！',
-    link: 'https://h.topeasysoft.com/20260618tls/index.html?i=BB54F6',
+    text: '图灵搜双十一活动开启，查看活动方案与优惠信息',
+    link: 'https://h.topeasysoft.com/20261111tls/index.html?i=BB54F6#pricing',
     tool: 'turingsearch',
     trackSource: 'mobile_marquee_turingsearch'
   },

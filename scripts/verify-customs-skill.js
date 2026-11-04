@@ -2,9 +2,9 @@
 
 const baseUrl = (process.env.VERIFY_BASE_URL || 'http://127.0.0.1:3000').replace(/\/$/, '')
 const orasklSkillTarget =
-  'https://www.oraskl.com/?i=BB54F6&utm_source=123170&utm_medium=skill_page&utm_campaign=customs_data_skill'
+  'https://oraskl.com/referrer/?i=BB54F6&utm_source=123170&utm_medium=skill_page&utm_campaign=customs_data_skill'
 const orasklBrandTarget =
-  'https://www.oraskl.com/?i=BB54F6&utm_source=123170&utm_medium=brand_page&utm_campaign=customs_data_skill'
+  'https://oraskl.com/referrer/?i=BB54F6&utm_source=123170&utm_medium=brand_page&utm_campaign=customs_data_skill'
 
 const text = {
   orasklTitle: '\u004f\u0072\u0061\u0053\u006b\u006c\u0020\u6d77\u5173\u6570\u636e\u0020\u0053\u006b\u0069\u006c\u006c\u0020\u514d\u8d39\u67e5\u8be2\u5165\u53e3',

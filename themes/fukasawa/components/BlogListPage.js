@@ -47,11 +47,14 @@ const BlogListPage = ({
             >
               <BlogCard index={index} post={post} siteInfo={siteInfo} />
             </div>
-            {showInlineAd && Number(page) === 1 && index === 3 && (
-              <div className='w-full' style={{ breakInside: 'avoid' }}>
-                <WWAds className='w-full' orientation='horizontal' />
-              </div>
-            )}
+            {showInlineAd &&
+              Number(page) === 1 &&
+              index === 3 &&
+              siteConfig('AD_WWADS_ID') && (
+                <div className='w-full' style={{ breakInside: 'avoid' }}>
+                  <WWAds className='w-full' orientation='horizontal' />
+                </div>
+              )}
           </Fragment>
         ))}
 

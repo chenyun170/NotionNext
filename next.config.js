@@ -148,6 +148,11 @@ const nextConfig = {
         return [
           ...singleLocaleRedirects,
           {
+            source: '/article/example-18',
+            destination: '/article/improve-client-retention-ability',
+            permanent: true
+          },
+          {
             source: '/article/keng',
             destination: '/article/foreign-trade-beginner-pitfalls',
             permanent: true

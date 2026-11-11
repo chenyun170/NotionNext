@@ -124,6 +124,11 @@ export async function getStaticProps({ params: { prefix }, locale }) {
     prefix,
     locale,
   })
+
+  if (!props.post) {
+    return { notFound: true }
+  }
+
   return {
     props,
     revalidate: process.env.EXPORT

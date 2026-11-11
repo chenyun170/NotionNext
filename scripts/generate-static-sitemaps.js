@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 
 const { CORE_SEO_PAGES, SITE_URL, UPDATED_AT } = require('../lib/seo/geoPages')
+const { fetchNotionSitemapEntries } = require('../lib/seo/notionEntries')
 
 const PUBLIC_DIR = path.join(process.cwd(), 'public')
 const SUBMIT_SITEMAP_FILES = [
@@ -11,8 +12,20 @@ const SUBMIT_SITEMAP_FILES = [
   'sitemap-index.xml'
 ]
 
-function main() {
-  const allPages = [...CORE_SEO_PAGES]
+async function main() {
+  let dynamicPages = []
+  try {
+    const notionEntries = await fetchNotionSitemapEntries()
+    dynamicPages = [
+      ...notionEntries.posts.map(post => ({ slug: post.path, lastmod: post.lastmod })),
+      ...notionEntries.tags.map(tag => ({ slug: `tag/${tag}`, changefreq: 'weekly' })),
+      ...notionEntries.categories.map(category => ({ slug: `category/${category}`, changefreq: 'weekly' }))
+    ]
+  } catch (error) {
+    console.warn('[sitemap] Notion 数据拉取失败，仅生成静态页 sitemap:', error.message)
+  }
+
+  const allPages = [...CORE_SEO_PAGES, ...dynamicPages]
 
   assertStaticHtmlPagesExist(allPages)
   writeFile('sitemap.xml', buildUrlset(allPages))
@@ -29,7 +42,7 @@ function buildUrlset(pages) {
     return [
       '<url>',
       `<loc>${escapeXml(loc)}</loc>`,
-      `<lastmod>${UPDATED_AT}</lastmod>`,
+      `<lastmod>${page.lastmod || UPDATED_AT}</lastmod>`,
       `<changefreq>${page.changefreq || 'weekly'}</changefreq>`,
       `<priority>${page.priority || '0.7'}</priority>`,
       '</url>'
@@ -115,5 +128,8 @@ function escapeXml(value) {
 }
 
 if (require.main === module) {
-  main()
+  main().catch(error => {
+    console.error(error)
+    process.exitCode = 1
+  })
 }

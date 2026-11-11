@@ -148,6 +148,76 @@ const nextConfig = {
         return [
           ...singleLocaleRedirects,
           {
+            source: '/article/keng',
+            destination: '/article/foreign-trade-beginner-pitfalls',
+            permanent: true
+          },
+          {
+            source: '/article/huifu',
+            destination: '/article/quotation-follow-up-reply-rate',
+            permanent: true
+          },
+          {
+            source: '/article/sicang',
+            destination: '/article/global-lead-sourcing-map',
+            permanent: true
+          },
+          {
+            source: '/article/daquang',
+            destination: '/article/global-product-certification-guide',
+            permanent: true
+          },
+          {
+            source: '/article/huashu',
+            destination: '/article/year-end-urgency-scripts',
+            permanent: true
+          },
+          {
+            source: '/article/collection',
+            destination: '/article/foreign-trade-payment-practice',
+            permanent: true
+          },
+          {
+            source: '/article/a',
+            destination: '/article/order-payment-chase-professionally',
+            permanent: true
+          },
+          {
+            source: '/article/hgsj',
+            destination: '/article/customs-data-usage-guide',
+            permanent: true
+          },
+          {
+            source: '/article/ws',
+            destination: '/article/whatsapp-account-risk-control',
+            permanent: true
+          },
+          {
+            source: '/article/bargain',
+            destination: '/article/price-negotiation-tactics',
+            permanent: true
+          },
+          {
+            source: '/article/h-300',
+            destination: '/article/import-export-data-options',
+            permanent: true
+          },
+          {
+            source: '/article/x',
+            destination: '/article/delivery-date-negotiation',
+            permanent: true
+          },
+          {
+            source: '/article/tls',
+            destination: '/article/turingsearch-intro',
+            permanent: true
+          },
+          {
+            source: '/article/oes',
+            destination: '/article/email-outreach-basics',
+            permanent: true
+          },
+          {
             source: '/feed',
             destination: '/rss/feed.xml',
             permanent: true

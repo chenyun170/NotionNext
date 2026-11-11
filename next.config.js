@@ -148,6 +148,131 @@ const nextConfig = {
         return [
           ...singleLocaleRedirects,
           {
+            source: '/article/jiaoxue',
+            destination: '/article/foreign-trade-first-lesson',
+            permanent: true
+          },
+          {
+            source: '/article/turingsearch',
+            destination: '/article/google-map-ai-customer-development',
+            permanent: true
+          },
+          {
+            source: '/article/kehukaifa',
+            destination: '/article/client-follow-up-year-strategy',
+            permanent: true
+          },
+          {
+            source: '/article/youhui',
+            destination: '/article/year-end-software-promo',
+            permanent: true
+          },
+          {
+            source: '/article/activity-1001',
+            destination: '/article/dingyicloud-plus-offer',
+            permanent: true
+          },
+          {
+            source: '/article/activity-998',
+            destination: '/article/buyer-database-group-buy',
+            permanent: true
+          },
+          {
+            source: '/article/example-19',
+            destination: '/article/negotiation-price-floor',
+            permanent: true
+          },
+          {
+            source: '/article/example-17',
+            destination: '/article/foreign-trade-positioning',
+            permanent: true
+          },
+          {
+            source: '/article/example-16',
+            destination: '/article/soho-registration-and-agents',
+            permanent: true
+          },
+          {
+            source: '/article/example-15',
+            destination: '/article/quotation-trust',
+            permanent: true
+          },
+          {
+            source: '/article/example-14',
+            destination: '/article/client-development-tips',
+            permanent: true
+          },
+          {
+            source: '/article/example-13',
+            destination: '/article/negotiation-practical-tips',
+            permanent: true
+          },
+          {
+            source: '/article/example-12',
+            destination: '/article/jiangxi-dingyi-intro',
+            permanent: true
+          },
+          {
+            source: '/article/example-11',
+            destination: '/article/innovative-client-follow-up',
+            permanent: true
+          },
+          {
+            source: '/article/example-10',
+            destination: '/article/efficient-client-follow-up',
+            permanent: true
+          },
+          {
+            source: '/article/example-09',
+            destination: '/article/sample-request-handling',
+            permanent: true
+          },
+          {
+            source: '/article/example-08',
+            destination: '/article/hs-code-smart-home-strategy',
+            permanent: true
+          },
+          {
+            source: '/article/example-05',
+            destination: '/article/google-map-scraping-tool',
+            permanent: true
+          },
+          {
+            source: '/article/example-04',
+            destination: '/article/global-procurement-system',
+            permanent: true
+          },
+          {
+            source: '/article/example-03',
+            destination: '/article/google-search-syntax-guide',
+            permanent: true
+          },
+          {
+            source: '/article/example-02',
+            destination: '/article/foreign-trade-zero-balance',
+            permanent: true
+          },
+          {
+            source: '/article/example-01',
+            destination: '/article/client-follow-up-cases',
+            permanent: true
+          },
+          {
+            source: '/article/guangjiaohui',
+            destination: '/article/canton-fair-buyer-data',
+            permanent: true
+          },
+          {
+            source: '/article/dingyicloud',
+            destination: '/article/dingyicloud-customer-development',
+            permanent: true
+          },
+          {
+            source: '/article/example-7',
+            destination: '/article/dingyi-customs-data-crowdfunding',
+            permanent: true
+          },
+          {
             source: '/article/example-18',
             destination: '/article/improve-client-retention-ability',
             permanent: true

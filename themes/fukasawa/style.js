@@ -184,15 +184,20 @@ const Style = () => {
     .dark #theme-fukasawa [class*='bg-indigo-'],
     .dark #theme-fukasawa [class*='bg-violet-'] { background-color: #222222 !important; }
 
-    /* 橙色只保留在右侧边栏；其他区域统一降为墨灰 */
-    #theme-fukasawa [class*='text-orange-'] { color: #78716c !important; }
-    #theme-fukasawa [class*='hover:text-orange-']:hover { color: #1c1917 !important; }
-    #theme-fukasawa [class*='bg-orange-'] { background-color: #292524 !important; }
-    #theme-fukasawa [class*='hover:bg-orange-']:hover { background-color: #1c1917 !important; }
-    #theme-fukasawa [class*='border-orange-'] { border-color: #e7e5e2 !important; }
-    #theme-fukasawa [class*='hover:border-orange-']:hover { border-color: #a8a29e !important; }
-    #theme-fukasawa [class*='shadow-orange-'] { box-shadow: none !important; text-shadow: none !important; }
-    #theme-fukasawa [class*='ring-orange-'] { --tw-ring-color: #e7e5e2 !important; }
+    /* 品牌主色用透：正文/框架保持墨灰，交互元素点亮琥珀橙 */
+    #theme-fukasawa [class*='text-orange-'] { color: var(--fuka-accent) !important; }
+    #theme-fukasawa [class*='hover:text-orange-']:hover { color: var(--fuka-accent-hover) !important; }
+    #theme-fukasawa [class*='bg-orange-'] { background-color: var(--fuka-accent) !important; color: #ffffff !important; }
+    #theme-fukasawa [class*='hover:bg-orange-']:hover { background-color: var(--fuka-accent-hover) !important; color: #ffffff !important; }
+    #theme-fukasawa [class*='border-orange-'] { border-color: var(--fuka-accent) !important; }
+    #theme-fukasawa [class*='hover:border-orange-']:hover { border-color: var(--fuka-accent-hover) !important; }
+    #theme-fukasawa [class*='shadow-orange-'] { box-shadow: 0 0 0 1px rgba(217,119,6,0.18) !important; }
+    #theme-fukasawa [class*='ring-orange-'] { --tw-ring-color: rgba(217,119,6,0.35) !important; }
+
+    /* 列表卡片 hover 反馈：底边线与标题点亮主色 */
+    #theme-fukasawa .grid-item:hover { border-bottom-color: rgba(217,119,6,0.45); }
+    #theme-fukasawa .grid-item:hover h2,
+    #theme-fukasawa .grid-item:hover h3 { color: var(--fuka-accent-hover) !important; }
 
     /* 侧边栏重新点亮铜橙 */
     #theme-fukasawa .sideLeft [class*='text-orange-'] { color: var(--fuka-orange) !important; }

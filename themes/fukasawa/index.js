@@ -408,7 +408,7 @@ const Layout404 = memo((props) => {
   return (
     <>
       <Head>
-        <title>{`${siteInfo?.title || BLOG.TITLE || 'NotionNext'} | 页面找不到啦`}</title>
+        <title>{`${siteInfo?.title || BLOG.TITLE || '外贸获客情报局'} | 页面找不到啦`}</title>
         <meta name='robots' content='noindex,follow' />
       </Head>
       <div className='min-h-screen bg-[#f7f5f1] px-4 py-10 text-stone-900 dark:bg-[#161412] dark:text-stone-100 sm:px-6 lg:px-8'>

@@ -21,7 +21,7 @@ const Comment = dynamic(() => import('@/components/Comment'), {
   ssr: false,
   loading: () => (
     <div className='rounded-xl border border-dashed border-stone-200 p-6 text-sm text-stone-400 dark:border-stone-800'>
-      Comment area loading...
+      评论加载中…
     </div>
   )
 })

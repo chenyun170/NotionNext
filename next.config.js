@@ -117,6 +117,14 @@ const nextConfig = {
       'ko-fi.com',
       'cloudflare-imgbed-aa9.pages.dev'
     ],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'www.notion.so' },
+      { protocol: 'https', hostname: 'notion.so' },
+      { protocol: 'https', hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com' },
+      { protocol: 'https', hostname: 'gravatar.com' },
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' }
+    ],
     // 图片加载器优化
     loader: 'default',
     // 图片缓存优化

@@ -683,14 +683,14 @@ const getSEOMeta = (props, router, locale) => {
         title: `${page} | Page | ${siteInfo?.title}`,
         description: `${siteInfo?.description}`,
         image: `${siteInfo?.pageCover}`,
-        slug: 'page/' + page,
+        slug: 'index/page/' + page,
         type: 'website'
       }
     case '/category/[category]':
       return {
         title: `${category} | ${locale.COMMON.CATEGORY} | ${siteInfo?.title}`,
         description: buildTaxonomyDescription('category', category, siteInfo),
-        slug: 'category/' + category,
+        slug: 'category/' + encodeURIComponent(category) + (page ? '/page/' + page : ''),
         image: `${siteInfo?.pageCover}`,
         type: 'website'
       }
@@ -698,7 +698,7 @@ const getSEOMeta = (props, router, locale) => {
       return {
         title: `${category} | ${locale.COMMON.CATEGORY} | ${siteInfo?.title}`,
         description: buildTaxonomyDescription('category', category, siteInfo),
-        slug: 'category/' + category,
+        slug: 'category/' + encodeURIComponent(category) + (page ? '/page/' + page : ''),
         image: `${siteInfo?.pageCover}`,
         type: 'website'
       }
@@ -708,7 +708,7 @@ const getSEOMeta = (props, router, locale) => {
         title: `${tag} | ${locale.COMMON.TAGS} | ${siteInfo?.title}`,
         description: buildTaxonomyDescription('tag', tag, siteInfo),
         image: `${siteInfo?.pageCover}`,
-        slug: 'tag/' + tag,
+        slug: 'tag/' + encodeURIComponent(tag) + (page ? '/page/' + page : ''),
         type: 'website'
       }
     case '/search':
@@ -752,7 +752,7 @@ const getSEOMeta = (props, router, locale) => {
     default:
       return {
         title: post
-          ? `${post?.title} | ${siteTitle}`
+          ? `${post?.title} | ${getBrandAwareName(siteTitle)}`
           : `${siteTitle} | loading`,
         description: post?.summary,
         type: post?.type,

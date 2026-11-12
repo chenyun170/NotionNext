@@ -577,6 +577,13 @@ const nextConfig = {
               chunks: 'all',
               enforce: true,
             },
+            notion: {
+              test: /[\\\\/]node_modules[\\\\/](react-notion-x|react-notion|notion-utils|notion-types|notion-client|katex|prismjs|js-yaml|react-lite-youtube-embed|medium-zoom|@waline)[\\\\/]/, 
+              name: 'notion',
+              chunks: 'async',
+              priority: 20,
+              enforce: true,
+            },
           },
         },
       }

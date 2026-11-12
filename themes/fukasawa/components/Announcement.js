@@ -8,7 +8,7 @@ import {
 import dynamic from 'next/dynamic'
 import { useState, useEffect, useRef } from 'react'
 
-const NotionPage = dynamic(() => import('@/components/NotionPage'))
+const LazyNotionContent = dynamic(() => import('./LazyNotionContent'))
 
 const FLOATING_AD_DISMISS_KEY = 'fukasawa_floating_activity_dismissed_at'
 const FLOATING_AD_DISMISS_DAYS = 3
@@ -354,7 +354,7 @@ const Announcement = ({ post, className }) => {
                 <i className='mr-2 fas fa-bullhorn' />
                 {locale.COMMON.ANNOUNCEMENT}
               </div>
-              <NotionPage post={post} />
+              <LazyNotionContent post={post} />
             </div>
           )}
         </section>

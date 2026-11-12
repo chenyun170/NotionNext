@@ -1,7 +1,10 @@
 import dynamic from 'next/dynamic'
 import LazyImage from '@/components/LazyImage'
 import NotionIcon from '@/components/NotionIcon'
-import NotionPage from '@/components/NotionPage'
+const NotionPage = dynamic(() => import('@/components/NotionPage'), {
+  ssr: false,
+  loading: () => null
+})
 import WWAds from '@/components/WWAds'
 import BLOG from '@/blog.config'
 import { useGlobal } from '@/lib/global'

@@ -79,6 +79,7 @@ export default function ArticleDetail(props) {
 {post?.type && post?.type !== 'Page' && post?.pageCover && (
   <div className='w-full relative aspect-[16/9] md:aspect-[21/9] max-h-[60vh] bg-stone-100 dark:bg-stone-900 md:flex-shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-stone-400/20'>
     <LazyImage
+      priority
       alt={post.title}
       src={post?.pageCover}
       width={1200}

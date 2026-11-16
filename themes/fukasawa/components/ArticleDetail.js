@@ -2,7 +2,6 @@ import dynamic from 'next/dynamic'
 import LazyImage from '@/components/LazyImage'
 import NotionIcon from '@/components/NotionIcon'
 const NotionPage = dynamic(() => import('@/components/NotionPage'), {
-  ssr: false,
   loading: () => null
 })
 import WWAds from '@/components/WWAds'
@@ -35,7 +34,6 @@ const AdSlot = dynamic(
 )
 
 const ArticleFAQ = dynamic(() => import('./ArticleFAQ'), {
-  ssr: false,
   loading: () => null
 })
 

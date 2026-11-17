@@ -12,12 +12,14 @@ const {
   UPDATED_AT,
   buildUrl
 } = require('../lib/seo/geoPages')
+const { fetchNotionSitemapEntries } = require('../lib/seo/notionEntries')
 
 const PUBLIC_DIR = path.join(process.cwd(), 'public')
 
-function main() {
+async function main() {
   const siteUrl = normalizeBaseUrl(BLOG.LINK || SITE_URL)
   const priorityPages = CORE_SEO_PAGES.filter(page => page.slug)
+  const articleLines = await buildArticleLines(siteUrl)
 
   const body = [
     `# ${BLOG.TITLE || '外贸获客情报局'}`,
@@ -66,6 +68,9 @@ function main() {
       return `- [${page.title}](${buildUrl(siteUrl, page.slug)}) - ${page.description}${keywords ? ` Keywords: ${keywords}.` : ''}`
     }),
     '',
+    ...(articleLines.length
+      ? ['## Articles', '', ...articleLines, '']
+      : []),
     '## Core Entries',
     '',
     `- Home: ${siteUrl}`,
@@ -80,10 +85,45 @@ function main() {
   console.log('Wrote public/llms.txt')
 }
 
+/**
+ * 把已发布文章按时间倒序列进 llms.txt，
+ * 让 AI 搜索/问答引擎能直接发现并引用具体文章，而不只看到首页和核心页。
+ */
+async function buildArticleLines(siteUrl) {
+  try {
+    const { posts } = await fetchNotionSitemapEntries()
+    return posts
+      .filter(post => post.title && post.path && post.path.startsWith('article/'))
+      .sort((a, b) =>
+        String(b.publishDate || b.lastmod || '').localeCompare(
+          String(a.publishDate || a.lastmod || '')
+        )
+      )
+      .map(post => {
+        const summary = truncate(post.summary, 90)
+        const link = buildUrl(siteUrl, post.path)
+        return `- [${post.title}](${link})${summary ? ` — ${summary}` : ''}`
+      })
+  } catch (error) {
+    console.warn('[llms] 文章索引生成失败，仅输出核心页:', error.message)
+    return []
+  }
+}
+
+function truncate(text, maxLength) {
+  const normalized = `${text || ''}`.replace(/\s+/g, ' ').trim()
+  const chars = Array.from(normalized)
+  if (chars.length <= maxLength) return normalized
+  return `${chars.slice(0, maxLength).join('').replace(/[，、；。]$/, '')}…`
+}
+
 function normalizeBaseUrl(url) {
   return `${url || SITE_URL}`.replace(/\/+$/, '')
 }
 
 if (require.main === module) {
-  main()
+  main().catch(error => {
+    console.error(error)
+    process.exit(1)
+  })
 }

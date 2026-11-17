@@ -20,16 +20,13 @@ const ArticleInsightPanel = ({ post }) => {
         <div className='p-5'>
           <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             <i className='fas fa-bolt' />
-            <span>搜索摘要</span>
+            <span>摘要</span>
           </div>
           <h2 className='mb-3 text-xl font-black leading-tight text-stone-900 dark:text-stone-50'>
             这篇文章的直接答案
           </h2>
           <p itemProp='abstract' className='leading-7 text-stone-600 dark:text-stone-300'>
             {directAnswer}
-          </p>
-          <p className='mt-3 leading-7 text-stone-500 dark:text-stone-400'>
-            {summary}
           </p>
 
           <div className='mt-5 grid gap-3 sm:grid-cols-2'>
@@ -54,7 +51,6 @@ const ArticleInsightPanel = ({ post }) => {
             <SignalItem label='主题' value={post?.category || '外贸实战'} />
             <SignalItem label='阅读' value={formatReadTime(post)} />
             <SignalItem label='更新' value={post?.lastEditedDay || post?.publishDay || '持续更新'} />
-            <SignalItem label='用途' value='核心摘要 / 搜索摘要 / 站内延展' />
           </dl>
 
           {tags.length > 0 && (
@@ -102,15 +98,14 @@ const buildSummary = post => {
 }
 
 const buildDirectAnswer = (post, summary) => {
+  if (summary) {
+    return summary
+  }
+
   const title = post?.title || '这篇文章'
   const topic = post?.category || '外贸获客'
   const tags = Array.isArray(post?.tags) ? post.tags : []
   const tag = post?.tagItems?.[0]?.name || tags[0]
-
-  if (summary && summary.length <= 88) {
-    return `${title}的核心结论：${summary}`
-  }
-
   const tagText = tag ? `，并延展到「${tag}」相关问题` : ''
   return `${title}主要回答${topic}场景下应该怎么判断、怎么执行和下一步怎么跟进${tagText}。`
 }

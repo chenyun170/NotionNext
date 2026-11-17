@@ -19,23 +19,33 @@ export async function getStaticProps({ params: { category, page } }) {
   const from = 'category-page-props'
   let props = await fetchGlobalAllData({ from })
 
-  // 过滤状态类型
+  // 与分类首页保持一致：分类匹配 OR 同名标签匹配
   props.posts = props.allPages
-    ?.filter(page => page.type === 'Post' && page.status === 'Published')
-    .filter(post => post && post.category && post.category.includes(category))
+    ?.filter(item => item.type === 'Post' && item.status === 'Published')
+    .filter(
+      post =>
+        post &&
+        ((post.category && post.category.includes(category)) ||
+          (Array.isArray(post.tags) && post.tags.includes(category)))
+    )
   // 处理文章页数
   props.postCount = props.posts.length
   const POSTS_PER_PAGE = siteConfig('POSTS_PER_PAGE', 12, props?.NOTION_CONFIG)
+  const currentPage = Number.parseInt(page, 10)
+  const totalPages = Math.ceil(props.posts.length / POSTS_PER_PAGE)
+  if (!Number.isInteger(currentPage) || currentPage < 1 || currentPage > totalPages) {
+    return { notFound: true }
+  }
   // 处理分页
   props.posts = props.posts.slice(
-    POSTS_PER_PAGE * (page - 1),
-    POSTS_PER_PAGE * page
+    POSTS_PER_PAGE * (currentPage - 1),
+    POSTS_PER_PAGE * currentPage
   )
 
   delete props.allPages
-  props.page = page
+  props.page = currentPage
 
-  props = { ...props, category, page }
+  props = { ...props, category, page: currentPage }
 
   return {
     props,
@@ -61,7 +71,10 @@ export async function getStaticPaths() {
     const categoryPosts = allPages
       ?.filter(page => page.type === 'Post' && page.status === 'Published')
       .filter(
-        post => post && post.category && post.category.includes(category.name)
+        post =>
+          post &&
+          ((post.category && post.category.includes(category.name)) ||
+            (Array.isArray(post.tags) && post.tags.includes(category.name)))
       )
     // 处理文章页数
     const postCount = categoryPosts.length
@@ -69,7 +82,7 @@ export async function getStaticPaths() {
       postCount / siteConfig('POSTS_PER_PAGE', null, NOTION_CONFIG)
     )
     if (totalPages > 1) {
-      for (let i = 1; i <= totalPages; i++) {
+      for (let i = 2; i <= totalPages; i++) {
         paths.push({ params: { category: category.name, page: '' + i } })
       }
     }

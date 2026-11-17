@@ -88,6 +88,28 @@ function getTaxonomyRedirect(req: NextRequest) {
   return NextResponse.redirect(redirectToUrl, 301)
 }
 
+// /page/1、/category/X/page/1 与第 1 页重复，统一跳到不带页码的地址
+function getFirstPageRedirect(req: NextRequest) {
+  const pathname = req.nextUrl.pathname.replace(/\/+$/, '')
+
+  if (pathname === '/page/1') {
+    const redirectToUrl = req.nextUrl.clone()
+    redirectToUrl.pathname = '/'
+    redirectToUrl.search = ''
+    return NextResponse.redirect(redirectToUrl, 301)
+  }
+
+  const match = pathname.match(/^\/(category|tag)\/([^/]+)\/page\/1$/)
+  if (!match) {
+    return null
+  }
+
+  const redirectToUrl = req.nextUrl.clone()
+  redirectToUrl.pathname = `/${match[1]}/${match[2]}`
+  redirectToUrl.search = ''
+  return NextResponse.redirect(redirectToUrl, 301)
+}
+
 /**
  * Clerk 身份验证中间件
  */
@@ -126,6 +148,9 @@ const noAuthMiddleware = async (req: NextRequest, ev: any) => {
   const taxonomyRedirect = getTaxonomyRedirect(req)
   if (taxonomyRedirect) return taxonomyRedirect
 
+  const firstPageRedirect = getFirstPageRedirect(req)
+  if (firstPageRedirect) return firstPageRedirect
+
   if (BLOG['UUID_REDIRECT']) {
     let redirectJson: Record<string, string> = {}
     try {
@@ -162,6 +187,9 @@ const authMiddleware = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 
       const taxonomyRedirect = getTaxonomyRedirect(req)
       if (taxonomyRedirect) return taxonomyRedirect
+
+      const firstPageRedirect = getFirstPageRedirect(req)
+      if (firstPageRedirect) return firstPageRedirect
 
       const { userId } = auth()
 

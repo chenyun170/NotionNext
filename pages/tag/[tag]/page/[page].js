@@ -19,14 +19,19 @@ export async function getStaticProps({ params: { tag, page }, locale }) {
   // 处理文章数
   props.postCount = props.posts.length
   const POSTS_PER_PAGE = siteConfig('POSTS_PER_PAGE', 12, props?.NOTION_CONFIG)
+  const currentPage = Number.parseInt(page, 10)
+  const totalPages = Math.ceil(props.posts.length / POSTS_PER_PAGE)
+  if (!Number.isInteger(currentPage) || currentPage < 1 || currentPage > totalPages) {
+    return { notFound: true }
+  }
   // 处理分页
   props.posts = props.posts.slice(
-    POSTS_PER_PAGE * (page - 1),
-    POSTS_PER_PAGE * page
+    POSTS_PER_PAGE * (currentPage - 1),
+    POSTS_PER_PAGE * currentPage
   )
 
   props.tag = tag
-  props.page = page
+  props.page = currentPage
   delete props.allPages
   return {
     props,
@@ -55,7 +60,7 @@ export async function getStaticPaths() {
       postCount / siteConfig('POSTS_PER_PAGE', null, NOTION_CONFIG)
     )
     if (totalPages > 1) {
-      for (let i = 1; i <= totalPages; i++) {
+      for (let i = 2; i <= totalPages; i++) {
         paths.push({ params: { tag: tag.name, page: '' + i } })
       }
     }

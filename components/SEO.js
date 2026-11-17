@@ -695,10 +695,10 @@ const getSEOMeta = (props, router, locale) => {
       }
     case '/page/[page]':
       return {
-        title: `${page} | Page | ${siteInfo?.title}`,
+        title: `第 ${page} 页 | ${siteInfo?.title}`,
         description: `${siteInfo?.description}`,
         image: `${siteInfo?.pageCover}`,
-        slug: 'index/page/' + page,
+        slug: 'page/' + page,
         type: 'website'
       }
     case '/category/[category]':

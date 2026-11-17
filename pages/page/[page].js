@@ -51,6 +51,11 @@ export async function getStaticProps({ params: { page }, locale }) {
   )
   const HOME_POSTS_PER_PAGE = getHomePostsPerPage(props?.NOTION_CONFIG)
   const currentPage = Number.parseInt(page, 10)
+  const totalPages = Math.ceil(allPosts.length / HOME_POSTS_PER_PAGE)
+  // 越界分页（如 /page/99）直接 404，避免生成可索引的空列表页
+  if (!Number.isInteger(currentPage) || currentPage < 1 || currentPage > totalPages) {
+    return { notFound: true }
+  }
   // 处理分页
   props.posts = allPosts.slice(
     HOME_POSTS_PER_PAGE * (currentPage - 1),

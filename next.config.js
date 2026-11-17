@@ -277,7 +277,12 @@ const nextConfig = {
           },
           {
             source: '/article/example-7',
-            destination: '/article/dingyi-customs-data-crowdfunding',
+            destination: '/article/customs-data-33',
+            permanent: true
+          },
+          {
+            source: '/article/dingyi-customs-data-crowdfunding',
+            destination: '/article/customs-data-33',
             permanent: true
           },
           {

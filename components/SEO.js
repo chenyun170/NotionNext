@@ -395,6 +395,14 @@ const buildTaxonomyDescription = (type, value, siteInfo) => {
     {
       pattern: /话术|邮件|开发信/i,
       description: `${siteTitle} 的${name}专题，整理外贸沟通话术、开发信模板、客户回复和询盘跟进方法。`
+    },
+    {
+      pattern: /报价|谈判|收款|付款/i,
+      description: `${siteTitle} 的${name}专题，整理报价核算、成本漏项、砍价应对、付款条款和收款风险处理的实战经验。`
+    },
+    {
+      pattern: /广交会|展会/i,
+      description: `${siteTitle} 的${name}专题，整理广交会采购商名录的选购判断、名单筛选和展后客户跟进方法。`
     }
   ]
 
@@ -557,6 +565,24 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
 
   // 如果是文章页面，添加文章结构化数据
   if (meta?.type === 'Post') {
+    const articleFaqs = buildArticleFAQs(meta)
+    const faqGraph = articleFaqs.length
+      ? [
+          {
+            '@type': 'FAQPage',
+            '@id': `${url}#faq`,
+            mainEntity: articleFaqs.map(item => ({
+              '@type': 'Question',
+              name: item.question,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: item.answer
+              }
+            }))
+          }
+        ]
+      : []
+
     return {
       '@context': 'https://schema.org',
       '@graph': [
@@ -590,18 +616,7 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
           about: buildArticleAbout(meta)
         },
         breadcrumbData,
-        {
-          '@type': 'FAQPage',
-          '@id': `${url}#faq`,
-          mainEntity: buildArticleFAQs(meta).map(item => ({
-            '@type': 'Question',
-            name: item.question,
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: item.answer
-            }
-          }))
-        }
+        ...faqGraph
       ]
     }
   }

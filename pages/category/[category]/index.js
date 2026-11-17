@@ -27,8 +27,13 @@ export async function getStaticProps({ params: { category }, locale }) {
     page => page.type === 'Post' && page.status === 'Published'
   )
   // 处理过滤
+  // 同名标签页会 301 到分类页，所以分类页要同时收下挂在该标签下的文章，
+  // 否则原本 15 篇的「海关数据」标签内容只剩分类里的 6 篇。
   props.posts = props.posts.filter(
-    post => post && post.category && post.category.includes(category)
+    post =>
+      post &&
+      ((post.category && post.category.includes(category)) ||
+        (Array.isArray(post.tags) && post.tags.includes(category)))
   )
   // 处理文章页数
   props.postCount = props.posts.length

@@ -49,6 +49,45 @@ function getCustomsSkillSearchRedirect(req: NextRequest) {
   return NextResponse.redirect(redirectToUrl, 308)
 }
 
+// 与分类同名的标签页会和分类页争抢同一批关键词，统一 301 到分类页
+const DUPLICATE_TAG_CATEGORY_NAMES = new Set([
+  '海关数据',
+  '外贸获客',
+  'whatsapp找客户',
+  '顶易云',
+  '图灵搜'
+])
+
+function getTaxonomyRedirect(req: NextRequest) {
+  const pathname = req.nextUrl.pathname
+
+  if (!pathname.startsWith('/tag/')) {
+    return null
+  }
+
+  const rawTag = pathname.slice('/tag/'.length).replace(/\/+$/, '')
+  if (!rawTag || rawTag.includes('/')) {
+    return null
+  }
+
+  let tag = rawTag
+
+  try {
+    tag = decodeURIComponent(rawTag)
+  } catch {
+    tag = rawTag
+  }
+
+  if (!DUPLICATE_TAG_CATEGORY_NAMES.has(tag)) {
+    return null
+  }
+
+  const redirectToUrl = req.nextUrl.clone()
+  redirectToUrl.pathname = `/category/${tag}`
+  redirectToUrl.search = ''
+  return NextResponse.redirect(redirectToUrl, 301)
+}
+
 /**
  * Clerk 身份验证中间件
  */
@@ -84,6 +123,9 @@ const noAuthMiddleware = async (req: NextRequest, ev: any) => {
   const customsSkillRedirect = getCustomsSkillSearchRedirect(req)
   if (customsSkillRedirect) return customsSkillRedirect
 
+  const taxonomyRedirect = getTaxonomyRedirect(req)
+  if (taxonomyRedirect) return taxonomyRedirect
+
   if (BLOG['UUID_REDIRECT']) {
     let redirectJson: Record<string, string> = {}
     try {
@@ -117,6 +159,9 @@ const authMiddleware = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 
       const customsSkillRedirect = getCustomsSkillSearchRedirect(req)
       if (customsSkillRedirect) return customsSkillRedirect
+
+      const taxonomyRedirect = getTaxonomyRedirect(req)
+      if (taxonomyRedirect) return taxonomyRedirect
 
       const { userId } = auth()
 

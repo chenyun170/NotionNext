@@ -18,8 +18,16 @@ async function main() {
     const notionEntries = await fetchNotionSitemapEntries()
     dynamicPages = [
       ...notionEntries.posts.map(post => ({ slug: post.path, lastmod: post.lastmod })),
-      ...notionEntries.tags.map(tag => ({ slug: `tag/${tag}`, changefreq: 'weekly' })),
-      ...notionEntries.categories.map(category => ({ slug: `category/${category}`, changefreq: 'weekly' }))
+      ...notionEntries.tags.map(tag => ({
+        slug: `tag/${tag.name}`,
+        lastmod: tag.lastmod,
+        changefreq: 'weekly'
+      })),
+      ...notionEntries.categories.map(category => ({
+        slug: `category/${category.name}`,
+        lastmod: category.lastmod,
+        changefreq: 'weekly'
+      }))
     ]
   } catch (error) {
     console.warn('[sitemap] Notion 数据拉取失败，仅生成静态页 sitemap:', error.message)

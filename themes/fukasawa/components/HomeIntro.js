@@ -27,7 +27,7 @@ const fallbackTopics = [
   {
     name: '开发信与触达',
     description: '拿到目标客户后，怎么写开发信、社媒话术和跟进节奏。',
-    href: '/client-development.html',
+    href: '/foreign-trade-lead-tools.html',
     icon: 'fa-envelope-open-text'
   }
 ]
@@ -62,7 +62,7 @@ const flagshipTopics = [
     name: '开发信与触达',
     match: /开发信|触达|话术|跟进邮件|社媒|接洽/i,
     description: '拿到目标客户后，怎么写开发信、社媒话术和跟进节奏。',
-    href: '/client-development.html',
+    href: '/foreign-trade-lead-tools.html',
     preferStaticHref: true,
     icon: 'fa-envelope-open-text'
   }

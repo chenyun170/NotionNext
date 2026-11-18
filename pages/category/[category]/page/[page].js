@@ -34,7 +34,12 @@ export async function getStaticProps({ params: { category, page } }) {
   const currentPage = Number.parseInt(page, 10)
   const totalPages = Math.ceil(props.posts.length / POSTS_PER_PAGE)
   if (!Number.isInteger(currentPage) || currentPage < 1 || currentPage > totalPages) {
-    return { notFound: true }
+    return {
+      redirect: {
+        destination: `/category/${encodeURIComponent(category)}`,
+        permanent: false
+      }
+    }
   }
   // 处理分页
   props.posts = props.posts.slice(

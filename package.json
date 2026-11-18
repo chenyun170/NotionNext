@@ -49,6 +49,7 @@
     "seo-check": "node scripts/seo-health-check.js",
     "rss:generate": "node scripts/generate-static-rss.js",
     "seo:generate": "npm run sitemap:generate && npm run rss:generate && npm run llms:generate",
+    "indexnow": "node scripts/indexnow-push.js",
     "seo-jsonld": "node scripts/validate-seo-jsonld.js",
     "seo-breadcrumbs": "node scripts/apply-static-breadcrumbs.js",
     "llms:generate": "node scripts/generate-static-llms.js",

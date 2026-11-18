@@ -37,15 +37,10 @@ const ArticleFAQ = dynamic(() => import('./ArticleFAQ'), {
   loading: () => null
 })
 
-const ArticleRelatedPosts = dynamic(() => import('./ArticleRelatedPosts'), {
-  ssr: false,
-  loading: () => null
-})
-
-const ArticleAround = dynamic(() => import('./ArticleAround'), {
-  ssr: false,
-  loading: () => null
-})
+// 相关阅读和上下篇必须服务端渲染：它们是站内互链的主要来源，
+// 客户端渲染时爬虫在 HTML 里看不到这些链接。
+import ArticleRelatedPosts from './ArticleRelatedPosts'
+import ArticleAround from './ArticleAround'
 
 const ShareBar = dynamic(() => import('@/components/ShareBar'), {
   ssr: false,

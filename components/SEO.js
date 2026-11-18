@@ -774,7 +774,11 @@ const getSEOMeta = (props, router, locale) => {
         slug: post?.slug,
         image: post?.pageCoverThumbnail || `${siteInfo?.pageCover}`,
         category: Array.isArray(post?.category) ? post?.category?.[0] : post?.category,
-        tags: post?.tags
+        tags: post?.tags,
+        // 文章发布时间必须传给 SEO：结构化数据缺 datePublished 时，
+        // Google 无法判断内容新鲜度，也不会有文章日期富媒体结果。
+        publishDay: post?.publishDay,
+        lastEditedDay: post?.lastEditedDay || post?.publishDay
       }
   }
 }

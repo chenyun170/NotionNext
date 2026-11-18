@@ -13,7 +13,20 @@ const PaginationSimple = ({ page, showNext }) => {
   const { locale } = useGlobal()
   const router = useRouter()
   const currentPage = +page
-  const pagePrefix =  router.asPath.split('?')[0].replace(/\/page\/[1-9]\d*/, '').replace(/\/$/, '')
+  // 不用 router.asPath 拼接：首页在部分环境下 asPath 为 /index，
+  // 会生成 /index/page/2 这种不存在的地址。改为按路由和参数确定前缀。
+  const routeParam = value => {
+    const raw = Array.isArray(value) ? value[0] : value
+    return raw ? encodeURIComponent(raw) : ''
+  }
+  let pagePrefix = ''
+  if (router.route.startsWith('/category/')) {
+    pagePrefix = `/category/${routeParam(router.query.category)}`
+  } else if (router.route.startsWith('/tag/')) {
+    pagePrefix = `/tag/${routeParam(router.query.tag)}`
+  } else if (router.route.startsWith('/search/')) {
+    pagePrefix = `/search/${routeParam(router.query.keyword)}`
+  }
   // 只在真正可跳转时才渲染链接：否则 /page/0、/category/x/page/2 这类
   // 不存在的地址会被 Googlebot / Ahrefs 当成站内链接抓取，产生大量 404
   const showPrev = currentPage > 1

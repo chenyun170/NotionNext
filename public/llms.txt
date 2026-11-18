@@ -113,6 +113,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 
 ## Articles
 
+- [出货前对一遍：外贸单据最容易错的7个地方](https://www.123170.xyz/article/shipping-documents-checklist) — 发票、装箱单、提单、原产地证对不上，货到目的港就是一堆麻烦。这篇按品名、重量、收货人、HS编码、金额、提单七处逐项过，附一张出货前自查表。
 - [报价单上最容易漏掉的5项成本，FOB和CIF都躲不过](https://www.123170.xyz/article/fob-cif-quotation-cost-checklist) — 报价按出厂价加利润算，出货才发现港杂、拖车、报关、保险、银行费用把利润吃光。把FOB和CIF各自该算的项目列清楚，附一张报价前自查表。
 - [140届广交会采购商名录：值不值得买，买完怎么用](https://www.123170.xyz/article/canton-fair-buyer-directory-140) — 140届广交会采购商名录按28个行业卖，单行业300元、3个行业600元起、全行业2000封顶。买之前先定市场和人力，买完按四步砍到能跟的名单。
 - [海关数据导出一堆公司，为什么大部分不值得开发？](https://www.123170.xyz/article/customs-data-qualified-importers) — 海关数据导出几千家公司，真正值得跟的可能不到五十家。这篇给出四个筛选维度：最近采购时间、合作供应商数量、采购量级是否匹配你的产能、采购频次，并附一张打分表，帮你在发第一封开发信前把…

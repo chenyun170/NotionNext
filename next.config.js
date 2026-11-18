@@ -156,6 +156,11 @@ const nextConfig = {
         return [
           ...singleLocaleRedirects,
           {
+            source: '/client-development.html',
+            destination: '/foreign-trade-lead-tools.html',
+            permanent: true
+          },
+          {
             source: '/article/jiaoxue',
             destination: '/article/foreign-trade-first-lesson',
             permanent: true

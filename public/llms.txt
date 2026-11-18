@@ -114,8 +114,8 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 ## Articles
 
 - [客户说要来验厂，提前两周我会做这几件事](https://www.123170.xyz/article/factory-audit-preparation) — 客户验厂不是把车间扫一遍就完事。先问清是客户自己来看还是第三方审核，再按两周、一周、三天倒排文件、现场和人员，附一张验厂当天的时间表和几个容易翻车的地方。
-- [出货前对一遍：外贸单据最容易错的7个地方](https://www.123170.xyz/article/shipping-documents-checklist) — 发票、装箱单、提单、原产地证对不上，货到目的港就是一堆麻烦。这篇按品名、重量、收货人、HS编码、金额、提单七处逐项过，附一张出货前自查表。
-- [报价单上最容易漏掉的5项成本，FOB和CIF都躲不过](https://www.123170.xyz/article/fob-cif-quotation-cost-checklist) — 报价按出厂价加利润算，出货才发现港杂、拖车、报关、保险、银行费用把利润吃光。把FOB和CIF各自该算的项目列清楚，附一张报价前自查表。
+- [出货前对一遍：外贸单据最容易错的7个地方](https://www.123170.xyz/article/shipping-documents-checklist) — 发票、装箱单、提单、原产地证对不上，货到目的港就是一堆麻烦。这篇按品名、重量、收货人、HS编码、金额、提单七处逐项过，附一张出货前自查表，照着念一遍就能挡住大部分退单和查验。
+- [报价单上最容易漏掉的5项成本，FOB和CIF都躲不过](https://www.123170.xyz/article/fob-cif-quotation-cost-checklist) — 报价按出厂价加利润算，出货才发现港杂、拖车、报关、保险、银行费用把利润吃光。这篇把 FOB 和 CIF 各自该算的项目拆开列清楚，附一张报价前自查表，客户砍价时也能先分清是自己算错…
 - [140届广交会采购商名录：值不值得买，买完怎么用](https://www.123170.xyz/article/canton-fair-buyer-directory-140) — 140届广交会采购商名录按28个行业卖，单行业300元、3个行业600元起、全行业2000封顶。买之前先定市场和人力，买完按四步砍到能跟的名单。
 - [海关数据导出一堆公司，为什么大部分不值得开发？](https://www.123170.xyz/article/customs-data-qualified-importers) — 海关数据导出几千家公司，真正值得跟的可能不到五十家。这篇给出四个筛选维度：最近采购时间、合作供应商数量、采购量级是否匹配你的产能、采购频次，并附一张打分表，帮你在发第一封开发信前把…
 - [外贸开发信标题如何写？](https://www.123170.xyz/article/foreign-trade-email-subject) — 外贸开发信被秒删？B2B 邮件打开率由标题前 40 字符决定。本文按专业照明品牌、节日灯、家装连锁等买家类型给出可复制的英文标题，并拆解中国供应商最常踩的 3 个坑：全大写堆感叹号…
@@ -126,7 +126,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 - [外贸人都在用的“海关数据 + LinkedIn”组合开发实战（2026干货版）](https://www.123170.xyz/article/customs-data-linkedin) — 很多外贸业务员天天群发开发信、刷海关数据，结果客户没找到几个，账号还做废了。真正有效的开发，不是“疯狂找名单”，而是把海关数据和 LinkedIn 结合起来：一个负责锁定真实采购公…
 - [为什么很多外贸人做不好 LinkedIn？问题根本不在平台](https://www.123170.xyz/article/linkedin-for-export-business) — 很多外贸人天天发开发信、刷国际站，却把 LinkedIn 用成了“广告群发平台”。真正会开发客户的人，早就在用 LinkedIn 建立信任、筛选客户、经营长期关系。这篇文章聊聊 L…
 - [外贸人都在用的Facebook开发客户实战干货（2026最新版）](https://www.123170.xyz/article/facebook-waimao-zhao-ke-hu) — 2026外贸Facebook开发客户实战指南：如何通过企业主页、活跃群组和内容营销找到真实采购商？分享高转化率的实操方法和避坑技巧，帮助你低成本获客。
-- [2026外贸重点市场开拓指南：这4个区域值得重点冲一冲](https://www.123170.xyz/article/2026-waimao-kaituo) — 把 2026 年值得投入的四个区域拆开讲：各自的需求特点、进入门槛、适合什么产品，以及开发节奏怎么排。适合正在定明年市场方向的团队。
+- [2026外贸重点市场开拓指南：这4个区域值得重点冲一冲](https://www.123170.xyz/article/2026-waimao-kaituo) — 2026 年外贸该往哪几个区域使劲。这篇按市场容量、准入门槛和付款风险，拆解几个值得重点投入的市场，并说明小团队起步时先做哪一个、用什么方式切进去。
 - [外贸业务员必备的10个硬核技能：新手到老手都该好好看看](https://www.123170.xyz/article/waimao-10-hard-skills) — 外贸新人容易踩坑，老业务也常遇瓶颈？这份干货总结了外贸人真正要练的10个硬核技能，从英语沟通、客户开发、谈判技巧到风险控制、数据分析，全程实用。建议收藏，照着练，业绩和专业度都会明…
 - [客户询盘只报个价就没了？掌握这3步，让你的回复率翻倍！](https://www.123170.xyz/article/quotation-follow-up-reply-rate) — 还在为发出的报价石沉大海而苦恼？外贸回复不仅仅是给个价格，更是一场心理博弈。本文教你如何通过3个关键步骤，高情商回复客户，把“问路人”变成“下单者”。
 - [收藏！外贸老鸟私藏的全球获客地图，找客户不再迷茫](https://www.123170.xyz/article/global-lead-sourcing-map) — 今天直接给出一份外贸获客全渠道清单，涵盖了搜索引擎、黄页、B2B、社媒等所有主流工具。一、 搜索引擎：别只盯着 Google 搜索引擎是获客的“基本功”。
@@ -138,10 +138,10 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 - [别人一天开发100个客户，我靠这款谷歌地图AI神器彻底翻身](https://www.123170.xyz/article/google-map-ai-customer-development) — 别人一天开发100个客户，我靠图灵搜（Turing Search）这款谷歌地图AI神器实现了批量获客。支持AI挖掘决策人私人邮箱、在线街景考察、海关数据筛选，帮助外贸人高效开发欧美…
 - [客户WhatsApp“已读不回”？试着发这3类消息，提升50%回复](https://www.123170.xyz/article/whatsapp) — 兄弟姐妹们，做外贸的，谁还没经历过这种“至暗时刻”？ 你精心准备了报价单，满怀期待地通过WhatsApp发了过去。叮咚！手机响了，你激动地一看： 两个蓝色小对勾。✅✅ 好！客户看了…
 - [外贸客户开发：顶尖业务员如何跟进客户一年？（附邮件技巧）](https://www.123170.xyz/article/client-follow-up-year-strategy) — 你的外贸客户跟进，还在“催单”吗？ 做外贸客户开发的你，是否经常遇到这个令人沮丧的场景？ 一封满怀期待的开发信发出去，客户很快回复并索要了报价。你心中一喜，感觉订单近在咫尺。然而…
-- [外贸收款实战经验：怎么收钱既不伤感情又不被客户耍](https://www.123170.xyz/article/foreign-trade-payment-practice) — 做外贸收款最怕两件事：伤感情和被耍。本文从付款方式选择、账期设置、催款话术三个维度，分享既保护现金流又维护客户关系的实战经验。
+- [外贸收款实战经验：怎么收钱既不伤感情又不被客户耍](https://www.123170.xyz/article/foreign-trade-payment-practice) — 外贸最头疼的不是开发客户，是收钱。这篇按新客户首单、定金拖延、尾款、客户要求延期、大额订单五种情况，分别给出预付款怎么要、款怎么催、主动权怎么留住。
 - [客户下单不付款？别急，这样催既专业又不伤感情！](https://www.123170.xyz/article/order-payment-chase-professionally) — 做外贸的朋友们，你们有没有遇到过这种让人头疼的情况： PI 发过去了，客户也确认了 嘴上说着「好的好的，马上安排」 结果一周过去了，二周过去了...付。
 - [海关数据怎么玩？一篇讲清楚“怎么查、怎么看、怎么用”](https://www.123170.xyz/article/customs-data-usage-guide) — 很多人听说过海关数据，但真正能用得好、用出效果的，没几个。今天我们就从镜像数据的原理、三种客户情况的分析维度，再到如何精准搜索、常见误区和隐藏优势，一。
-- [WhatsApp越来越难用了？风控收紧下，外贸人该怎么“养号”？](https://www.123170.xyz/article/whatsapp-account-risk-control) — 你有没有发现，现在用WhatsApp开发客户越来越容易“封号”了。背后原因其实和WhatsApp在2023年全面升级的AI风控系统有关。
+- [WhatsApp越来越难用了？风控收紧下，外贸人该怎么“养号”？](https://www.123170.xyz/article/whatsapp-account-risk-control) — WhatsApp 封号越来越频繁，新号尤其危险。这篇讲封号的触发逻辑、养号该做和不该做的动作，以及团队多账号时怎么分散风险，避免一个号倒下带走全部客户。
 - [客户疯狂砍价怎么办？教你一招“假装放弃”反杀！](https://www.123170.xyz/article/price-negotiation-tactics) — 做外贸、做销售最头疼的一件事是什么？ 不是找不到客户，而是客户来了以后，一砍再砍，砍到你脸色发白、语气发冷，最后还没拿下单。 你说你这价格已经到底了，。
 - [为什么要看外国出口数据：印度、越南、墨西哥的数据能帮你做什么](https://www.123170.xyz/article/import-export-data-options) — 中国出口数据不公开，但印度、越南、墨西哥等国的出口记录是开放的。用它反查同行客户、验证海外供应商，再配合进口数据锁定买家。附选数据源的三条判断标准。
 - [美国拟对中国船只征收“航程费”，外贸航运成本或将上升](https://www.123170.xyz/article/foreign-trade) — 美国 2025 年 4 月公布对华船舶按航次收费方案：中国船东每净吨 50 美元起、三年内逐年上调，中国建造的船按每净吨 18 美元或每箱 120 美元计。这篇梳理收费口径、受影响…
@@ -152,7 +152,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 - [刚开始做SOHO外贸，这些事你得知道！](https://www.123170.xyz/article/soho-foreign-trade-basics) — 想做外贸SOHO，先搞明白这几个问题： 1. SOHO并不简单 很多人听到“SOHO外贸”这个词，都会觉得这是一条“轻松、低成本”的创业路。
 - [外贸成功的关键，先得找准“自己的位置”！](https://www.123170.xyz/article/foreign-trade-positioning) — 外贸做得久，不等于位置站得对。这篇让你先回答三个问题：卖什么、卖给谁、客户凭什么记住你。定位不清楚，开发信、投放和展会都只是在放大错误。文章给出一套小工厂和贸易商都能用的定位梳理方…
 - [外贸SOHO：注册公司和找代理，你必须知道的几个问题！](https://www.123170.xyz/article/soho-registration-and-agents) — 很多外贸人都想过做SOHO，自己在家做外贸，想做就做，想休息就休息。但是，做SOHO之前有一些问题需要搞清楚，特别是关于是否需要注册公司和找代理的问题。
-- [报价那些事：怎么用报价赢得客户的信任？](https://www.123170.xyz/article/quotation-trust) — 比如： • 产品单价直接写清楚，用的是FOB价还是CIF价，省得客户问来问去。比如，有些客户希望调整付款比例，从预付50%改成30%。
+- [报价那些事：怎么用报价赢得客户的信任？](https://www.123170.xyz/article/quotation-trust) — 报价不只是给个价格。这篇讲怎么用报价单的结构、条款和回复节奏建立专业感，让客户在比价阶段就把你归到"可以谈"的那一档，而不是只记一个最便宜的号码。
 - [如何有效开发外贸客户：实用的技巧和建议](https://www.123170.xyz/article/client-development-tips) — 客户早就不只在展会上找供应商了。这篇讲怎么用 LinkedIn、Facebook、Instagram 和 TikTok 找到采购负责人，从主页判断公司规模，再用一条不尴尬的私信建立…
 - [外贸谈判不再难，这些技巧真的有用](https://www.123170.xyz/article/negotiation-practical-tips) — 谈到外贸谈判，很多人脑袋里立马浮现的是各种“术语”与“技巧”，但真到了和客户交谈时，却发现事情没那么简单。其实，谈判这事儿没你想的那么高深，不用一上来。
 - [外贸客户跟进的创新策略：突破“冷场”期，提升转化率](https://www.123170.xyz/article/innovative-client-follow-up) — 51.9KB 640.jpg https://prod-files-secure.s3.us-west-2.amazonaws.com/f861539。
@@ -167,7 +167,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 - [外贸的秘诀：从零开始，如何在产品、沟通与谈判中找到平衡](https://www.123170.xyz/article/foreign-trade-zero-balance) — 当提到外贸业务员的理想状态，很多人会说：理想的员工应当具备全面的能力——产品知识丰富，价格有竞争力，服务专业，谈判能力一流，且英语流利。这无疑是每个公。
 - [如何有效地跟进外贸客户：技巧与案例分享](https://www.123170.xyz/article/client-follow-up-cases) — 在外贸行业中，很多业务员都有这样的经历：客户在展会上表现得很感兴趣，但展会后无论怎么跟进都石沉大海；报价时客户积极回应，但价格报出后再无下文；甚至连P。
 - [新鲜出炉，外贸人想要的第136届广交会采购数据都在这里](https://www.123170.xyz/article/canton-fair-buyer-data) — 没有时间参展的外贸朋友，可以好好利用起来
-- [whatsapp这么用，订单接到手软！！！](https://www.123170.xyz/article/whatsapp-order-tips) — WhatsApp 具有很强的开放性，我们不需要添加对方，不需要好友验证通过，一个电话号码就可以直接给用户发送信息，取得联系。
+- [whatsapp这么用，订单接到手软！！！](https://www.123170.xyz/article/whatsapp-order-tips) — WhatsApp 不是发完货就完事。这篇讲怎么用视频、产品图和多轮对话把询盘推到下单，哪些话该在什么时候说，群发为什么反而会把客户发跑，以及日常该维护哪几个动作。
 - [别人一天开发100个客户，你还在手动搜索？这款神器帮你搞定](https://www.123170.xyz/article/dingyicloud-customer-development) — 顶易云是网页端的客户搜索和邮件群发工具，适合品类稳定、需要批量触达的外贸团队。这篇讲客户搜索、海外邮、CRM 三个模块怎么配合，和海关数据如何分工，以及群发前必须做的名单清洗，避免…
 - [图灵搜](https://www.123170.xyz/article/turingsearch-intro) — 图灵搜接的是地图和 POI 数据，按国家、城市、商圈圈定范围，把周边商户和公司批量拉成名单。这篇讲它适合哪些品类、导出的名单怎么清洗、和海关数据怎么交叉验证，以及哪些行业其实用不上…
 

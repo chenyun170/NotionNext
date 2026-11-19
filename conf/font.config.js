@@ -52,7 +52,7 @@ module.exports = {
   ],
   FONT_AWESOME:
     process.env.NEXT_PUBLIC_FONT_AWESOME_PATH ||
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' // font-awesome 字体图标地址; 可选 /css/all.min.css ， https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css
+    '/css/all.min.css' // 本地 Font Awesome（public/css + public/webfonts），避免国内访问 cdnjs 失败导致图标变方块
 
   // END ************网站字体*****************
 }

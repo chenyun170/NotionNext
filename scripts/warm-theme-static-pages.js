@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const files = ['about.html','customs-data-skill.html','customs-data.html','faq.html','oraskl.html','skill-stats.html','tools.html'];
+const files = ['about.html','customs-data-skill.html','customs-data.html','faq.html','oraskl.html','tools.html'];
 const map = {
   '#2563eb': '#b97a52',
   '#1d4ed8': '#a0653f',

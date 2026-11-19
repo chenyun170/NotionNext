@@ -1,4 +1,4 @@
-$files = @('about.html','customs-data-skill.html','customs-data.html','faq.html','oraskl.html','skill-stats.html','tools.html')
+$files = @('about.html','customs-data-skill.html','customs-data.html','faq.html','oraskl.html','tools.html')
 $map = @{
   '#2563eb' = '#b97a52'
   '#1d4ed8' = '#a0653f'

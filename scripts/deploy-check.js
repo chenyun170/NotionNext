@@ -295,7 +295,6 @@ const urlChecks = [
     name: '诊断页隐私提示',
     contains: ['隐私提示', '第三方 AI 诊断接口', '密码', '报价底价', '客户隐私', '还没有客户名单', '继续做开发信诊断']
   },
-  { path: '/skill-stats.html', name: '统计看板页面', contains: ['noindex'] },
   { path: '/api/sidebar-tools', name: '侧栏工具接口', contains: ['"ok":true'] }
 ]
 

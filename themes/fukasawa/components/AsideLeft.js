@@ -42,9 +42,6 @@ function AsideLeft(props) {
   const sidebarDescription =
     siteInfo?.description || getConfigValue(global, 'DESCRIPTION', '')
   const subPath = getConfigValue(global, 'SUB_PATH', '')
-  const showStatsLink = parseConfigBoolean(
-    getConfigValue(global, 'FUKASAWA_SHOW_STATS_LINK', false)
-  )
 
   // 圣诞氛围逻辑
   const now = new Date()
@@ -163,14 +160,6 @@ function AsideLeft(props) {
           <div className="mt-4 flex flex-col border-t border-dashed border-stone-200 pt-4 dark:border-stone-800">
             <MenuList {...props} />
           </div>
-          {showStatsLink && (
-            <div className="mt-4 grid gap-2 border-t border-dashed border-stone-200 pt-4 dark:border-stone-800">
-              <a href="/skill-stats.html" className="flex items-center justify-between rounded-xl border border-dashed border-stone-200 bg-stone-50 px-3 py-2 text-xs font-bold text-stone-600 transition hover:border-orange-300 hover:text-orange-600 dark:border-stone-800 dark:bg-stone-950/30 dark:text-stone-300 dark:hover:border-orange-700 dark:hover:text-orange-300">
-                <span><i className="fas fa-chart-line mr-2 text-stone-500"></i>点击看板</span>
-                <i className="fas fa-arrow-right text-[10px] text-stone-400"></i>
-              </a>
-            </div>
-          )}
           </section>
 
           {/* 侧边栏热度标签云 */}
@@ -302,18 +291,6 @@ const getConfigValue = (global, key, defaultValue) => {
     BLOG?.[key] ??
     defaultValue
   )
-}
-
-const parseConfigBoolean = value => {
-  if (typeof value === 'boolean') {
-    return value
-  }
-
-  if (typeof value === 'string') {
-    return value === 'true'
-  }
-
-  return Boolean(value)
 }
 
 export default AsideLeft

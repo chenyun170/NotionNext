@@ -101,12 +101,12 @@ const FloatButton = () => {
   const strokeDashoffset = circumference - (scrollProgress / 100) * circumference
 
   return (
-    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[80] flex flex-col items-center space-y-4 print:hidden md:bottom-7 md:right-9 md:space-y-5 lg:bottom-8 lg:right-10">
+    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[80] flex flex-col items-center gap-4 print:hidden md:bottom-7 md:right-9 md:gap-5 lg:bottom-8 lg:right-[calc(var(--fuka-sidebar-w,20rem)+0.5rem)]">
       
       {/* 1. 返回顶部按钮 - 加进度圆环 */}
       <div 
         onClick={scrollToTop}
-        className={`mb-10 w-12 h-12 bg-white/90 backdrop-blur-md text-stone-500 rounded-full flex items-center justify-center cursor-pointer shadow-md hover:text-stone-800 transition-all duration-500 border border-stone-200 group relative ${showScrollTop && !showPopup ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+        className={`w-12 h-12 bg-white/90 backdrop-blur-md text-stone-500 rounded-full flex items-center justify-center cursor-pointer shadow-md hover:text-stone-800 transition-all duration-500 border border-stone-200 group relative ${showScrollTop && !showPopup ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
       >
         {/* 进度圆环背景 */}
         <svg 
@@ -158,7 +158,7 @@ const FloatButton = () => {
 
       {/* 2. 礼品包悬浮球区域 */}
       {!giftDismissed && giftReady && (
-      <div className="group relative flex flex-col items-center">
+      <div className="group relative flex flex-col items-center lg:hidden xl:flex">
         {showPopup && (
           <div className="absolute bottom-16 right-0 w-56 max-w-[calc(100vw-2rem)] bg-white dark:bg-stone-900 rounded-xl md:rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-700 p-4 md:p-5 text-stone-900 dark:text-stone-100 transition-all transform scale-100 origin-bottom-right animate__animated animate__fadeInUp">
             <button

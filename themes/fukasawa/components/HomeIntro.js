@@ -95,9 +95,9 @@ const HomeIntro = ({ categoryOptions = [] }) => {
           <span>123170.xyz · Foreign Trade Intelligence</span>
         </div>
 
-        <div className='grid gap-5 lg:grid-cols-[minmax(0,1fr)_240px] lg:items-center'>
+        <div className='grid gap-5 xl:grid-cols-[minmax(0,1fr)_240px] xl:items-center'>
           <div className='min-w-0 max-w-[326px] sm:max-w-none'>
-            <h1 className='max-w-3xl break-words text-[30px] font-bold leading-[1.15] tracking-[-0.02em] text-stone-950 [overflow-wrap:anywhere] dark:text-stone-50 sm:text-[44px] sm:leading-[1.08]'>
+            <h1 className='max-w-3xl text-[30px] font-bold leading-[1.15] tracking-[-0.02em] text-stone-950 [overflow-wrap:normal] [text-wrap:balance] dark:text-stone-50 sm:text-[2.5rem] sm:leading-[1.12] lg:text-[2.35rem] xl:text-[2.75rem]'>
               外贸获客情报局：查谁在进口你的产品
             </h1>
             <p className='mt-5 max-w-2xl break-words text-[15px] font-normal leading-8 text-stone-500 dark:text-stone-400'>
@@ -199,14 +199,14 @@ const HomeIntro = ({ categoryOptions = [] }) => {
         </div>
       </div>
 
-      <div className='mt-10 grid gap-4 border-t border-stone-200 dark:border-stone-800 md:grid-cols-4'>
+      <div className='mt-10 grid gap-4 border-t border-stone-200 pt-6 dark:border-stone-800 sm:grid-cols-2 xl:grid-cols-4'>
         {topics.map(topic => {
           const TopicLink = topic.href?.endsWith('.html') ? 'a' : SmartLink
           return (
             <TopicLink
               key={topic.name}
               href={topic.href}
-              className='group block min-h-[112px] min-w-0 rounded-lg border border-stone-200 bg-white p-5 transition-colors dark:border-stone-800 dark:bg-stone-900/60 md:border-b-0 md:border-r last:md:border-r-0'
+              className='group block min-h-[112px] min-w-0 rounded-lg border border-stone-200 bg-white p-5 transition-colors hover:border-stone-300 dark:border-stone-800 dark:bg-stone-900/60 dark:hover:border-stone-700'
             >
               <div className='mb-3 flex items-center justify-between'>
                 <span className='flex h-8 w-8 items-center justify-center text-sm text-stone-400 transition-colors group-hover:text-stone-800 dark:text-stone-500 dark:group-hover:text-stone-200'>

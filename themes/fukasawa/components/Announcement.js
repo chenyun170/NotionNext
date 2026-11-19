@@ -10,91 +10,9 @@ import { useState, useEffect, useRef } from 'react'
 
 const LazyNotionContent = dynamic(() => import('./LazyNotionContent'))
 
-const FLOATING_AD_DISMISS_KEY = 'fukasawa_floating_activity_dismissed_at'
-const FLOATING_AD_DISMISS_DAYS = 3
-const FLOATING_AD_DISMISS_MS = FLOATING_AD_DISMISS_DAYS * 24 * 60 * 60 * 1000
-
 // 活动提醒整体关闭：24 小时内不再显示
 const ANNOUNCEMENT_DISMISS_KEY = 'fukasawa_activity_announcement_dismissed_at'
 const ANNOUNCEMENT_DISMISS_MS = 24 * 60 * 60 * 1000
-
-/**
- * 悬浮活动卡片 - 毛玻璃版
- */
-const FloatingActivityCard = ({ config, isActive, isVisible, onDismiss }) => {
-  if (!isActive) return null
-
-  return (
-    <div
-      className={`floating-activity-card fixed bottom-48 right-6 z-[70] w-72 transition-all duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${
-        isVisible
-          ? 'translate-x-0 opacity-100'
-          : 'translate-x-[400px] opacity-0 pointer-events-none'
-      }`}
-    >
-      {/* 悬浮促销卡：实色暖橙，比侧栏更抢眼 */}
-      <div className='relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-6 shadow-[0_18px_50px_rgba(28,25,23,0.18)] dark:border-stone-700 dark:bg-stone-900'>
-        <div
-          className='pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/20 blur-xl'
-          aria-hidden='true'
-        />
-        <div
-          className='pointer-events-none absolute -bottom-8 -left-4 h-20 w-20 rounded-full bg-stone-300/40 blur-lg'
-          aria-hidden='true'
-        />
-        <button
-          type='button'
-          aria-label='关闭工具入口'
-          onClick={() => {
-            try {
-              window.localStorage.setItem(
-                FLOATING_AD_DISMISS_KEY,
-                Date.now().toString()
-              )
-            } catch (e) {
-              console.warn('[FloatingActivityCard] localStorage failed:', e)
-            }
-            onDismiss()
-          }}
-          className='absolute right-2 top-2 z-[60] flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/25 text-[11px] text-white shadow-sm transition hover:bg-white/40 active:scale-95'
-        >
-          <i className='fas fa-times' aria-hidden='true' />
-        </button>
-
-        {/* 内容区域 */}
-        <div className='relative z-10'>
-
-          <h3 className='mb-2 text-sm font-black leading-tight text-stone-950 dark:text-stone-50'>
-            {config.title || '图灵搜免费体验'}
-          </h3>
-
-          <p className='mb-4 text-[11px] leading-relaxed text-stone-600 dark:text-stone-400'>
-            {config.floatingDescription ||
-              '找到客户后，先用数据确认它是不是真的在买。'}
-          </p>
-
-          <a
-            href={config.link}
-            target='_blank'
-            rel='sponsored noopener noreferrer'
-            onClick={() =>
-              trackToolOutboundClick({
-                source: config.trackSource,
-                target: config.link,
-                tool: config.tool,
-                sourceGroup: 'activity'
-              })
-            }
-            className='inline-flex w-full items-center justify-center rounded-lg bg-stone-950 py-2.5 text-xs font-bold text-white shadow-none transition hover:bg-stone-700 active:scale-[0.98]'
-          >
-            {config.buttonText || '去看看'}{' '}
-            <i className='fas fa-arrow-right ml-1'></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 /**
  * 侧边栏内嵌活动卡片
@@ -139,7 +57,7 @@ const InlineActivityCard = ({ config, isActive }) => {
             sourceGroup: 'activity'
           })
         }
-        className={`brand-btn ml-10 mt-3 px-3 py-1.5 text-[11px] font-bold shadow-sm ${config.buttonClass}`}
+        className={`brand-btn ml-10 mt-3 whitespace-nowrap px-3 py-1.5 text-[11px] font-bold shadow-sm ${config.buttonClass}`}
       >
         {config.buttonText} →
       </a>
@@ -153,7 +71,6 @@ const activityConfigs = {
     title: '图灵搜',
     productName: '图灵搜',
     description: '双十一活动，查看活动方案与优惠信息。',
-    floatingDescription: '图灵搜双十一活动：查看活动方案与优惠信息。',
     emoji: '🎯',
     link: 'https://h.topeasysoft.com/20261111tls/index.html?i=BB54F6#pricing',
     tool: 'turingsearch',
@@ -168,14 +85,14 @@ const activityConfigs = {
     topBarClass: 'bg-stone-700',
     buttonClass: 'brand-btn-primary',
     icon: 'fas fa-gift',
-    animation: 'animate-bounce'
+    animation: 'animate-bounce',
+    // 活动结束后侧栏卡片和悬浮卡自动消失，避免过期文案长期挂着
+    deadline: new Date('2026-11-30T23:59:59+08:00')
   },
   activity2: {
     title: '顶易云',
     productName: '顶易云',
     description: '双十一活动，查看活动方案与优惠信息。',
-    floatingDescription:
-      '顶易云双十一活动：查看活动方案与优惠信息。',
     emoji: '🔎',
     link: 'https://h.topeasysoft.com/20261111dyy/index.html?i=BB54F6',
     tool: 'dingyiyun',
@@ -190,7 +107,8 @@ const activityConfigs = {
     topBarClass: 'bg-stone-700',
     buttonClass: 'brand-btn-primary',
     icon: 'fas fa-fire',
-    animation: 'animate-pulse'
+    animation: 'animate-pulse',
+    deadline: new Date('2026-11-30T23:59:59+08:00')
   }
 }
 
@@ -207,28 +125,8 @@ const getActiveActivities = () => {
 const Announcement = ({ post, className }) => {
   const { locale } = useGlobal()
   const [activities, setActivities] = useState(getActiveActivities)
-  const [floatingVisible, setFloatingVisible] = useState(false)
-  const [floatingDismissed, setFloatingDismissed] = useState(false)
   const [announcementDismissed, setAnnouncementDismissed] = useState(false)
   const announcementRef = useRef(null)
-
-  useEffect(() => {
-    try {
-      const dismissedAt = Number(
-        window.localStorage.getItem(FLOATING_AD_DISMISS_KEY)
-      )
-      const stillDismissed =
-        dismissedAt && Date.now() - dismissedAt < FLOATING_AD_DISMISS_MS
-
-      if (stillDismissed) {
-        setFloatingDismissed(true)
-      } else {
-        window.localStorage.removeItem(FLOATING_AD_DISMISS_KEY)
-      }
-    } catch (error) {
-      console.warn('Failed to read floating activity dismiss state:', error)
-    }
-  }, [])
 
   // 读取活动提醒整体关闭状态（24 小时内不再显示）
   useEffect(() => {
@@ -254,42 +152,6 @@ const Announcement = ({ post, className }) => {
 
     return () => clearInterval(timer)
   }, [])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!announcementRef.current) return
-      const announcementRect = announcementRef.current.getBoundingClientRect()
-
-      // 当侧边栏内的活动卡片滚出视野后显示悬浮版
-      const isOutOfView = announcementRect.bottom < 0
-
-      // 不限制屏幕宽度：移动端只要滚动也会显示悬浮活动卡
-      setFloatingVisible(
-        !floatingDismissed &&
-          isOutOfView &&
-          (activities.activity1 || activities.activity2)
-      )
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [activities, floatingDismissed])
-
-  const dismissFloatingAd = () => {
-    setFloatingVisible(false)
-    setFloatingDismissed(true)
-    trackSiteInteraction({
-      source: 'activity_floating_dismiss',
-      sourceGroup: 'activity',
-      action: 'dismiss_activity_ad'
-    })
-
-    try {
-      window.localStorage.setItem(FLOATING_AD_DISMISS_KEY, String(Date.now()))
-    } catch (error) {
-      console.warn('Failed to save floating activity dismiss state:', error)
-    }
-  }
 
   const dismissAnnouncement = () => {
     setAnnouncementDismissed(true)
@@ -360,15 +222,8 @@ const Announcement = ({ post, className }) => {
         </section>
       </div>
 
-      {/* 悬浮活动卡片 - 仅在活动有效且滚动到下方时显示 */}
-      {activities.activity1 && (
-        <FloatingActivityCard
-          config={activityConfigs.activity1}
-          isActive={activities.activity1}
-          isVisible={floatingVisible}
-          onDismiss={dismissFloatingAd}
-        />
-      )}
+      {/* 悬浮活动卡片：侧栏卡片和手机端跑马灯已经覆盖同一内容，
+          这里不再叠加，避免遮住正文与右下角按钮 */}
     </>
   )
 }

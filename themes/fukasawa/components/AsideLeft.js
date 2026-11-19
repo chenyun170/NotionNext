@@ -48,6 +48,15 @@ function AsideLeft(props) {
   const month = now.getMonth() + 1
   const showFestive = month >= 11 || month <= 1
 
+  // 折叠状态同步到根节点：悬浮按钮、桌面导航靠这个变量避让
+  useEffect(() => {
+    const root = document.getElementById('theme-fukasawa')
+    if (root) {
+      root.classList.toggle('fuka-sidebar-collapsed', isCollapsed)
+      root.classList.toggle('fuka-layout-reverse', isReverse)
+    }
+  }, [isCollapsed, isReverse])
+
   useEffect(() => {
     setIsCollapse(localStorage.getItem('fukasawa-sidebar-collapse') === 'true')
     const timer = setInterval(() => {
@@ -69,9 +78,9 @@ function AsideLeft(props) {
     updateDarkMode(!isDarkMode)
   }
 
-  const btnPosition = isCollapsed 
-    ? (isReverse ? 'right-4' : 'left-4') 
-    : (isReverse ? 'right-[18.5rem]' : 'left-[18.5rem]')
+  const btnPosition = isCollapsed
+    ? (isReverse ? 'right-4' : 'left-4')
+    : (isReverse ? 'right-[16.5rem] xl:right-[18.5rem]' : 'left-[16.5rem] xl:left-[18.5rem]')
 
   return (
     <React.Fragment>
@@ -87,7 +96,7 @@ function AsideLeft(props) {
       </button>
 
       {/* 侧边栏主体 */}
-      <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-80'} duration-500 transition-all bg-[#f7f5f1] dark:bg-[#161412] min-h-screen hidden lg:block z-30 border-r border-stone-200/80 dark:border-stone-900 shadow-[8px_0_28px_rgba(15,15,15,0.06)] dark:shadow-[8px_0_28px_rgba(0,0,0,0.24)]`}>
+      <div className={`sideLeft relative ${isCollapsed ? 'w-0' : 'w-[18rem] xl:w-80'} duration-500 transition-all bg-[#f7f5f1] dark:bg-[#161412] min-h-screen hidden lg:block z-30 border-r border-stone-200/80 dark:border-stone-900 shadow-[8px_0_28px_rgba(15,15,15,0.06)] dark:shadow-[8px_0_28px_rgba(0,0,0,0.24)]`}>
         <div className={`h-full no-scrollbar overflow-y-auto flex flex-col transition-all duration-500 ${isCollapsed ? 'opacity-0 invisible' : 'opacity-100 px-6 py-8'}`}>
 
           {/* Logo 区域 */}

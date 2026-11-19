@@ -76,11 +76,13 @@ const Style = () => {
     #article-wrapper .flex-nowrap a,
     .subpixel-antialiased .flex-nowrap a,
     .tag-item-mini {
-        padding: 2px 8px !important;    
-        font-size: 11px !important;     
-        min-width: fit-content !important; 
+        padding: 5px 10px !important;
+        font-size: 12px !important;
+        min-width: fit-content !important;
+        min-height: 30px !important;
         line-height: 1.4 !important;
-        border-radius: 4px !important;   
+        border-radius: 6px !important;
+        letter-spacing: 0.02em !important;
     }
 
     /* --- 5. 响应式布局与锁定 --- */
@@ -108,7 +110,13 @@ const Style = () => {
         --fuka-shadow: 0 1px 2px rgba(23, 23, 23, 0.06);
         --fuka-title-font: 'PingFang SC', 'Noto Serif SC', 'Songti SC', SimSun, serif;
         --fuka-body-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        /* 侧栏实际宽度：折叠时由 AsideLeft 切到 0，悬浮按钮和桌面导航据此避让 */
+        --fuka-sidebar-w: 18rem;
     }
+    @media (min-width: 1280px) {
+        #theme-fukasawa { --fuka-sidebar-w: 20rem; }
+    }
+    #theme-fukasawa.fuka-sidebar-collapsed { --fuka-sidebar-w: 0px; }
     #theme-fukasawa .bg-\[\#faf6f0\] { background-color: var(--fuka-bg) !important; }
     #theme-fukasawa .bg-white { background-color: var(--fuka-surface) !important; }
     #theme-fukasawa .text-stone-900,

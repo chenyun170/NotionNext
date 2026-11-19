@@ -35,68 +35,60 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
   return (
     <article
       {...aosProps}
-      style={{ maxHeight: '65rem' }}
-      className='group flex w-full flex-col gap-5 rounded-xl border border-stone-200 bg-white p-5 shadow-[0_1px_2px_rgba(23,23,23,0.06)] transition-all duration-300 hover:border-stone-300 dark:border-stone-800 dark:bg-stone-900 md:flex-row md:gap-6'
+      className='group flex h-full w-full flex-col overflow-hidden rounded-xl border border-stone-200 bg-white shadow-[0_1px_2px_rgba(23,23,23,0.06)] transition-all duration-300 hover:border-stone-300 hover:shadow-[0_10px_30px_rgba(23,23,23,0.08)] dark:border-stone-800 dark:bg-stone-900 dark:hover:border-stone-700'
     >
-      <div className='flex w-full flex-col md:flex-row md:items-start'>
-        {/* 封面图部分：锁定比例 16:10 */}
-        {showPageCover && (
-          <SmartLink href={post?.href} passHref legacyBehavior>
-            <div className='relative w-full shrink-0 cursor-pointer overflow-hidden md:w-[38%] md:pt-[24%]'>
-              <LazyImage
-                src={pageCoverThumbnail}
-                alt={post?.title || siteConfig('TITLE')}
-                width={640}
-                height={400}
-                className='absolute left-0 top-0 h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-[1.03]'
-              />
-              {/* 图片遮罩：暗色模式下降低亮度 */}
-              <div className='absolute inset-0 bg-black opacity-0 dark:group-hover:opacity-10 transition-opacity duration-300'></div>
-            </div>
+      {/* 封面整幅置顶：两列卡片高度一致，滚动时不再出现锯齿 */}
+      {showPageCover && (
+        <SmartLink href={post?.href} passHref legacyBehavior>
+          <div className='relative aspect-[16/9] w-full shrink-0 cursor-pointer overflow-hidden bg-stone-100 dark:bg-stone-800'>
+            <LazyImage
+              src={pageCoverThumbnail}
+              alt={post?.title || siteConfig('TITLE')}
+              width={640}
+              height={360}
+              className='absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-[1.03]'
+            />
+            <div className='absolute inset-0 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-10' />
+          </div>
+        </SmartLink>
+      )}
+
+      <div className='flex flex-1 flex-col px-5 pb-5 pt-4'>
+        <h2 className='mb-2'>
+          <SmartLink
+            passHref
+            href={post?.href}
+            className='line-clamp-2 cursor-pointer break-words text-[19px] font-semibold leading-snug tracking-tight text-stone-900 transition-colors duration-200 hover:text-stone-500 dark:text-stone-100 dark:hover:text-stone-300'
+          >
+            {siteConfig('POST_TITLE_ICON') && (
+              <NotionIcon icon={post.pageIcon} />
+            )}{' '}
+            {post.title}
           </SmartLink>
+        </h2>
+
+        {(!showPreview || showSummary) && (
+          <main className='mb-4 line-clamp-2 text-sm font-normal leading-7 text-stone-500 dark:text-stone-400'>
+            {post.summary}
+          </main>
         )}
 
-        {/* 文字内容部分 */}
-        <div className={`flex w-full flex-col px-0 py-1 md:px-1 ${showPageCover ? 'flex-grow' : ''}`}>
-          {/* 标题 */}
-          <h2 className='mb-2'>
+        <div className='mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-stone-200 pt-3 dark:border-stone-800'>
+          {post.category && (
             <SmartLink
+              href={`/category/${post.category}`}
               passHref
-              href={post?.href}
-              className={`line-clamp-2 break-words cursor-pointer text-xl font-semibold leading-snug tracking-tight text-stone-900 transition-colors duration-200 hover:text-stone-500 dark:text-stone-100 dark:hover:text-stone-300`}
+              className='flex items-center text-xs font-medium text-stone-400 transition-colors hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300'
             >
-              {siteConfig('POST_TITLE_ICON') && (
-                <NotionIcon icon={post.pageIcon} />
-              )}{' '}
-              {post.title}
+              <i className='mr-1.5 far fa-folder-open' />
+              {post.category}
             </SmartLink>
-          </h2>
-
-          {/* 摘要：强制 2 行，保持卡片整齐 */}
-          {(!showPreview || showSummary) && (
-            <main className='mb-5 line-clamp-3 text-sm font-normal leading-7 text-stone-500 dark:text-stone-400'>
-              {post.summary}
-            </main>
           )}
 
-          {/* 底部：分类 & 标签 */}
-          <div className='mt-auto flex items-center justify-between border-t border-stone-200 pt-3 dark:border-stone-800'>
-            {post.category && (
-              <SmartLink
-                href={`/category/${post.category}`}
-                passHref
-                className='flex items-center text-xs text-stone-400 transition-colors hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300'
-              >
-                <i className='mr-1.5 far fa-folder-open' />
-                {post.category}
-              </SmartLink>
-            )}
-            
-            <div className='flex flex-wrap gap-1 justify-end'>
-              {post.tagItems?.slice(0, 2).map(tag => (
-                <TagItemMini key={tag.name} tag={tag} />
-              ))}
-            </div>
+          <div className='flex flex-wrap justify-end gap-1'>
+            {post.tagItems?.slice(0, 2).map(tag => (
+              <TagItemMini key={tag.name} tag={tag} />
+            ))}
           </div>
         </div>
       </div>

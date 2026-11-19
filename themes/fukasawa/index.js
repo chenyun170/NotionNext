@@ -48,6 +48,8 @@ import BlogListPage from './components/BlogListPage'
 import BlogListScroll from './components/BlogListScroll'
 import BlogArchiveItem from './components/BlogPostArchive'
 import Header from './components/Header'
+import DesktopTopNav from './components/DesktopTopNav'
+import SiteFooter from './components/SiteFooter'
 import HomeFeaturedLinks from './components/HomeFeaturedLinks'
 import HomeIntro from './components/HomeIntro'
 import SearchResourceLinks from './components/SearchResourceLinks'
@@ -119,23 +121,28 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
       {onLoading && <LoadingCover />} 
         <Style />
         <Header {...props} />
+        <DesktopTopNav reverse={layoutReverse} />
 
         <div className={`flex ${layoutReverse ? 'flex-row-reverse' : ''}`}>
           <AsideLeft {...props} slot={leftAreaSlot} />
 
-          <main 
-            id='wrapper' 
-            className='relative flex-1 flex w-full py-8 justify-center bg-[#f7f5f1] dark:bg-[#161412]'
+          <main
+            id='wrapper'
+            className='relative flex w-full flex-1 justify-center bg-[#f7f5f1] dark:bg-[#161412]'
           >
-            <div id='container-inner' className={containerClassName}>
-              <div className='w-full'>
-                {headerSlot && <div>{headerSlot}</div>}
-                <div className='min-h-[60vh]'>{children}</div>
+            <div className='flex w-full flex-col items-center'>
+              <div id='container-inner' className={`${containerClassName} py-8`}>
+                <div className='w-full'>
+                  {headerSlot && <div>{headerSlot}</div>}
+                  <div className='min-h-[60vh]'>{children}</div>
+                </div>
+
+                <div className='mt-8 rounded-xl overflow-hidden'>
+                  <AdSlot type='native' />
+                </div>
               </div>
 
-              <div className='mt-8 rounded-xl overflow-hidden'>
-                <AdSlot type='native' />
-              </div>
+              <SiteFooter />
             </div>
           </main>
         </div>
@@ -144,10 +151,11 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
         <AlgoliaSearchModal cRef={searchModal} {...props} />
 
         {/* AI 参谋按钮 - 手机端左下角 */}
-        <div className="lg:hidden fixed left-4 bottom-6 z-[70]">
+        <div className="lg:hidden fixed left-4 bottom-5 z-[60]">
           <button
             onClick={() => setIsChatOpen(true)}
-            className="flex h-14 w-14 items-center justify-center rounded-full border border-white/60 bg-stone-950 text-white shadow-2xl ring-2 ring-white/30 backdrop-blur-xl active:scale-90 transition-transform dark:border-stone-700 dark:bg-stone-700 dark:ring-stone-600"
+            aria-label="打开 AI 参谋"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/60 bg-stone-950 text-white shadow-xl ring-2 ring-white/30 backdrop-blur-xl active:scale-90 transition-transform dark:border-stone-700 dark:bg-stone-700 dark:ring-stone-600"
           >
             <i className="fas fa-robot text-base"></i>
             <span className="sr-only">AI 参谋</span>

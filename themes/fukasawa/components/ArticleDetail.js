@@ -66,7 +66,7 @@ export default function ArticleDetail(props) {
   return (
     <div
       id='container'
-      className={`${fullWidth ? 'px-10' : 'max-w-5xl '} overflow-x-auto flex-grow mx-auto w-screen md:w-full`}>
+      className={`${fullWidth ? 'px-10' : 'max-w-5xl '} flex-grow mx-auto w-full overflow-x-hidden`}>
       <ArticleReadingProgress />
 {/* 修改后的文章封面部分 */}
 {post?.type && post?.type !== 'Page' && post?.pageCover && (
@@ -87,12 +87,12 @@ export default function ArticleDetail(props) {
       <article
         itemScope
         itemType='https://schema.org/BlogPosting'
-        className='subpixel-antialiased overflow-y-hidden bg-white px-5 py-10 dark:border-stone-700 dark:bg-stone-900 md:px-32 lg:pt-24'>
+        className='subpixel-antialiased overflow-y-hidden bg-white px-5 py-9 dark:border-stone-700 dark:bg-stone-900 md:px-14 md:py-10 lg:px-20 lg:pt-16 xl:px-32 xl:pt-24'>
         <meta itemProp='datePublished' content={post?.publishDate} />
         <meta itemProp='dateModified' content={post?.lastEditedDate || post?.publishDate} />
         <header className='mb-8 border-b border-dashed border-stone-200 pb-6 dark:border-stone-800 sm:mb-10 sm:pb-8'>
           {/* 文章Title */}
-          <h1 itemProp='headline' className='max-w-4xl text-[2rem] font-black leading-tight tracking-tight text-black dark:text-white sm:text-4xl md:text-5xl'>
+          <h1 itemProp='headline' className='max-w-4xl text-[1.85rem] font-black leading-[1.25] tracking-tight text-black [overflow-wrap:normal] [text-wrap:balance] dark:text-white sm:text-[2.25rem] sm:leading-[1.2] lg:text-[2.4rem] xl:text-[2.75rem]'>
             {showTitleIcon && (
               <NotionIcon icon={post?.pageIcon} />
             )}
@@ -106,7 +106,7 @@ export default function ArticleDetail(props) {
                   <SmartLink
                     href={`/category/${post.category}`}
                     passHref
-                    className='inline-flex cursor-pointer items-center rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 font-medium text-stone-600 transition hover:border-stone-300 hover:text-black dark:border-stone-800 dark:bg-stone-900/70 dark:text-stone-300 dark:hover:text-white sm:px-3'>
+                    className='inline-flex min-h-[32px] cursor-pointer items-center rounded-full border border-stone-200 bg-stone-50 px-3 py-1.5 font-medium text-stone-600 transition hover:border-stone-300 hover:text-black dark:border-stone-800 dark:bg-stone-900/70 dark:text-stone-300 dark:hover:text-white'>
                     <i className='mr-1 fas fa-folder-open' />
                     {post.category}
                   </SmartLink>
@@ -118,11 +118,11 @@ export default function ArticleDetail(props) {
                   <SmartLink
                     href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}
                     passHref
-                    className='inline-flex cursor-pointer items-center rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 font-medium text-stone-500 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-900/70 dark:text-stone-400 dark:hover:text-stone-200 sm:px-3'>
+                    className='inline-flex min-h-[32px] cursor-pointer items-center rounded-full border border-stone-200 bg-stone-50 px-3 py-1.5 font-medium text-stone-500 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-900/70 dark:text-stone-400 dark:hover:text-stone-200'>
                     <i className='far fa-calendar-alt mr-1.5' />
                     {post?.publishDay}
                   </SmartLink>
-                  <span className='inline-flex items-center rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-stone-400 dark:border-stone-800 dark:bg-stone-900/70 dark:text-stone-500 sm:px-3'>
+                  <span className='inline-flex min-h-[32px] items-center rounded-full border border-stone-200 bg-stone-50 px-3 py-1.5 text-stone-400 dark:border-stone-800 dark:bg-stone-900/70 dark:text-stone-500'>
                     <i className='far fa-clock mr-1.5' />
                     {locale.COMMON.LAST_EDITED_TIME}: {post.lastEditedDay}
                   </span>
@@ -168,7 +168,7 @@ export default function ArticleDetail(props) {
       {post?.type === 'Post' && <ArticleAround prev={prev} next={next} />}
 
       {/* 评论互动 */}
-      <div className='duration-200 shadow py-6 px-12 w-screen md:w-full overflow-x-auto dark:border-stone-700 bg-white dark:bg-stone-900'>
+      <div className='w-full overflow-x-hidden bg-white px-4 py-6 shadow duration-200 dark:border-stone-700 dark:bg-stone-900 sm:px-12'>
         <Comment frontMatter={post} />
       </div>
 
@@ -220,6 +220,43 @@ export default function ArticleDetail(props) {
         #article-wrapper .notion-code {
           border-radius: 0.75rem;
           font-size: 0.92rem;
+        }
+
+        @media (max-width: 767px) {
+          #article-wrapper .notion-simple-table {
+            display: table !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            table-layout: fixed !important;
+            white-space: normal !important;
+            overflow-x: visible !important;
+          }
+
+          #article-wrapper .notion-simple-table tr:first-child td {
+            font-size: 12px !important;
+            line-height: 1.5 !important;
+            padding: 8px 5px !important;
+          }
+
+          #article-wrapper .notion-simple-table td,
+          #article-wrapper .notion-simple-table th {
+            width: auto !important;
+            min-width: 0 !important;
+          }
+
+          #article-wrapper .notion-simple-table td,
+          #article-wrapper .notion-simple-table .notion-simple-table-cell {
+            white-space: normal !important;
+            word-break: break-word !important;
+            padding: 8px 5px !important;
+            font-size: 13px !important;
+            line-height: 1.6 !important;
+            vertical-align: middle !important;
+          }
+
+          #article-wrapper .notion-simple-table td > div {
+            white-space: normal !important;
+          }
         }
 
         @media (max-width: 640px) {

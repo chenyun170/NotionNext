@@ -15,6 +15,7 @@ const ACTIVITIES = [
   {
     icon: '🔥',
     text: '图灵搜双十一活动开启，查看活动方案与优惠信息',
+    shortText: '图灵搜活动',
     link: 'https://h.topeasysoft.com/20261111tls/index.html?i=BB54F6#pricing',
     tool: 'turingsearch',
     trackSource: 'mobile_marquee_turingsearch'
@@ -22,6 +23,7 @@ const ACTIVITIES = [
   {
     icon: '🚀',
     text: '顶易云双十一活动进行中，查看活动方案与优惠信息',
+    shortText: '顶易云活动',
     link: 'https://h.topeasysoft.com/20261111dyy/index.html?i=BB54F6',
     tool: 'dingyiyun',
     trackSource: 'mobile_marquee_dingyiyun'
@@ -48,7 +50,7 @@ const Header = props => {
   useEffect(() => {
     const checkDeadline = () => {
       const now = new Date()
-      const deadline = new Date('2026-07-01T00:00:00+08:00')
+      const deadline = new Date('2026-11-30T23:59:59+08:00')
       
       if (now > deadline) {
         setShowMarquee(false)
@@ -163,7 +165,7 @@ const Header = props => {
               }
               className={`${idx > 0 ? 'hidden sm:flex' : 'flex'} flex-shrink-0 items-center gap-1 rounded-full border border-stone-200 bg-white/75 px-2 py-0.5 text-[10px] font-bold text-stone-700 no-underline dark:border-stone-800 dark:bg-stone-900/50 dark:text-stone-200`}>
               <span>{activity.icon}</span>
-              <span>{idx === 0 ? '618 活动' : '顶易云活动'}</span>
+              <span>{activity.shortText}</span>
               <i className='fas fa-arrow-up-right-from-square text-[9px] opacity-60'></i>
             </a>
           ))}

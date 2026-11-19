@@ -14,10 +14,10 @@ const ArticleInsightPanel = ({ post }) => {
   return (
     <section
       data-answer='article-geo-summary'
-      className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-white print:hidden dark:border-stone-800 dark:bg-stone-900'
+      className='mb-6 overflow-hidden rounded-[8px] border border-stone-200 bg-white sm:mb-8 print:hidden dark:border-stone-800 dark:bg-stone-900'
       aria-label='文章核心摘要'>
-      <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_240px]'>
-        <div className='p-5'>
+      <div className='grid gap-0 xl:grid-cols-[minmax(0,1fr)_240px]'>
+        <div className='p-4 sm:p-5'>
           <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             <i className='fas fa-bolt' />
             <span>摘要</span>
@@ -29,7 +29,7 @@ const ArticleInsightPanel = ({ post }) => {
             {directAnswer}
           </p>
 
-          <div className='mt-5 grid gap-3 sm:grid-cols-2'>
+          <div className='mt-4 grid gap-3 sm:grid-cols-2'>
             <InsightItem
               icon='fas fa-user-check'
               label='适合读者'
@@ -43,7 +43,7 @@ const ArticleInsightPanel = ({ post }) => {
           </div>
         </div>
 
-        <div className='border-t border-stone-200 bg-stone-50 p-5 dark:border-stone-800 dark:bg-stone-950/60 lg:border-l lg:border-t-0'>
+        <div className='hidden border-l border-stone-200 bg-stone-50 p-5 dark:border-stone-800 dark:bg-stone-950/60 xl:block'>
           <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             内容信号
           </div>

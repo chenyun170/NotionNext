@@ -2,6 +2,24 @@ import SmartLink from '@/components/SmartLink'
 import { uuidToId } from 'notion-utils'
 import TagItemMini from './TagItemMini'
 
+const TocList = ({ toc, className = '' }) => (
+  <nav className={`grid gap-2 ${className}`}>
+    {toc.slice(0, 6).map(item => {
+      const id = uuidToId(item.id)
+      return (
+        <a
+          key={id}
+          href={`#${id}`}
+          className='group flex min-h-[44px] items-center rounded-[8px] border border-stone-200 bg-white px-3 py-2 transition hover:border-stone-400 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-900 dark:hover:border-stone-600 dark:hover:text-stone-100'
+        >
+          <span className='mr-2 h-1.5 w-1.5 flex-none rounded-full bg-stone-300 transition group-hover:bg-stone-500 dark:bg-stone-700' />
+          <span className='line-clamp-2 leading-5'>{item.text}</span>
+        </a>
+      )
+    })}
+  </nav>
+)
+
 const ArticleQuickNav = ({ post }) => {
   if (!post) {
     return null
@@ -12,30 +30,27 @@ const ArticleQuickNav = ({ post }) => {
   const hasToc = toc.length > 1
 
   return (
-    <aside className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-stone-50 text-sm dark:border-stone-800 dark:bg-stone-950/60 print:hidden'>
-      <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_260px]'>
-        <div className='p-5'>
+    <aside className='mb-6 overflow-hidden rounded-[8px] border border-stone-200 bg-stone-50 text-sm dark:border-stone-800 dark:bg-stone-950/60 sm:mb-8 print:hidden'>
+      <div className='grid gap-0 xl:grid-cols-[minmax(0,1fr)_260px]'>
+        <div className='p-4 sm:p-5'>
           <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             <i className='fas fa-route' />
             <span>Reading Path</span>
           </div>
 
           {hasToc ? (
-            <nav className='grid gap-2 sm:grid-cols-2'>
-              {toc.slice(0, 6).map(item => {
-                const id = uuidToId(item.id)
-                return (
-                  <a
-                    key={id}
-                    href={`#${id}`}
-                    className='group flex min-h-[44px] items-center rounded-[8px] border border-stone-200 bg-white px-3 py-2 transition hover:border-stone-400 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-900 dark:hover:border-stone-600 dark:hover:text-stone-100'
-                  >
-                    <span className='mr-2 h-1.5 w-1.5 flex-none rounded-full bg-stone-300 transition group-hover:bg-stone-500 dark:bg-stone-700' />
-                    <span className='line-clamp-2 leading-5'>{item.text}</span>
-                  </a>
-                )
-              })}
-            </nav>
+            <>
+              {/* 手机端默认收起，避免正文被推到一屏以后 */}
+              <details className='group lg:hidden'>
+                <summary className='flex min-h-[44px] cursor-pointer list-none items-center justify-between rounded-[8px] border border-stone-200 bg-white px-3 py-2 font-semibold text-stone-700 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200'>
+                  <span>展开本文目录（{Math.min(toc.length, 6)} 节）</span>
+                  <i className='fas fa-chevron-down text-xs text-stone-400 transition group-open:rotate-180' />
+                </summary>
+                <TocList toc={toc} className='mt-2' />
+              </details>
+
+              <TocList toc={toc} className='hidden lg:grid lg:grid-cols-2' />
+            </>
           ) : (
             <p className='leading-7 text-stone-500 dark:text-stone-400'>
               这篇文章暂无目录，可以从分类和标签继续延展阅读。
@@ -43,7 +58,7 @@ const ArticleQuickNav = ({ post }) => {
           )}
         </div>
 
-        <div className='border-t border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-stone-900 lg:border-l lg:border-t-0'>
+        <div className='hidden border-t border-stone-200 bg-white p-4 dark:border-stone-800 dark:bg-stone-900 sm:p-5 xl:block xl:border-l xl:border-t-0'>
           <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             Explore More
           </div>
@@ -51,7 +66,7 @@ const ArticleQuickNav = ({ post }) => {
           {post?.category && (
             <SmartLink
               href={`/category/${encodeURIComponent(post.category)}`}
-              className='mb-3 flex items-center justify-between rounded-[8px] border border-stone-200 px-3 py-2 font-semibold text-stone-700 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:text-stone-200 dark:hover:border-stone-600 dark:hover:text-stone-300'
+              className='mb-3 flex min-h-[40px] items-center justify-between rounded-[8px] border border-stone-200 px-3 py-2 font-semibold text-stone-700 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:text-stone-200 dark:hover:border-stone-600 dark:hover:text-stone-300'
             >
               <span className='min-w-0 truncate'>
                 <i className='fas fa-folder-open mr-2 text-stone-400' />
@@ -63,7 +78,7 @@ const ArticleQuickNav = ({ post }) => {
           {!post?.category && (
             <SmartLink
               href='/archive'
-              className='mb-3 flex items-center justify-between rounded-[8px] border border-stone-200 px-3 py-2 font-semibold text-stone-700 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:text-stone-200 dark:hover:border-stone-600 dark:hover:text-stone-200'
+              className='mb-3 flex min-h-[40px] items-center justify-between rounded-[8px] border border-stone-200 px-3 py-2 font-semibold text-stone-700 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:text-stone-200 dark:hover:border-stone-600 dark:hover:text-stone-200'
             >
               <span>
                 <i className='fas fa-clock-rotate-left mr-2 text-stone-400' />
@@ -74,7 +89,7 @@ const ArticleQuickNav = ({ post }) => {
           )}
 
           {tags.length > 0 && (
-            <div className='flex flex-wrap gap-2'>
+            <div className='flex flex-wrap gap-1.5'>
               {tags.slice(0, 6).map(tag => (
                 <TagItemMini key={tag.name} tag={tag} />
               ))}

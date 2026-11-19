@@ -81,7 +81,18 @@ async function main() {
     ''
   ].join('\n')
 
-  fs.writeFileSync(path.join(PUBLIC_DIR, 'llms.txt'), `${body}\n`, 'utf8')
+  const target = path.join(PUBLIC_DIR, 'llms.txt')
+
+  // Notion 偶尔返回空列表：此时保留已有文件，避免文章索引被整段清空
+  if (!articleLines.length && fs.existsSync(target)) {
+    const existing = fs.readFileSync(target, 'utf8')
+    if (existing.includes('## Articles')) {
+      console.warn('[llms] 本次未取到文章，保留已有 llms.txt')
+      return
+    }
+  }
+
+  fs.writeFileSync(target, `${body}\n`, 'utf8')
   console.log('Wrote public/llms.txt')
 }
 

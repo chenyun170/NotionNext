@@ -1,5 +1,5 @@
 import { siteConfig } from '@/lib/config'
-import { toProxiedImageUrl } from '@/lib/utils/imageProxy'
+import { toProxiedImageUrl, withNotionWidth } from '@/lib/utils/imageProxy'
 import Head from 'next/head'
 import { useEffect, useRef, useState } from 'react'
 
@@ -66,8 +66,12 @@ export default function LazyImage({
   }
 
   useEffect(() => {
+    // 按实际渲染宽度向 Notion 要图：卡片 400px 就只要 768 档，别拉原图
+    const elementWidth = imageRef.current?.getBoundingClientRect?.().width || 0
     const adjustedImageSrc =
-      toProxiedImageUrl(adjustImgSize(src, maxWidth)) || defaultPlaceholderSrc
+      toProxiedImageUrl(
+        withNotionWidth(adjustImgSize(src, maxWidth), targetPixelWidth(elementWidth, maxWidth))
+      ) || defaultPlaceholderSrc
 
     // 如果是优先级图片，直接加载
     if (priority) {
@@ -179,6 +183,23 @@ export default function LazyImage({
       )}
     </>
   )
+}
+
+/**
+ * 目标像素宽度：优先用元素实际宽度，取不到再退回屏幕宽度；DPR 封顶 2
+ * @param {number} elementWidth
+ * @param {number} maxWidth
+ * @returns {number}
+ */
+const targetPixelWidth = (elementWidth, maxWidth) => {
+  const screenWidth =
+    (typeof window !== 'undefined' && window?.screen?.width) || maxWidth
+  const dpr = Math.min(
+    (typeof window !== 'undefined' && window?.devicePixelRatio) || 1,
+    2
+  )
+  const rendered = elementWidth > 0 ? elementWidth : Math.min(screenWidth, maxWidth)
+  return Math.ceil(rendered * dpr)
 }
 
 /**

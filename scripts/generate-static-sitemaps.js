@@ -14,6 +14,7 @@ const SUBMIT_SITEMAP_FILES = [
 
 async function main() {
   let dynamicPages = []
+  let notionFailed = false
   try {
     const notionEntries = await fetchNotionSitemapEntries()
     dynamicPages = [
@@ -30,7 +31,22 @@ async function main() {
       }))
     ]
   } catch (error) {
+    notionFailed = true
     console.warn('[sitemap] Notion 数据拉取失败，仅生成静态页 sitemap:', error.message)
+  }
+
+  // 保护：Notion 抖动或返回 0 篇文章时，绝不能把已上线的 sitemap 覆盖成
+  // 只有静态页的版本，否则 Google 会一次性丢掉全站文章。宁可保持旧文件。
+  const articleCount = dynamicPages.filter(page => page.slug?.startsWith('article/')).length
+  const previousCount = countArticlesIn('sitemap.xml')
+  if (articleCount === 0 && previousCount > 0) {
+    console.warn(
+      `[sitemap] 本次抓到 0 篇文章（上次 ${previousCount} 篇，Notion 拉取${notionFailed ? '失败' : '为空'}），` +
+        '保留现有 sitemap 不覆盖。请检查 NOTION_TOKEN 与网络后重跑。'
+    )
+    writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES))
+    writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml']))
+    return
   }
 
   const allPages = [...CORE_SEO_PAGES, ...dynamicPages]
@@ -42,6 +58,16 @@ async function main() {
   writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml']))
   writeFile('sitemap.txt', buildTextSitemap(allPages))
   writeFile('google-submit-urls.txt', buildSubmitUrlList(allPages))
+}
+
+function countArticlesIn(fileName) {
+  const filePath = path.join(PUBLIC_DIR, fileName)
+  try {
+    const content = fs.readFileSync(filePath, 'utf8')
+    return (content.match(/\/article\//g) || []).length
+  } catch (error) {
+    return 0
+  }
 }
 
 function buildUrlset(pages) {

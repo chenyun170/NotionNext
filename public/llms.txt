@@ -113,6 +113,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 
 ## Articles
 
+- [货到港客户不提货，滞箱费每天在涨，这单怎么止损](https://www.123170.xyz/article/destination-abandoned-cargo-rescue) — 客户货到港突然失联，滞箱费和堆存费按天往上翻，多数业务员只会发邮件催。这篇按时间线拆开：前 7 天做什么、45 天前必须做的决定、四条止损路径各要花多少钱，附一封能直接发的英文邮件…
 - [客户说要来验厂，提前两周我会做这几件事](https://www.123170.xyz/article/factory-audit-preparation) — 客户验厂不是把车间扫一遍就完事。先问清是客户自己来看还是第三方审核，再按两周、一周、三天倒排文件、现场和人员，附一张验厂当天的时间表和几个容易翻车的地方。
 - [出货前对一遍：外贸单据最容易错的7个地方](https://www.123170.xyz/article/shipping-documents-checklist) — 发票、装箱单、提单、原产地证对不上，货到目的港就是一堆麻烦。这篇按品名、重量、收货人、HS编码、金额、提单七处逐项过，附一张出货前自查表，照着念一遍就能挡住大部分退单和查验。
 - [报价单上最容易漏掉的5项成本，FOB和CIF都躲不过](https://www.123170.xyz/article/fob-cif-quotation-cost-checklist) — 报价按出厂价加利润算，出货才发现港杂、拖车、报关、保险、银行费用把利润吃光。这篇把 FOB 和 CIF 各自该算的项目拆开列清楚，附一张报价前自查表，客户砍价时也能先分清是自己算错…

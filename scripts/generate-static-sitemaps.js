@@ -45,17 +45,27 @@ async function main() {
         '保留现有 sitemap 不覆盖。请检查 NOTION_TOKEN 与网络后重跑。'
     )
     writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES))
-    writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml']))
+    // 已有索引文件时不要重写：重写会把 lastmod 拉回旧日期，
+    // 等于告诉 Google「sitemap 没更新」，反而降低重抓频率。
+    if (!fs.existsSync(path.join(PUBLIC_DIR, 'sitemap-index.xml'))) {
+      writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml']))
+    }
     return
   }
 
   const allPages = [...CORE_SEO_PAGES, ...dynamicPages]
+  // 索引的 lastmod 取全站最新一页，否则新增文章后索引仍显示旧日期，
+  // Google 会认为 sitemap 没变，降低重抓频率。
+  const latestLastmod = allPages.reduce(
+    (latest, page) => (page.lastmod && page.lastmod > latest ? page.lastmod : latest),
+    UPDATED_AT
+  )
 
   assertStaticHtmlPagesExist(allPages)
   writeFile('sitemap.xml', buildUrlset(allPages))
   writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES))
   // 索引只收录主表 sitemap.xml，避免 core 与 xml 内容重复导致 Google 判无法抓取
-  writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml']))
+  writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml'], latestLastmod))
   writeFile('sitemap.txt', buildTextSitemap(allPages))
   writeFile('google-submit-urls.txt', buildSubmitUrlList(allPages))
 }
@@ -91,12 +101,12 @@ function buildUrlset(pages) {
   ].join('\n')
 }
 
-function buildSitemapIndex(slugs) {
+function buildSitemapIndex(slugs, lastmod = UPDATED_AT) {
   const sitemaps = slugs.map(slug =>
     [
       '<sitemap>',
       `<loc>${escapeXml(`${SITE_URL}/${slug}`)}</loc>`,
-      `<lastmod>${UPDATED_AT}</lastmod>`,
+      `<lastmod>${lastmod}</lastmod>`,
       '</sitemap>'
     ].join('')
   )

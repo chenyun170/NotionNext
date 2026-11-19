@@ -1,6 +1,15 @@
-import { mkdir, appendFile, readFile, stat, writeFile } from 'fs/promises'
-import path from 'path'
-
+/**
+ * 点击事件接收端。
+ *
+ * 历史实现把事件追加写到 logs/*.jsonl，但 Vercel 的部署目录是只读的，
+ * 线上每次写入都静默失败，看板因此永远是 0。
+ *
+ * 现在真实统计由客户端直接上报：
+ * - Next 页面：lib/utils/customsDataSkillTracking.js 里的 gtag / va
+ * - 静态落地页：public/analytics-static.js
+ *
+ * 这个路由保留下来，只做校验并返回 204，供老页面和部署自检继续调用。
+ */
 const ALLOWED_EVENTS = new Set([
   'customs_data_skill_click',
   'outbound_tool_click',
@@ -46,16 +55,9 @@ const ALLOWED_ACTIONS = new Set([
 ])
 const RATE_LIMIT_WINDOW_MS = 60 * 1000
 const RATE_LIMIT_MAX = 20
-const CLICK_LOG_MAX_BYTES = Number(process.env.CLICK_LOG_MAX_BYTES || 2 * 1024 * 1024)
-const CLICK_LOG_MAX_LINES = Number(process.env.CLICK_LOG_MAX_LINES || 5000)
 const rateLimitStore = new Map()
-const CLICK_LOG_PATH = path.join(
-  process.cwd(),
-  'logs',
-  'customs-data-skill-clicks.jsonl'
-)
 
-export default async function handler(req, res) {
+export default function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
     res.status(405).json({ ok: false })
@@ -135,14 +137,7 @@ export default async function handler(req, res) {
     console.info('[track-click]', record)
   }
 
-  try {
-    await mkdir(path.dirname(CLICK_LOG_PATH), { recursive: true })
-    await appendFile(CLICK_LOG_PATH, `${JSON.stringify(record)}\n`, 'utf8')
-    await trimClickLogIfNeeded()
-  } catch (error) {
-    console.warn('[track-click] failed to write local log', error?.message)
-  }
-
+  // 事件已由客户端直发 GA4 / Vercel，这里不再落盘。
   res.status(204).end()
 }
 
@@ -214,20 +209,6 @@ const cleanupRateLimitStore = now => {
       rateLimitStore.delete(key)
     }
   }
-}
-
-const trimClickLogIfNeeded = async () => {
-  const info = await stat(CLICK_LOG_PATH)
-
-  if (info.size <= CLICK_LOG_MAX_BYTES) {
-    return
-  }
-
-  const content = await readFile(CLICK_LOG_PATH, 'utf8')
-  const lines = content.split('\n').filter(Boolean)
-  const nextContent = `${lines.slice(-CLICK_LOG_MAX_LINES).join('\n')}\n`
-
-  await writeFile(CLICK_LOG_PATH, nextContent, 'utf8')
 }
 
 const normalizeLoggedTarget = target => {

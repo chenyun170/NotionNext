@@ -51,7 +51,12 @@
     </nav>
     <div class="eyebrow">Customs Data Skill Analytics</div>
     <h1>海关数据 Skill 点击统计</h1>
-    <p class="lead">只展示聚合数据，不展示 IP 和 User-Agent。总点击已排除本地测试、验证脚本等记录，更接近真实访客点击口径。</p>
+    <p class="lead" style="border-left:4px solid #d97706;padding-left:12px;background:#fffbeb;">
+      本看板已停用：旧方案把点击写进服务器文件，而 Vercel 的部署目录是只读的，
+      线上一直写不进去，所以这里看到的 0 不代表没有点击。<br>
+      真实数据请到 <strong>GA4 → 报告 → 互动 → 事件</strong>（看 outbound_tool_click 的来源），
+      或 <strong>Vercel → Analytics</strong>（自定义事件需 Pro 套餐）。
+    </p>
   </header>
 
   <main class="container">

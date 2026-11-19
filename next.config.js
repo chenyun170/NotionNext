@@ -177,17 +177,17 @@ const nextConfig = {
           },
           {
             source: '/article/youhui',
-            destination: '/article/year-end-software-promo',
+            destination: '/tools.html',
             permanent: true
           },
           {
             source: '/article/activity-1001',
-            destination: '/article/dingyicloud-plus-offer',
+            destination: '/article/dingyicloud-customer-development',
             permanent: true
           },
           {
             source: '/article/activity-998',
-            destination: '/article/buyer-database-group-buy',
+            destination: '/customs-data.html',
             permanent: true
           },
           {
@@ -222,7 +222,7 @@ const nextConfig = {
           },
           {
             source: '/article/example-12',
-            destination: '/article/jiangxi-dingyi-intro',
+            destination: '/dingyi.html',
             permanent: true
           },
           {
@@ -297,7 +297,7 @@ const nextConfig = {
           },
           {
             source: '/article/keng',
-            destination: '/article/foreign-trade-beginner-pitfalls',
+            destination: '/article/waimao-10-hard-skills',
             permanent: true
           },
           {
@@ -362,7 +362,7 @@ const nextConfig = {
           },
           {
             source: '/article/oes',
-            destination: '/article/email-outreach-basics',
+            destination: '/article/cold-email-read-but-no-reply',
             permanent: true
           },
           {

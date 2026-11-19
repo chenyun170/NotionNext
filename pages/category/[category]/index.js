@@ -52,6 +52,13 @@ export async function getStaticProps({ params: { category }, locale }) {
     )
   }
 
+  // 空分类返回 404，避免任意 /category/xxx 返回 200 空列表（软 404）。
+  // allPages 为空说明是 Notion 拉取失败，此时不能误判。
+  const hasNotionData = Array.isArray(props.allPages) && props.allPages.length > 0
+  if (hasNotionData && props.postCount === 0) {
+    return { notFound: true, revalidate: 60 }
+  }
+
   delete props.allPages
 
   props = { ...props, category }

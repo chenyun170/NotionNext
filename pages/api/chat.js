@@ -1,14 +1,52 @@
 // /api/chat.js
 import OpenAI from "openai";
 
+// 简单的进程内限流：单个实例按 IP 计数。
+// Vercel 上每个实例独立计数，不能当作强防护，但足以挡住直接脚本刷额度。
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
+const RATE_LIMIT_MAX = Number(process.env.CHAT_RATE_LIMIT_MAX) || 12
+const MESSAGE_MAX_LENGTH = Number(process.env.CHAT_MESSAGE_MAX_LENGTH) || 4000
+const HISTORY_MAX_MESSAGES = 12
+const chatRateLimitStore = new Map()
+
+const getClientIp = req => {
+  const forwarded = req.headers['x-forwarded-for']
+  if (typeof forwarded === 'string' && forwarded.length > 0) {
+    return forwarded.split(',')[0].trim()
+  }
+  return req.socket?.remoteAddress || 'unknown'
+}
+
+const isRateLimited = ip => {
+  const now = Date.now()
+  const current = chatRateLimitStore.get(ip)
+  if (!current || now - current.startedAt > RATE_LIMIT_WINDOW_MS) {
+    chatRateLimitStore.set(ip, { startedAt: now, count: 1 })
+    return false
+  }
+  current.count += 1
+  if (chatRateLimitStore.size > 5000) {
+    for (const [key, value] of chatRateLimitStore) {
+      if (now - value.startedAt > RATE_LIMIT_WINDOW_MS) chatRateLimitStore.delete(key)
+    }
+  }
+  return current.count > RATE_LIMIT_MAX
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+  if (isRateLimited(getClientIp(req))) {
+    return res.status(429).json({ error: '请求过于频繁，请稍后再试' })
   }
   // 校验请求体
   const { message, history } = req.body;
   if (!message) {
     return res.status(400).json({ error: '缺少 message 参数' });
+  }
+  if (String(message).length > MESSAGE_MAX_LENGTH) {
+    return res.status(413).json({ error: `内容过长，请控制在 ${MESSAGE_MAX_LENGTH} 字以内` });
   }
 
   // 组装上下文：system + 历史对话（仅保留 user/assistant，单条截断防超限）+ 当前问题
@@ -19,6 +57,7 @@ export default async function handler(req, res) {
     };
     const historyMessages = (Array.isArray(history) ? history : [])
       .filter(m => m && (m.role === 'user' || m.role === 'assistant'))
+      .slice(-HISTORY_MAX_MESSAGES)
       .map(m => ({
         role: m.role,
         content: String(m.content || '').slice(0, 4000),

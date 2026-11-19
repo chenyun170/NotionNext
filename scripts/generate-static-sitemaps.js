@@ -82,7 +82,7 @@ function countArticlesIn(fileName) {
 
 function buildUrlset(pages) {
   const urls = getUniquePages(pages).map(page => {
-    const loc = page.slug ? `${SITE_URL}/${page.slug}` : SITE_URL
+    const loc = page.slug ? `${SITE_URL}/${encodePath(page.slug)}` : SITE_URL
     return [
       '<url>',
       `<loc>${escapeXml(loc)}</loc>`,
@@ -99,6 +99,17 @@ function buildUrlset(pages) {
     ...urls,
     '</urlset>'
   ].join('\n')
+}
+
+/**
+ * 中文标签/分类的 slug 必须做百分号编码，才能和页面 canonical 完全一致。
+ * sitemap 里出现未编码的中文时，Google 视作另一条 URL，会和 canonical 对不上。
+ */
+function encodePath(slug) {
+  return `${slug || ''}`
+    .split('/')
+    .map(segment => encodeURIComponent(segment))
+    .join('/')
 }
 
 function buildSitemapIndex(slugs, lastmod = UPDATED_AT) {

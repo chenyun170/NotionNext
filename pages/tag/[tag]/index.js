@@ -45,6 +45,14 @@ export async function getStaticProps({ params: { tag }, locale }) {
     )
   }
 
+  // 没有文章的标签页要返回 404，否则任意 /tag/xxx 都会返回 200 空列表，
+  // 形成无限可抓取的软 404，浪费抓取预算。
+  // 但 Notion 拉取失败（allPages 为空）时不能误判为 404，否则一次抖动会让全站标签页消失。
+  const hasNotionData = Array.isArray(props.allPages) && props.allPages.length > 0
+  if (hasNotionData && props.postCount === 0) {
+    return { notFound: true, revalidate: 60 }
+  }
+
   props.tag = tag
   delete props.allPages
   return {

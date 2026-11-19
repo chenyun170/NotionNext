@@ -37,7 +37,7 @@ const SiteFooter = () => {
 
   return (
     <footer className='mt-12 w-full border-t border-stone-200 dark:border-stone-900'>
-      <div className='mx-auto w-full max-w-5xl px-6 py-10'>
+      <div className='mx-auto w-full max-w-5xl px-6 pb-28 pt-10 lg:pb-24'>
         <div className='flex flex-col gap-8 md:flex-row md:items-start md:justify-between'>
           <div className='max-w-xs'>
             <Link

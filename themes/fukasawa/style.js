@@ -237,8 +237,17 @@ const Style = () => {
     }
     #theme-fukasawa [class*="bg-gradient"] { background-image: none !important; }
     #theme-fukasawa .sideLeft section { border-radius: 4px !important; box-shadow: none !important; }
-    #theme-fukasawa #sticky-nav { box-shadow: none !important; background: rgba(255,255,255,0.94) !important; }
-    .dark #theme-fukasawa #sticky-nav { background: rgba(17,17,17,0.94) !important; }
+    #theme-fukasawa #sticky-nav {
+        box-shadow: none !important;
+        background: rgba(255,255,255,0.94) !important;
+        backdrop-filter: saturate(140%) blur(10px);
+        -webkit-backdrop-filter: saturate(140%) blur(10px);
+    }
+    .dark #theme-fukasawa #sticky-nav {
+        background: rgba(17,17,17,0.94) !important;
+        backdrop-filter: saturate(140%) blur(10px);
+        -webkit-backdrop-filter: saturate(140%) blur(10px);
+    }
     #theme-fukasawa #article-wrapper #notion-article { max-width: 760px; }
    #theme-fukasawa #article-wrapper .notion-h { letter-spacing: -0.02em; }
 

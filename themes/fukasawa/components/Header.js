@@ -145,7 +145,7 @@ const Header = props => {
       {/* 1. 顶部跑马灯横幅 - 时间控制显隐 */}
       {showMarquee && (
       <div
-        className='w-full border-b border-stone-200 bg-stone-50/95 px-2 py-1 text-stone-700 dark:border-stone-800 dark:bg-stone-950/80 dark:text-stone-200'
+        className='w-full border-b border-stone-200 bg-stone-50/95 px-2 py-1 text-stone-700 backdrop-blur-md dark:border-stone-800 dark:bg-stone-950/80 dark:text-stone-200'
         style={{ zIndex: 100 }}>
         <div className='flex items-center gap-1.5 overflow-x-auto no-scrollbar'>
           <i className='fas fa-bullhorn flex-shrink-0 text-[10px] text-stone-500 dark:text-stone-300'></i>

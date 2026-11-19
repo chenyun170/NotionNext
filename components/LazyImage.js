@@ -28,6 +28,8 @@ export default function LazyImage({
   const [currentSrc, setCurrentSrc] = useState(
     placeholderSrc || defaultPlaceholderSrc
   )
+  // 真实请求地址（已带 width 档位），preload 与 img 必须一致，否则会下载两次
+  const [resolvedSrc, setResolvedSrc] = useState(null)
 
   /**
    * 占位图加载成功
@@ -72,6 +74,7 @@ export default function LazyImage({
       toProxiedImageUrl(
         withNotionWidth(adjustImgSize(src, maxWidth), targetPixelWidth(elementWidth, maxWidth))
       ) || defaultPlaceholderSrc
+    setResolvedSrc(adjustedImageSrc)
 
     // 如果是优先级图片，直接加载
     if (priority) {
@@ -140,7 +143,7 @@ export default function LazyImage({
   const imgProps = {
     ref: imageRef,
     src: currentSrc,
-    'data-src': toProxiedImageUrl(src), // 存储代理后的图片地址
+    'data-src': resolvedSrc || toProxiedImageUrl(src), // 存储代理后的图片地址
     alt: alt || 'Lazy loaded image',
     onLoad: handleThumbnailLoaded,
     onError: handleImageError,
@@ -177,7 +180,7 @@ export default function LazyImage({
           <link
             rel='preload'
             as='image'
-            href={toProxiedImageUrl(adjustImgSize(src, maxWidth))}
+            href={resolvedSrc || toProxiedImageUrl(adjustImgSize(src, maxWidth))}
           />
         </Head>
       )}

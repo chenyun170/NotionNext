@@ -47,7 +47,11 @@
       if (!link) return
 
       var source = link.getAttribute('data-track') || 'static_unknown'
-      var sourceGroup = link.getAttribute('data-track-group') || 'static'
+      var groupNode = link.getAttribute('data-track-group')
+        ? link
+        : link.closest('[data-track-group]')
+      var sourceGroup =
+        (groupNode && groupNode.getAttribute('data-track-group')) || 'static'
       var target = link.getAttribute('href') || ''
 
       if (window.gtag) {

@@ -206,7 +206,7 @@
     }
   </script>
 </head>
-<body>
+<body data-track-group="topic">
   <header class="container">
     <nav class="nav">
       <a class="brand" href="/">
@@ -378,23 +378,6 @@
     <p>海关数据专题 · 外贸获客情报局。数据理解、工具入口和实战文章持续更新。</p>
   </footer>
 
-  <script>
-    document.querySelectorAll('[data-track]').forEach(function (link) {
-      link.addEventListener('click', function () {
-        try {
-          var body = JSON.stringify({
-            event: 'customs_data_skill_click',
-            source: link.getAttribute('data-track'),
-            sourceGroup: 'topic',
-            path: window.location.pathname,
-            target: link.getAttribute('href'),
-            title: document.title
-          })
-          navigator.sendBeacon('/api/track-click', new Blob([body], { type: 'application/json' }))
-        } catch (error) {}
-      })
-    })
-  </script>
   <script defer src="/analytics-static.js"></script>
 </body>
 </html>

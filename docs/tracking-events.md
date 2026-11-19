@@ -1,6 +1,14 @@
 # 站点统计事件说明
 
-本文档用于说明外贸获客情报局当前写入 `/api/track-click` 的轻量统计事件，方便后续查看 `skill-stats.html` 看板时统一口径。
+本文档用于说明外贸获客情报局的点击统计口径。
+
+事件由浏览器直接上报，不经过服务端写日志：
+
+- Next.js 页面：`lib/utils/customsDataSkillTracking.js` 调用 `gtag` 与 `window.va`
+- 静态落地页：`public/analytics-static.js` 统一注入 GA4、Vercel Web Analytics，并监听 `[data-track]` 点击
+- `/api/track-click` 只保留参数校验和部署自检，不再落盘
+
+查看位置：GA4 → 报告 → 互动 → 事件；Vercel → 项目 → Analytics（自定义事件需 Pro 套餐）。
 
 ## 事件类型
 
@@ -23,7 +31,7 @@
 | `lead` | 领取资料、微信复制等线索转化动作 |
 | `brand` | 品牌页或 OraSkl 品牌入口 |
 | `cluster` | 静态内容集群页 |
-| `test` | 部署自检或健康检查事件，只验证接口可用性，不写入本地日志 |
+| `test` | 部署自检或健康检查事件，只验证接口可用性，不计入统计 |
 | `other` | 未明确归类的入口，接口会把空分组统一归到这里 |
 
 ## 当前关键 action
@@ -36,7 +44,7 @@
 
 ## 隐私口径
 
-- 点击日志不保存完整 IP。
-- 点击日志不保存完整 User-Agent，只保存 `desktop`、`mobile`、`bot`、`unknown` 类型。
-- 外链目标只保存域名和路径，不保存查询参数，避免记录推广参数或其它敏感参数。
-- `sourceGroup=test` 或 `source` 以 `deploy_check` 开头的请求只用于部署自检，接口会正常返回但不会写入本地日志。
+- 不再保存服务端点击日志，事件只存在于 GA4 和 Vercel Analytics。
+- GA4 已开启 IP 匿名化（`anonymize_ip`）。
+- 上报字段只有来源标识、页面路径、外链目标和事件类型，不采集表单内容。
+- `sourceGroup=test` 或以 `deploy_check` 开头的请求只用于部署自检，接口正常返回但不计入统计。

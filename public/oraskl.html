@@ -180,7 +180,6 @@
 
     <script>
       (function () {
-        var endpoint = '/api/track-click';
         var eventName = 'customs_data_skill_click';
         function trackCustomsDataSkillClick(source, target) {
           var payload = {
@@ -206,17 +205,6 @@
               data: { source: payload.source, sourceGroup: payload.sourceGroup, path: payload.path }
             });
           }
-          var body = JSON.stringify(payload);
-          if (navigator.sendBeacon) {
-            navigator.sendBeacon(endpoint, new Blob([body], { type: 'application/json' }));
-            return;
-          }
-          fetch(endpoint, {
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: body,
-            keepalive: true
-          }).catch(function () {});
         }
         document.querySelectorAll('[data-skill-cta]').forEach(function (link) {
           link.addEventListener('click', function () {

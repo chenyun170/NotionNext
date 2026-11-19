@@ -1,4 +1,5 @@
 import { siteConfig } from '@/lib/config'
+import { toProxiedImageUrl } from '@/lib/utils/imageProxy'
 import Head from 'next/head'
 import { useEffect, useRef, useState } from 'react'
 
@@ -66,7 +67,7 @@ export default function LazyImage({
 
   useEffect(() => {
     const adjustedImageSrc =
-      adjustImgSize(src, maxWidth) || defaultPlaceholderSrc
+      toProxiedImageUrl(adjustImgSize(src, maxWidth)) || defaultPlaceholderSrc
 
     // 如果是优先级图片，直接加载
     if (priority) {
@@ -135,7 +136,7 @@ export default function LazyImage({
   const imgProps = {
     ref: imageRef,
     src: currentSrc,
-    'data-src': src, // 存储原始图片地址
+    'data-src': toProxiedImageUrl(src), // 存储代理后的图片地址
     alt: alt || 'Lazy loaded image',
     onLoad: handleThumbnailLoaded,
     onError: handleImageError,
@@ -169,7 +170,11 @@ export default function LazyImage({
       {/* 预加载 */}
       {priority && (
         <Head>
-          <link rel='preload' as='image' href={adjustImgSize(src, maxWidth)} />
+          <link
+            rel='preload'
+            as='image'
+            href={toProxiedImageUrl(adjustImgSize(src, maxWidth))}
+          />
         </Head>
       )}
     </>

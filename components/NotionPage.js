@@ -1,5 +1,6 @@
 import { siteConfig } from '@/lib/config'
 import { compressImage, mapImgUrl } from '@/lib/db/notion/mapImage'
+import { toProxiedImageUrl } from '@/lib/utils/imageProxy'
 import { isBrowser, loadExternalResource } from '@/lib/utils'
 import 'katex/dist/katex.min.css'
 import dynamic from 'next/dynamic'
@@ -142,7 +143,7 @@ const NotionPage = ({ post, className }) => {
       <NotionRenderer
         recordMap={post?.blockMap}
         mapPageUrl={mapPageUrl}
-        mapImageUrl={mapImgUrl}
+        mapImageUrl={(url, block) => toProxiedImageUrl(mapImgUrl(url, block))}
         components={{
           Code,
           Collection,

@@ -11,8 +11,8 @@ const TagItemMini = ({ tag, selected = false }) => {
       key={tag.name}
       href={selected ? '/' : `/tag/${encodeURIComponent(tag.name)}`}
       passHref
-      className={`group cursor-pointer inline-flex items-center transition-all duration-300
-        mr-2 mb-2 py-1 px-3 rounded-md text-[10px] tracking-widest uppercase font-bold
+      className={`tag-item-mini group cursor-pointer inline-flex items-center transition-all duration-300
+        mr-2 mb-2 rounded-md text-[12px] tracking-wide font-bold
         ${selected
           ? 'bg-stone-900 text-white shadow-none transform -translate-y-0.5' 
           : 'bg-white/80 text-stone-500 border border-stone-100 hover:border-stone-400 hover:text-stone-800 hover:shadow-md hover:-translate-y-0.5'

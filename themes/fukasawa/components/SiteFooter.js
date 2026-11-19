@@ -65,7 +65,7 @@ const SiteFooter = () => {
                     <li key={link.href}>
                       <a
                         href={link.href}
-                        className='text-xs text-stone-600 no-underline transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100'
+                        className='block py-1 text-[12px] leading-5 text-stone-600 no-underline transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100'
                       >
                         {link.label}
                       </a>

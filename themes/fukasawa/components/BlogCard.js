@@ -78,7 +78,7 @@ const BlogCard = ({ showAnimate, post, showSummary }) => {
             <SmartLink
               href={`/category/${post.category}`}
               passHref
-              className='flex items-center text-xs font-medium text-stone-400 transition-colors hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300'
+              className='flex min-h-[26px] items-center text-[12px] font-medium text-stone-400 transition-colors hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300'
             >
               <i className='mr-1.5 far fa-folder-open' />
               {post.category}

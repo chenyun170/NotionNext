@@ -103,7 +103,7 @@ const Style = () => {
         --fuka-text: #1c1917;
         --fuka-ink: #1c1917;
         --fuka-ink-soft: #292524;
-        --fuka-muted: #78716c;
+        --fuka-muted: #746d67;
         /* 品牌主色：墨绿。--fuka-accent 用于填充（配白字），
            --fuka-accent-ink 用于文字/图标，深色模式单独提亮 */
         --fuka-accent: #1c5a4a;

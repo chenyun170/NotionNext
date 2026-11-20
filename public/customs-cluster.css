@@ -9,13 +9,13 @@
   --brand-primary-hover: #1c1917;
   --brand-primary-soft: #f5f5f4;
   --brand-primary-border: #e7e5e4;
-  --brand-accent: #78716c;
+  --brand-accent: #746d67;
   --brand-accent-hover: #57534e;
   --brand-accent-soft: #fafaf9;
   --brand-accent-border: #e7e5e4;
   --brand-ink: #1c1917;
-  --brand-muted: #78716c;
-  --brand-warning: #78716c;
+  --brand-muted: #746d67;
+  --brand-warning: #746d67;
 }
 
 body {
@@ -80,7 +80,7 @@ header {
   border-radius: 6px;
   background: #fff;
   padding: 8px 12px;
-  color: #78716c;
+  color: #746d67;
   font-size: 13px;
   font-weight: 800;
 }
@@ -116,7 +116,7 @@ h1 {
 .lead {
   max-width: 760px;
   margin-top: 18px;
-  color: #78716c;
+  color: #746d67;
   font-size: 18px;
 }
 
@@ -125,7 +125,7 @@ h1 {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 16px;
-  color: #78716c;
+  color: #746d67;
   font-size: 13px;
   font-weight: 800;
 }
@@ -199,7 +199,7 @@ h1 {
 
 .summary-panel p,
 .summary-panel li {
-  color: #78716c;
+  color: #746d67;
   font-size: 15px;
 }
 
@@ -220,7 +220,7 @@ h1 {
   border-radius: 6px;
   background: #f5f5f4;
   padding: 14px 16px;
-  color: #78716c;
+  color: #746d67;
   font-size: 14px;
   font-weight: 800;
 }
@@ -238,7 +238,7 @@ h1 {
 
 .answer-box p {
   max-width: 860px;
-  color: #78716c;
+  color: #746d67;
   font-size: 16px;
 }
 
@@ -247,7 +247,7 @@ h1 {
   gap: 8px;
   margin-top: 14px;
   padding-left: 20px;
-  color: #78716c;
+  color: #746d67;
   font-size: 15px;
 }
 
@@ -269,7 +269,7 @@ h1 {
 .section-copy {
   max-width: 780px;
   margin-top: 10px;
-  color: #78716c;
+  color: #746d67;
   font-size: 16px;
 }
 
@@ -297,7 +297,7 @@ h1 {
 
 .card p {
   margin-top: 9px;
-  color: #78716c;
+  color: #746d67;
   font-size: 15px;
 }
 
@@ -306,7 +306,7 @@ h1 {
   gap: 8px;
   margin-top: 10px;
   padding-left: 18px;
-  color: #78716c;
+  color: #746d67;
   font-size: 15px;
 }
 
@@ -359,7 +359,7 @@ h1 {
 .step p,
 .faq-list p {
   margin-top: 6px;
-  color: #78716c;
+  color: #746d67;
   font-size: 15px;
 }
 
@@ -367,7 +367,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   gap: 14px;
-  color: #78716c;
+  color: #746d67;
   font-weight: 850;
 }
 
@@ -407,7 +407,7 @@ h1 {
 }
 
 .comparison-table td {
-  color: #78716c;
+  color: #746d67;
   font-size: 14px;
 }
 
@@ -439,12 +439,12 @@ h1 {
 .cta-inner p {
   max-width: 700px;
   margin-top: 8px;
-  color: #78716c;
+  color: #746d67;
 }
 
 footer {
   padding: 26px 0 40px;
-  color: #78716c;
+  color: #746d67;
   font-size: 14px;
   text-align: center;
 }

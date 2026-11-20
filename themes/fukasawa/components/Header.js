@@ -288,7 +288,7 @@ const Header = props => {
         }
 
         .marquee-item:hover .detail-badge {
-          background: #78716c;
+          background: #746d67;
           transform: scale(1.05);
         }
 
@@ -298,7 +298,7 @@ const Header = props => {
             90deg,
             #d6d3d1 0%,
             #a8a29e 25%,
-            #78716c 50%,
+            #746d67 50%,
             #a8a29e 75%,
             #d6d3d1 100%
           );

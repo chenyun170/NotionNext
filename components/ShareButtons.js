@@ -107,7 +107,7 @@ const ShareButtons = ({ post }) => {
     <>
       <div
         aria-live='polite'
-        className={`fixed bottom-6 right-6 z-50 rounded-full bg-slate-950 px-4 py-2 text-xs font-medium text-white shadow-lg transition-all duration-200 dark:bg-white dark:text-slate-900 ${
+        className={`fixed bottom-6 right-6 z-50 rounded-full bg-stone-950 px-4 py-2 text-xs font-medium text-white shadow-lg transition-all duration-200 dark:bg-white dark:text-stone-900 ${
           copyTip
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-2 opacity-0'

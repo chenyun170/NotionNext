@@ -59,7 +59,7 @@ const Logo = props => {
         {/* 文字标题 */}
         <div className='text-left relative z-20 lg:mt-1'>
           <div
-            className='logo-title text-base font-black tracking-tight text-slate-800 dark:text-stone-100 flex items-center'
+            className='logo-title text-base font-black tracking-tight text-stone-800 dark:text-stone-100 flex items-center'
           >
             {characters.map((char, index) => (
               <span

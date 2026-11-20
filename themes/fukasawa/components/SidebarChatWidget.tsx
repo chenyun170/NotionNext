@@ -27,10 +27,10 @@ export default function SidebarChatWidget() {
           </div>
 
           <div className="flex-1">
-            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1 group-hover:text-stone-800 dark:group-hover:text-stone-200">
+            <h4 className="text-sm font-bold text-stone-800 dark:text-stone-200 mb-1 group-hover:text-stone-800 dark:group-hover:text-stone-200">
               AI 外贸小助手
             </h4>
-            <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-2">
+            <p className="text-xs text-stone-400 dark:text-stone-500 line-clamp-2">
               点击这里，让我帮您写邮件、查数据。
             </p>
           </div>

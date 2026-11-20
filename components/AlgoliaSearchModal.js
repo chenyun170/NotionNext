@@ -280,7 +280,7 @@ export default function AlgoliaSearchModal({ cRef }) {
         </div>
         {searchResults.length === 0 && keyword && !isLoading && (
           <div>
-            <p className=' text-slate-600 text-center my-4 text-base'>
+            <p className=' text-stone-600 text-center my-4 text-base'>
               {' '}
               无法找到相关结果
               <span className='font-semibold'>&quot;{keyword}&quot;</span>

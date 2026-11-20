@@ -59,7 +59,7 @@
 .token.property,
 .token.symbol,
 .token.tag {
-  color: rgba(180, 83, 9, 1);
+  color: rgba(28, 90, 74, 1);
 }
 .token.attr-name,
 .token.builtin,
@@ -74,7 +74,7 @@
 .token.entity,
 .token.operator,
 .token.url {
-  color: rgba(217, 119, 6, 1);
+  color: rgba(28, 90, 74, 1);
 }
 .token.atrule,
 .token.attr-value,

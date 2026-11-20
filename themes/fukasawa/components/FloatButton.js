@@ -209,7 +209,7 @@ const FloatButton = () => {
           type="button"
           aria-label="关闭资料包浮窗"
           onClick={dismissGift}
-          className="absolute -right-3 -top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/70 bg-slate-900/80 text-xs text-white shadow-md transition hover:bg-stone-700 md:-right-2 md:-top-2 md:h-5 md:w-5 md:text-[9px] dark:border-stone-700"
+          className="absolute -right-3 -top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/70 bg-stone-900/80 text-xs text-white shadow-md transition hover:bg-stone-700 md:-right-2 md:-top-2 md:h-5 md:w-5 md:text-[9px] dark:border-stone-700"
         >
           <i className="fas fa-times"></i>
         </button>
@@ -217,7 +217,7 @@ const FloatButton = () => {
         <div 
           onClick={() => setShowPopup(!showPopup)}
           className={`w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-2xl transition-all duration-500 active:scale-90 ${
-            showPopup ? 'bg-[#b45309] rotate-90' : 'bg-[#d97706] shadow-md border border-white/40 animate-pulse-stone'
+            showPopup ? 'bg-[#14453a] rotate-90' : 'bg-[#1c5a4a] shadow-md border border-white/40 animate-pulse-stone'
           }`}
         >
           <i className={`fas ${showPopup ? 'fa-times' : 'fa-gift'} text-white text-lg`}></i>

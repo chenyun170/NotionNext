@@ -170,7 +170,7 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
           >
             <i className="fas fa-robot text-base"></i>
           </button>
-          <span className="mt-1.5 rounded-full bg-slate-900/70 px-2 py-0.5 text-[10px] font-bold tracking-wide text-white/90">
+          <span className="mt-1.5 rounded-full bg-stone-900/70 px-2 py-0.5 text-[10px] font-bold tracking-wide text-white/90">
             AI 参谋
           </span>
         </div>

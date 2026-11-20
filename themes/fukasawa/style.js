@@ -104,9 +104,14 @@ const Style = () => {
         --fuka-ink: #1c1917;
         --fuka-ink-soft: #292524;
         --fuka-muted: #78716c;
-        --fuka-orange: #d97706;
-        --fuka-accent: #d97706;
-        --fuka-accent-hover: #b45309;
+        /* 品牌主色：墨绿。--fuka-accent 用于填充（配白字），
+           --fuka-accent-ink 用于文字/图标，深色模式单独提亮 */
+        --fuka-accent: #1c5a4a;
+        --fuka-accent-hover: #14453a;
+        --fuka-accent-ink: #1c5a4a;
+        --fuka-accent-ink-hover: #14453a;
+        --fuka-accent-soft: #e8f0ec;
+        --fuka-accent-line: #c3d6cd;
         --fuka-shadow: 0 1px 2px rgba(23, 23, 23, 0.06);
         --fuka-title-font: 'PingFang SC', 'Noto Serif SC', 'Songti SC', SimSun, serif;
         --fuka-body-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
@@ -117,6 +122,12 @@ const Style = () => {
         #theme-fukasawa { --fuka-sidebar-w: 20rem; }
     }
     #theme-fukasawa.fuka-sidebar-collapsed { --fuka-sidebar-w: 0px; }
+    .dark #theme-fukasawa {
+        --fuka-accent-ink: #79c3a8;
+        --fuka-accent-ink-hover: #9ad9c0;
+        --fuka-accent-soft: rgba(121, 195, 168, 0.12);
+        --fuka-accent-line: #3f7a68;
+    }
     #theme-fukasawa .bg-\[\#faf6f0\] { background-color: var(--fuka-bg) !important; }
     #theme-fukasawa .bg-white { background-color: var(--fuka-surface) !important; }
     #theme-fukasawa .text-stone-900,
@@ -179,7 +190,6 @@ const Style = () => {
     .dark #theme-fukasawa .text-stone-600,
     .dark #theme-fukasawa .text-stone-700 { color: #a3a3a3 !important; }
     .dark #theme-fukasawa [class*='border-stone-'] { border-color: #2a2a2a !important; }
-    .dark #theme-fukasawa [class*='bg-orange-'] { background-color: #292524 !important; }
     .dark #theme-fukasawa [class*='bg-blue-'],
     .dark #theme-fukasawa [class*='bg-green-'],
     .dark #theme-fukasawa [class*='bg-purple-'],
@@ -192,29 +202,47 @@ const Style = () => {
     .dark #theme-fukasawa [class*='bg-indigo-'],
     .dark #theme-fukasawa [class*='bg-violet-'] { background-color: #222222 !important; }
 
-    /* 品牌主色用透：正文/框架保持墨灰，交互元素点亮琥珀橙 */
-    #theme-fukasawa [class*='text-orange-'] { color: var(--fuka-accent) !important; }
-    #theme-fukasawa [class*='hover:text-orange-']:hover { color: var(--fuka-accent-hover) !important; }
+    /* 品牌主色：墨绿。正文保持墨灰，只有交互元素、标签和强调块用主色 */
+    #theme-fukasawa [class*='text-orange-'] { color: var(--fuka-accent-ink) !important; }
+    #theme-fukasawa [class*='hover:text-orange-']:hover { color: var(--fuka-accent-ink-hover) !important; }
     #theme-fukasawa [class*='bg-orange-'] { background-color: var(--fuka-accent) !important; color: #ffffff !important; }
+    /* 浅底标签（orange-50/100）走柔和绿底，不再被刷成实心块 */
+    #theme-fukasawa [class*='bg-orange-50'],
+    #theme-fukasawa [class*='bg-orange-100'] {
+        background-color: var(--fuka-accent-soft) !important;
+        color: var(--fuka-accent-ink) !important;
+    }
     #theme-fukasawa [class*='hover:bg-orange-']:hover { background-color: var(--fuka-accent-hover) !important; color: #ffffff !important; }
-    #theme-fukasawa [class*='border-orange-'] { border-color: var(--fuka-accent) !important; }
-    #theme-fukasawa [class*='hover:border-orange-']:hover { border-color: var(--fuka-accent-hover) !important; }
-    #theme-fukasawa [class*='shadow-orange-'] { box-shadow: 0 0 0 1px rgba(217,119,6,0.18) !important; }
-    #theme-fukasawa [class*='ring-orange-'] { --tw-ring-color: rgba(217,119,6,0.35) !important; }
+    #theme-fukasawa [class*='border-orange-'] { border-color: var(--fuka-accent-line) !important; }
+    #theme-fukasawa [class*='hover:border-orange-']:hover { border-color: var(--fuka-accent) !important; }
+    #theme-fukasawa [class*='shadow-orange-'] { box-shadow: 0 0 0 1px rgba(28,90,74,0.16) !important; }
+    #theme-fukasawa [class*='ring-orange-'] { --tw-ring-color: rgba(28,90,74,0.35) !important; }
+
+    /* 正文行内链接：默认主色，下划线保留，便于识别可点 */
+    #theme-fukasawa #notion-article .notion-text a.notion-link,
+    #theme-fukasawa #notion-article .notion-quote a.notion-link,
+    #theme-fukasawa #notion-article .notion-toggle a.notion-link,
+    #theme-fukasawa #notion-article .notion-callout a.notion-link {
+        color: var(--fuka-accent-ink) !important;
+    }
+    #theme-fukasawa #notion-article .notion-text a.notion-link:hover,
+    #theme-fukasawa #notion-article .notion-quote a.notion-link:hover {
+        color: var(--fuka-accent-ink-hover) !important;
+    }
 
     /* 列表卡片 hover 反馈：底边线与标题点亮主色 */
-    #theme-fukasawa .grid-item:hover { border-bottom-color: rgba(217,119,6,0.45); }
+    #theme-fukasawa .grid-item:hover { border-bottom-color: rgba(28,90,74,0.42); }
     #theme-fukasawa .grid-item:hover h2,
-    #theme-fukasawa .grid-item:hover h3 { color: var(--fuka-accent-hover) !important; }
+    #theme-fukasawa .grid-item:hover h3 { color: var(--fuka-accent-ink-hover) !important; }
 
-    /* 侧边栏重新点亮铜橙 */
-    #theme-fukasawa .sideLeft [class*='text-orange-'] { color: var(--fuka-orange) !important; }
-    #theme-fukasawa .sideLeft [class*='hover:text-orange-']:hover { color: var(--fuka-orange) !important; }
-    #theme-fukasawa .sideLeft [class*='bg-orange-'] { background-color: var(--fuka-orange) !important; }
-    #theme-fukasawa .sideLeft [class*='hover:bg-orange-']:hover { background-color: #b45309 !important; }
-    #theme-fukasawa .sideLeft [class*='border-orange-'] { border-color: var(--fuka-orange) !important; }
-    #theme-fukasawa .sideLeft [class*='hover:border-orange-']:hover { border-color: #b45309 !important; }
-    #theme-fukasawa .sideLeft [class*='shadow-orange-'] { box-shadow: 0 0 0 1px rgba(217,119,6,0.18) !important; }
+    /* 侧边栏沿用同一主色，保证暗色模式下文字仍是浅绿 */
+    #theme-fukasawa .sideLeft [class*='text-orange-'] { color: var(--fuka-accent-ink) !important; }
+    #theme-fukasawa .sideLeft [class*='hover:text-orange-']:hover { color: var(--fuka-accent-ink-hover) !important; }
+    #theme-fukasawa .sideLeft [class*='bg-orange-'] { background-color: var(--fuka-accent) !important; }
+    #theme-fukasawa .sideLeft [class*='hover:bg-orange-']:hover { background-color: var(--fuka-accent-hover) !important; }
+    #theme-fukasawa .sideLeft [class*='border-orange-'] { border-color: var(--fuka-accent-line) !important; }
+    #theme-fukasawa .sideLeft [class*='hover:border-orange-']:hover { border-color: var(--fuka-accent) !important; }
+    #theme-fukasawa .sideLeft [class*='shadow-orange-'] { box-shadow: 0 0 0 1px rgba(28,90,74,0.16) !important; }
 
     /* 编辑部式排版：减少组件感，强化留白、细线和文字层级 */
     #theme-fukasawa [class*="rounded-2xl"],

@@ -200,7 +200,7 @@ export default function ArticleDetail(props) {
           border-left-width: 4px;
           border-left-color: rgb(217 119 6);
           border-radius: 0 0.75rem 0.75rem 0;
-          background: rgba(217, 119, 6, 0.08);
+          background: rgba(28, 90, 74, 0.08);
           padding: 0.85rem 1rem;
         }
 

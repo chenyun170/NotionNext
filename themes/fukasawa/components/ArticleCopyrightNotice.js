@@ -44,7 +44,7 @@ export default function ArticleCopyrightNotice({ post }) {
     <div className='group mt-14 print:hidden'>
       <div className='relative overflow-hidden rounded-2xl border border-stone-100 bg-stone-50 p-8 transition-all hover:border-stone-400/50 hover:shadow-xl dark:border-stone-800 dark:bg-stone-900/50'>
         <div className='pointer-events-none absolute -right-6 -top-6 opacity-[0.03] transition-opacity group-hover:opacity-10 dark:opacity-[0.05]'>
-          <i className='fas fa-shield-alt rotate-12 text-9xl text-slate-900 dark:text-white'></i>
+          <i className='fas fa-shield-alt rotate-12 text-9xl text-stone-900 dark:text-white'></i>
         </div>
 
         <div className='relative z-10'>
@@ -53,7 +53,7 @@ export default function ArticleCopyrightNotice({ post }) {
               <div className='h-4 w-1 rounded-full bg-stone-500'></div>
               <div className='h-4 w-1 rounded-full bg-stone-500/40'></div>
             </div>
-            <h3 className='text-xs font-black uppercase tracking-[0.2em] text-slate-800 dark:text-stone-200'>
+            <h3 className='text-xs font-black uppercase tracking-[0.2em] text-stone-800 dark:text-stone-200'>
               版权与引用说明
             </h3>
           </div>
@@ -117,7 +117,7 @@ export default function ArticleCopyrightNotice({ post }) {
 
         <div
           aria-live='polite'
-          className={`absolute bottom-4 right-4 rounded-full bg-slate-950 px-4 py-2 text-xs font-medium text-white shadow-lg transition-all duration-200 dark:bg-white dark:text-slate-900 ${
+          className={`absolute bottom-4 right-4 rounded-full bg-stone-950 px-4 py-2 text-xs font-medium text-white shadow-lg transition-all duration-200 dark:bg-white dark:text-stone-900 ${
             toastText
               ? 'translate-y-0 opacity-100'
               : 'pointer-events-none translate-y-2 opacity-0'

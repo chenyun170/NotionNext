@@ -44,7 +44,7 @@ const HeroSection = () => {
                 onClick={() => setSearchType(tab.id)}
                 className={`text-[10px] font-bold px-3 py-1 rounded-full transition-all ${
                   searchType === tab.id
-                    ? 'bg-[#d97706] text-white'
+                    ? 'bg-[#1c5a4a] text-white'
                     : 'text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-200'
                 }`}
               >
@@ -67,7 +67,7 @@ const HeroSection = () => {
             />
             <button
               onClick={handleSearch}
-              className='shrink-0 bg-[#d97706] hover:bg-[#b45309] text-white px-6 py-2 rounded-[8px] text-xs font-bold transition-colors'
+              className='shrink-0 bg-[#1c5a4a] hover:bg-[#14453a] text-white px-6 py-2 rounded-[8px] text-xs font-bold transition-colors'
             >
               GO
             </button>

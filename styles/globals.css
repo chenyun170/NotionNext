@@ -7,13 +7,13 @@
   --brand-primary-hover: #1c1917;
   --brand-primary-soft: #f5f5f4;
   --brand-primary-border: #d6d3d1;
-  --brand-accent: #d97706;
-  --brand-accent-hover: #b45309;
-  --brand-accent-soft: #fef7f0;
-  --brand-accent-border: #f8d8bd;
+  --brand-accent: #1c5a4a;
+  --brand-accent-hover: #14453a;
+  --brand-accent-soft: #e8f0ec;
+  --brand-accent-border: #c3d6cd;
   --brand-ink: #1c1917;
   --brand-muted: #78716c;
-  --brand-warning: #b45309;
+  --brand-warning: #9a4a1f;
   --brand-danger: #dc2626;
   --brand-success: #525252;
 }
@@ -29,13 +29,13 @@
     background: var(--brand-accent-hover);
   }
   #theme-fukasawa .dark .sideLeft .brand-btn-primary {
-    background: #d97706;
-    border-color: #d97706;
+    background: #1c5a4a;
+    border-color: #1c5a4a;
     color: #ffffff;
   }
   #theme-fukasawa .dark .sideLeft .brand-btn-primary:hover {
-    background: #b45309;
-    border-color: #b45309;
+    background: #14453a;
+    border-color: #14453a;
   }
   #theme-fukasawa .sideLeft .brand-btn-accent {
     border-color: var(--brand-accent);
@@ -47,13 +47,13 @@
     background: var(--brand-accent-hover);
   }
   #theme-fukasawa .dark .sideLeft .brand-btn-accent {
-    background: #d97706;
-    border-color: #d97706;
+    background: #1c5a4a;
+    border-color: #1c5a4a;
     color: #ffffff;
   }
   #theme-fukasawa .dark .sideLeft .brand-btn-accent:hover {
-    background: #b45309;
-    border-color: #b45309;
+    background: #14453a;
+    border-color: #14453a;
   }
 
   .brand-btn {
@@ -129,20 +129,20 @@
   }
 
   .dark .brand-btn-secondary:hover {
-    border-color: #f8d8bd;
-    color: #d97706;
-    background: rgba(217, 119, 6, 0.11);
+    border-color: #3f7a68;
+    color: #79c3a8;
+    background: rgba(28, 90, 74, 0.10);
   }
 
   .dark .brand-btn-accent {
-    background: #d97706;
-    border-color: #d97706;
+    background: #1c5a4a;
+    border-color: #1c5a4a;
     color: #ffffff;
   }
 
   .dark .brand-btn-accent:hover {
-    background: #b45309;
-    border-color: #b45309;
+    background: #14453a;
+    border-color: #14453a;
   }
 }
 
@@ -343,7 +343,7 @@ nav {
 
 /* Webmention style */
 .webmention-block {
-  background: rgba(217, 119, 6, 0.10);
+  background: rgba(28, 90, 74, 0.09);
   padding: 1rem 2rem;
   border-radius: 5px;
 }
@@ -356,7 +356,7 @@ nav {
 }
 
 .webmention-block-intro a {
-  color: #b45309;
+  color: #14453a;
   text-decoration: underline;
 }
 

@@ -224,7 +224,7 @@ function AsideLeft(props) {
                           isTopThree 
                             ? `bg-gradient-to-br ${
                                 index === 0 
-                                  ? 'from-orange-500 to-orange-600 text-white shadow-sm group-hover:scale-105'
+                                  ? 'from-[#1c5a4a] to-[#14453a] text-white shadow-sm group-hover:scale-105'
                                   : index === 1 
                                   ? 'from-stone-300 to-stone-400 text-white shadow-sm group-hover:scale-105'
                                   : 'from-stone-300 to-stone-400 text-white shadow-sm group-hover:scale-105'

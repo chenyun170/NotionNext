@@ -115,7 +115,7 @@ const HomeIntro = ({ categoryOptions = [] }) => {
                     action: 'click_customs_data'
                   })
                 }}
-                className='brand-btn brand-btn-primary h-10 w-full max-w-full px-4 text-sm sm:w-auto'
+                className='brand-btn brand-btn-accent h-10 w-full max-w-full px-4 text-sm sm:w-auto'
               >
                 <i className='fas fa-database mr-2 text-xs' />
                 免费查：谁在进口你的产品

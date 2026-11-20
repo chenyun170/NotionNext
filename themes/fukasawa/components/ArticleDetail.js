@@ -198,7 +198,7 @@ export default function ArticleDetail(props) {
         #article-wrapper .notion-quote {
           margin: 1.25rem 0;
           border-left-width: 4px;
-          border-left-color: rgb(217 119 6);
+          border-left-color: #1c5a4a;
           border-radius: 0 0.75rem 0.75rem 0;
           background: rgba(28, 90, 74, 0.08);
           padding: 0.85rem 1rem;
@@ -256,6 +256,17 @@ export default function ArticleDetail(props) {
 
           #article-wrapper .notion-simple-table td > div {
             white-space: normal !important;
+          }
+
+          /* 5 列以上的表格不硬压：保底宽度 + 表内横向滑动，避免每列只剩 60px */
+          #article-wrapper .notion-table:has(.notion-simple-table td:nth-child(5)) {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+          }
+          #article-wrapper .notion-table:has(.notion-simple-table td:nth-child(5)) .notion-simple-table {
+            width: auto !important;
+            min-width: 560px !important;
+            table-layout: auto !important;
           }
         }
 

@@ -113,6 +113,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 
 ## Articles
 
+- [客户要样品，运费到底谁付？先算这三笔](https://www.123170.xyz/article/sample-fee-who-pays-freight) — 寄一次样成本约 965 元，要卖 1.2 万元货才回本。这篇给了三类客户的付法、三条判断线、两封可直接发的英文邮件，和一张寄样前检查表。
 - [原料涨了，老客户凭什么接受你的涨价](https://www.123170.xyz/article/price-increase-old-customers) — 原料涨 15%，为什么售价只要涨 8.3% 就能保住原毛利？这篇把账算给你看，附涨价时机阈值、两封能直接发的英文邮件、客户分级表和一份提价前清单。
 - [货到港客户不提货，滞箱费每天在涨，这单怎么止损](https://www.123170.xyz/article/destination-abandoned-cargo-rescue) — 客户货到港突然失联，滞箱费和堆存费按天往上翻，多数业务员只会发邮件催。这篇按时间线拆开：前 7 天做什么、45 天前必须做的决定、四条止损路径各要花多少钱，附一封能直接发的英文邮件…
 - [客户说要来验厂，提前两周我会做这几件事](https://www.123170.xyz/article/factory-audit-preparation) — 客户验厂不是把车间扫一遍就完事。先问清是客户自己来看还是第三方审核，再按两周、一周、三天倒排文件、现场和人员，附一张验厂当天的时间表和几个容易翻车的地方。

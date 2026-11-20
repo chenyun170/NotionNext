@@ -17,7 +17,8 @@ Allow: /faq.html
 Allow: /about.html
 Allow: /llms.txt
 
-# 禁止抓取：API 接口
+# 禁止抓取：API 接口（图片代理除外，Google 抓不到图会影响图片收录）
+Allow: /api/img
 Disallow: /api/
 
 # 禁止抓取：后台/认证页面
@@ -54,6 +55,7 @@ Allow: /dingyiyun.html
 Allow: /foreign-trade-tools.html
 Allow: /faq.html
 Allow: /about.html
+Allow: /api/img
 Disallow: /api/
 Disallow: /auth/
 Disallow: /sign-in
@@ -81,6 +83,7 @@ Allow: /foreign-trade-tools.html
 Allow: /faq.html
 Allow: /about.html
 Allow: /llms.txt
+Allow: /api/img
 Disallow: /api/
 Disallow: /auth/
 Disallow: /sign-in
@@ -106,6 +109,7 @@ Allow: /dingyiyun.html
 Allow: /foreign-trade-tools.html
 Allow: /faq.html
 Allow: /about.html
+Allow: /api/img
 Disallow: /api/
 Disallow: /auth/
 Disallow: /sign-in
@@ -132,6 +136,7 @@ Allow: /dingyiyun.html
 Allow: /foreign-trade-tools.html
 Allow: /faq.html
 Allow: /about.html
+Allow: /api/img
 Disallow: /api/
 Disallow: /auth/
 Disallow: /sign-in

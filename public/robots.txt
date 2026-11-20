@@ -36,6 +36,7 @@ Disallow: /search/?
 
 # 禁止抓取：静态资源（不需要索引）
 Disallow: /fonts/
+Allow: /images/covers/
 Disallow: /images/
 Disallow: /css/
 Disallow: /js/

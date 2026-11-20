@@ -83,13 +83,19 @@ const HOME_ENTRY_PAGES = [
  * @param {*} param0
  * @returns
  */
+// 社交分享兜底图：1200x630，避免回落到 Notion 自带的无关联封面
+const DEFAULT_OG_IMAGE = '/images/og-default.webp'
+// 文章封面是 3:2，OG 标准是 1.91:1，尺寸要按实际图给，否则抓取端会报不一致
+const coverSize = imagePath =>
+  String(imagePath || '').includes('/images/covers/') ? [1200, 800] : [1200, 630]
+
 const SEO = props => {
   const { children, siteInfo, post, NOTION_CONFIG } = props
   const LINK = siteConfig('LINK')
   const SUB_PATH = siteConfig('SUB_PATH', '')
   const siteBaseUrl = buildCanonicalUrl(LINK, SUB_PATH)
   let url = siteBaseUrl
-  let image = toAbsoluteUrl('/bg_image.jpg', siteBaseUrl)
+  let image = toAbsoluteUrl(DEFAULT_OG_IMAGE, siteBaseUrl)
   const router = useRouter()
   const meta = getSEOMeta(props, router, useGlobal()?.locale)
   const webFontUrl = siteConfig('FONT_URL')
@@ -121,7 +127,7 @@ const SEO = props => {
   }
   if (meta) {
     url = buildCanonicalUrl(siteBaseUrl, meta.slug)
-    image = toAbsoluteUrl(meta.image || '/bg_image.jpg', siteBaseUrl)
+    image = toAbsoluteUrl(meta.image || DEFAULT_OG_IMAGE, siteBaseUrl)
   }
   const siteTitle = siteInfo?.title || siteConfig('TITLE') || BRAND_NAME
   const siteName = getBrandAwareName(siteTitle)
@@ -237,8 +243,8 @@ const SEO = props => {
       <meta property='og:url' content={url} />
       <meta property='og:image' content={image} />
       <meta property='og:image:secure_url' content={image} />
-      <meta property='og:image:width' content='1200' />
-      <meta property='og:image:height' content='630' />
+      <meta property='og:image:width' content={coverSize(image)[0]} />
+      <meta property='og:image:height' content={coverSize(image)[1]} />
       <meta property='og:image:alt' content={title} />
       <meta property='og:site_name' content={siteName} />
       <meta property='og:type' content={type} />
@@ -679,7 +685,7 @@ const getSEOMeta = (props, router, locale) => {
         description: siteDescription.includes(BRAND_NAME)
           ? siteDescription
           : `${BRAND_DESCRIPTION} 这里是 ${BRAND_NAME} 官网入口。`,
-        image: `${siteInfo?.pageCover}`,
+        image: DEFAULT_OG_IMAGE,
         slug: '',
         type: 'website'
       }
@@ -687,7 +693,7 @@ const getSEOMeta = (props, router, locale) => {
       return {
         title: `${locale.NAV.ARCHIVE} | ${siteInfo?.title}`,
         description: `${siteInfo?.description}`,
-        image: `${siteInfo?.pageCover}`,
+        image: DEFAULT_OG_IMAGE,
         slug: 'archive',
         type: 'website'
       }
@@ -695,7 +701,7 @@ const getSEOMeta = (props, router, locale) => {
       return {
         title: `第 ${page} 页 | ${siteInfo?.title}`,
         description: `${siteInfo?.description}`,
-        image: `${siteInfo?.pageCover}`,
+        image: DEFAULT_OG_IMAGE,
         slug: 'page/' + page,
         type: 'website'
       }
@@ -704,7 +710,7 @@ const getSEOMeta = (props, router, locale) => {
         title: `${category} | ${locale.COMMON.CATEGORY} | ${siteInfo?.title}`,
         description: buildTaxonomyDescription('category', category, siteInfo),
         slug: 'category/' + encodeURIComponent(category) + (page ? '/page/' + page : ''),
-        image: `${siteInfo?.pageCover}`,
+        image: DEFAULT_OG_IMAGE,
         type: 'website'
       }
     case '/category/[category]/page/[page]':
@@ -712,7 +718,7 @@ const getSEOMeta = (props, router, locale) => {
         title: `${category} | ${locale.COMMON.CATEGORY} | ${siteInfo?.title}`,
         description: buildTaxonomyDescription('category', category, siteInfo),
         slug: 'category/' + encodeURIComponent(category) + (page ? '/page/' + page : ''),
-        image: `${siteInfo?.pageCover}`,
+        image: DEFAULT_OG_IMAGE,
         type: 'website'
       }
     case '/tag/[tag]':
@@ -720,7 +726,7 @@ const getSEOMeta = (props, router, locale) => {
       return {
         title: `${tag} | ${locale.COMMON.TAGS} | ${siteInfo?.title}`,
         description: buildTaxonomyDescription('tag', tag, siteInfo),
-        image: `${siteInfo?.pageCover}`,
+        image: DEFAULT_OG_IMAGE,
         slug: 'tag/' + encodeURIComponent(tag) + (page ? '/page/' + page : ''),
         type: 'website'
       }
@@ -728,7 +734,7 @@ const getSEOMeta = (props, router, locale) => {
       return {
         title: `${keyword || ''}${keyword ? ' | ' : ''}${locale.NAV.SEARCH} | ${siteInfo?.title}`,
         description: buildSearchDescription(keyword, siteInfo),
-        image: `${siteInfo?.pageCover}`,
+        image: DEFAULT_OG_IMAGE,
         slug: 'search',
         type: 'website'
       }
@@ -737,20 +743,20 @@ const getSEOMeta = (props, router, locale) => {
       return {
         title: `${keyword || ''}${keyword ? ' | ' : ''}${locale.NAV.SEARCH} | ${siteInfo?.title}`,
         description: buildSearchDescription(keyword, siteInfo),
-        image: `${siteInfo?.pageCover}`,
+        image: DEFAULT_OG_IMAGE,
         slug: 'search/' + (keyword || ''),
         type: 'website'
       }
     case '/404':
       return {
         title: `${siteInfo?.title} | ${locale.NAV.PAGE_NOT_FOUND}`,
-        image: `${siteInfo?.pageCover}`
+        image: DEFAULT_OG_IMAGE
       }
     case '/tag':
       return {
         title: `${locale.COMMON.TAGS} | ${siteInfo?.title}`,
         description: `${siteInfo?.description}`,
-        image: `${siteInfo?.pageCover}`,
+        image: DEFAULT_OG_IMAGE,
         slug: 'tag',
         type: 'website'
       }
@@ -758,7 +764,7 @@ const getSEOMeta = (props, router, locale) => {
       return {
         title: `${locale.COMMON.CATEGORY} | ${siteInfo?.title}`,
         description: `${siteInfo?.description}`,
-        image: `${siteInfo?.pageCover}`,
+        image: DEFAULT_OG_IMAGE,
         slug: 'category',
         type: 'website'
       }
@@ -770,7 +776,7 @@ const getSEOMeta = (props, router, locale) => {
         description: post?.summary,
         type: post?.type,
         slug: post?.slug,
-        image: post?.pageCoverThumbnail || `${siteInfo?.pageCover}`,
+        image: post?.pageCoverThumbnail || DEFAULT_OG_IMAGE,
         category: Array.isArray(post?.category) ? post?.category?.[0] : post?.category,
         tags: post?.tags,
         // 文章发布时间必须传给 SEO：结构化数据缺 datePublished 时，

@@ -44,9 +44,13 @@ export async function getStaticProps(context) {
 
   // 2) 筛选已发布文章
   const allPosts =
-    props.allPages?.filter(
+    (props.allPages?.filter(
       page => page.type === 'Post' && page.status === BLOG.NOTION_PROPERTY_NAME.status_publish
-    ) || []
+    ) || []).sort(
+      (a, b) =>
+        (b.publishDate || 0) - (a.publishDate || 0) ||
+        new Date(b.lastEditedDate || 0) - new Date(a.lastEditedDate || 0)
+    )
   const notionHomePosts = allPosts.filter(isHomepageListPost)
   const homePosts =
     notionHomePosts.length > 0

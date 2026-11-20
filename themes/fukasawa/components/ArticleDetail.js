@@ -63,6 +63,9 @@ export default function ArticleDetail(props) {
   if (!post) {
     return <></>
   }
+  // 自制的排版封面是 3:2 卡片，包含品牌行，改用 contain 完整展示；
+  // 实拍封面仍走 cover 铺满，避免照片留边
+  const isEditorialCover = String(post?.pageCover || '').includes('/images/covers/')
   return (
     <div
       id='container'
@@ -70,14 +73,14 @@ export default function ArticleDetail(props) {
       <ArticleReadingProgress />
 {/* 修改后的文章封面部分 */}
 {post?.type && post?.type !== 'Page' && post?.pageCover && (
-  <div className='w-full relative aspect-[16/9] md:aspect-[21/9] max-h-[60vh] bg-stone-100 dark:bg-stone-900 md:flex-shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-stone-400/20'>
+  <div className={`w-full relative max-h-[60vh] md:flex-shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-stone-400/20 ${isEditorialCover ? 'aspect-[3/2] bg-[#f7f5f1] dark:bg-[#161412]' : 'aspect-[16/9] md:aspect-[21/9] bg-stone-100 dark:bg-stone-900'}`}>
     <LazyImage
       priority
       alt={post.title}
       src={post?.pageCover}
       width={1200}
       height={675}
-      className='absolute inset-0 h-full w-full object-cover'
+      className={`absolute inset-0 h-full w-full ${isEditorialCover ? 'object-contain' : 'object-cover'}`}
     />
     {/* 增加一个内部光泽效果，提升立体感 */}
     <div className='absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl'></div>

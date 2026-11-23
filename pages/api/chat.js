@@ -9,9 +9,14 @@ const MESSAGE_MAX_LENGTH = Number(process.env.CHAT_MESSAGE_MAX_LENGTH) || 4000
 const HISTORY_MAX_MESSAGES = 12
 const chatRateLimitStore = new Map()
 
-// 默认用 NVIDIA 上验证过的模型；CHAT_MODEL 环境变量可覆盖
+// 免费 NVIDIA 账号下 minimax 不可用（挂起/限流），自动改用免费层开放的 llama
+// 环境变量 CHAT_MODEL 可覆盖；若仍想用 minimax 之外的模型可用 CHAT_MODEL_FALLBACK 指定
 const resolveChatModel = () => {
-  return process.env.CHAT_MODEL || 'minimaxai/minimax-m3.1-flash'
+  const configured = process.env.CHAT_MODEL
+  if (configured && !/minimax/i.test(configured)) return configured
+  return (
+    process.env.CHAT_MODEL_FALLBACK || 'meta/llama-3.3-70b-instruct'
+  )
 }
 
 const getClientIp = req => {

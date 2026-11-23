@@ -8,13 +8,10 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   // Add more setup options before each test is run
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  
-  // if using TypeScript with a baseUrl set to the root directory then you need the below for alias' to work
-  moduleDirectories: ['node_modules', '<rootDir>/'],
-  
-  // Module name mapping for path aliases
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.node.js'],
+  testEnvironment: 'node',
   moduleNameMapper: {
+    '^canvas$': '<rootDir>/__mocks__/canvas.js',
     '^@/(.*)$': '<rootDir>/$1',
     '^@/components/(.*)$': '<rootDir>/components/$1',
     '^@/lib/(.*)$': '<rootDir>/lib/$1',
@@ -23,12 +20,12 @@ const customJestConfig = {
     '^@/types/(.*)$': '<rootDir>/types/$1',
     '^@/conf/(.*)$': '<rootDir>/conf/$1',
     '^@/themes/(.*)$': '<rootDir>/themes/$1',
-    '^@theme-components$': '<rootDir>/themes/fukasawa',
+    '^@theme-components$': '<rootDir>/themes/fukasawa'
   },
   
-  // Test environment
-  testEnvironment: 'jest-environment-jsdom',
-  
+  // if using TypeScript with a baseUrl set to the root directory then you need the below for alias' to work
+  moduleDirectories: ['node_modules', '<rootDir>/'],
+
   // Test file patterns
   testMatch: [
     '<rootDir>/**/__tests__/**/*.{js,jsx,ts,tsx}',
@@ -108,6 +105,39 @@ const customJestConfig = {
   
   // Timeout for tests
   testTimeout: 10000,
+  projects: [
+    {
+      displayName: 'node',
+      testEnvironment: 'node',
+      setupFilesAfterEnv: ['<rootDir>/jest.setup.node.js'],
+      testMatch: [
+        '<rootDir>/__tests__/api/**/*.{js,jsx,ts,tsx}',
+        '<rootDir>/__tests__/lib/**/*.{js,jsx,ts,tsx}'
+      ],
+      transform: {
+        '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }]
+      },
+      moduleNameMapper: {
+        '^canvas$': '<rootDir>/__mocks__/canvas.js',
+        '^@/(.*)$': '<rootDir>/$1',
+        '^@theme-components$': '<rootDir>/themes/fukasawa'
+      }
+    },
+    {
+      displayName: 'dom',
+      testEnvironment: 'jsdom',
+      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+      testMatch: ['<rootDir>/__tests__/components/**/*.{js,jsx,ts,tsx}'],
+      transform: {
+        '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }]
+      },
+      moduleNameMapper: {
+        '^canvas$': '<rootDir>/__mocks__/canvas.js',
+        '^@/(.*)$': '<rootDir>/$1',
+        '^@theme-components$': '<rootDir>/themes/fukasawa'
+      }
+    }
+  ],
   
   // Reporters
   reporters: [

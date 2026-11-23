@@ -1,4 +1,6 @@
-import '@testing-library/jest-dom'
+if (typeof window !== 'undefined') {
+  require('@testing-library/jest-dom')
+}
 
 // Mock Next.js router
 jest.mock('next/router', () => ({

@@ -133,6 +133,7 @@ const isTenantAdminRoute = createRouteMatcher([
   '/admin/(.*)/memberships',
   '/admin/(.*)/domain'
 ])
+const tenantAdminRole = (process.env.CLERK_ADMIN_ROLE || 'org:admin') as `org:${string}`
 
 /**
  * 没有配置权限相关功能的返回
@@ -178,7 +179,7 @@ const noAuthMiddleware = async (req: NextRequest, ev: any) => {
  * 鉴权中间件
  */
 const authMiddleware = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-  ? clerkMiddleware((auth, req) => {
+  ? clerkMiddleware(async (auth, req) => {
       // ✅ 再保险：公共文件直接放行
       if (isPublicFile(req.nextUrl.pathname)) return NextResponse.next()
 
@@ -191,25 +192,25 @@ const authMiddleware = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
       const firstPageRedirect = getFirstPageRedirect(req)
       if (firstPageRedirect) return firstPageRedirect
 
-      const { userId } = auth()
+      const { userId, has } = await auth()
 
       // 处理 /dashboard 路由的登录保护
-      if (isTenantRoute(req)) {
+      if (isTenantRoute(req) && !userId) {
+        const url = new URL('/sign-in', req.url)
+        url.searchParams.set('redirectTo', req.url)
+        return NextResponse.redirect(url)
+      }
+
+      if (isTenantAdminRoute(req)) {
         if (!userId) {
           const url = new URL('/sign-in', req.url)
           url.searchParams.set('redirectTo', req.url)
           return NextResponse.redirect(url)
         }
-      }
 
-      // 处理管理员相关权限保护
-      if (isTenantAdminRoute(req)) {
-        auth().protect(has => {
-          return (
-            has({ permission: 'org:sys_memberships:manage' }) ||
-            has({ permission: 'org:sys_domains_manage' })
-          )
-        })
+        if (!has({ role: tenantAdminRole })) {
+          return new NextResponse('Not Found', { status: 404 })
+        }
       }
 
       return NextResponse.next()

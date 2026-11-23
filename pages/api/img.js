@@ -27,6 +27,19 @@ const SHORT_CACHE = 'public, max-age=60, s-maxage=60'
 
 // Vercel 函数响应体的硬上限，超过就交给浏览器直连
 const MAX_BYTES = 4 * 1024 * 1024
+const MAX_REDIRECTS = 3
+const SAFE_IMAGE_TYPES = new Set([
+  'image/avif',
+  'image/webp',
+  'image/apng',
+  'image/png',
+  'image/jpeg',
+  'image/gif',
+  'image/bmp',
+  'image/x-icon',
+  'image/vnd.microsoft.icon'
+])
+const IMAGE_CSP = "default-src 'none'; sandbox;"
 
 const FALLBACK_SVG = [
   '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">',
@@ -46,14 +59,13 @@ const FALLBACK_SVG = [
 ].join('')
 
 const isAllowedHost = hostname =>
-  ALLOWED_HOSTS.some(
-    host => hostname === host || hostname.endsWith('.' + host)
-  )
+  ALLOWED_HOSTS.some(host => hostname === host || hostname.endsWith('.' + host))
 
 const sendFallback = res => {
   res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8')
   res.setHeader('Cache-Control', SHORT_CACHE)
   res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('Content-Security-Policy', IMAGE_CSP)
   res.status(200).send(FALLBACK_SVG)
 }
 
@@ -88,43 +100,84 @@ export default async function handler(req, res) {
   const timer = setTimeout(() => controller.abort(), 9000)
 
   try {
-    const upstream = await fetch(target.toString(), {
-      headers: {
-        Accept:
-          'image/avif,image/webp,image/apng,image/png,image/*,*/*;q=0.8',
-        Referer: 'https://www.notion.so/',
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
-      },
-      redirect: 'follow',
-      signal: controller.signal
-    })
+    let upstream
+    for (let redirects = 0; redirects <= MAX_REDIRECTS; redirects += 1) {
+      if (
+        target.protocol !== 'https:' ||
+        !isAllowedHost(target.hostname) ||
+        target.username ||
+        target.password ||
+        (target.port && target.port !== '443')
+      ) {
+        return sendFallback(res)
+      }
+
+      upstream = await fetch(target.toString(), {
+        headers: {
+          Accept: 'image/avif,image/webp,image/apng,image/png,image/*;q=0.8',
+          Referer: 'https://www.notion.so/',
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
+        },
+        redirect: 'manual',
+        signal: controller.signal
+      })
+
+      if (![301, 302, 303, 307, 308].includes(upstream.status)) break
+
+      const location = upstream.headers.get('location')
+      await upstream.body?.cancel()
+      if (!location || redirects === MAX_REDIRECTS) return sendFallback(res)
+      target = new URL(location, target)
+    }
 
     if (!upstream.ok) {
+      await upstream.body?.cancel()
       return sendFallback(res)
     }
 
-    const contentType = upstream.headers.get('content-type') || ''
-    if (!contentType.startsWith('image/')) {
+    const contentType = (upstream.headers.get('content-type') || '')
+      .split(';')[0]
+      .trim()
+      .toLowerCase()
+    if (!SAFE_IMAGE_TYPES.has(contentType)) {
+      await upstream.body?.cancel()
       return sendFallback(res)
     }
 
     const declared = Number(upstream.headers.get('content-length') || 0)
     if (declared > MAX_BYTES) {
+      await upstream.body?.cancel()
       return redirectToSource(res, target)
     }
 
-    const buffer = Buffer.from(await upstream.arrayBuffer())
-    if (!buffer.length) {
-      return sendFallback(res)
+    if (!upstream.body) return sendFallback(res)
+
+    const reader = upstream.body.getReader()
+    const chunks = []
+    let totalBytes = 0
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        totalBytes += value.byteLength
+        if (totalBytes > MAX_BYTES) {
+          await reader.cancel()
+          return redirectToSource(res, target)
+        }
+        chunks.push(Buffer.from(value))
+      }
+    } finally {
+      reader.releaseLock()
     }
-    if (buffer.length > MAX_BYTES) {
-      return redirectToSource(res, target)
-    }
+
+    if (!totalBytes) return sendFallback(res)
+    const buffer = Buffer.concat(chunks, totalBytes)
 
     res.setHeader('Content-Type', contentType)
     res.setHeader('Cache-Control', LONG_CACHE)
     res.setHeader('X-Content-Type-Options', 'nosniff')
+    res.setHeader('Content-Security-Policy', IMAGE_CSP)
 
     if (req.method === 'HEAD') {
       return res.status(200).end()

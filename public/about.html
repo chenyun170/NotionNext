@@ -106,6 +106,8 @@
         font-size: 20px;
         font-weight: 900;
         letter-spacing: 0;
+        flex-shrink: 0;
+        white-space: nowrap;
       }
       .brand-icon {
         display: grid;
@@ -117,6 +119,20 @@
         background: linear-gradient(135deg, #292524, #57534e);
       }
       .back {
+        border: 1px solid rgba(28, 25, 23, 0.12);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.82);
+        padding: 9px 14px;
+        color: #78716c;
+        font-size: 14px;
+        font-weight: 800;
+      }
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .nav-links a {
         border: 1px solid rgba(28, 25, 23, 0.12);
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.82);
@@ -373,9 +389,15 @@
           <span class="brand-icon">情</span>
           <span>外贸获客情报局</span>
         </a>
-        <a class="back" href="/">返回首页</a>
-        <a class="back" href="/oragent.html">OraAgent</a>
-      </nav>
+      <div class="nav-links">
+        <a href="/tools.html">工具导航</a>
+        <a href="/customs-data.html">海关数据专题</a>
+        <a href="/turingsearch.html">图灵搜</a>
+        <a href="/dingyiyun.html">顶易云</a>
+        <a href="/oragent.html">OraAgent</a>
+        <a href="/dingyi.html">顶易品牌观察</a>
+      </div>
+    </nav>
     </header>
 
     <main>

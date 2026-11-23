@@ -9,6 +9,15 @@ const MESSAGE_MAX_LENGTH = Number(process.env.CHAT_MESSAGE_MAX_LENGTH) || 4000
 const HISTORY_MAX_MESSAGES = 12
 const chatRateLimitStore = new Map()
 
+// minimax 在 NVIDIA 上响应极慢/不可用，自动换到更稳的模型（可用 CHAT_MODEL_FALLBACK 覆盖）
+const resolveChatModel = () => {
+  const configured = process.env.CHAT_MODEL
+  if (configured && !/minimax/i.test(configured)) return configured
+  return (
+    process.env.CHAT_MODEL_FALLBACK || 'qwen/qwen2.5-72b-instruct'
+  )
+}
+
 const getClientIp = req => {
   const forwarded = req.headers['x-forwarded-for']
   if (typeof forwarded === 'string' && forwarded.length > 0) {
@@ -101,8 +110,7 @@ export default async function handler(req, res) {
 
     const stream = await client.chat.completions.create(
       {
-        model:
-          process.env.CHAT_MODEL || 'minimaxai/minimax-m3.1-flash',
+        model: resolveChatModel(),
         // 使用文本对话模型，生产环境可通过 CHAT_MODEL 覆盖。
         messages: buildMessages(),
         // 提高输出上限：长邮件、分析报告不再被模型默认上限截断；gpt-oss-120b 最大输出 8192 tokens，可通过环境变量 MAX_TOKENS 覆盖

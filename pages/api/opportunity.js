@@ -13,6 +13,15 @@ const MAX_TOKENS = Number(process.env.OPPORTUNITY_MAX_TOKENS) || 1500
 
 const rateLimitStore = new Map()
 
+// minimax 在 NVIDIA 上响应极慢/不可用，自动换到更稳的模型（可用 CHAT_MODEL_FALLBACK 覆盖）
+const resolveChatModel = () => {
+  const configured = process.env.CHAT_MODEL
+  if (configured && !/minimax/i.test(configured)) return configured
+  return (
+    process.env.CHAT_MODEL_FALLBACK || 'qwen/qwen2.5-72b-instruct'
+  )
+}
+
 const getClientIp = req => {
   const forwarded = req.headers['x-forwarded-for']
   if (typeof forwarded === 'string' && forwarded.length > 0) {
@@ -93,7 +102,7 @@ export default async function handler(req, res) {
   try {
     const completion = await client.chat.completions.create(
       {
-        model: process.env.CHAT_MODEL || 'minimaxai/minimax-m3.1-flash',
+        model: resolveChatModel(),
         messages: [
           {
             role: 'system',
@@ -121,7 +130,7 @@ export default async function handler(req, res) {
       ok: true,
       product,
       analysis: text.trim(),
-      model: process.env.CHAT_MODEL || 'minimaxai/minimax-m3.1-flash'
+      model: resolveChatModel()
     })
   } catch (error) {
     if (res.destroyed || res.writableEnded) return

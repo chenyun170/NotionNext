@@ -117,7 +117,7 @@ function AsideLeft(props) {
                     style={{ 
                         position: 'absolute',
                         top: '-35px',
-                        left: '6px',
+                        left: '1px',
                         width: '65px',
                         maxWidth: '65px',
                         zIndex: 100,

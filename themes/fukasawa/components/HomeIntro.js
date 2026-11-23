@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import SmartLink from '@/components/SmartLink'
 import { CUSTOMS_DATA_SKILL } from '@/lib/utils/customsDataSkill'
 import {
@@ -87,6 +88,45 @@ const HomeIntro = ({ categoryOptions = [] }) => {
   const topics = buildTopics(categoryOptions)
   const homeDescription = buildHomeDescription()
 
+  const [oppLoading, setOppLoading] = useState(false)
+  const [oppError, setOppError] = useState('')
+  const [oppResult, setOppResult] = useState(null)
+  const [oppProduct, setOppProduct] = useState('')
+
+  async function handleOpportunity(e) {
+    e.preventDefault()
+    const form = e.currentTarget
+    const product = (form?.product?.value || '').trim()
+
+    if (!product) {
+      setOppError('请输入产品词，比如 LED 灯、轴承')
+      setOppResult(null)
+      return
+    }
+
+    setOppLoading(true)
+    setOppError('')
+    setOppResult(null)
+    setOppProduct(product)
+
+    try {
+      const res = await fetch('/api/opportunity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product })
+      })
+      const data = await res.json()
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || '商机分析失败')
+      }
+      setOppResult(data.analysis)
+    } catch (err) {
+      setOppError(err.message || '商机分析失败，请稍后再试')
+    } finally {
+      setOppLoading(false)
+    }
+  }
+
   return (
     <section className='home-intro mx-auto mb-10 w-full max-w-[calc(100vw-2rem)] sm:max-w-full'>
       <div className='px-4 py-2 sm:px-6 sm:py-4 sm:pb-8'>
@@ -138,16 +178,15 @@ const HomeIntro = ({ categoryOptions = [] }) => {
             </div>
 
             <form
-              action='/diagnose'
-              method='get'
-              onSubmit={() =>
+              onSubmit={e => {
                 trackSiteInteraction({
                   source: 'home_light_diagnosis_submit',
                   sourceGroup: 'home',
-                  target: '/diagnose',
-                  action: 'start_light_diagnosis'
+                  target: '/api/opportunity',
+                  action: 'start_opportunity_ai'
                 })
-              }
+                void handleOpportunity(e)
+              }}
               className='home-diagnosis mt-5 flex min-w-0 flex-col gap-3 border-b border-stone-200 pb-4 dark:border-stone-800 sm:flex-row sm:items-center'
             >
               <label className='min-w-0 flex-1 text-xs font-bold leading-5 text-stone-700 dark:text-stone-300'>
@@ -161,11 +200,34 @@ const HomeIntro = ({ categoryOptions = [] }) => {
               </label>
               <button
                 type='submit'
-                className='brand-btn brand-btn-primary h-9 shrink-0 px-4 text-xs'
+                disabled={oppLoading}
+                className='brand-btn brand-btn-primary h-9 shrink-0 px-4 text-xs disabled:opacity-60'
               >
-                5 秒看商机
+                {oppLoading ? 'AI 分析中…' : '5 秒看商机'}
               </button>
             </form>
+
+            {oppLoading && (
+              <div className='mt-3 flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400'>
+                <span className='inline-block h-3 w-3 animate-spin rounded-full border-2 border-stone-400 border-t-transparent' />
+                AI 正在分析「{oppProduct}」的商机，稍等几秒…
+              </div>
+            )}
+            {oppError && (
+              <div className='mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs leading-6 text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300'>
+                {oppError}
+              </div>
+            )}
+            {oppResult && (
+              <div className='mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3 dark:border-emerald-900 dark:bg-emerald-950/40'>
+                <div className='mb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-600 dark:text-emerald-400'>
+                  商机判断 · {oppProduct}
+                </div>
+                <div className='whitespace-pre-wrap break-words text-[13px] leading-6 text-stone-700 dark:text-stone-200'>
+                  {oppResult}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className='home-signal-panel min-w-0 max-w-[326px] border-l border-stone-200 pl-4 dark:border-stone-800 sm:max-w-none sm:pl-6'>

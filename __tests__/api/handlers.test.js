@@ -12,6 +12,8 @@ const source = 'https://www.notion.so/image/example'
 const mockFetch = jest.fn()
 const originalFetch = global.fetch
 const originalChatKey = process.env.OPENAI_API_KEY
+const originalChatBaseUrl = process.env.OPENAI_BASE_URL
+const originalChatModel = process.env.CHAT_MODEL
 const originalDiagnoseKey = process.env.BLAZEAI_API_KEY
 
 function response() {
@@ -62,6 +64,8 @@ beforeEach(() => {
   mockFetch.mockReset()
   OpenAI.mockReset()
   process.env.OPENAI_API_KEY = 'test-only'
+  process.env.OPENAI_BASE_URL = 'https://integrate.api.nvidia.com/v1'
+  process.env.CHAT_MODEL = 'minimaxai/minimax-m3.1-flash'
   process.env.BLAZEAI_API_KEY = 'test-only'
 })
 
@@ -69,6 +73,10 @@ afterEach(() => {
   global.fetch = originalFetch
   if (originalChatKey === undefined) delete process.env.OPENAI_API_KEY
   else process.env.OPENAI_API_KEY = originalChatKey
+  if (originalChatBaseUrl === undefined) delete process.env.OPENAI_BASE_URL
+  else process.env.OPENAI_BASE_URL = originalChatBaseUrl
+  if (originalChatModel === undefined) delete process.env.CHAT_MODEL
+  else process.env.CHAT_MODEL = originalChatModel
   if (originalDiagnoseKey === undefined) delete process.env.BLAZEAI_API_KEY
   else process.env.BLAZEAI_API_KEY = originalDiagnoseKey
   jest.useRealTimers()

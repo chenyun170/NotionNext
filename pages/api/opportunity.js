@@ -8,7 +8,7 @@ const RATE_LIMIT_MAX = Number(process.env.OPPORTUNITY_RATE_LIMIT_MAX) || 20
 const PRODUCT_MAX_LENGTH = Number(
   process.env.OPPORTUNITY_PRODUCT_MAX_LENGTH
 ) || 100
-const TIMEOUT_MS = Number(process.env.OPPORTUNITY_TIMEOUT_MS) || 25000
+const TIMEOUT_MS = Number(process.env.OPPORTUNITY_TIMEOUT_MS) || 45000
 const MAX_TOKENS = Number(process.env.OPPORTUNITY_MAX_TOKENS) || 1500
 
 const rateLimitStore = new Map()
@@ -129,7 +129,11 @@ export default async function handler(req, res) {
       return res.status(504).json({ error: '商机分析超时，请稍后再试' })
     }
     console.error('[opportunity] upstream failed:', error?.message)
-    return res.status(502).json({ error: '商机分析暂时不可用，请稍后再试' })
+    return res.status(502).json({
+      error: '商机分析暂时不可用，请稍后再试',
+      code: error?.status || error?.statusCode || null,
+      type: error?.name || null
+    })
   } finally {
     clearTimeout(timer)
     res.off('close', onClose)

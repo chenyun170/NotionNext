@@ -127,7 +127,11 @@ export default async function handler(req, res) {
     console.error('[chat] upstream failed:', error?.name, error?.status)
     const errorMessage = '聊天服务暂时不可用，请稍后再试'
     if (!res.headersSent) {
-      res.status(502).json({ error: errorMessage })
+      res.status(502).json({
+        error: errorMessage,
+        code: error?.status || error?.statusCode || null,
+        type: error?.name || null
+      })
     } else {
       res.end(
         `data: ${JSON.stringify({ error: errorMessage })}\n\ndata: [DONE]\n\n`

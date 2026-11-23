@@ -89,7 +89,7 @@ const Style = () => {
     @media (min-width: 1024px) { #theme-fukasawa .grid-container { column-count: 3; } }
     @media (max-width: 767px) { #theme-fukasawa .grid-container { column-count: 1; } }
 
-    .sideLeft .festive-hat-fixed { width: 14px !important; z-index: 50; pointer-events: none; }
+    .sideLeft .festive-hat-fixed { z-index: 50; pointer-events: none; }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* 方案 A：黑白灰为主，琥珀橙只承担交互强调 */

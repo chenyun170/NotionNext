@@ -116,8 +116,9 @@ function AsideLeft(props) {
                     sizes='65px'
                     style={{ 
                         position: 'absolute',
-                        top: '-4px',
-                        left: '29px',
+                        top: '-24px',
+                        left: '9px',
+                        transform: 'translate(20px, 20px)',
                         width: '65px',
                         maxWidth: '65px',
                         zIndex: 100,
@@ -269,8 +270,8 @@ function AsideLeft(props) {
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         .sideLeft .festive-hat-fixed {
-            width: 45px !important;
-            max-width: 45px !important;
+            width: 65px !important;
+            max-width: 65px !important;
             height: auto !important;
             border-radius: 0 !important;
             display: block !important;

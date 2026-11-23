@@ -13,13 +13,9 @@ const MAX_TOKENS = Number(process.env.OPPORTUNITY_MAX_TOKENS) || 1500
 
 const rateLimitStore = new Map()
 
-// minimax 在 NVIDIA 上响应极慢/不可用，自动换到更稳的模型（可用 CHAT_MODEL_FALLBACK 覆盖）
+// 默认用 NVIDIA 上验证过的模型；CHAT_MODEL 环境变量可覆盖
 const resolveChatModel = () => {
-  const configured = process.env.CHAT_MODEL
-  if (configured && !/minimax/i.test(configured)) return configured
-  return (
-    process.env.CHAT_MODEL_FALLBACK || 'qwen/qwen2.5-72b-instruct'
-  )
+  return process.env.CHAT_MODEL || 'minimaxai/minimax-m3.1-flash'
 }
 
 const getClientIp = req => {

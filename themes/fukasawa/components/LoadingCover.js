@@ -6,9 +6,11 @@ export default function LoadingCover () {
   return (
     <div 
       id='cover-loading' 
-      className='fixed inset-0 z-[999] flex justify-center items-center 
-                 bg-white/80 dark:bg-black/60 backdrop-blur-sm 
-                 transition-all duration-500 pointer-events-auto'
+      className={
+        'fixed inset-0 z-[999] flex justify-center items-center ' +
+        'bg-white/80 dark:bg-black/60 backdrop-blur-sm ' +
+        'transition-all duration-500 pointer-events-auto'
+      }
     >
       <div className='flex flex-col items-center'>
         {/* 中心旋转区域 */}

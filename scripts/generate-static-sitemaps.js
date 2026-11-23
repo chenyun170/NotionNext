@@ -3,6 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 
+const BLOG = require('../blog.config')
 const { CORE_SEO_PAGES, SITE_URL, UPDATED_AT } = require('../lib/seo/geoPages')
 const { fetchNotionSitemapEntries } = require('../lib/seo/notionEntries')
 
@@ -13,6 +14,7 @@ const SUBMIT_SITEMAP_FILES = [
 ]
 
 async function main() {
+  const siteUrl = normalizeBaseUrl(BLOG.LINK || SITE_URL)
   let dynamicPages = []
   let notionFailed = false
   try {
@@ -44,11 +46,11 @@ async function main() {
       `[sitemap] 本次抓到 0 篇文章（上次 ${previousCount} 篇，Notion 拉取${notionFailed ? '失败' : '为空'}），` +
         '保留现有 sitemap 不覆盖。请检查 NOTION_TOKEN 与网络后重跑。'
     )
-    writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES))
+    writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES, siteUrl))
     // 已有索引文件时不要重写：重写会把 lastmod 拉回旧日期，
     // 等于告诉 Google「sitemap 没更新」，反而降低重抓频率。
     if (!fs.existsSync(path.join(PUBLIC_DIR, 'sitemap-index.xml'))) {
-      writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml']))
+      writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml'], siteUrl))
     }
     return
   }
@@ -62,12 +64,16 @@ async function main() {
   )
 
   assertStaticHtmlPagesExist(allPages)
-  writeFile('sitemap.xml', buildUrlset(allPages))
-  writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES))
+  writeFile('sitemap.xml', buildUrlset(allPages, siteUrl))
+  writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES, siteUrl))
   // 索引只收录主表 sitemap.xml，避免 core 与 xml 内容重复导致 Google 判无法抓取
-  writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml'], latestLastmod))
-  writeFile('sitemap.txt', buildTextSitemap(allPages))
-  writeFile('google-submit-urls.txt', buildSubmitUrlList(allPages))
+  writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml'], siteUrl, latestLastmod))
+  writeFile('sitemap.txt', buildTextSitemap(allPages, siteUrl))
+  writeFile('google-submit-urls.txt', buildSubmitUrlList(allPages, siteUrl))
+}
+
+function normalizeBaseUrl(url) {
+  return `${url || SITE_URL}`.replace(/\/+$/, '')
 }
 
 function countArticlesIn(fileName) {
@@ -80,9 +86,9 @@ function countArticlesIn(fileName) {
   }
 }
 
-function buildUrlset(pages) {
+function buildUrlset(pages, siteUrl = SITE_URL) {
   const urls = getUniquePages(pages).map(page => {
-    const loc = page.slug ? `${SITE_URL}/${encodePath(page.slug)}` : SITE_URL
+    const loc = page.slug ? `${siteUrl}/${encodePath(page.slug)}` : siteUrl
     return [
       '<url>',
       `<loc>${escapeXml(loc)}</loc>`,
@@ -112,11 +118,11 @@ function encodePath(slug) {
     .join('/')
 }
 
-function buildSitemapIndex(slugs, lastmod = UPDATED_AT) {
+function buildSitemapIndex(slugs, siteUrl = SITE_URL, lastmod = UPDATED_AT) {
   const sitemaps = slugs.map(slug =>
     [
       '<sitemap>',
-      `<loc>${escapeXml(`${SITE_URL}/${slug}`)}</loc>`,
+      `<loc>${escapeXml(`${siteUrl}/${slug}`)}</loc>`,
       `<lastmod>${lastmod}</lastmod>`,
       '</sitemap>'
     ].join('')
@@ -130,18 +136,18 @@ function buildSitemapIndex(slugs, lastmod = UPDATED_AT) {
   ].join('\n')
 }
 
-function buildTextSitemap(pages) {
+function buildTextSitemap(pages, siteUrl = SITE_URL) {
   return getUniquePages(pages)
-    .map(page => (page.slug ? `${SITE_URL}/${page.slug}` : SITE_URL))
+    .map(page => (page.slug ? `${siteUrl}/${page.slug}` : siteUrl))
     .join('\n')
 }
 
-function buildSubmitUrlList(pages) {
+function buildSubmitUrlList(pages, siteUrl = SITE_URL) {
   const pageUrls = getUniquePages(pages).map(page =>
-    page.slug ? `${SITE_URL}/${page.slug}` : SITE_URL
+    page.slug ? `${siteUrl}/${page.slug}` : siteUrl
   )
-  const sitemapUrls = SUBMIT_SITEMAP_FILES.map(slug => `${SITE_URL}/${slug}`)
-  return Array.from(new Set([SITE_URL, ...sitemapUrls, ...pageUrls])).join('\n')
+  const sitemapUrls = SUBMIT_SITEMAP_FILES.map(slug => `${siteUrl}/${slug}`)
+  return Array.from(new Set([siteUrl, ...sitemapUrls, ...pageUrls])).join('\n')
 }
 
 function assertStaticHtmlPagesExist(pages) {

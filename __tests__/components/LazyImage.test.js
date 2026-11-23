@@ -1,3 +1,6 @@
+/** @jest-environment jsdom */
+/** @jest-environment-options {"customExportConditions":["browser"]} */
+
 import { render, screen, waitFor } from '@testing-library/react'
 jest.mock('@/lib/config', () => ({
   siteConfig: (key, defaultValue = null) => {

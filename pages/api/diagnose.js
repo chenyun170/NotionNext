@@ -100,31 +100,35 @@ export default async function handler(req, res) {
 
 注意：上方JSON只是格式模板，请根据实际开发信内容填写真实的诊断数据。`
 
-  let timeout
+  const controller = new AbortController()
+  const onClose = () => controller.abort()
+  res.once('close', onClose)
+  const timeout = setTimeout(() => controller.abort(), DIAGNOSE_API_TIMEOUT_MS)
   try {
-    const controller = new AbortController()
-    timeout = setTimeout(() => controller.abort(), DIAGNOSE_API_TIMEOUT_MS)
     const response = await fetch(DIAGNOSE_API_URL, {
       method: 'POST',
       signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.BLAZEAI_API_KEY}`,
+        Authorization: `Bearer ${process.env.BLAZEAI_API_KEY}`
       },
       body: JSON.stringify({
         model: DIAGNOSE_MODEL,
         stream: false,
         max_tokens: 2000,
         messages: [
-          { role: 'system', content: '只输出纯JSON，不要有任何多余文字或markdown格式。' },
+          {
+            role: 'system',
+            content: '只输出纯JSON，不要有任何多余文字或markdown格式。'
+          },
           { role: 'user', content: prompt }
-        ],
-      }),
+        ]
+      })
     })
-    clearTimeout(timeout)
-    timeout = null
 
     const rawText = await response.text()
+    if (res.destroyed || res.writableEnded) return
+    controller.signal.throwIfAborted()
     if (process.env.NODE_ENV === 'development') {
       console.log('[diagnose] status:', response.status)
       console.log('[diagnose] upstream response length:', rawText.length)
@@ -171,18 +175,17 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json(parsed)
-
   } catch (err) {
-    if (err?.name === 'AbortError') {
+    if (res.destroyed || res.writableEnded) return
+    if (controller.signal.aborted) {
       return res.status(504).json({ error: '诊断服务响应超时，请稍后再试' })
     }
 
     console.error('[diagnose] error:', err.message)
     return res.status(500).json({ error: '诊断服务请求失败，请稍后再试' })
   } finally {
-    if (timeout) {
-      clearTimeout(timeout)
-    }
+    clearTimeout(timeout)
+    res.off('close', onClose)
   }
 }
 

@@ -17,7 +17,7 @@ const STALE_TTL_MS = Math.max(
 )
 const REQUEST_TIMEOUT_MS = getPositiveNumber(
   process.env.SIDEBAR_TOOLS_TIMEOUT_MS,
-  2500
+  6000
 )
 
 const sidebarToolsCache = {
@@ -37,7 +37,16 @@ export default async function handler(req, res) {
   try {
     const { payload, cacheStatus } = await getSidebarToolsPayload()
 
-    res.setHeader('Cache-Control', RESPONSE_CACHE_CONTROL)
+    // 天气失败（temp 为 --）时不要缓存失败结果，避免 CDN 长期命中"获取失败"
+    const weatherOk =
+      payload?.weather &&
+      typeof payload.weather.temp === 'string' &&
+      payload.weather.temp !== '--'
+
+    res.setHeader(
+      'Cache-Control',
+      weatherOk ? RESPONSE_CACHE_CONTROL : 'no-store'
+    )
     res.setHeader('X-Sidebar-Tools-Cache', cacheStatus)
     res.status(200).json({
       ok: true,

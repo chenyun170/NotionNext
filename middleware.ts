@@ -192,19 +192,25 @@ const authMiddleware = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
       const firstPageRedirect = getFirstPageRedirect(req)
       if (firstPageRedirect) return firstPageRedirect
 
-      const { userId } = await auth()
+      const { userId, has } = await auth()
 
       // 处理 /dashboard 路由的登录保护
-      if (isTenantRoute(req)) {
+      if (isTenantRoute(req) && !userId) {
+        const url = new URL('/sign-in', req.url)
+        url.searchParams.set('redirectTo', req.url)
+        return NextResponse.redirect(url)
+      }
+
+      if (isTenantAdminRoute(req)) {
         if (!userId) {
           const url = new URL('/sign-in', req.url)
           url.searchParams.set('redirectTo', req.url)
           return NextResponse.redirect(url)
         }
-      }
 
-      if (isTenantAdminRoute(req)) {
-        await auth.protect(has => has({ role: tenantAdminRole }))
+        if (!has({ role: tenantAdminRole })) {
+          return new NextResponse('Not Found', { status: 404 })
+        }
       }
 
       return NextResponse.next()

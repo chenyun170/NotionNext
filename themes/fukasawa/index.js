@@ -155,7 +155,7 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
           <button
             onClick={() => setIsChatOpen(true)}
             aria-label="打开 AI 参谋"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/60 bg-stone-950 text-white shadow-xl ring-2 ring-white/30 backdrop-blur-xl active:scale-90 transition-transform dark:border-stone-700 dark:bg-stone-700 dark:ring-stone-600"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-[#e8c9a8] bg-gradient-to-br from-[#d29a63] to-[#b97a52] text-white shadow-xl ring-2 ring-[#d29a63]/40 backdrop-blur-xl active:scale-90 transition-transform dark:border-[#e8c9a8]/60 dark:ring-[#d29a63]/30"
           >
             <i className="fas fa-robot text-base"></i>
             <span className="sr-only">AI 参谋</span>
@@ -166,11 +166,11 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
         <div className="hidden lg:flex fixed left-10 bottom-8 z-[70] flex-col items-center">
           <button
             onClick={() => setIsChatOpen(true)}
-            className="group flex h-12 w-12 items-center justify-center rounded-full border border-stone-200 bg-stone-950 text-white shadow-xl ring-2 ring-white/40 backdrop-blur-xl hover:bg-stone-800 hover:scale-105 active:scale-95 transition-all dark:border-stone-700 dark:bg-stone-700 dark:ring-stone-600"
+            className="group flex h-12 w-12 items-center justify-center rounded-full border border-[#e8c9a8] bg-gradient-to-br from-[#d29a63] to-[#b97a52] text-white shadow-xl ring-2 ring-[#d29a63]/40 backdrop-blur-xl hover:from-[#c98a58] hover:to-[#a96a45] hover:scale-105 active:scale-95 transition-all dark:border-[#e8c9a8]/60 dark:ring-[#d29a63]/30"
           >
             <i className="fas fa-robot text-base"></i>
           </button>
-          <span className="mt-1.5 rounded-full bg-stone-900/70 px-2 py-0.5 text-[10px] font-bold tracking-wide text-white/90">
+          <span className="mt-1.5 rounded-full bg-[#b97a52] px-2 py-0.5 text-[10px] font-bold tracking-wide text-white">
             AI 参谋
           </span>
         </div>

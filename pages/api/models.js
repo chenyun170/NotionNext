@@ -16,6 +16,26 @@ export default async function handler(req, res) {
     maxRetries: 1
   })
   try {
+    // ?probe=MODEL 对指定模型发一个最小请求，实测是否可调用（不只列出）
+    const probe = req.query.probe
+    if (probe) {
+      try {
+        await client.chat.completions.create({
+          model: String(probe),
+          messages: [{ role: 'user', content: 'hi' }],
+          max_tokens: 8,
+          stream: false
+        })
+        return res.status(200).json({ ok: true, model: probe })
+      } catch (e) {
+        return res.status(200).json({
+          ok: false,
+          model: probe,
+          code: e?.status || e?.statusCode || null,
+          type: e?.name || null
+        })
+      }
+    }
     const list = await client.models.list()
     const ids = (list.data || []).map(m => m.id).sort()
     return res.status(200).json({ count: ids.length, models: ids })

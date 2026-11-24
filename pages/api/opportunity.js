@@ -17,10 +17,10 @@ const rateLimitStore = new Map()
 // 环境变量 CHAT_MODEL 可覆盖；若仍想用 minimax 之外的模型可用 CHAT_MODEL_FALLBACK 指定
 const resolveChatModel = () => {
   const configured = process.env.CHAT_MODEL
-  // 已知不可用模型（已下线/需付费/挂起超时）直接忽略，落到免费层稳定模型
-  const UNAVAILABLE = /minimax|llama-3\.3-70b|qwen2\.5-72b/i
+  // 已知不可用/挂起模型直接忽略，落到实测可用的免费层稳定模型
+  const UNAVAILABLE = /minimax|llama-3\.3-70b|qwen2\.5-72b|gemma|glm-5\.3|kimi-k3\.1|step-5/i
   if (configured && !UNAVAILABLE.test(configured)) return configured
-  return process.env.CHAT_MODEL_FALLBACK || 'meta/llama-3.1-8b-instruct'
+  return process.env.CHAT_MODEL_FALLBACK || 'nvidia/nemotron-3.5-bolt-e4b'
 }
 
 const getClientIp = req => {

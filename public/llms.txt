@@ -113,6 +113,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 
 ## Articles
 
+- [客户开来的信用证，这4条要划掉](https://www.123170.xyz/article/lc-soft-clauses-amendment) — 信用证里只要有单据要买方签，这笔钱就不在你手里。这篇拆开 4 类最常见的软条款，给出一封能直接发的改证邮件、3 条谈不拢时的退路，以及一张交单前必须逐项勾过的核对表。
 - [报价单写“30天有效”，你扛的是75天风险](https://www.123170.xyz/article/quotation-validity-fx-exposure) — 报价有效期 30 天，不等于风险只有 30 天。这篇把从报价到结汇的真实敞口算给你看，给出按天数定价的加价区间、一段可以直接抄进合同的汇率条款，以及一张报价前的核对表。
 - [客户催着电放提单，先确认这3件事再放](https://www.123170.xyz/article/telex-release-before-payment) — 电放一封邮件就能放货，放早了货款可能收不回。这篇讲清正本、电放和海运单的区别，给出 3 个放单条件、一封让客户补材料的邮件，以及一张放单前核对表，照着做能少踩坑。
 - [客户要样品，运费到底谁付？先算这三笔](https://www.123170.xyz/article/sample-fee-who-pays-freight) — 寄一次样成本约 965 元，要卖 1.2 万元货才回本。这篇给了三类客户的付法、三条判断线、两封可直接发的英文邮件，和一张寄样前检查表。

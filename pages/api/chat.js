@@ -14,7 +14,7 @@ const chatRateLimitStore = new Map()
 const resolveChatModel = () => {
   const configured = process.env.CHAT_MODEL
   // 已知不可用/挂起模型直接忽略，落到实测可用的免费层稳定模型
-  const UNAVAILABLE = /minimax|llama-3\.3-70b|qwen2\.5-72b|gemma|glm-5\.3|kimi-k3\.1|step-5/i
+  const UNAVAILABLE = /minimax|llama-3\.3-70b|llama-3\.1-8b|qwen2\.5-72b|gemma|glm-5\.3|kimi-k3\.1|step-5/i
   if (configured && !UNAVAILABLE.test(configured)) return configured
   return process.env.CHAT_MODEL_FALLBACK || 'nvidia/nemotron-3.5-bolt-e4b'
 }

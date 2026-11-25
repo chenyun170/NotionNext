@@ -24,53 +24,53 @@ const TopicIntro = ({
   }
 
   return (
-    <section className='mb-8 overflow-hidden rounded-[8px] border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900'>
-      <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_260px]'>
-        <div className='p-5 sm:p-7'>
-          <div className='mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
-            <i className={`fas ${topic.icon}`} />
+    <section className='mb-8 overflow-hidden rounded-2xl border border-stone-200/90 bg-white shadow-xs dark:border-stone-800 dark:bg-[#1c1a17]'>
+      <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_280px]'>
+        <div className='p-6 sm:p-8'>
+          <div className='mb-3 inline-flex items-center gap-2 rounded-full bg-[#e8f0ec] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1c5a4a] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+            <i className={`fas ${topic.icon} text-[10px]`} />
             <span>{topic.eyebrow}</span>
           </div>
-          <h1 className='text-2xl font-black leading-tight text-stone-950 dark:text-stone-50 sm:text-3xl'>
+          <h1 className='text-2xl font-extrabold leading-tight tracking-tight text-stone-950 dark:text-stone-50 sm:text-3xl'>
             {topic.title}
           </h1>
           <p className='mt-3 max-w-3xl text-sm leading-7 text-stone-600 dark:text-stone-300'>
             {topic.description}
           </p>
 
-          <div className='mt-5 flex flex-wrap gap-2 text-xs text-stone-500 dark:text-stone-400'>
-            <span className='rounded-full border border-stone-200 bg-stone-50 px-3 py-1 dark:border-stone-800 dark:bg-stone-950'>
-              <strong className='mr-1 text-stone-900 dark:text-stone-100'>
+          <div className='mt-5 flex flex-wrap items-center gap-2 text-xs text-stone-500 dark:text-stone-400'>
+            <span className='inline-flex items-center rounded-full border border-[#c3d6cd] bg-[#f4f8f6] px-3 py-1 font-medium text-[#1c5a4a] dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/20 dark:text-[#6bc4a6]'>
+              <strong className='mr-1 font-mono tabular-nums'>
                 {postCount || posts?.length || 0}
               </strong>
               篇文章
             </span>
             <SmartLink
               href='/'
-              className='rounded-full border border-stone-200 bg-stone-50 px-3 py-1 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-950 dark:hover:border-stone-600 dark:hover:text-stone-200'
+              className='rounded-full border border-stone-200 bg-white px-3 py-1 font-medium text-stone-600 no-underline transition hover:border-[#1c5a4a] hover:text-[#1c5a4a] dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 dark:hover:border-[#6bc4a6] dark:hover:text-[#6bc4a6]'
             >
-              全部文章
+              返回首页
             </SmartLink>
             <SmartLink
               href='/archive'
-              className='rounded-full border border-stone-200 bg-stone-50 px-3 py-1 transition hover:border-stone-300 hover:text-stone-800 dark:border-stone-800 dark:bg-stone-950 dark:hover:border-stone-600 dark:hover:text-stone-200'
+              className='rounded-full border border-stone-200 bg-white px-3 py-1 font-medium text-stone-600 no-underline transition hover:border-[#1c5a4a] hover:text-[#1c5a4a] dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 dark:hover:border-[#6bc4a6] dark:hover:text-[#6bc4a6]'
             >
               时间归档
             </SmartLink>
           </div>
         </div>
 
-        <div className='border-t border-stone-200 bg-stone-50 p-5 dark:border-stone-800 dark:bg-stone-950/50 lg:border-l lg:border-t-0'>
-          <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
+        <div className='border-t border-stone-200/80 bg-[#faf9f6] p-6 dark:border-stone-800 dark:bg-[#151412] lg:border-l lg:border-t-0'>
+          <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-500 dark:text-stone-400'>
             相关标签
           </div>
-          <div className='flex flex-wrap gap-2'>
+          <div className='flex flex-wrap gap-1.5'>
             {relatedTags.length > 0 ? (
               relatedTags.map(item => (
                 <TagItemMini key={item.name} tag={item} />
               ))
             ) : (
-              <span className='text-sm text-stone-400'>暂无相关标签</span>
+              <span className='text-xs text-stone-400'>暂无相关标签</span>
             )}
           </div>
         </div>

@@ -34,9 +34,11 @@ Disallow: /diagnose
 # 禁止抓取：搜索参数页（避免重复内容）
 Disallow: /search/?
 
-# 禁止抓取：静态资源（不需要索引）
+# 禁止抓取：静态资源（不需要索引；封面与默认 OG 分享图需放行）
 Disallow: /fonts/
 Allow: /images/covers/
+Allow: /images/og-default.webp
+Allow: /images/home.png
 Disallow: /images/
 Disallow: /css/
 Disallow: /js/

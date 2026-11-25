@@ -125,7 +125,7 @@ const customJestConfig = {
     },
     {
       displayName: 'dom',
-      testEnvironment: 'jsdom',
+      testEnvironment: '<rootDir>/jest.environment.jsdom.js',
       setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
       testMatch: ['<rootDir>/__tests__/components/**/*.{js,jsx,ts,tsx}'],
       transform: {

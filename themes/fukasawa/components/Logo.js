@@ -3,84 +3,32 @@
 import { siteConfig } from '@/lib/config'
 import SmartLink from '@/components/SmartLink'
 
-const Logo = props => {
-  const title = "外贸获客情报局"
-  const characters = Array.from(title)
-
+const Logo = ({ compact = false }) => {
   return (
-    <section className='flex justify-start overflow-visible'>
-      <style jsx>{`
-        .logo-title {
-          opacity: 0;
-          animation: logoFadeIn 0.2s ease-out 0.2s forwards;
-        }
-        .logo-char {
-          opacity: 0;
-          filter: blur(15px);
-          transform: translateY(20px) scale(1.5);
-          text-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
-          animation: logoSmokeIn 1.2s cubic-bezier(0.2, 0.65, 0.3, 0.9) forwards;
-        }
-        .shimmer-text {
-          background: linear-gradient(90deg, transparent 0%, #a8a29e 50%, transparent 100%);
-          background-size: 200% 100%;
-          background-clip: text;
-          -webkit-background-clip: text;
-          animation: shimmer 3s infinite linear;
-        }
-        @keyframes logoFadeIn {
-          to { opacity: 1; }
-        }
-        @keyframes logoSmokeIn {
-          to {
-            opacity: 1;
-            filter: blur(0);
-            transform: translateY(0) scale(1);
-            text-shadow: 0 0 0 rgba(0, 0, 0, 0);
-          }
-        }
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-      `}</style>
+    <SmartLink
+      href='/'
+      className='group inline-flex items-center gap-2.5 text-left no-underline'
+    >
+      <div className='relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-stone-200/80 bg-white shadow-xs transition-transform duration-200 group-hover:scale-105 dark:border-stone-700/80 dark:bg-stone-800'>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src='/logo.png'
+          className='h-full w-full object-cover'
+          alt={siteConfig('TITLE')}
+        />
+      </div>
 
-      <SmartLink href='/' className='flex flex-row items-center gap-2 group cursor-pointer lg:flex-col lg:items-start lg:gap-0'>
-        
-{/* Logo 图标容器 */}
-<div className='relative overflow-hidden rounded-full'>
-  <img 
-    src='/logo.png' 
-    className='h-10 w-10 min-w-10 rounded-full object-cover transition-all duration-500 ease-in-out transform hover:rotate-12 inline-block lg:mb-2 lg:h-16 lg:w-16 lg:min-w-[72px]'
-    alt={siteConfig('TITLE')} 
-  />
-</div>
-
-        {/* 文字标题 */}
-        <div className='text-left relative z-20 lg:mt-1'>
-          <div
-            className='logo-title text-base font-black tracking-tight text-stone-800 dark:text-stone-100 flex items-center'
-          >
-            {characters.map((char, index) => (
-              <span
-                key={index}
-                className={`logo-char relative ${index >= 4 ? 'text-stone-700 shimmer-text ml-0.5' : ''}`}
-                style={{ animationDelay: `${0.2 + index * 0.15}s` }}
-              >
-                {char}
-                {index < 4 && (
-                  <div className='absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-stone-400 to-stone-600 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left'></div>
-                )}
-              </span>
-            ))}
-          </div>
-          <div className='text-[8px] font-bold text-stone-400 dark:text-stone-500 mt-1 uppercase tracking-[0.22em] transition-colors group-hover:text-stone-600 dark:group-hover:text-stone-400'>
-            Trade Intelligence Bureau
-          </div>
+      <div className='min-w-0'>
+        <div className='flex items-center gap-1.5 text-[15px] font-bold tracking-tight text-stone-900 transition-colors group-hover:text-[#1c5a4a] dark:text-stone-100 dark:group-hover:text-[#6bc4a6]'>
+          <span>外贸获客情报局</span>
         </div>
-
-      </SmartLink>
-    </section>
+        {!compact && (
+          <div className='text-[10px] font-medium tracking-[0.12em] text-stone-400 dark:text-stone-500'>
+            123170.XYZ · 实战情报
+          </div>
+        )}
+      </div>
+    </SmartLink>
   )
 }
 

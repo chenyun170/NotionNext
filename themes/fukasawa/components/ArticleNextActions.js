@@ -115,7 +115,7 @@ const buildFocus = post => {
   }
 }
 
-const rotateLinks = (post, limit = 8) => {
+const rotateLinks = (post, limit = 4) => {
   const seed = `${post?.slug || ''}${post?.title || ''}`
   const offset = seed.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % resourceLinks.length
   return Array.from({ length: Math.min(limit, resourceLinks.length) }, (_, index) =>
@@ -172,14 +172,14 @@ const ArticleNextActions = ({ post }) => {
               </a>
               <a
                 href='/customs-data.html'
-                className='inline-flex h-10 items-center justify-center rounded-[8px] bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-stone-700 dark:bg-white dark:text-stone-950 dark:hover:bg-stone-300 sm:h-11 sm:px-4 sm:text-sm'>
+                className='inline-flex h-10 items-center justify-center rounded-xl bg-[#1c5a4a] px-3 text-[13px] font-semibold text-white no-underline transition hover:bg-[#14453a] sm:h-11 sm:px-4 sm:text-sm'>
                 <i className='fas fa-layer-group mr-2 text-xs' />
                 看海关数据专题
               </a>
               <a
                 href={CUSTOMS_DATA_SKILL.href}
                 onClick={() => trackCustomsDataSkillClick('article_next_actions')}
-                className='inline-flex h-10 items-center justify-center rounded-[8px] border bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-stone-700 dark:bg-stone-950 dark:hover:bg-stone-200 sm:h-11 sm:px-4 sm:text-sm'>
+                className='inline-flex h-10 items-center justify-center rounded-xl border border-stone-300 bg-white px-3 text-[13px] font-semibold text-stone-800 no-underline transition hover:border-[#1c5a4a] hover:text-[#1c5a4a] dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 sm:h-11 sm:px-4 sm:text-sm'>
                 <i className='fas fa-database mr-2 text-xs' />
                 免费查海关数据
               </a>
@@ -188,7 +188,7 @@ const ArticleNextActions = ({ post }) => {
             <>
               <SmartLink
                 href={categoryHref}
-                className='inline-flex h-10 items-center justify-center rounded-[8px] bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-stone-700 dark:bg-white dark:text-stone-950 dark:hover:bg-stone-300 sm:h-11 sm:px-4 sm:text-sm'>
+                className='inline-flex h-10 items-center justify-center rounded-xl bg-[#1c5a4a] px-3 text-[13px] font-semibold text-white no-underline transition hover:bg-[#14453a] sm:h-11 sm:px-4 sm:text-sm'>
                 <i className='fas fa-compass mr-2 text-xs' />
                 继续看{category || '这个'}主题
               </SmartLink>

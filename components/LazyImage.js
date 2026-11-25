@@ -25,18 +25,25 @@ export default function LazyImage({
   const maxWidth = siteConfig('IMAGE_COMPRESS_WIDTH')
   const defaultPlaceholderSrc = siteConfig('IMG_LAZY_LOAD_PLACEHOLDER')
   const imageRef = useRef(null)
+  // priority 首屏图首帧直接输出真实代理地址，避免等客户端水合后才开始请求（影响 LCP）
+  const initialPrioritySrc =
+    priority && src
+      ? toProxiedImageUrl(withNotionWidth(src, maxWidth)) || defaultPlaceholderSrc
+      : null
   const [currentSrc, setCurrentSrc] = useState(
-    placeholderSrc || defaultPlaceholderSrc
+    initialPrioritySrc || placeholderSrc || defaultPlaceholderSrc
   )
   // 真实请求地址（已带 width 档位），preload 与 img 必须一致，否则会下载两次
-  const [resolvedSrc, setResolvedSrc] = useState(null)
+  const [resolvedSrc, setResolvedSrc] = useState(initialPrioritySrc)
 
   /**
    * 占位图加载成功
    */
   const handleThumbnailLoaded = () => {
-    if (typeof onLoad === 'function') {
-      // onLoad() // 触发传递的onLoad回调函数
+    if (priority && currentSrc === initialPrioritySrc) {
+      if (imageRef.current) {
+        imageRef.current.classList.remove('lazy-image-placeholder')
+      }
     }
   }
   // 原图加载完成
@@ -128,16 +135,17 @@ export default function LazyImage({
       }
     )
 
-    if (imageRef.current) {
-      observer.observe(imageRef.current)
+    const target = imageRef.current
+    if (target) {
+      observer.observe(target)
     }
 
     return () => {
-      if (imageRef.current) {
-        observer.unobserve(imageRef.current)
+      if (target) {
+        observer.unobserve(target)
       }
     }
-  }, [src, maxWidth, priority])
+  }, [src, maxWidth, priority, defaultPlaceholderSrc])
 
   // 动态添加width、height和className属性，仅在它们为有效值时添加
   const imgProps = {
@@ -156,6 +164,7 @@ export default function LazyImage({
     // 性能优化属性
     loading: priority ? 'eager' : 'lazy',
     decoding: 'async',
+    ...(priority && { fetchPriority: 'high' }),
     // 现代图片格式支持
     ...(siteConfig('WEBP_SUPPORT') && { 'data-webp': true }),
     ...(siteConfig('AVIF_SUPPORT') && { 'data-avif': true })

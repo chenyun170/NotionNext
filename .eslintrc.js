@@ -24,9 +24,8 @@ module.exports = {
   },
   plugins: [
     'react',
-    'react-hooks',
     'prettier',
-    '@typescript-eslint' // 添加 TypeScript 插件
+    '@typescript-eslint' // 添加 TypeScript 插件（react-hooks 已由 eslint-config-next 提供）
   ],
   settings: {
     react: {

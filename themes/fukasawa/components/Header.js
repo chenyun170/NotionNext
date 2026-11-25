@@ -1,92 +1,55 @@
 import Collapse from '@/components/Collapse'
-import { trackToolOutboundClick } from '@/lib/utils/customsDataSkillTracking'
+import dynamic from 'next/dynamic'
 import { useRef, useState, useEffect, useCallback } from 'react'
+import { useGlobal } from '@/lib/global'
+import { getActiveToolPromotions } from '@/lib/promo/toolPromotions'
+import {
+  trackCustomsDataSkillClick,
+  trackToolOutboundClick
+} from '@/lib/utils/customsDataSkillTracking'
 import Logo from './Logo'
 import { MenuList } from './MenuList'
 import SearchInput from './SearchInput'
 
+const SidebarTools = dynamic(() => import('./SidebarTools'), {
+  ssr: false,
+  loading: () => null
+})
+
 /**
- * 顶部导航（移动端专用）
- * 已集成：1. 顶部跑马灯 2. 阅读进度条（含节流优化）
+ * 移动端顶部导航（含自动切换的活动/试用软推条 + 阅读进度条 + 折叠菜单与工具台）
  */
-
-// ========== 活动配置 ==========
-const ACTIVITIES = [
-  {
-    icon: '🔥',
-    text: '图灵搜双十一活动开启，查看活动方案与优惠信息',
-    shortText: '图灵搜活动',
-    link: 'https://h.topeasysoft.com/20261111tls/index.html?i=BB54F6#pricing',
-    tool: 'turingsearch',
-    trackSource: 'mobile_marquee_turingsearch'
-  },
-  {
-    icon: '🚀',
-    text: '顶易云双十一活动进行中，查看活动方案与优惠信息',
-    shortText: '顶易云活动',
-    link: 'https://h.topeasysoft.com/20261111dyy/index.html?i=BB54F6',
-    tool: 'dingyiyun',
-    trackSource: 'mobile_marquee_dingyiyun'
-  }
-]
-
-// z-index 层级管理
-const Z_INDEX = {
-  marquee: 'z-[110]',
-  nav: 'z-50',
-  progress: 'z-40'
-}
-
 const Header = props => {
+  const { isDarkMode, toggleDarkMode } = useGlobal()
   const [isOpen, changeShow] = useState(false)
+  const [showToolsInMenu, setShowToolsInMenu] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
-  const [showMarquee, setShowMarquee] = useState(true)
+  const [promoData, setPromoData] = useState(() => getActiveToolPromotions())
   const [isSearchActive, setSearchActive] = useState(false)
   const collapseRef = useRef(null)
   const searchInputRef = useRef(null)
   const throttleRef = useRef(null)
 
-  // ========== 检查活动时间是否过期（动态更新） ==========
   useEffect(() => {
-    const checkDeadline = () => {
-      const now = new Date()
-      const deadline = new Date('2026-11-30T23:59:59+08:00')
-      
-      if (now > deadline) {
-        setShowMarquee(false)
-      } else {
-        setShowMarquee(true)
-      }
-    }
-
-    // 首次加载检查
-    checkDeadline()
-
-    // 每分钟检查一次（避免过度检查）
-    const timer = setInterval(checkDeadline, 60000)
-
+    const syncPromos = () => setPromoData(getActiveToolPromotions())
+    syncPromos()
+    const timer = setInterval(syncPromos, 60000)
     return () => clearInterval(timer)
   }, [])
 
-  // ========== 进度条逻辑（含节流优化） ==========
   const updateScrollProgress = useCallback(() => {
     const currentScrollY = window.scrollY
     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight
-    
     if (scrollHeight > 0) {
-      const progress = Math.min((currentScrollY / scrollHeight) * 100, 100)
-      setScrollProgress(progress)
+      setScrollProgress(Math.min((currentScrollY / scrollHeight) * 100, 100))
     }
   }, [])
 
   useEffect(() => {
-    // 节流函数：每 16ms（约 60fps）更新一次
     const handleScroll = () => {
       if (throttleRef.current) return
-      
       throttleRef.current = true
       updateScrollProgress()
-      
       setTimeout(() => {
         throttleRef.current = false
       }, 16)
@@ -110,122 +73,125 @@ const Header = props => {
     window.setTimeout(() => searchInputRef.current?.focus?.(), 120)
   }
 
-  // ========== 跑马灯组件 ==========
-  const MarqueeItems = () => (
-    <div className='flex items-center'>
-      {ACTIVITIES.map((activity, idx) => (
-        <div key={idx} className='flex items-center'>
-          <a 
-            href={activity.link}
-            target="_blank"
-            rel="sponsored noopener noreferrer"
-            onClick={() =>
-              trackToolOutboundClick({
-                source: activity.trackSource,
-                target: activity.link,
-                tool: activity.tool,
-                sourceGroup: 'activity'
-              })
-            }
-            className='marquee-item no-underline flex items-center hover:opacity-80 transition-opacity'
-          >
-            <span className='marquee-icon'>{activity.icon}</span>
-            <span className='marquee-text'>{activity.text}</span>
-            <span className='detail-badge'>查看详情</span>
-          </a>
-          <div className='w-[80px] flex-shrink-0'></div>
-        </div>
-      ))}
-    </div>
-  )
-
   return (
-    <div id='top-nav' className='z-50 block lg:hidden sticky top-0 shadow-sm'>
-      
-      {/* 1. 顶部跑马灯横幅 - 时间控制显隐 */}
-      {showMarquee && (
-      <div
-        className='w-full border-b border-stone-200 bg-stone-50/95 px-2 py-1 text-stone-700 backdrop-blur-md dark:border-stone-800 dark:bg-stone-950/80 dark:text-stone-200'
-        style={{ zIndex: 100 }}>
-        <div className='flex items-center gap-1.5 overflow-x-auto no-scrollbar'>
-          <i className='fas fa-bullhorn flex-shrink-0 text-[10px] text-stone-500 dark:text-stone-300'></i>
-          {ACTIVITIES.map((activity, idx) => (
-            <a
-              key={idx}
-              href={activity.link}
-              target='_blank'
-              rel='sponsored noopener noreferrer'
-              onClick={() =>
-                trackToolOutboundClick({
-                  source: activity.trackSource,
-                  target: activity.link,
-                  tool: activity.tool,
-                  sourceGroup: 'activity'
-                })
-              }
-              className={`${idx > 0 ? 'hidden sm:flex' : 'flex'} flex-shrink-0 items-center gap-1 rounded-full border border-stone-200 bg-white/75 px-2 py-0.5 text-[10px] font-bold text-stone-700 no-underline dark:border-stone-800 dark:bg-stone-900/50 dark:text-stone-200`}>
-              <span>{activity.icon}</span>
-              <span>{activity.shortText}</span>
-              <i className='fas fa-arrow-up-right-from-square text-[9px] opacity-60'></i>
-            </a>
-          ))}
+    <div id='top-nav' className='sticky top-0 z-50 block lg:hidden'>
+      {/* 1. 顶部活动 / 软件试用软推条 */}
+      {promoData?.bannerItems?.length > 0 && (
+        <div className='border-b border-stone-200/80 bg-[#f2efe9] px-3 py-1.5 text-stone-700 dark:border-stone-800 dark:bg-[#1a1815] dark:text-stone-200'>
+          <div className='no-scrollbar flex items-center gap-2 overflow-x-auto'>
+            <span
+              className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                promoData.hasLiveCampaign
+                  ? 'bg-[#b97a52]/15 text-[#9a5833] dark:text-[#e8c9a8]'
+                  : 'bg-[#1c5a4a]/10 text-[#1c5a4a] dark:text-[#6bc4a6]'
+              }`}
+            >
+              {promoData.hasLiveCampaign ? '限时活动' : '软件试用'}
+            </span>
+            {promoData.bannerItems.map(item => (
+              <a
+                key={item.id}
+                href={item.href}
+                target={item.isExternal ? '_blank' : undefined}
+                rel={item.isExternal ? 'sponsored noopener noreferrer' : undefined}
+                onClick={() => {
+                  if (item.id === 'oraskl') {
+                    trackCustomsDataSkillClick(`mobile_${item.trackSource}`)
+                  } else {
+                    trackToolOutboundClick({
+                      source: `mobile_${item.trackSource}`,
+                      target: item.href,
+                      tool: item.tool,
+                      sourceGroup: 'activity'
+                    })
+                  }
+                }}
+                className='inline-flex shrink-0 items-center gap-1 rounded-full border border-stone-200/90 bg-white px-2.5 py-0.5 text-[11px] font-semibold text-stone-700 no-underline dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200'
+              >
+                <span>{item.bannerShortText}</span>
+                <i className='fas fa-arrow-right text-[9px] text-[#1c5a4a] dark:text-[#6bc4a6]' />
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
       )}
 
-      {/* 2. 导航栏主体 */}
+      {/* 2. 移动端导航主体 */}
       <div
         id='sticky-nav'
-        className={`relative w-full ${Z_INDEX.nav} bg-white dark:bg-black border-b border-stone-100 dark:border-stone-900`}
+        className='relative w-full border-b border-stone-200/80 bg-[#f7f5f1]/95 backdrop-blur-md dark:border-stone-800 dark:bg-[#131210]/95'
       >
-        <div className='w-full flex justify-between items-center px-3 py-2.5'>
-          <div className='flex flex-none flex-grow-0'>
-            <Logo {...props} />
+        <div className='flex w-full items-center justify-between px-3.5 py-2.5'>
+          <div className='flex-none'>
+            <Logo {...props} compact />
           </div>
-          <div className='mr-1 flex items-center justify-end gap-1 text-sm dark:text-stone-200'>
+          <div className='flex items-center justify-end gap-1 dark:text-stone-200'>
+            <button
+              type='button'
+              onClick={toggleDarkMode}
+              aria-label={isDarkMode ? '切换日间模式' : '切换夜间模式'}
+              className='flex h-9 w-9 items-center justify-center rounded-lg text-stone-600 transition-colors hover:bg-stone-200/60 dark:text-stone-300 dark:hover:bg-stone-800'
+            >
+              <i className={`fas ${isDarkMode ? 'fa-sun' : 'fa-moon'} text-sm`} />
+            </button>
             <button
               type='button'
               onClick={openSearch}
               aria-label='打开搜索'
-              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-stone-100 hover:text-stone-800 dark:hover:bg-stone-900 dark:hover:text-stone-200 ${
+              className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-stone-200/60 dark:hover:bg-stone-800 ${
                 isSearchActive && isOpen
-                  ? 'bg-stone-50 text-stone-700 dark:bg-stone-950/40 dark:text-stone-200'
+                  ? 'bg-[#e8f0ec] text-[#1c5a4a] dark:bg-[#1c5a4a]/30 dark:text-[#6bc4a6]'
                   : 'text-stone-600 dark:text-stone-200'
-              }`}>
+              }`}
+            >
               <i className='fas fa-search text-sm' />
             </button>
             <button
               type='button'
               aria-label={isOpen ? '关闭菜单' : '打开菜单'}
-              onClick={toggleMenuOpen} 
-              className='flex h-9 w-9 items-center justify-center rounded-full text-lg transition-colors hover:bg-stone-100 hover:text-stone-800 dark:hover:bg-stone-900 dark:hover:text-stone-200'
+              onClick={toggleMenuOpen}
+              className='flex h-9 w-9 items-center justify-center rounded-lg text-lg text-stone-700 transition-colors hover:bg-stone-200/60 dark:text-stone-200 dark:hover:bg-stone-800'
             >
               {isOpen ? <i className='fas fa-times' /> : <i className='fas fa-bars' />}
             </button>
           </div>
         </div>
 
-        {/* 3. 阅读进度条 - 优化版本 */}
-        <div className='absolute bottom-0 left-0 w-full h-[2px] bg-stone-100 dark:bg-stone-800 overflow-hidden'>
-          <div 
-            className='h-full bg-gradient-to-r from-stone-300 via-stone-400 to-stone-500 shadow-[0_0_8px_rgba(120,113,108,0.5)] transition-all duration-150 ease-out'
-            style={{ 
-              width: `${scrollProgress}%`,
-              willChange: 'width'
-            }}
+        {/* 3. 阅读进度条 */}
+        <div className='absolute bottom-0 left-0 h-[2px] w-full overflow-hidden bg-stone-200/60 dark:bg-stone-800'>
+          <div
+            className='h-full bg-[#1c5a4a] transition-all duration-150 ease-out dark:bg-[#6bc4a6]'
+            style={{ width: `${scrollProgress}%`, willChange: 'width' }}
           />
         </div>
 
         {/* 4. 折叠菜单 */}
         <Collapse type='vertical' isOpen={isOpen} collapseRef={collapseRef}>
-          <div className='max-h-[72vh] overflow-y-auto border-b border-stone-200 bg-white/98 px-4 pb-5 pt-3 shadow-xl backdrop-blur-xl dark:border-stone-800 dark:bg-black/95'>
-            <div className='mb-4 rounded-2xl border border-stone-200 bg-stone-50 p-2 dark:border-stone-800 dark:bg-stone-900/70'>
+          <div className='max-h-[76vh] overflow-y-auto border-b border-stone-200 bg-white px-4 pb-5 pt-3 shadow-xl dark:border-stone-800 dark:bg-[#1c1a17]'>
+            <div className='mb-4 rounded-xl border border-stone-200 bg-stone-50 p-2 dark:border-stone-800 dark:bg-stone-900'>
               <SearchInput {...props} cRef={searchInputRef} />
             </div>
-            <div className='mb-3 flex items-center justify-between px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-stone-400'>
-              <span>Menu</span>
-              <span>Trade Intelligence</span>
+
+            <div className='mb-3 flex items-center justify-between px-1'>
+              <span className='text-[11px] font-bold uppercase tracking-[0.16em] text-stone-400'>
+                站内导航
+              </span>
+              <button
+                type='button'
+                onClick={() => setShowToolsInMenu(prev => !prev)}
+                className='inline-flex items-center gap-1 rounded-md border border-stone-200 px-2 py-1 text-[11px] font-semibold text-[#1c5a4a] dark:border-stone-700 dark:text-[#6bc4a6]'
+              >
+                <i className='fas fa-calculator text-[10px]' />
+                {showToolsInMenu ? '收起工具台' : '外贸工具台'}
+              </button>
             </div>
+
+            {showToolsInMenu && (
+              <div className='mb-4 rounded-xl border border-stone-200 bg-stone-50 p-2.5 dark:border-stone-800 dark:bg-stone-900'>
+                <SidebarTools />
+              </div>
+            )}
+
             <MenuList
               {...props}
               onHeightChange={param =>
@@ -235,100 +201,6 @@ const Header = props => {
           </div>
         </Collapse>
       </div>
-
-      <style jsx global>{`
-        /* ===== 跑马灯优化 ===== */
-        .marquee-container {
-          width: 100%;
-          mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
-          -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
-        }
-
-        .marquee-content {
-          display: flex;
-          animation: marquee 40s linear infinite;
-          width: max-content;
-          will-change: transform;
-          transform: translateZ(0);
-        }
-
-        @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        .marquee-icon {
-          display: inline-block;
-          margin-right: 6px;
-          font-size: 14px;
-        }
-
-        .marquee-text {
-          color: #000000 !important;
-          font-weight: 700 !important;
-          font-size: 13px !important;
-          letter-spacing: 0.3px;
-        }
-
-        .detail-badge {
-          background: #000;
-          color: #fff !important;
-          padding: 2px 8px;
-          border-radius: 3px;
-          font-size: 11px !important;
-          font-weight: 600;
-          margin-left: 8px;
-          white-space: nowrap;
-          flex-shrink-0;
-          transition: all 0.2s;
-        }
-
-        .marquee-item:hover .detail-badge {
-          background: #746d67;
-          transform: scale(1.05);
-        }
-
-        /* ===== 进度条流光效果 ===== */
-        .bg-gradient-to-r.from-stone-300 {
-          background: linear-gradient(
-            90deg,
-            #d6d3d1 0%,
-            #a8a29e 25%,
-            #746d67 50%,
-            #a8a29e 75%,
-            #d6d3d1 100%
-          );
-          background-size: 200% 100%;
-          animation: progress-shimmer 2.5s ease-in-out infinite;
-        }
-
-        @keyframes progress-shimmer {
-          0% {
-            background-position: -200% 0;
-          }
-          50% {
-            background-position: 0 0;
-          }
-          100% {
-            background-position: 200% 0;
-          }
-        }
-
-        /* ===== 响应式优化 ===== */
-        @media (max-width: 640px) {
-          .marquee-text {
-            font-size: 12px !important;
-          }
-          .detail-badge {
-            font-size: 10px !important;
-            padding: 1px 6px;
-          }
-        }
-      `}</style>
     </div>
   )
 }

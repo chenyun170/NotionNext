@@ -513,11 +513,15 @@ footer {
   }
 }
 
-/* 统一 NotionNext fukasawa 黑白灰风格 */
-header { background: rgba(247, 245, 241, 0.92) !important; border-color: #e7e5e4 !important; }
-.brand-icon { background: #1c1917 !important; }
-.cta-band { background: #f7f5f1 !important; border-color: #e7e5e4 !important; }
-.btn-primary { background: #1c1917 !important; border-color: #1c1917 !important; }
-.btn-primary:hover { background: #0f0f0f !important; border-color: #0f0f0f !important; }
-.answer-box { background: #fafaf9 !important; }
-.summary-panel, .card, .step, .link-list a, .faq-list details, .comparison-wrap { border-color: #e7e5e4 !important; }
+/* 统一 NotionNext fukasawa 暖米 + 墨绿商业情报风格 */
+header { background: rgba(247, 245, 241, 0.92) !important; border-color: rgba(28, 25, 23, 0.08) !important; backdrop-filter: blur(10px); }
+.brand-icon { background: #1c5a4a !important; border-radius: 10px !important; }
+.cta-band { background: #f2efe9 !important; border-color: rgba(28, 25, 23, 0.08) !important; }
+.btn { border-radius: 10px !important; font-weight: 600 !important; }
+.btn-primary { background: #1c5a4a !important; border-color: #1c5a4a !important; box-shadow: 0 4px 14px rgba(28, 90, 74, 0.18) !important; }
+.btn-primary:hover { background: #14453a !important; border-color: #14453a !important; }
+.answer-box { background: #f4f8f6 !important; border-color: #c3d6cd !important; border-left: 4px solid #1c5a4a !important; border-radius: 12px !important; }
+.summary-panel, .card, .step, .link-list a, .faq-list details, .comparison-wrap { border-color: rgba(28, 25, 23, 0.09) !important; border-radius: 14px !important; }
+.eyebrow { background: #e8f0ec !important; border-color: #c3d6cd !important; color: #1c5a4a !important; font-weight: 700 !important; }
+.tag { background: #e8f0ec !important; color: #1c5a4a !important; font-weight: 700 !important; }
+h1, .section-title, .card h3 { font-weight: 700 !important; }

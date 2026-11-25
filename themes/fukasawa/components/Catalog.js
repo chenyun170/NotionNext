@@ -4,21 +4,14 @@ import { uuidToId } from 'notion-utils'
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * 目录导航组件
- * @param toc
- * @returns {JSX.Element}
- * @constructor
+ * 文章目录导航（右侧粘性栏专用）
  */
 const Catalog = ({ toc }) => {
   const { locale } = useGlobal()
-
-  // 同步选中目录事件
   const [activeSection, setActiveSection] = useState(null)
   const activeSectionRef = useRef(null)
-  const tRef = useRef(null)
   const itemRefs = useRef({})
 
-  // 监听滚动事件
   useEffect(() => {
     const throttleMs = 200
     const actionSectionScrollSpy = throttle(() => {
@@ -34,13 +27,11 @@ const Catalog = ({ toc }) => {
         const bbox = section.getBoundingClientRect()
         const prevHeight = prevBBox ? bbox.top - prevBBox.bottom : 0
         const offset = Math.max(150, prevHeight / 4)
-        // GetBoundingClientRect returns values relative to viewport
         if (bbox.top - offset < 0) {
           currentSectionId = section.getAttribute('data-id')
           prevBBox = bbox
           continue
         }
-        // No need to continue loop, if last element has been detected
         break
       }
       if (activeSectionRef.current !== currentSectionId) {
@@ -54,27 +45,26 @@ const Catalog = ({ toc }) => {
     }, throttleMs)
 
     actionSectionScrollSpy()
-    window.addEventListener('scroll', actionSectionScrollSpy)
+    window.addEventListener('scroll', actionSectionScrollSpy, { passive: true })
     return () => {
       window.removeEventListener('scroll', actionSectionScrollSpy)
     }
   }, [toc])
 
-  // 无目录就直接返回空
   if (!toc || toc?.length < 1) {
-    return <></>
+    return null
   }
+
   return (
     <div
       id='catalog'
-      className='flex flex-1 flex-col overflow-hidden rounded-2xl border border-stone-200/80 bg-white/80 p-4 shadow-sm dark:border-stone-800 dark:bg-stone-950/40'>
-      <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
-        <i className='fas fa-stream text-stone-500' />
-        <span>{locale.COMMON.TABLE_OF_CONTENTS}</span>
+      className='flex max-h-[56vh] flex-col overflow-hidden rounded-2xl border border-stone-200/90 bg-white p-4 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17]'
+    >
+      <div className='mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-500 dark:text-stone-400'>
+        <i className='fas fa-list-ul text-[#1c5a4a] dark:text-[#6bc4a6]' />
+        <span>{locale?.COMMON?.TABLE_OF_CONTENTS || '本文目录'}</span>
       </div>
-      <nav
-        ref={tRef}
-        className='scroll-hidden mb-1 flex-1 space-y-1 overflow-auto overscroll-none pr-1 text-sm'>
+      <nav className='no-scrollbar flex-1 space-y-1 overflow-y-auto pr-1 text-[13px]'>
         {toc.map(tocItem => {
           const id = uuidToId(tocItem.id)
           const isActive = activeSection === id
@@ -89,17 +79,16 @@ const Catalog = ({ toc }) => {
                 }
               }}
               href={`#${id}`}
-              className={`catalog-item block rounded-xl border-l-2 px-3 py-2 transition-all duration-200 notion-table-of-contents-item-indent-level-${tocItem.indentLevel} ${
+              className={`block rounded-lg border-l-2 px-2.5 py-1.5 no-underline transition-colors ${
                 isActive
-                  ? 'border-stone-500 bg-stone-100 font-bold text-stone-800 shadow-sm dark:border-stone-400 dark:bg-stone-800/50 dark:text-stone-200'
-                  : 'border-stone-200 text-stone-500 hover:border-stone-400 hover:bg-stone-50 hover:text-stone-800 dark:border-stone-800 dark:text-stone-400 dark:hover:border-stone-600 dark:hover:bg-stone-900/70 dark:hover:text-stone-100'
-              }`}>
+                  ? 'border-[#1c5a4a] bg-[#e8f0ec] font-semibold text-[#1c5a4a] dark:border-[#6bc4a6] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'
+                  : 'border-transparent text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800/70 dark:hover:text-stone-100'
+              }`}
+            >
               <span
-                style={{
-                  display: 'inline-block',
-                  marginLeft: tocItem.indentLevel * 16
-                }}
-                className='max-w-full truncate'>
+                style={{ paddingLeft: `${Math.min(tocItem.indentLevel || 0, 2) * 12}px` }}
+                className='block truncate'
+              >
                 {tocItem.text}
               </span>
             </a>

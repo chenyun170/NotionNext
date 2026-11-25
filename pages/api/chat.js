@@ -1,5 +1,10 @@
 // /api/chat.js
-import OpenAI from 'openai'
+import {
+  createChatClient,
+  createIpRateLimiter,
+  getClientIp,
+  resolveChatModel
+} from '@/lib/ai/nvidiaChat'
 
 // 简单的进程内限流：单个实例按 IP 计数。
 // Vercel 上每个实例独立计数，不能当作强防护，但足以挡住直接脚本刷额度。
@@ -7,42 +12,10 @@ const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 const RATE_LIMIT_MAX = Number(process.env.CHAT_RATE_LIMIT_MAX) || 12
 const MESSAGE_MAX_LENGTH = Number(process.env.CHAT_MESSAGE_MAX_LENGTH) || 4000
 const HISTORY_MAX_MESSAGES = 12
-const chatRateLimitStore = new Map()
-
-// 免费 NVIDIA 账号下 minimax 不可用（挂起/限流），自动改用免费层开放的 llama
-// 环境变量 CHAT_MODEL 可覆盖；若仍想用 minimax 之外的模型可用 CHAT_MODEL_FALLBACK 指定
-const resolveChatModel = () => {
-  const configured = process.env.CHAT_MODEL
-  // 已知不可用/挂起模型直接忽略，落到实测可用的免费层稳定模型
-  const UNAVAILABLE = /minimax|llama-3\.3-70b|llama-3\.1-8b|qwen2\.5-72b|gemma|glm-5\.3|kimi-k3\.1|step-5/i
-  if (configured && !UNAVAILABLE.test(configured)) return configured
-  return process.env.CHAT_MODEL_FALLBACK || 'nvidia/nemotron-3.5-bolt-e4b'
-}
-
-const getClientIp = req => {
-  const forwarded = req.headers['x-forwarded-for']
-  if (typeof forwarded === 'string' && forwarded.length > 0) {
-    return forwarded.split(',')[0].trim()
-  }
-  return req.socket?.remoteAddress || 'unknown'
-}
-
-const isRateLimited = ip => {
-  const now = Date.now()
-  const current = chatRateLimitStore.get(ip)
-  if (!current || now - current.startedAt > RATE_LIMIT_WINDOW_MS) {
-    chatRateLimitStore.set(ip, { startedAt: now, count: 1 })
-    return false
-  }
-  current.count += 1
-  if (chatRateLimitStore.size > 5000) {
-    for (const [key, value] of chatRateLimitStore) {
-      if (now - value.startedAt > RATE_LIMIT_WINDOW_MS)
-        chatRateLimitStore.delete(key)
-    }
-  }
-  return current.count > RATE_LIMIT_MAX
-}
+const isRateLimited = createIpRateLimiter({
+  windowMs: RATE_LIMIT_WINDOW_MS,
+  maxRequests: RATE_LIMIT_MAX
+})
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -96,13 +69,7 @@ export default async function handler(req, res) {
     }
   }, 120000)
 
-  const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    baseURL:
-      process.env.OPENAI_BASE_URL || 'https://integrate.api.nvidia.com/v1',
-    timeout: 115000,
-    maxRetries: 1
-  })
+  const client = createChatClient(115000)
 
   try {
     res.setHeader('Content-Type', 'text/event-stream')

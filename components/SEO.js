@@ -212,6 +212,11 @@ const SEO = props => {
   const FACEBOOK_PAGE = siteConfig('FACEBOOK_PAGE', null, NOTION_CONFIG)
 
   const AUTHOR = siteConfig('AUTHOR')
+  const TWITTER_SITE = siteConfig('TWITTER_SITE')
+  const TWITTER_CREATOR = siteConfig('TWITTER_CREATOR')
+  const robotsContent = meta?.noindex
+    ? 'noindex,follow'
+    : 'follow, index, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
   return (
     <Head>
       <link rel='icon' href={favicon} />
@@ -221,7 +226,7 @@ const SEO = props => {
         name='viewport'
         content='width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0'
       />
-      <meta name='robots' content='follow, index, max-snippet:-1, max-image-preview:large, max-video-preview:-1' />
+      <meta name='robots' content={robotsContent} />
       <meta charSet='UTF-8' />
       <meta name='format-detection' content='telephone=no' />
       <meta name='mobile-web-app-capable' content='yes' />
@@ -248,7 +253,7 @@ const SEO = props => {
       <meta name='description' content={description} />
       <meta name='author' content={AUTHOR} />
       <meta name='generator' content='NotionNext' />
-      <link rel='canonical' href={url} />
+      {!meta?.skipCanonical && <link rel='canonical' href={url} />}
       <link
         rel='alternate'
         type='application/rss+xml'
@@ -281,8 +286,10 @@ const SEO = props => {
 
       {/* Twitter Card 元数据 */}
       <meta name='twitter:card' content='summary_large_image' />
-      <meta name='twitter:site' content={siteConfig('TWITTER_SITE', '@NotionNext')} />
-      <meta name='twitter:creator' content={siteConfig('TWITTER_CREATOR', '@NotionNext')} />
+      {TWITTER_SITE && <meta name='twitter:site' content={TWITTER_SITE} />}
+      {TWITTER_CREATOR && (
+        <meta name='twitter:creator' content={TWITTER_CREATOR} />
+      )}
       <meta name='twitter:title' content={title} />
       <meta name='twitter:description' content={description} />
       <meta name='twitter:url' content={url} />
@@ -313,8 +320,14 @@ const SEO = props => {
       {/* 文章特定元数据 */}
       {isArticle && (
         <>
-          <meta property='article:published_time' content={meta.publishDay} />
-          <meta property='article:modified_time' content={meta.lastEditedDay} />
+          <meta
+            property='article:published_time'
+            content={toIsoDate(meta.publishDay)}
+          />
+          <meta
+            property='article:modified_time'
+            content={toIsoDate(meta.lastEditedDay || meta.publishDay)}
+          />
           <meta property='article:author' content={AUTHOR} />
           <meta property='article:section' content={category} />
           {meta?.tags?.map(tag => (
@@ -699,13 +712,19 @@ const buildBreadcrumbData = ({ url, siteName, siteUrl, meta }) => {
  */
 const getSEOMeta = (props, router, locale) => {
   const { post, siteInfo, tag, category, page } = props
-  const keyword = router?.query?.s
+  const rawKeyword = router?.query?.s ?? router?.query?.keyword
+  const keyword = Array.isArray(rawKeyword) ? rawKeyword[0] : rawKeyword
 
   const TITLE = siteConfig('TITLE') || BRAND_NAME
   const siteTitle = siteInfo?.title || TITLE
+  const siteName = getBrandAwareName(siteTitle)
   const siteDescription = getBrandAwareDescription(
     siteInfo?.description || siteConfig('DESCRIPTION')
   )
+  const pageSuffix = page && Number(page) > 1 ? ` - 第 ${page} 页` : ''
+  const encodedCategory = category ? encodeURIComponent(category) : ''
+  const encodedTag = tag ? encodeURIComponent(tag) : ''
+  const encodedKeyword = keyword ? encodeURIComponent(keyword) : ''
   switch (router.route) {
     case '/':
       return {
@@ -719,79 +738,111 @@ const getSEOMeta = (props, router, locale) => {
       }
     case '/archive':
       return {
-        title: `${locale.NAV.ARCHIVE} | ${siteInfo?.title}`,
-        description: `${siteInfo?.description}`,
+        title: `${locale.NAV.ARCHIVE} | ${siteName}`,
+        description: siteDescription,
         image: DEFAULT_OG_IMAGE,
         slug: 'archive',
         type: 'website'
       }
     case '/page/[page]':
       return {
-        title: `第 ${page} 页 | ${siteInfo?.title}`,
-        description: `${siteInfo?.description}`,
+        title: `第 ${page} 页 | ${siteName}`,
+        description: `${siteDescription}（第 ${page} 页文章归档列表）`,
         image: DEFAULT_OG_IMAGE,
         slug: 'page/' + page,
         type: 'website'
       }
     case '/category/[category]':
       return {
-        title: `${category} | ${locale.COMMON.CATEGORY} | ${siteInfo?.title}`,
+        title: `${category} | ${locale.COMMON.CATEGORY} | ${siteName}`,
         description: buildTaxonomyDescription('category', category, siteInfo),
-        slug: 'category/' + encodeURIComponent(category) + (page ? '/page/' + page : ''),
+        slug: 'category/' + encodedCategory,
         image: DEFAULT_OG_IMAGE,
         type: 'website'
       }
     case '/category/[category]/page/[page]':
       return {
-        title: `${category} | ${locale.COMMON.CATEGORY} | ${siteInfo?.title}`,
-        description: buildTaxonomyDescription('category', category, siteInfo),
-        slug: 'category/' + encodeURIComponent(category) + (page ? '/page/' + page : ''),
+        title: `${category}${pageSuffix} | ${locale.COMMON.CATEGORY} | ${siteName}`,
+        description: `${buildTaxonomyDescription('category', category, siteInfo)}${pageSuffix}`,
+        slug: 'category/' + encodedCategory + (page ? '/page/' + page : ''),
         image: DEFAULT_OG_IMAGE,
         type: 'website'
       }
     case '/tag/[tag]':
     case '/tag/[tag]/page/[page]':
       return {
-        title: `${tag} | ${locale.COMMON.TAGS} | ${siteInfo?.title}`,
-        description: buildTaxonomyDescription('tag', tag, siteInfo),
+        title: `${tag}${pageSuffix} | ${locale.COMMON.TAGS} | ${siteName}`,
+        description: `${buildTaxonomyDescription('tag', tag, siteInfo)}${pageSuffix}`,
         image: DEFAULT_OG_IMAGE,
-        slug: 'tag/' + encodeURIComponent(tag) + (page ? '/page/' + page : ''),
+        slug: 'tag/' + encodedTag + (page ? '/page/' + page : ''),
         type: 'website'
       }
     case '/search':
       return {
-        title: `${keyword || ''}${keyword ? ' | ' : ''}${locale.NAV.SEARCH} | ${siteInfo?.title}`,
+        title: `${keyword || ''}${keyword ? ' | ' : ''}${locale.NAV.SEARCH} | ${siteName}`,
         description: buildSearchDescription(keyword, siteInfo),
         image: DEFAULT_OG_IMAGE,
         slug: 'search',
-        type: 'website'
+        type: 'website',
+        noindex: true
       }
     case '/search/[keyword]':
     case '/search/[keyword]/page/[page]':
       return {
-        title: `${keyword || ''}${keyword ? ' | ' : ''}${locale.NAV.SEARCH} | ${siteInfo?.title}`,
+        title: `${keyword || ''}${keyword ? ' | ' : ''}${locale.NAV.SEARCH} | ${siteName}`,
         description: buildSearchDescription(keyword, siteInfo),
         image: DEFAULT_OG_IMAGE,
-        slug: 'search/' + (keyword || ''),
-        type: 'website'
+        slug: encodedKeyword
+          ? `search/${encodedKeyword}${page ? '/page/' + page : ''}`
+          : 'search',
+        type: 'website',
+        noindex: true
+      }
+    case '/diagnose':
+      return {
+        title: `外贸获客轻诊断 | ${siteName}`,
+        description:
+          '外贸获客轻诊断：先判断应该从海关数据、客户名单验证，还是开发信话术优化开始。隐私提示：开发信内容会发送给第三方 AI 诊断接口，请先移除敏感信息。',
+        image: DEFAULT_OG_IMAGE,
+        slug: 'diagnose',
+        type: 'website',
+        noindex: true
+      }
+    case '/500':
+    case '/auth':
+    case '/auth/result':
+    case '/sign-in/[[...index]]':
+    case '/sign-up/[[...index]]':
+    case '/dashboard/[[...index]]':
+      return {
+        title: siteName,
+        description: siteDescription,
+        image: DEFAULT_OG_IMAGE,
+        slug: router.asPath?.replace(/^\/+|\/+$/g, '') || '',
+        type: 'website',
+        noindex: true,
+        skipCanonical: true
       }
     case '/404':
       return {
-        title: `${siteInfo?.title} | ${locale.NAV.PAGE_NOT_FOUND}`,
-        image: DEFAULT_OG_IMAGE
+        title: `${siteName} | ${locale.NAV.PAGE_NOT_FOUND}`,
+        description: siteDescription,
+        image: DEFAULT_OG_IMAGE,
+        noindex: true,
+        skipCanonical: true
       }
     case '/tag':
       return {
-        title: `${locale.COMMON.TAGS} | ${siteInfo?.title}`,
-        description: `${siteInfo?.description}`,
+        title: `${locale.COMMON.TAGS} | ${siteName}`,
+        description: siteDescription,
         image: DEFAULT_OG_IMAGE,
         slug: 'tag',
         type: 'website'
       }
     case '/category':
       return {
-        title: `${locale.COMMON.CATEGORY} | ${siteInfo?.title}`,
-        description: `${siteInfo?.description}`,
+        title: `${locale.COMMON.CATEGORY} | ${siteName}`,
+        description: siteDescription,
         image: DEFAULT_OG_IMAGE,
         slug: 'category',
         type: 'website'
@@ -799,9 +850,9 @@ const getSEOMeta = (props, router, locale) => {
     default:
       return {
         title: post
-          ? `${post?.title} | ${getBrandAwareName(siteTitle)}`
-          : `${siteTitle} | loading`,
-        description: post?.summary,
+          ? `${post?.title} | ${siteName}`
+          : `${siteName} | loading`,
+        description: post?.summary || siteDescription,
         type: post?.type,
         slug: post?.slug,
         image: resolveCoverImage(post?.pageCoverThumbnail),

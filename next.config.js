@@ -81,7 +81,6 @@ const nextConfig = {
   generateEtags: true,
 
   // 构建优化
-  swcMinify: true,
   modularizeImports: {
     '@heroicons/react/24/outline': {
       transform: '@heroicons/react/24/outline/{{member}}'
@@ -381,6 +380,11 @@ const nextConfig = {
             permanent: true
           },
           {
+            source: '/oragent',
+            destination: '/oragent.html',
+            permanent: true
+          },
+          {
             source: '/free-customs-data',
             destination: '/free-customs-data.html',
             permanent: true
@@ -576,34 +580,25 @@ const nextConfig = {
       THEME
     )
 
-    // 性能优化配置
-    if (!dev && !isServer) {
-      // 生产环境优化
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendors',
-              chunks: 'all',
-            },
-            common: {
-              name: 'common',
-              minChunks: 2,
-              chunks: 'all',
-              enforce: true,
-            },
-            notion: {
-              test: /[\\\\/]node_modules[\\\\/](react-notion-x|react-notion|notion-utils|notion-types|notion-client|katex|prismjs|js-yaml|react-lite-youtube-embed|medium-zoom|@waline)[\\\\/]/, 
-              name: 'notion',
-              chunks: 'async',
-              priority: 20,
-              enforce: true,
-            },
-          },
-        },
+    // 性能优化配置：保留 Next.js 默认分包策略，并将 Notion 重型渲染库限定为异步分包
+    if (
+      !dev &&
+      !isServer &&
+      config.optimization?.splitChunks &&
+      typeof config.optimization.splitChunks === 'object'
+    ) {
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          notion: {
+            test: /[\\/]node_modules[\\/](react-notion-x|react-notion|notion-utils|notion-types|notion-client|katex|prismjs|js-yaml|react-lite-youtube-embed|medium-zoom|@waline)[\\/]/,
+            name: 'notion',
+            chunks: 'async',
+            priority: 30,
+            reuseExistingChunk: true
+          }
+        }
       }
     }
 

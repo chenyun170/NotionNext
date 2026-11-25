@@ -1,9 +1,7 @@
 // 文件路径：pages/diagnose.js
-// 这个文件放在你 GitHub 项目的 pages/ 目录下
 // 访问地址：https://www.123170.xyz/diagnose
 
 import { useEffect, useState } from 'react'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import {
   trackSiteInteraction,
@@ -20,7 +18,7 @@ const categoryLabels = {
   painPoints: '痛点共鸣',
   personalization: '个性化程度',
   clarity: '信息清晰度',
-  urgency: '紧迫感设计',
+  urgency: '紧迫感设计'
 }
 
 const categoryIcons = {
@@ -31,54 +29,80 @@ const categoryIcons = {
   painPoints: '❤️',
   personalization: '🎯',
   clarity: '👁️',
-  urgency: '⏰',
+  urgency: '⏰'
 }
 
 const TURINGSEARCH_TRIAL_URL = 'https://t.smartsousou.com/m?i=BB54F6'
-const COLORS = {
-  primary: 'var(--brand-primary)',
-  primaryDark: 'var(--brand-primary-hover)',
-  primarySoft: 'var(--brand-primary-soft)',
-  primaryBorder: 'var(--brand-primary-border)',
-  accent: 'var(--brand-accent)',
-  accentDark: 'var(--brand-accent-hover)',
-  accentSoft: 'var(--brand-accent-soft)',
-  accentBorder: 'var(--brand-accent-border)',
-  success: 'var(--brand-success)',
-  warning: 'var(--brand-warning)',
-  danger: 'var(--brand-danger)',
-  ink: 'var(--brand-ink)',
-  muted: 'var(--brand-muted)'
-}
 
 function ScoreBar({ score }) {
-  const color =
-    score >= 75 ? COLORS.success : score >= 50 ? COLORS.warning : COLORS.danger
+  const barColor =
+    score >= 75 ? 'bg-emerald-600' : score >= 50 ? 'bg-amber-500' : 'bg-red-500'
+  const textColor =
+    score >= 75
+      ? 'text-emerald-700 dark:text-emerald-400'
+      : score >= 50
+        ? 'text-amber-600 dark:text-amber-400'
+        : 'text-red-600 dark:text-red-400'
+
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <div style={{ flex: 1, height: 6, background: '#e5e7eb', borderRadius: 3, overflow: 'hidden' }}>
-        <div style={{ width: `${score}%`, height: '100%', background: color, borderRadius: 3, transition: 'width 1s ease' }} />
+    <div className='flex items-center gap-2.5'>
+      <div className='h-1.5 flex-1 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700'>
+        <div
+          className={`h-full rounded-full transition-all duration-700 ${barColor}`}
+          style={{ width: `${score}%` }}
+        />
       </div>
-      <span style={{ fontSize: 13, fontWeight: 600, color, minWidth: 28 }}>{score}</span>
+      <span className={`min-w-[28px] font-mono text-xs font-bold tabular-nums ${textColor}`}>
+        {score}
+      </span>
     </div>
   )
 }
 
-function ScoreRing({ score, size = 90 }) {
+function ScoreRing({ score, size = 92 }) {
   const r = size * 0.38
   const cx = size / 2
   const cy = size / 2
   const circ = 2 * Math.PI * r
   const filled = (score / 100) * circ
-  const color = score >= 75 ? COLORS.success : score >= 50 ? COLORS.warning : COLORS.danger
+  const strokeColor =
+    score >= 75 ? '#1c5a4a' : score >= 50 ? '#d97706' : '#dc2626'
+
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e5e7eb" strokeWidth="5" />
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth="5"
-        strokeDasharray={`${filled} ${circ - filled}`} strokeLinecap="round"
-        transform={`rotate(-90 ${cx} ${cy})`} style={{ transition: 'stroke-dasharray 1s ease' }} />
-      <text x={cx} y={cy + 1} textAnchor="middle" dominantBaseline="middle"
-        style={{ fontSize: size * 0.22, fontWeight: 700, fill: color, fontFamily: 'monospace' }}>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className='shrink-0'>
+      <circle
+        cx={cx}
+        cy={cy}
+        r={r}
+        fill='none'
+        stroke='currentColor'
+        className='text-stone-200 dark:text-stone-700'
+        strokeWidth='6'
+      />
+      <circle
+        cx={cx}
+        cy={cy}
+        r={r}
+        fill='none'
+        stroke={strokeColor}
+        strokeWidth='6'
+        strokeDasharray={`${filled} ${circ - filled}`}
+        strokeLinecap='round'
+        transform={`rotate(-90 ${cx} ${cy})`}
+        style={{ transition: 'stroke-dasharray 1s ease' }}
+      />
+      <text
+        x={cx}
+        y={cy + 2}
+        textAnchor='middle'
+        dominantBaseline='middle'
+        style={{
+          fontSize: size * 0.24,
+          fontWeight: 800,
+          fill: strokeColor,
+          fontFamily: 'monospace'
+        }}
+      >
         {score}
       </text>
     </svg>
@@ -94,9 +118,15 @@ export default function DiagnosePage() {
   const [privacyConfirmed, setPrivacyConfirmed] = useState(false)
 
   const [form, setForm] = useState({
-    productName: '', industry: '', letterContent: '',
-    currentOpenRate: '', currentReplyRate: '',
-    targetMarket: '', targetRole: '', painPoints: '', uniqueAdvantage: '',
+    productName: '',
+    industry: '',
+    letterContent: '',
+    currentOpenRate: '',
+    currentReplyRate: '',
+    targetMarket: '',
+    targetRole: '',
+    painPoints: '',
+    uniqueAdvantage: ''
   })
 
   const up = (k, v) => setForm(f => ({ ...f, [k]: v }))
@@ -115,7 +145,17 @@ export default function DiagnosePage() {
     }
   }, [router.isReady, router.query.product, form.productName])
 
-  const industries = ['机械设备', '电子元器件', '纺织服装', '化工原料', '家具家居', '食品农产品', '医疗器械', '汽车配件', '其他']
+  const industries = [
+    '机械设备',
+    '电子元器件',
+    '纺织服装',
+    '化工原料',
+    '家具家居',
+    '食品农产品',
+    '医疗器械',
+    '汽车配件',
+    '其他'
+  ]
   const markets = ['北美', '欧洲', '东南亚', '中东', '南美', '非洲', '日韩', '澳洲']
   const roles = ['采购经理', 'CEO/总裁', '产品经理', '技术负责人', '运营总监', '其他']
 
@@ -126,7 +166,7 @@ export default function DiagnosePage() {
       const res = await fetch('/api/diagnose', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ form, privacyConfirmed }),
+        body: JSON.stringify({ form, privacyConfirmed })
       })
       const data = await res.json()
       if (data.error) throw new Error(data.error)
@@ -170,517 +210,614 @@ export default function DiagnosePage() {
     })
   }
 
-  const btnStyle = (active) => ({
-    padding: '8px 16px', fontSize: 13, borderRadius: 8,
-    background: active ? COLORS.primary : 'transparent',
-    color: active ? '#fff' : '#374151',
-    border: `1px solid ${active ? COLORS.primary : '#d1d5db'}`,
-    cursor: 'pointer', transition: 'all 0.15s',
-  })
-
-  const cardStyle = {
-    background: '#fff', border: '1px solid #e5e7eb',
-    borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 12,
-  }
-  const privacyNoticeStyle = {
-    fontSize: 12,
-    color: '#92400e',
-    background: '#fffbeb',
-    border: '1px solid #fde68a',
-    borderRadius: 8,
-    padding: '8px 10px',
-    margin: '8px 0 0',
-    lineHeight: 1.6,
-  }
-
-  const nextBtnStyle = (active) => ({
-    padding: '10px 24px', borderRadius: 8, fontWeight: 600, fontSize: 14,
-    background: active ? COLORS.primary : '#f3f4f6',
-    color: active ? '#fff' : '#9ca3af',
-    border: 'none', cursor: active ? 'pointer' : 'not-allowed',
-  })
-
-  const ctaLinkStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 42,
-    padding: '10px 14px',
-    borderRadius: 8,
-    border: '1px solid #d1d5db',
-    background: '#fff',
-    color: '#111827',
-    fontSize: 13,
-    fontWeight: 700,
-    textDecoration: 'none',
-    cursor: 'pointer',
-    boxSizing: 'border-box'
-  }
+  const cardClass =
+    'mb-4 rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17]'
+  const inputClass =
+    'w-full rounded-xl border border-stone-200 bg-[#faf9f6] px-3.5 py-2.5 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#1c5a4a] focus:bg-white dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100'
+  const optionBtnClass = active =>
+    `rounded-lg border px-3.5 py-2 text-xs font-semibold transition cursor-pointer ${
+      active
+        ? 'border-[#1c5a4a] bg-[#1c5a4a] text-white'
+        : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300'
+    }`
+  const nextBtnClass = active =>
+    `rounded-xl px-6 py-2.5 text-sm font-semibold transition ${
+      active
+        ? 'cursor-pointer bg-[#1c5a4a] text-white shadow-sm hover:bg-[#14453a]'
+        : 'cursor-not-allowed bg-stone-200 text-stone-400 dark:bg-stone-800 dark:text-stone-600'
+    }`
 
   return (
-    <>
-      <Head>
-        <title>外贸获客轻诊断 | 外贸获客情报局</title>
-        <meta name="description" content="外贸获客轻诊断：先判断应该从海关数据、客户名单验证，还是开发信话术优化开始。隐私提示：开发信内容会发送给第三方 AI 诊断接口，请先移除敏感信息。" />
-      </Head>
+    <div className='mx-auto w-full max-w-3xl py-2 text-stone-900 dark:text-stone-100'>
+      {/* 头部说明 */}
+      <div className='mb-6 rounded-2xl border border-stone-200/90 bg-white p-6 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17]'>
+        <div className='mb-3 inline-flex items-center gap-1.5 rounded-full bg-[#e8f0ec] px-3 py-1 text-[11px] font-bold text-[#1c5a4a] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+          <i className='fas fa-stethoscope text-[10px]' />
+          外贸获客轻诊断
+        </div>
+        <h1 className='text-2xl font-extrabold leading-tight tracking-tight text-stone-950 dark:text-stone-50 sm:text-3xl'>
+          先判断问题出在线索、验证，还是话术
+        </h1>
+        <p className='mt-2.5 text-sm leading-7 text-stone-600 dark:text-stone-300'>
+          不确定先查海关数据、图灵搜还是顶易云时，可以先把产品和开发信放进来，看看问题更像出在线索、采购验证，还是触达话术。
+        </p>
 
-      <div style={{
-        width: 'min(720px, calc(100% - 32px))',
-        margin: '0 auto',
-        padding: '2rem 0',
-        boxSizing: 'border-box',
-        fontFamily: 'system-ui, sans-serif',
-        color: '#111827',
-        overflowWrap: 'anywhere'
-      }}>
-
-        {/* Header */}
-        <div style={{ marginBottom: '1.5rem' }}>
-          <p style={{ fontSize: 12, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>
-            🔬 外贸获客轻诊断
-          </p>
-          <h1 style={{ fontSize: 24, fontWeight: 700, lineHeight: 1.25, margin: '0 0 6px', overflowWrap: 'anywhere' }}>先判断问题出在线索、验证，还是话术</h1>
-          <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>
-            不确定先查海关数据、图灵搜还是顶易云时，可以先把产品和开发信放进来，看看问题更像出在线索、采购验证，还是触达话术。
-          </p>
-          <div style={{
-            marginTop: 12,
-            border: '1px solid #dbeafe',
-            background: '#eff6ff',
-            borderRadius: 10,
-            padding: '10px 12px',
-            color: '#1e3a8a',
-            fontSize: 13,
-            lineHeight: 1.7
-          }}>
-            简单判断：还没有客户名单，先从海关数据看谁真的在进口；已经有名单，先用采购记录验证优先级；已经在发开发信，就重点看话术和跟进节奏。
-          </div>
-          <p style={{ fontSize: 12, color: '#92400e', margin: '8px 0 0', lineHeight: 1.6 }}>
-            隐私提示：提交开发信前，请先删除密码、报价底价、客户隐私、未公开合同等敏感信息。
-          </p>
+        <div className='mt-4 rounded-xl border border-[#c3d6cd] bg-[#f4f8f6] px-4 py-3 text-[13px] leading-6 text-[#1c5a4a] dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/15 dark:text-[#8fd8bf]'>
+          简单判断：还没有客户名单，先从海关数据看谁真的在进口；已经有名单，先用采购记录验证优先级；已经在发开发信，就重点看话术和跟进节奏。
         </div>
 
-        {step < 3 && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12, marginBottom: '1.5rem' }}>
-            <a
-              href={customsSkillHref}
-              onClick={() =>
-                trackSiteInteraction({
-                  source: 'diagnose_choose_customs_data',
-                  sourceGroup: 'lead',
-                  target: customsSkillHref,
-                  action: 'choose_customs_data_path'
-                })
-              }
-              style={{
-                ...cardStyle,
-                display: 'block',
-                textDecoration: 'none',
-                borderColor: '#bfdbfe',
-                background: '#eff6ff',
-                color: '#111827'
-              }}>
-              <p style={{ margin: '0 0 4px', fontSize: 12, fontWeight: 700, color: '#1d4ed8' }}>还没有客户名单</p>
-              <h2 style={{ margin: '0 0 8px', fontSize: 16 }}>先查谁真的在进口</h2>
-              <p style={{ margin: 0, fontSize: 13, color: '#475569', lineHeight: 1.7 }}>
-                先用产品词或 HS 编码查真实进口商，再看采购量、采购频率和供应商关系。
-              </p>
-            </a>
+        <p className='mt-3 text-xs leading-6 text-amber-800 dark:text-amber-300'>
+          隐私提示：提交开发信前，请先删除密码、报价底价、客户隐私、未公开合同等敏感信息。
+        </p>
+      </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                trackSiteInteraction({
-                  source: 'diagnose_choose_email_review',
-                  sourceGroup: 'lead',
-                  target: '/diagnose#diagnose-form',
-                  action: 'choose_email_diagnosis_path'
-                })
-                document.getElementById('diagnose-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-              }}
-              style={{
-                ...cardStyle,
-                marginBottom: 0,
-                textAlign: 'left',
-                cursor: 'pointer',
-                borderColor: COLORS.accentBorder,
-                background: COLORS.accentSoft,
-                color: '#111827'
-              }}>
-              <p style={{ margin: '0 0 4px', fontSize: 12, fontWeight: 700, color: COLORS.accentDark }}>已有名单或开发信</p>
-              <h2 style={{ margin: '0 0 8px', fontSize: 16 }}>继续做开发信诊断</h2>
-              <p style={{ margin: 0, fontSize: 13, color: '#475569', lineHeight: 1.7 }}>
-                如果已经在发邮件，重点看目标客户、痛点、价值主张和跟进动作是否清楚。
-              </p>
-            </button>
-          </div>
-        )}
+      {/* 两条分流卡片 */}
+      {step < 3 && (
+        <div className='mb-6 grid gap-3 sm:grid-cols-2'>
+          <a
+            href={customsSkillHref}
+            onClick={() =>
+              trackSiteInteraction({
+                source: 'diagnose_choose_customs_data',
+                sourceGroup: 'lead',
+                target: customsSkillHref,
+                action: 'choose_customs_data_path'
+              })
+            }
+            className='block rounded-2xl border border-stone-200/90 bg-white p-5 no-underline transition hover:-translate-y-0.5 hover:border-[#1c5a4a]/50 hover:shadow-md dark:border-stone-800 dark:bg-[#1c1a17]'
+          >
+            <p className='text-xs font-bold text-[#b97a52]'>还没有客户名单</p>
+            <h2 className='mt-1 text-base font-bold text-stone-900 dark:text-stone-100'>
+              先查谁真的在进口 →
+            </h2>
+            <p className='mt-1.5 text-xs leading-6 text-stone-500 dark:text-stone-400'>
+              先用产品词或 HS 编码查真实进口商，再看采购量、采购频率和供应商关系。
+            </p>
+          </a>
 
-        {/* Step indicator */}
-        {step < 3 && (
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
-            {STEPS.slice(0, 3).map((s, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', flex: i < 2 ? 1 : 'none' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <div style={{
-                    width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', fontSize: 12, fontWeight: 600,
-                    background: i < step ? COLORS.primary : i === step ? COLORS.ink : 'transparent',
-                    border: `1px solid ${i < step ? COLORS.primary : i === step ? COLORS.ink : '#d1d5db'}`,
-                    color: i <= step ? '#fff' : '#9ca3af',
-                  }}>
-                    {i < step ? '✓' : i + 1}
-                  </div>
-                  <span style={{ fontSize: 13, color: i === step ? '#111827' : '#9ca3af', fontWeight: i === step ? 600 : 400 }}>{s}</span>
+          <button
+            type='button'
+            onClick={() => {
+              trackSiteInteraction({
+                source: 'diagnose_choose_email_review',
+                sourceGroup: 'lead',
+                target: '/diagnose#diagnose-form',
+                action: 'choose_email_diagnosis_path'
+              })
+              document
+                .getElementById('diagnose-form')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }}
+            className='rounded-2xl border border-[#c3d6cd] bg-[#f4f8f6] p-5 text-left transition hover:-translate-y-0.5 hover:border-[#1c5a4a] hover:shadow-md dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/15'
+          >
+            <p className='text-xs font-bold text-[#1c5a4a] dark:text-[#6bc4a6]'>
+              已有名单或开发信
+            </p>
+            <h2 className='mt-1 text-base font-bold text-stone-900 dark:text-stone-100'>
+              继续做开发信诊断 ↓
+            </h2>
+            <p className='mt-1.5 text-xs leading-6 text-stone-600 dark:text-stone-300'>
+              如果已经在发邮件，重点看目标客户、痛点、价值主张和跟进动作是否清楚。
+            </p>
+          </button>
+        </div>
+      )}
+
+      {/* 步骤条 */}
+      {step < 3 && (
+        <div className='mb-5 flex items-center px-1'>
+          {STEPS.slice(0, 3).map((s, i) => (
+            <div key={s} className={`flex items-center ${i < 2 ? 'flex-1' : ''}`}>
+              <div className='flex items-center gap-2'>
+                <div
+                  className={`flex h-7 w-7 items-center justify-center rounded-full border text-xs font-bold ${
+                    i < step
+                      ? 'border-[#1c5a4a] bg-[#1c5a4a] text-white'
+                      : i === step
+                        ? 'border-stone-900 bg-stone-900 text-white dark:border-stone-100 dark:bg-stone-100 dark:text-stone-900'
+                        : 'border-stone-300 bg-white text-stone-400 dark:border-stone-700 dark:bg-stone-900'
+                  }`}
+                >
+                  {i < step ? '✓' : i + 1}
                 </div>
-                {i < 2 && <div style={{ flex: 1, height: 1, background: '#e5e7eb', margin: '0 8px' }} />}
+                <span
+                  className={`text-xs ${
+                    i === step
+                      ? 'font-bold text-stone-900 dark:text-stone-100'
+                      : 'text-stone-400'
+                  }`}
+                >
+                  {s}
+                </span>
+              </div>
+              {i < 2 && (
+                <div className='mx-3 h-px flex-1 bg-stone-200 dark:bg-stone-800' />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Step 0: 基本信息 */}
+      {step === 0 && (
+        <div id='diagnose-form'>
+          <div className={cardClass}>
+            <label className='mb-2 block text-xs font-semibold text-stone-600 dark:text-stone-300'>
+              产品 / 公司名称 <span className='text-red-500'>*</span>
+            </label>
+            <input
+              value={form.productName}
+              onChange={e => up('productName', e.target.value)}
+              placeholder='如：LED 投光灯 / 精密轴承'
+              className={inputClass}
+            />
+          </div>
+
+          <div className={cardClass}>
+            <label className='mb-2.5 block text-xs font-semibold text-stone-600 dark:text-stone-300'>
+              所属行业 <span className='text-red-500'>*</span>
+            </label>
+            <div className='flex flex-wrap gap-2'>
+              {industries.map(ind => (
+                <button
+                  key={ind}
+                  type='button'
+                  onClick={() => up('industry', ind)}
+                  className={optionBtnClass(form.industry === ind)}
+                >
+                  {ind}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className='mb-4 grid gap-4 sm:grid-cols-2'>
+            {[
+              ['currentOpenRate', '当前开信率（%）', '如：25'],
+              ['currentReplyRate', '当前回复率（%）', '如：3']
+            ].map(([k, label, ph]) => (
+              <div key={k} className={`${cardClass} mb-0`}>
+                <label className='mb-2 block text-xs font-semibold text-stone-600 dark:text-stone-300'>
+                  {label}
+                </label>
+                <input
+                  type='number'
+                  value={form[k]}
+                  onChange={e => up(k, e.target.value)}
+                  placeholder={ph}
+                  className={inputClass}
+                />
               </div>
             ))}
           </div>
-        )}
 
-        {/* Step 0: 基本信息 */}
-        {step === 0 && (
-          <div id="diagnose-form">
-            <div style={cardStyle}>
-              <label style={{ display: 'block', fontSize: 13, color: '#6b7280', marginBottom: 6 }}>
-                产品 / 公司名称 <span style={{ color: '#ef4444' }}>*</span>
-              </label>
-              <input value={form.productName} onChange={e => up('productName', e.target.value)}
-                placeholder="如：ABC机械设备有限公司"
-                style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 14, boxSizing: 'border-box' }} />
-            </div>
-
-            <div style={cardStyle}>
-              <label style={{ display: 'block', fontSize: 13, color: '#6b7280', marginBottom: 8 }}>
-                所属行业 <span style={{ color: '#ef4444' }}>*</span>
-              </label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {industries.map(ind => (
-                  <button key={ind} onClick={() => up('industry', ind)} style={btnStyle(form.industry === ind)}>{ind}</button>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginBottom: 12 }}>
-              {[['currentOpenRate', '当前开信率（%）', '如：25'], ['currentReplyRate', '当前回复率（%）', '如：3']].map(([k, label, ph]) => (
-                <div key={k} style={cardStyle}>
-                  <label style={{ display: 'block', fontSize: 13, color: '#6b7280', marginBottom: 6 }}>{label}</label>
-                  <input type="number" value={form[k]} onChange={e => up(k, e.target.value)} placeholder={ph}
-                    style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 14, boxSizing: 'border-box' }} />
-                </div>
-              ))}
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={() => setStep(1)} disabled={!canNext0} style={nextBtnStyle(canNext0)}>
-                下一步 →
-              </button>
-            </div>
+          <div className='flex justify-end'>
+            <button
+              type='button'
+              onClick={() => setStep(1)}
+              disabled={!canNext0}
+              className={nextBtnClass(canNext0)}
+            >
+              下一步 →
+            </button>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Step 1: 开发信内容 */}
-        {step === 1 && (
-          <div>
-            <div style={cardStyle}>
-              <label style={{ display: 'block', fontSize: 13, color: '#6b7280', marginBottom: 4 }}>
-                开发信正文内容 <span style={{ color: '#ef4444' }}>*</span>
-              </label>
-              <p style={{ fontSize: 12, color: '#9ca3af', margin: '0 0 8px' }}>请粘贴完整的开发信内容，包括主题行（如有）、正文和签名</p>
-              <textarea value={form.letterContent} onChange={e => up('letterContent', e.target.value)}
-                placeholder={'Subject: High-quality CNC Machines from China Manufacturer\n\nDear [Name],\n\nI hope this email finds you well...\n（请粘贴您的完整开发信内容）'}
-                rows={12}
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 13, lineHeight: 1.7, fontFamily: 'monospace', resize: 'vertical', boxSizing: 'border-box' }} />
-              <p style={{ fontSize: 12, color: form.letterContent.length < 50 ? '#ef4444' : '#9ca3af', margin: '4px 0 0' }}>
-                已输入 {form.letterContent.length} 字符 {form.letterContent.length >= 50 ? '✓' : '（至少50字符）'}
-              </p>
-              <p style={privacyNoticeStyle}>
-                隐私提示：点击 AI 诊断后，开发信内容会发送给第三方 AI 诊断接口用于分析。请勿提交密码、报价底价、客户隐私、未公开合同等敏感信息。
-              </p>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <button onClick={() => setStep(0)} style={{ padding: '10px 20px', borderRadius: 8, background: 'transparent', border: '1px solid #d1d5db', cursor: 'pointer', fontSize: 14 }}>
-                ← 上一步
-              </button>
-              <button onClick={() => setStep(2)} disabled={!canNext1} style={nextBtnStyle(canNext1)}>
-                下一步 →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 2: 目标受众 */}
-        {step === 2 && (
-          <div>
-            <div style={cardStyle}>
-              <label style={{ display: 'block', fontSize: 13, color: '#6b7280', marginBottom: 8 }}>
-                目标市场 <span style={{ color: '#ef4444' }}>*</span>
-              </label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {markets.map(m => (
-                  <button key={m} onClick={() => up('targetMarket', m)} style={btnStyle(form.targetMarket === m)}>{m}</button>
-                ))}
-              </div>
-            </div>
-
-            <div style={cardStyle}>
-              <label style={{ display: 'block', fontSize: 13, color: '#6b7280', marginBottom: 8 }}>
-                目标收件人职位 <span style={{ color: '#ef4444' }}>*</span>
-              </label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {roles.map(r => (
-                  <button key={r} onClick={() => up('targetRole', r)} style={btnStyle(form.targetRole === r)}>{r}</button>
-                ))}
-              </div>
-            </div>
-
-            <div style={cardStyle}>
-              <label style={{ display: 'block', fontSize: 13, color: '#6b7280', marginBottom: 4 }}>买家核心痛点</label>
-              <textarea value={form.painPoints} onChange={e => up('painPoints', e.target.value)}
-                placeholder="如：对供应商质量不稳定、交货期难以保证、沟通响应慢等方面有顾虑" rows={3}
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 13, resize: 'vertical', boxSizing: 'border-box' }} />
-            </div>
-
-            <div style={cardStyle}>
-              <label style={{ display: 'block', fontSize: 13, color: '#6b7280', marginBottom: 4 }}>产品/公司核心优势</label>
-              <textarea value={form.uniqueAdvantage} onChange={e => up('uniqueAdvantage', e.target.value)}
-                placeholder="如：工厂直供价格优势、ISO认证、10年行业经验、72小时快速打样" rows={3}
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 13, resize: 'vertical', boxSizing: 'border-box' }} />
-            </div>
-
-            {error && (
-              <div style={{
-                border: '1px solid #fecaca',
-                background: '#fef2f2',
-                borderRadius: 12,
-                padding: '1rem 1.25rem',
-                marginBottom: 12
-              }}>
-                <p style={{ color: '#991b1b', fontSize: 13, fontWeight: 700, margin: '0 0 4px' }}>
-                  诊断暂时没有跑通
-                </p>
-                <p style={{ color: '#7f1d1d', fontSize: 13, lineHeight: 1.7, margin: '0 0 10px' }}>
-                  {error}。你可以稍后再试，也可以先去查谁真的在进口你的产品，先把目标客户名单跑出来。
-                </p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 8 }}>
-                  <a
-                    href={customsSkillHref}
-                    onClick={() =>
-                      trackSiteInteraction({
-                        source: 'diagnose_error_customs_data',
-                        sourceGroup: 'lead',
-                        target: customsSkillHref,
-                        action: 'diagnose_error_open_customs_data'
-                      })
-                    }
-                    style={{ ...ctaLinkStyle, borderColor: COLORS.primaryBorder, background: COLORS.primarySoft, color: COLORS.primaryDark }}>
-                    先查进口商
-                  </a>
-                  <a
-                    href={TURINGSEARCH_TRIAL_URL}
-                    target="_blank"
-                    rel="sponsored noopener noreferrer"
-                    onClick={() =>
-                      trackToolOutboundClick({
-                        source: 'diagnose_error_turingsearch_trial',
-                        sourceGroup: 'lead',
-                        target: TURINGSEARCH_TRIAL_URL,
-                        tool: 'turingsearch'
-                      })
-                    }
-                    style={{ ...ctaLinkStyle, borderColor: COLORS.accentBorder, background: COLORS.accentSoft, color: COLORS.accentDark }}>
-                    体验图灵搜
-                  </a>
-                </div>
-              </div>
-            )}
-            <label style={{ ...privacyNoticeStyle, margin: '0 0 12px', display: 'flex', gap: 8, alignItems: 'flex-start', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={privacyConfirmed}
-                onChange={e => setPrivacyConfirmed(e.target.checked)}
-                style={{ marginTop: 3 }}
-              />
-              <span>
-                我已移除密码、报价底价、客户隐私、未公开合同等敏感信息，并同意将上述内容发送给第三方 AI 诊断接口用于本次分析。
-              </span>
+      {/* Step 1: 开发信内容 */}
+      {step === 1 && (
+        <div>
+          <div className={cardClass}>
+            <label className='mb-1 block text-xs font-semibold text-stone-600 dark:text-stone-300'>
+              开发信正文内容 <span className='text-red-500'>*</span>
             </label>
+            <p className='mb-2.5 text-xs text-stone-400'>
+              请粘贴完整的开发信内容，包括主题行（如有）、正文和签名
+            </p>
+            <textarea
+              value={form.letterContent}
+              onChange={e => up('letterContent', e.target.value)}
+              placeholder={
+                'Subject: High-quality CNC Machines from China Manufacturer\n\nDear [Name],\n\nI hope this email finds you well...\n（请粘贴您的完整开发信内容）'
+              }
+              rows={11}
+              className={`${inputClass} resize-y font-mono text-[13px] leading-relaxed`}
+            />
+            <p
+              className={`mt-1.5 text-xs ${
+                form.letterContent.length < 50 ? 'text-red-500' : 'text-stone-400'
+              }`}
+            >
+              已输入 {form.letterContent.length} 字符{' '}
+              {form.letterContent.length >= 50 ? '✓' : '（至少 50 字符）'}
+            </p>
+            <p className='mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs leading-6 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300'>
+              隐私提示：点击 AI 诊断后，开发信内容会发送给第三方 AI 诊断接口用于分析。请勿提交密码、报价底价、客户隐私、未公开合同等敏感信息。
+            </p>
+          </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <button onClick={() => setStep(1)} style={{ padding: '10px 20px', borderRadius: 8, background: 'transparent', border: '1px solid #d1d5db', cursor: 'pointer', fontSize: 14 }}>
-                ← 上一步
-              </button>
-              <button onClick={() => { void runDiagnosis() }} disabled={!canNext2 || loading} style={nextBtnStyle(canNext2 && !loading)}>
-                {loading ? '⏳ AI 分析中...' : '🤖 开始 AI 诊断'}
-              </button>
+          <div className='flex justify-between'>
+            <button
+              type='button'
+              onClick={() => setStep(0)}
+              className='rounded-xl border border-stone-300 bg-white px-5 py-2.5 text-sm font-semibold text-stone-700 transition hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200'
+            >
+              ← 上一步
+            </button>
+            <button
+              type='button'
+              onClick={() => setStep(2)}
+              disabled={!canNext1}
+              className={nextBtnClass(canNext1)}
+            >
+              下一步 →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 2: 目标受众 */}
+      {step === 2 && (
+        <div>
+          <div className={cardClass}>
+            <label className='mb-2.5 block text-xs font-semibold text-stone-600 dark:text-stone-300'>
+              目标市场 <span className='text-red-500'>*</span>
+            </label>
+            <div className='flex flex-wrap gap-2'>
+              {markets.map(m => (
+                <button
+                  key={m}
+                  type='button'
+                  onClick={() => up('targetMarket', m)}
+                  className={optionBtnClass(form.targetMarket === m)}
+                >
+                  {m}
+                </button>
+              ))}
             </div>
           </div>
-        )}
 
-        {/* Report */}
-        {step === 3 && report && (
-          <div>
-            {/* Overall score */}
-            <div style={{ ...cardStyle, display: 'flex', gap: 20, alignItems: 'center' }}>
-              <ScoreRing score={report.overallScore} size={90} />
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                  <span style={{ fontSize: 16, fontWeight: 600 }}>综合转化诊断分</span>
-                  <span style={{
-                    fontSize: 12, padding: '2px 10px', borderRadius: 8, fontWeight: 600,
-                    background: report.conversionPotential === '高' ? '#dcfce7' : report.conversionPotential === '中' ? '#fef3c7' : '#fee2e2',
-                    color: report.conversionPotential === '高' ? '#166534' : report.conversionPotential === '中' ? '#92400e' : '#991b1b',
-                  }}>转化潜力：{report.conversionPotential}</span>
-                </div>
-                <p style={{ fontSize: 13, color: '#4b5563', margin: 0, lineHeight: 1.7 }}>{report.executiveSummary}</p>
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 12 }}>
-              {[
-                { label: '产品', val: form.productName.slice(0, 8) },
-                { label: '目标市场', val: form.targetMarket },
-                { label: '开信率', val: form.currentOpenRate ? form.currentOpenRate + '%' : '未知' },
-                { label: '回复率', val: form.currentReplyRate ? form.currentReplyRate + '%' : '未知' },
-              ].map(m => (
-                <div key={m.label} style={{ background: '#f9fafb', borderRadius: 8, padding: '0.75rem 1rem' }}>
-                  <p style={{ fontSize: 12, color: '#6b7280', margin: '0 0 4px' }}>{m.label}</p>
-                  <p style={{ fontSize: 15, fontWeight: 600, margin: 0 }}>{m.val}</p>
-                </div>
+          <div className={cardClass}>
+            <label className='mb-2.5 block text-xs font-semibold text-stone-600 dark:text-stone-300'>
+              目标收件人职位 <span className='text-red-500'>*</span>
+            </label>
+            <div className='flex flex-wrap gap-2'>
+              {roles.map(r => (
+                <button
+                  key={r}
+                  type='button'
+                  onClick={() => up('targetRole', r)}
+                  className={optionBtnClass(form.targetRole === r)}
+                >
+                  {r}
+                </button>
               ))}
             </div>
+          </div>
 
-            {/* Category scores */}
-            <div style={cardStyle}>
-              <h3 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 1rem' }}>八维度评分</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem 2rem' }}>
-                {Object.entries(report.categories).map(([key, val]) => (
-                  <div key={key}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4 }}>
-                      <span style={{ fontSize: 14 }}>{categoryIcons[key]}</span>
-                      <span style={{ fontSize: 13, color: '#4b5563' }}>{categoryLabels[key]}</span>
-                    </div>
-                    <ScoreBar score={val.score} />
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className={cardClass}>
+            <label className='mb-2 block text-xs font-semibold text-stone-600 dark:text-stone-300'>
+              买家核心痛点
+            </label>
+            <textarea
+              value={form.painPoints}
+              onChange={e => up('painPoints', e.target.value)}
+              placeholder='如：对供应商质量不稳定、交货期难以保证、沟通响应慢等方面有顾虑'
+              rows={3}
+              className={`${inputClass} resize-y`}
+            />
+          </div>
 
-            {/* Top issues */}
-            <div style={cardStyle}>
-              <h3 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 1rem' }}>关键问题诊断</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {report.topIssues.map((issue, i) => (
-                  <div key={i} style={{
-                    padding: '0.875rem', background: '#f9fafb', borderRadius: 8,
-                    borderLeft: `3px solid ${issue.priority === 'P0' ? '#ef4444' : issue.priority === 'P1' ? '#f59e0b' : '#3b82f6'}`
-                  }}>
-                    <span style={{
-                      display: 'inline-block', fontSize: 11, fontWeight: 600, padding: '1px 8px', borderRadius: 6, marginBottom: 4,
-                      background: issue.priority === 'P0' ? '#fee2e2' : issue.priority === 'P1' ? '#fef3c7' : '#dbeafe',
-                      color: issue.priority === 'P0' ? '#991b1b' : issue.priority === 'P1' ? '#92400e' : '#1e40af',
-                    }}>
-                      {issue.priority === 'P0' ? '紧急' : issue.priority === 'P1' ? '重要' : '优化'}
-                    </span>
-                    <p style={{ fontSize: 13, fontWeight: 600, margin: '0 0 3px' }}>{issue.title}</p>
-                    <p style={{ fontSize: 12, color: '#4b5563', margin: '0 0 3px', lineHeight: 1.6 }}>{issue.description}</p>
-                    <p style={{ fontSize: 12, color: '#9ca3af', margin: 0 }}>📈 {issue.impact}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className={cardClass}>
+            <label className='mb-2 block text-xs font-semibold text-stone-600 dark:text-stone-300'>
+              产品 / 公司核心优势
+            </label>
+            <textarea
+              value={form.uniqueAdvantage}
+              onChange={e => up('uniqueAdvantage', e.target.value)}
+              placeholder='如：工厂直供价格优势、ISO 认证、10 年行业经验、72 小时快速打样'
+              rows={3}
+              className={`${inputClass} resize-y`}
+            />
+          </div>
 
-            {/* Suggestions */}
-            <div style={cardStyle}>
-              <h3 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 1rem' }}>各维度优化建议</h3>
-              {Object.entries(report.categories).map(([key, val], i, arr) => (
-                <div key={key} style={{ padding: '0.875rem 0', borderBottom: i < arr.length - 1 ? '1px solid #f3f4f6' : 'none' }}>
-                  <div style={{ display: 'flex', gap: 10 }}>
-                    <span style={{ fontSize: 18, minWidth: 28 }}>{categoryIcons[key]}</span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{categoryLabels[key]}</span>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: val.score >= 75 ? COLORS.success : val.score >= 50 ? COLORS.warning : COLORS.danger }}>{val.score}分</span>
-                      </div>
-                      <p style={{ fontSize: 12, color: '#ef4444', margin: '0 0 3px' }}>⚠️ {val.issue}</p>
-                      <p style={{ fontSize: 12, color: '#4b5563', margin: 0, lineHeight: 1.6 }}>💡 {val.suggestion}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Rewrite sample */}
-            {report.rewriteSample && (
-              <div style={cardStyle}>
-                <h3 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 8px' }}>✨ 优化示例（开头片段）</h3>
-                <div style={{ background: COLORS.accentSoft, borderRadius: 8, padding: '0.875rem', fontFamily: 'monospace', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
-                  {report.rewriteSample}
-                </div>
-              </div>
-            )}
-
-            {/* Expected improvement */}
-            {report.expectedImprovement && (
-              <div style={{ background: COLORS.accentSoft, border: `1px solid ${COLORS.accentBorder}`, borderRadius: 12, padding: '1rem 1.25rem', display: 'flex', gap: 10, marginBottom: 12 }}>
-                <span style={{ fontSize: 20 }}>📈</span>
-                <div>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: COLORS.accentDark, margin: '0 0 2px' }}>预期优化效果</p>
-                  <p style={{ fontSize: 13, color: COLORS.accentDark, margin: 0, lineHeight: 1.6 }}>{report.expectedImprovement}</p>
-                </div>
-              </div>
-            )}
-
-            <div style={{ ...cardStyle, background: '#f8fafc', borderColor: '#dbeafe' }}>
-              <p style={{ fontSize: 15, fontWeight: 700, margin: '0 0 6px', color: '#111827' }}>
-                诊断之后，下一步这样做
+          {error && (
+            <div className='mb-4 rounded-2xl border border-red-200 bg-red-50 p-5 dark:border-red-900/60 dark:bg-red-950/30'>
+              <p className='text-sm font-bold text-red-800 dark:text-red-300'>
+                诊断暂时没有跑通
               </p>
-              <p style={{ fontSize: 13, color: '#475569', lineHeight: 1.7, margin: '0 0 12px' }}>
-                先把开发信问题记下来，再用真实采购记录验证目标客户。线索、联系人和话术连起来，后续跟进会更稳。
+              <p className='mt-1 text-xs leading-6 text-red-700 dark:text-red-200'>
+                {error}。你可以稍后再试，也可以先去查谁真的在进口你的产品，先把目标客户名单跑出来。
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 10 }}>
+              <div className='mt-3 grid gap-2 sm:grid-cols-2'>
                 <a
                   href={customsSkillHref}
                   onClick={() =>
                     trackSiteInteraction({
-                      source: 'diagnose_result_customs_data',
+                      source: 'diagnose_error_customs_data',
                       sourceGroup: 'lead',
                       target: customsSkillHref,
-                      action: 'diagnose_result_open_customs_data'
+                      action: 'diagnose_error_open_customs_data'
                     })
                   }
-                  style={{ ...ctaLinkStyle, borderColor: COLORS.primary, background: COLORS.primary, color: '#fff' }}>
-                  根据产品查进口商
+                  className='flex h-10 items-center justify-center rounded-xl border border-stone-300 bg-white text-xs font-bold text-stone-800 no-underline transition hover:border-[#1c5a4a] hover:text-[#1c5a4a]'
+                >
+                  先查进口商
                 </a>
                 <a
                   href={TURINGSEARCH_TRIAL_URL}
-                  target="_blank"
-                  rel="sponsored noopener noreferrer"
+                  target='_blank'
+                  rel='sponsored noopener noreferrer'
                   onClick={() =>
                     trackToolOutboundClick({
-                      source: 'diagnose_result_turingsearch_trial',
+                      source: 'diagnose_error_turingsearch_trial',
                       sourceGroup: 'lead',
                       target: TURINGSEARCH_TRIAL_URL,
                       tool: 'turingsearch'
                     })
                   }
-                  style={{ ...ctaLinkStyle, borderColor: COLORS.accentBorder, background: COLORS.accentSoft, color: COLORS.accentDark }}>
-                  免费体验图灵搜
+                  className='flex h-10 items-center justify-center rounded-xl border border-[#c3d6cd] bg-[#e8f0ec] text-xs font-bold text-[#1c5a4a] no-underline transition hover:bg-[#1c5a4a] hover:text-white'
+                >
+                  体验图灵搜
                 </a>
-                <button
-                  type="button"
-                  onClick={() => resetDiagnosis('diagnose_result_restart')}
-                  style={{ ...ctaLinkStyle, color: '#6b7280' }}>
-                  重新诊断另一封
-                </button>
               </div>
             </div>
+          )}
+
+          <label className='mb-4 flex cursor-pointer items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-xs leading-6 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300'>
+            <input
+              type='checkbox'
+              checked={privacyConfirmed}
+              onChange={e => setPrivacyConfirmed(e.target.checked)}
+              className='mt-1'
+            />
+            <span>
+              我已移除密码、报价底价、客户隐私、未公开合同等敏感信息，并同意将上述内容发送给第三方 AI 诊断接口用于本次分析。
+            </span>
+          </label>
+
+          <div className='flex justify-between'>
+            <button
+              type='button'
+              onClick={() => setStep(1)}
+              className='rounded-xl border border-stone-300 bg-white px-5 py-2.5 text-sm font-semibold text-stone-700 transition hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200'
+            >
+              ← 上一步
+            </button>
+            <button
+              type='button'
+              onClick={() => {
+                void runDiagnosis()
+              }}
+              disabled={!canNext2 || loading}
+              className={nextBtnClass(canNext2 && !loading)}
+            >
+              {loading ? '⏳ AI 分析中...' : '🤖 开始 AI 诊断'}
+            </button>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+
+      {/* Report */}
+      {step === 3 && report && (
+        <div>
+          <div className={`${cardClass} flex flex-col gap-5 sm:flex-row sm:items-center`}>
+            <ScoreRing score={report.overallScore} size={92} />
+            <div className='flex-1'>
+              <div className='mb-2 flex flex-wrap items-center gap-2'>
+                <span className='text-base font-bold text-stone-900 dark:text-stone-100'>
+                  综合转化诊断分
+                </span>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                    report.conversionPotential === '高'
+                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                      : report.conversionPotential === '中'
+                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                        : 'bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300'
+                  }`}
+                >
+                  转化潜力：{report.conversionPotential}
+                </span>
+              </div>
+              <p className='text-sm leading-7 text-stone-600 dark:text-stone-300'>
+                {report.executiveSummary}
+              </p>
+            </div>
+          </div>
+
+          <div className='mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4'>
+            {[
+              { label: '产品', val: form.productName.slice(0, 10) },
+              { label: '目标市场', val: form.targetMarket },
+              {
+                label: '开信率',
+                val: form.currentOpenRate ? `${form.currentOpenRate}%` : '未知'
+              },
+              {
+                label: '回复率',
+                val: form.currentReplyRate ? `${form.currentReplyRate}%` : '未知'
+              }
+            ].map(m => (
+              <div
+                key={m.label}
+                className='rounded-xl border border-stone-200/80 bg-white p-3.5 dark:border-stone-800 dark:bg-[#1c1a17]'
+              >
+                <p className='text-[11px] text-stone-400'>{m.label}</p>
+                <p className='mt-1 truncate text-sm font-bold text-stone-900 dark:text-stone-100'>
+                  {m.val}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className={cardClass}>
+            <h3 className='mb-4 text-sm font-bold text-stone-900 dark:text-stone-100'>
+              八维度评分
+            </h3>
+            <div className='grid gap-x-8 gap-y-3.5 sm:grid-cols-2'>
+              {Object.entries(report.categories).map(([key, val]) => (
+                <div key={key}>
+                  <div className='mb-1 flex items-center gap-1.5 text-xs font-medium text-stone-600 dark:text-stone-300'>
+                    <span>{categoryIcons[key]}</span>
+                    <span>{categoryLabels[key]}</span>
+                  </div>
+                  <ScoreBar score={val.score} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={cardClass}>
+            <h3 className='mb-4 text-sm font-bold text-stone-900 dark:text-stone-100'>
+              关键问题诊断
+            </h3>
+            <div className='space-y-3'>
+              {report.topIssues.map((issue, i) => (
+                <div
+                  key={i}
+                  className={`rounded-xl border-l-4 bg-[#faf9f6] p-4 dark:bg-[#151412] ${
+                    issue.priority === 'P0'
+                      ? 'border-l-red-500'
+                      : issue.priority === 'P1'
+                        ? 'border-l-amber-500'
+                        : 'border-l-[#1c5a4a]'
+                  }`}
+                >
+                  <span
+                    className={`mb-1.5 inline-block rounded-md px-2 py-0.5 text-[11px] font-bold ${
+                      issue.priority === 'P0'
+                        ? 'bg-red-100 text-red-800'
+                        : issue.priority === 'P1'
+                          ? 'bg-amber-100 text-amber-800'
+                          : 'bg-[#e8f0ec] text-[#1c5a4a]'
+                    }`}
+                  >
+                    {issue.priority === 'P0'
+                      ? '紧急'
+                      : issue.priority === 'P1'
+                        ? '重要'
+                        : '优化'}
+                  </span>
+                  <p className='text-sm font-bold text-stone-900 dark:text-stone-100'>
+                    {issue.title}
+                  </p>
+                  <p className='mt-1 text-xs leading-6 text-stone-600 dark:text-stone-300'>
+                    {issue.description}
+                  </p>
+                  <p className='mt-1 text-xs text-stone-400'>📈 {issue.impact}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={cardClass}>
+            <h3 className='mb-3 text-sm font-bold text-stone-900 dark:text-stone-100'>
+              各维度优化建议
+            </h3>
+            <div className='divide-y divide-stone-100 dark:divide-stone-800'>
+              {Object.entries(report.categories).map(([key, val]) => (
+                <div key={key} className='flex gap-3 py-3.5 first:pt-0 last:pb-0'>
+                  <span className='text-lg'>{categoryIcons[key]}</span>
+                  <div className='flex-1'>
+                    <div className='mb-1 flex items-center gap-2'>
+                      <span className='text-xs font-bold text-stone-900 dark:text-stone-100'>
+                        {categoryLabels[key]}
+                      </span>
+                      <span
+                        className={`text-xs font-bold ${
+                          val.score >= 75
+                            ? 'text-emerald-600'
+                            : val.score >= 50
+                              ? 'text-amber-600'
+                              : 'text-red-600'
+                        }`}
+                      >
+                        {val.score} 分
+                      </span>
+                    </div>
+                    <p className='text-xs text-red-600 dark:text-red-400'>
+                      ⚠️ {val.issue}
+                    </p>
+                    <p className='mt-1 text-xs leading-6 text-stone-600 dark:text-stone-300'>
+                      💡 {val.suggestion}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {report.rewriteSample && (
+            <div className={cardClass}>
+              <h3 className='mb-2.5 text-sm font-bold text-stone-900 dark:text-stone-100'>
+                ✨ 优化示例（开头片段）
+              </h3>
+              <div className='whitespace-pre-wrap rounded-xl bg-[#f4f8f6] p-4 font-mono text-xs leading-7 text-stone-800 dark:bg-[#1c5a4a]/15 dark:text-stone-200'>
+                {report.rewriteSample}
+              </div>
+            </div>
+          )}
+
+          {report.expectedImprovement && (
+            <div className='mb-4 flex gap-3 rounded-2xl border border-[#c3d6cd] bg-[#e8f0ec] p-4 text-[#1c5a4a] dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/20 dark:text-[#8fd8bf]'>
+              <span className='text-xl'>📈</span>
+              <div>
+                <p className='text-xs font-bold'>预期优化效果</p>
+                <p className='mt-0.5 text-xs leading-6'>{report.expectedImprovement}</p>
+              </div>
+            </div>
+          )}
+
+          <div className='rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17]'>
+            <p className='text-base font-bold text-stone-900 dark:text-stone-100'>
+              诊断之后，下一步这样做
+            </p>
+            <p className='mt-1.5 text-xs leading-6 text-stone-600 dark:text-stone-300'>
+              先把开发信问题记下来，再用真实采购记录验证目标客户。线索、联系人和话术连起来，后续跟进会更稳。
+            </p>
+            <div className='mt-4 grid gap-2.5 sm:grid-cols-3'>
+              <a
+                href={customsSkillHref}
+                onClick={() =>
+                  trackSiteInteraction({
+                    source: 'diagnose_result_customs_data',
+                    sourceGroup: 'lead',
+                    target: customsSkillHref,
+                    action: 'diagnose_result_open_customs_data'
+                  })
+                }
+                className='flex h-10 items-center justify-center rounded-xl bg-[#1c5a4a] px-3 text-xs font-semibold text-white no-underline transition hover:bg-[#14453a]'
+              >
+                根据产品查进口商
+              </a>
+              <a
+                href={TURINGSEARCH_TRIAL_URL}
+                target='_blank'
+                rel='sponsored noopener noreferrer'
+                onClick={() =>
+                  trackToolOutboundClick({
+                    source: 'diagnose_result_turingsearch_trial',
+                    sourceGroup: 'lead',
+                    target: TURINGSEARCH_TRIAL_URL,
+                    tool: 'turingsearch'
+                  })
+                }
+                className='flex h-10 items-center justify-center rounded-xl border border-[#c3d6cd] bg-[#e8f0ec] px-3 text-xs font-semibold text-[#1c5a4a] no-underline transition hover:bg-[#1c5a4a] hover:text-white'
+              >
+                免费体验图灵搜
+              </a>
+              <button
+                type='button'
+                onClick={() => resetDiagnosis('diagnose_result_restart')}
+                className='flex h-10 items-center justify-center rounded-xl border border-stone-300 bg-white px-3 text-xs font-semibold text-stone-600 transition hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300'
+              >
+                重新诊断另一封
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }

@@ -15,11 +15,6 @@ const AlgoliaSearchModal = dynamic(() => import('@/components/AlgoliaSearchModal
   loading: () => <div className="search-loading" />
 })
 
-const Live2D = dynamic(() => import('@/components/Live2D'), { 
-  ssr: false,
-  loading: () => null // Live2D 加载时不显示任何内容
-})
-
 const ChatModal = dynamic(() => import('./components/ChatModal'), {
   ssr: false,
   loading: () => null
@@ -37,13 +32,12 @@ const ArticleDetail = dynamic(() => import('./components/ArticleDetail'), {
   )
 })
 
-// 其他组件导入保持不变
 import { AdSlot } from '@/components/GoogleAdsense'
 import replaceSearchResult from '@/components/Mark'
 import WWAds from '@/components/WWAds'
 import SmartLink from '@/components/SmartLink'
+import Announcement from './components/Announcement'
 import ArticleLock from './components/ArticleLock'
-import AsideLeft from './components/AsideLeft'
 import BlogListPage from './components/BlogListPage'
 import BlogListScroll from './components/BlogListScroll'
 import BlogArchiveItem from './components/BlogPostArchive'
@@ -97,87 +91,49 @@ function getConfigValue(global, notionConfig, key, defaultValue) {
 const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
   const [isChatOpen, setIsChatOpen] = useState(false)
   const global = useGlobal()
-  const leftAreaSlot = useMemo(() => <Live2D />, [])
   const { onLoading, fullWidth } = global
   const searchModal = useRef(null)
-  const layoutReverse = parseConfigBoolean(
-    getConfigValue(global, props?.NOTION_CONFIG, 'LAYOUT_SIDEBAR_REVERSE', false)
-  )
   const fontStyle = getConfigValue(global, props?.NOTION_CONFIG, 'FONT_STYLE', '')
-  
-  const containerClassName = useMemo(() => 
-    `${fullWidth ? '' : '2xl:max-w-6xl md:max-w-4xl'} w-full relative z-10 px-4`,
+
+  const containerClassName = useMemo(
+    () =>
+      `${fullWidth ? 'max-w-full' : 'max-w-6xl'} mx-auto w-full px-4 sm:px-6 lg:px-8`,
     [fullWidth]
   )
 
   const contextValue = useMemo(() => ({ searchModal }), [])
-  
+
   return (
     <ThemeGlobalFukasawa.Provider value={contextValue}>
-      <div 
-        id='theme-fukasawa' 
-        className={`${fontStyle} dark:bg-black scroll-smooth antialiased`}
+      <div
+        id='theme-fukasawa'
+        className={`${fontStyle} min-h-screen scroll-smooth antialiased dark:bg-[#131210]`}
       >
-      {onLoading && <LoadingCover />} 
+        {onLoading && <LoadingCover />}
         <Style />
         <Header {...props} />
-        <DesktopTopNav reverse={layoutReverse} />
+        <DesktopTopNav {...props} />
 
-        <div className={`flex ${layoutReverse ? 'flex-row-reverse' : ''}`}>
-          <AsideLeft {...props} slot={leftAreaSlot} />
+        <main id='wrapper' className='relative w-full py-6 sm:py-8'>
+          <div id='container-inner' className={containerClassName}>
+            {headerSlot && <div className='mb-6'>{headerSlot}</div>}
+            <div className='min-h-[60vh]'>{children}</div>
 
-          <main
-            id='wrapper'
-            className='relative flex w-full flex-1 justify-center bg-[#f7f5f1] dark:bg-[#161412]'
-          >
-            <div className='flex w-full flex-col items-center'>
-              <div id='container-inner' className={`${containerClassName} py-8`}>
-                <div className='w-full'>
-                  {headerSlot && <div>{headerSlot}</div>}
-                  <div className='min-h-[60vh]'>{children}</div>
-                </div>
-
-                <div className='mt-8 rounded-xl overflow-hidden'>
-                  <AdSlot type='native' />
-                </div>
-              </div>
-
-              <SiteFooter />
+            <div className='mt-8 overflow-hidden rounded-xl'>
+              <AdSlot type='native' />
             </div>
-          </main>
-        </div>
+          </div>
+        </main>
 
-        <FloatButton floatSlot={floatSlot} {...props} />
+        <SiteFooter />
+
+        <FloatButton
+          floatSlot={floatSlot}
+          onOpenChat={() => setIsChatOpen(true)}
+          {...props}
+        />
         <AlgoliaSearchModal cRef={searchModal} {...props} />
-
-        {/* AI 参谋按钮 - 手机端左下角 */}
-        <div className="lg:hidden fixed left-4 bottom-5 z-[60]">
-          <button
-            onClick={() => setIsChatOpen(true)}
-            aria-label="打开 AI 参谋"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-[#e8c9a8] bg-gradient-to-br from-[#d29a63] to-[#b97a52] text-white shadow-xl ring-2 ring-[#d29a63]/40 backdrop-blur-xl active:scale-90 transition-transform dark:border-[#e8c9a8]/60 dark:ring-[#d29a63]/30"
-          >
-            <i className="fas fa-robot text-base"></i>
-            <span className="sr-only">AI 参谋</span>
-          </button>
-        </div>
-
-        {/* AI 参谋按钮 - 桌面端左下角(避开右侧一键置顶/礼品包) */}
-        <div className="hidden lg:flex fixed left-10 bottom-8 z-[70] flex-col items-center">
-          <button
-            onClick={() => setIsChatOpen(true)}
-            className="group flex h-12 w-12 items-center justify-center rounded-full border border-[#e8c9a8] bg-gradient-to-br from-[#d29a63] to-[#b97a52] text-white shadow-xl ring-2 ring-[#d29a63]/40 backdrop-blur-xl hover:from-[#c98a58] hover:to-[#a96a45] hover:scale-105 active:scale-95 transition-all dark:border-[#e8c9a8]/60 dark:ring-[#d29a63]/30"
-          >
-            <i className="fas fa-robot text-base"></i>
-          </button>
-          <span className="mt-1.5 rounded-full bg-[#b97a52] px-2 py-0.5 text-[10px] font-bold tracking-wide text-white">
-            AI 参谋
-          </span>
-        </div>
-
-        {/* AI 参谋弹窗 */}
         <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-
       </div>
     </ThemeGlobalFukasawa.Provider>
   )
@@ -203,6 +159,7 @@ const LayoutPostList = memo((props) => {
   return (
     <div className='w-full'>
       {showHomeIntro && <HomeIntro {...props} />}
+      {showHomeIntro && <Announcement post={props?.notice} className='mb-6' />}
       {showHomeIntro && <HomeFeaturedLinks />}
       {showTopicIntro && <TopicIntro {...props} />}
       {topicKeyword && (
@@ -215,7 +172,7 @@ const LayoutPostList = memo((props) => {
       )}
       {props?.keyword && <SearchResourceLinks keyword={props.keyword} />}
       {!showHomeIntro && (
-        <div className='w-full p-2 mb-4'>
+        <div className='mb-4 w-full p-2'>
           <WWAds className='w-full' orientation='horizontal' />
         </div>
       )}
@@ -314,14 +271,7 @@ const LayoutSearch = memo(({ keyword, ...props }) => {
     highlightSearchResults()
   }, [highlightSearchResults])
   
-  return (
-    <>
-      <Head>
-        <meta name='robots' content='noindex,follow' />
-      </Head>
-      <LayoutPostList keyword={keyword} {...props} />
-    </>
-  )
+  return <LayoutPostList keyword={keyword} {...props} />
 })
 
 LayoutSearch.displayName = 'LayoutSearch'
@@ -331,26 +281,38 @@ LayoutSearch.displayName = 'LayoutSearch'
  * 改进点：使用 useMemo 缓存 entries
  */
 const LayoutArchive = memo(({ archivePosts }) => {
-  const archiveEntries = useMemo(() => 
+  const archiveEntries = useMemo(() =>
     Object.entries(archivePosts || {}),
     [archivePosts]
   )
-  
+
   if (archiveEntries.length === 0) {
     return (
-      <div className='mb-10 pb-20 bg-white md:p-12 p-3 dark:bg-stone-900 shadow-sm rounded-xl min-h-full flex items-center justify-center'>
-        <p className='text-stone-400'>暂无归档文章</p>
+      <div className='rounded-2xl border border-stone-200/80 bg-white p-10 text-center shadow-sm dark:border-stone-800 dark:bg-stone-900'>
+        <div className='mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[#e8f0ec] text-[#1c5a4a] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+          <i className='fas fa-box-archive' />
+        </div>
+        <p className='text-sm font-medium text-stone-600 dark:text-stone-300'>暂无归档文章</p>
       </div>
     )
   }
-  
+
   return (
-    <div className='mb-10 pb-20 bg-white md:p-12 p-3 dark:bg-stone-900 shadow-sm rounded-xl min-h-full'>
+    <div className='mb-10 rounded-2xl border border-stone-200/80 bg-white p-5 sm:p-8 lg:p-10 shadow-sm dark:border-stone-800 dark:bg-stone-900'>
+      <div className='mb-8 border-b border-stone-200/80 pb-5 dark:border-stone-800'>
+        <span className='inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
+          <span className='h-1.5 w-1.5 rounded-full bg-[#1c5a4a] dark:bg-[#6bc4a6]' />
+          Content Archive
+        </span>
+        <h1 className='mt-2 text-2xl font-black text-stone-950 dark:text-stone-50'>
+          文章时间线归档
+        </h1>
+      </div>
       {archiveEntries.map(([title, posts]) => (
-        <BlogArchiveItem 
-          key={title} 
-          posts={posts} 
-          archiveTitle={title} 
+        <BlogArchiveItem
+          key={title}
+          posts={posts}
+          archiveTitle={title}
         />
       ))}
     </div>
@@ -417,15 +379,14 @@ const Layout404 = memo((props) => {
     <>
       <Head>
         <title>{`${siteInfo?.title || BLOG.TITLE || '外贸获客情报局'} | 页面找不到啦`}</title>
-        <meta name='robots' content='noindex,follow' />
       </Head>
-      <div className='min-h-screen bg-[#f7f5f1] px-4 py-10 text-stone-900 dark:bg-[#161412] dark:text-stone-100 sm:px-6 lg:px-8'>
+      <div className='min-h-screen bg-[#f7f5f1] px-4 py-10 text-stone-900 dark:bg-[#131210] dark:text-stone-100 sm:px-6 lg:px-8'>
       <main className='mx-auto max-w-6xl'>
-        <section className='overflow-hidden rounded-[8px] border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900'>
+        <section className='overflow-hidden rounded-2xl border border-stone-200/80 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900'>
           <div className='grid gap-0 lg:grid-cols-[minmax(0,1fr)_320px]'>
             <div className='p-6 sm:p-8 lg:p-10'>
-              <div className='mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
-                <span className='h-2 w-2 rounded-full bg-stone-500 dark:bg-stone-400' />
+              <div className='mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
+                <span className='h-2 w-2 rounded-full bg-[#1c5a4a] dark:bg-[#6bc4a6]' />
                 <span>Content Recovery</span>
               </div>
               <div className='text-7xl font-black leading-none text-stone-200 dark:text-stone-800 sm:text-8xl'>
@@ -438,7 +399,7 @@ const Layout404 = memo((props) => {
                 可能是文章地址已更新、Notion 页面还未同步，或者链接输入有误。可以搜索关键词，或从热门文章和分类继续浏览。
               </p>
 
-              <form onSubmit={handleSearch} className='mt-6 flex max-w-2xl flex-col gap-2 sm:flex-row'>
+              <form onSubmit={handleSearch} className='mt-6 flex max-w-2xl flex-col gap-2.5 sm:flex-row'>
                 <label className='sr-only' htmlFor='not-found-search'>
                   搜索站内文章
                 </label>
@@ -447,33 +408,33 @@ const Layout404 = memo((props) => {
                   value={keyword}
                   onChange={event => setKeyword(event.target.value)}
                   placeholder='搜索海关数据、WhatsApp、AI 外贸工具...'
-                  className='h-11 min-w-0 flex-1 rounded-[8px] border border-stone-200 bg-stone-50 px-4 text-sm text-stone-900 outline-none transition focus:border-stone-400 focus:bg-white dark:border-stone-800 dark:bg-stone-950 dark:text-stone-100 dark:focus:border-stone-400'
+                  className='h-11 min-w-0 flex-1 rounded-xl border border-stone-200 bg-[#faf9f6] px-4 text-sm text-stone-900 outline-none transition focus:border-[#1c5a4a] focus:bg-white dark:border-stone-800 dark:bg-stone-950 dark:text-stone-100 dark:focus:border-[#6bc4a6]'
                 />
                 <button
                   type='submit'
-                  className='h-11 rounded-[8px] bg-stone-950 px-5 text-sm font-bold text-white transition hover:bg-stone-700 dark:bg-white dark:text-stone-950 dark:hover:bg-stone-300'>
+                  className='h-11 rounded-xl bg-[#1c5a4a] px-5 text-sm font-bold text-white transition hover:bg-[#154639] dark:bg-[#1c5a4a] dark:hover:bg-[#236f5b]'>
                   搜索文章
                 </button>
               </form>
 
-              <div className='mt-5 flex flex-wrap gap-2'>
+              <div className='mt-5 flex flex-wrap gap-2.5'>
                 <button
                   onClick={handleBackHome}
-                  className='inline-flex h-10 items-center rounded-[8px] border border-stone-200 px-4 text-sm font-bold text-stone-700 transition hover:border-stone-400 hover:text-stone-800 dark:border-stone-800 dark:text-stone-200 dark:hover:border-stone-500 dark:hover:text-stone-100'>
+                  className='inline-flex h-10 items-center rounded-xl border border-stone-200 bg-[#faf9f6] px-4 text-sm font-semibold text-stone-700 transition hover:border-[#1c5a4a]/40 hover:text-[#1c5a4a] dark:border-stone-800 dark:bg-stone-950 dark:text-stone-200 dark:hover:border-[#6bc4a6]/50 dark:hover:text-[#6bc4a6]'>
                   <i className='fas fa-home mr-2 text-xs' />
                   返回首页
                 </button>
                 <SmartLink
                   href='/archive'
-                  className='inline-flex h-10 items-center rounded-[8px] border border-stone-200 px-4 text-sm font-bold text-stone-700 transition hover:border-stone-400 hover:text-stone-800 dark:border-stone-800 dark:text-stone-200 dark:hover:border-stone-500 dark:hover:text-stone-100'>
+                  className='inline-flex h-10 items-center rounded-xl border border-stone-200 bg-[#faf9f6] px-4 text-sm font-semibold text-stone-700 transition hover:border-[#1c5a4a]/40 hover:text-[#1c5a4a] dark:border-stone-800 dark:bg-stone-950 dark:text-stone-200 dark:hover:border-[#6bc4a6]/50 dark:hover:text-[#6bc4a6]'>
                   <i className='fas fa-clock-rotate-left mr-2 text-xs' />
                   查看归档
                 </SmartLink>
               </div>
             </div>
 
-            <aside className='border-t border-stone-200 bg-stone-50 p-6 dark:border-stone-800 dark:bg-stone-950/60 lg:border-l lg:border-t-0'>
-              <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-stone-400'>
+            <aside className='border-t border-stone-200/80 bg-[#faf9f6] p-6 dark:border-stone-800 dark:bg-stone-950/60 lg:border-l lg:border-t-0'>
+              <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
                 Site Snapshot
               </div>
               <div className='mt-4 space-y-3 text-sm text-stone-600 dark:text-stone-300'>
@@ -486,9 +447,9 @@ const Layout404 = memo((props) => {
         </section>
 
         <section className='mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)]'>
-          <div className='rounded-[8px] border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-stone-900'>
+          <div className='rounded-2xl border border-stone-200/80 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-900'>
             <div className='mb-4'>
-              <div className='mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
+              <div className='mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
                 <i className='fas fa-fire-alt' />
                 <span>Trending Now</span>
               </div>
@@ -503,14 +464,14 @@ const Layout404 = memo((props) => {
                   <SmartLink
                     key={post.id || post.slug}
                     href={post.href || `/${post.slug}`}
-                    className='group rounded-[8px] border border-stone-200 bg-stone-50 p-4 transition hover:border-stone-300 hover:bg-white hover:shadow-sm dark:border-stone-800 dark:bg-stone-950/60 dark:hover:border-stone-600 dark:hover:bg-[#151518]'>
-                    <div className='mb-3 flex items-center gap-2 text-xs text-stone-400'>
-                      <span className='flex h-6 w-6 items-center justify-center rounded-full bg-white font-black text-stone-500 dark:bg-stone-900 dark:text-stone-400'>
+                    className='group rounded-xl border border-stone-200/80 bg-[#faf9f6] p-4 transition-all hover:border-[#1c5a4a]/40 hover:bg-white hover:shadow-sm dark:border-stone-800 dark:bg-stone-950/60 dark:hover:border-[#6bc4a6]/40 dark:hover:bg-[#1c1a17]'>
+                    <div className='mb-3 flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400'>
+                      <span className='flex h-6 w-6 items-center justify-center rounded-lg bg-[#e8f0ec] font-bold text-[#1c5a4a] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
                         {index + 1}
                       </span>
-                      {post.category && <span>{post.category}</span>}
+                      {post.category && <span className='font-medium'>{post.category}</span>}
                     </div>
-                    <h3 className='line-clamp-2 text-sm font-bold leading-6 text-stone-900 group-hover:text-stone-800 dark:text-stone-100 dark:group-hover:text-stone-300'>
+                    <h3 className='line-clamp-2 text-sm font-bold leading-6 text-stone-900 group-hover:text-[#1c5a4a] dark:text-stone-100 dark:group-hover:text-[#6bc4a6]'>
                       {post.title}
                     </h3>
                     {post.summary && (
@@ -530,8 +491,8 @@ const Layout404 = memo((props) => {
 
           <div className='space-y-6'>
             {categories.length > 0 && (
-              <section className='rounded-[8px] border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-stone-900'>
-                <div className='mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
+              <section className='rounded-2xl border border-stone-200/80 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-900'>
+                <div className='mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
                   <i className='fas fa-folder-open' />
                   <span>Categories</span>
                 </div>
@@ -540,7 +501,7 @@ const Layout404 = memo((props) => {
                     <SmartLink
                       key={category.name}
                       href={`/category/${encodeURIComponent(category.name)}`}
-                      className='rounded-[8px] border border-stone-200 px-3 py-2 text-xs font-bold text-stone-600 transition hover:border-stone-400 hover:text-stone-800 dark:border-stone-800 dark:text-stone-300 dark:hover:border-stone-500 dark:hover:text-stone-100'>
+                      className='rounded-xl border border-stone-200/80 bg-[#faf9f6] px-3 py-2 text-xs font-semibold text-stone-700 transition hover:border-[#1c5a4a]/40 hover:bg-[#f4f8f6] hover:text-[#1c5a4a] dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 dark:hover:border-[#6bc4a6]/40 dark:hover:text-[#6bc4a6]'>
                       {category.name}
                       {category.count ? ` · ${category.count}` : ''}
                     </SmartLink>
@@ -550,8 +511,8 @@ const Layout404 = memo((props) => {
             )}
 
             {tags.length > 0 && (
-              <section className='rounded-[8px] border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-stone-900'>
-                <div className='mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
+              <section className='rounded-2xl border border-stone-200/80 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-900'>
+                <div className='mb-4 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
                   <i className='fas fa-tags' />
                   <span>Hot Tags</span>
                 </div>
@@ -580,25 +541,41 @@ Layout404.displayName = 'Layout404'
 const LayoutCategoryIndex = memo(({ locale, categoryOptions }) => {
   if (!categoryOptions || categoryOptions.length === 0) {
     return (
-      <div className='bg-white dark:bg-stone-900 px-10 py-10 rounded-xl shadow-sm'>
-        <p className='text-stone-400 text-center'>暂无分类</p>
+      <div className='rounded-2xl border border-stone-200/80 bg-white p-10 text-center shadow-sm dark:border-stone-800 dark:bg-stone-900'>
+        <p className='text-sm text-stone-500 dark:text-stone-400'>暂无分类</p>
       </div>
     )
   }
-  
+
   return (
-    <div className='bg-white dark:bg-stone-900 px-10 py-10 rounded-xl shadow-sm'>
-      <div className='dark:text-stone-200 mb-8 font-bold'>
-        <i className='mr-4 fas fa-th' />
-        {locale?.COMMON?.CATEGORY}:
+    <div className='rounded-2xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-sm dark:border-stone-800 dark:bg-stone-900'>
+      <div className='mb-6 border-b border-stone-200/80 pb-5 dark:border-stone-800'>
+        <span className='inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
+          <span className='h-1.5 w-1.5 rounded-full bg-[#1c5a4a] dark:bg-[#6bc4a6]' />
+          Topics Directory
+        </span>
+        <h1 className='mt-2 flex items-center gap-3 text-2xl font-black text-stone-950 dark:text-stone-50'>
+          <span>{locale?.COMMON?.CATEGORY || '专题分类'}</span>
+          <span className='rounded-full bg-[#e8f0ec] px-2.5 py-0.5 text-xs font-semibold text-[#1c5a4a] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+            {categoryOptions.length} 个主题
+          </span>
+        </h1>
       </div>
-      <div className='flex flex-wrap gap-4'>
+      <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
         {categoryOptions.map(c => (
-          <SmartLink key={c.name} href={`/category/${c.name}`}>
-            <div className='hover:bg-stone-50 dark:hover:bg-stone-800 px-5 py-2 rounded-lg border dark:border-stone-800 transition-colors cursor-pointer'>
-              <i className='mr-3 fas fa-folder text-stone-400' />
-              {c.name} ({c.count})
-            </div>
+          <SmartLink
+            key={c.name}
+            href={`/category/${encodeURIComponent(c.name)}`}
+            className='group flex items-center justify-between rounded-xl border border-stone-200/80 bg-[#faf9f6] px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:border-[#1c5a4a]/40 hover:bg-white hover:shadow-sm dark:border-stone-800 dark:bg-stone-950/60 dark:hover:border-[#6bc4a6]/40 dark:hover:bg-[#1c1a17]'>
+            <span className='flex items-center gap-3 text-sm font-bold text-stone-800 group-hover:text-[#1c5a4a] dark:text-stone-100 dark:group-hover:text-[#6bc4a6]'>
+              <span className='flex h-8 w-8 items-center justify-center rounded-lg bg-[#e8f0ec] text-[#1c5a4a] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+                <i className='fas fa-folder text-xs' />
+              </span>
+              {c.name}
+            </span>
+            <span className='rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold tabular-nums text-stone-500 border border-stone-200/70 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400'>
+              {c.count}
+            </span>
           </SmartLink>
         ))}
       </div>
@@ -614,19 +591,27 @@ LayoutCategoryIndex.displayName = 'LayoutCategoryIndex'
 const LayoutTagIndex = memo(({ locale, tagOptions }) => {
   if (!tagOptions || tagOptions.length === 0) {
     return (
-      <div className='bg-white dark:bg-stone-900 px-10 py-10 rounded-xl shadow-sm'>
-        <p className='text-stone-400 text-center'>暂无标签</p>
+      <div className='rounded-2xl border border-stone-200/80 bg-white p-10 text-center shadow-sm dark:border-stone-800 dark:bg-stone-900'>
+        <p className='text-sm text-stone-500 dark:text-stone-400'>暂无标签</p>
       </div>
     )
   }
-  
+
   return (
-    <div className='bg-white dark:bg-stone-900 px-10 py-10 rounded-xl shadow-sm'>
-      <div className='dark:text-stone-200 mb-8 font-bold'>
-        <i className='mr-4 fas fa-tag' />
-        {locale?.COMMON?.TAGS}:
+    <div className='rounded-2xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-sm dark:border-stone-800 dark:bg-stone-900'>
+      <div className='mb-6 border-b border-stone-200/80 pb-5 dark:border-stone-800'>
+        <span className='inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
+          <span className='h-1.5 w-1.5 rounded-full bg-[#1c5a4a] dark:bg-[#6bc4a6]' />
+          Tags Index
+        </span>
+        <h1 className='mt-2 flex items-center gap-3 text-2xl font-black text-stone-950 dark:text-stone-50'>
+          <span>{locale?.COMMON?.TAGS || '标签索引'}</span>
+          <span className='rounded-full bg-[#e8f0ec] px-2.5 py-0.5 text-xs font-semibold text-[#1c5a4a] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+            {tagOptions.length} 个标签
+          </span>
+        </h1>
       </div>
-      <div className='flex flex-wrap gap-3'>
+      <div className='flex flex-wrap gap-2.5'>
         {tagOptions.map(t => (
           <TagItemMini key={t.name} tag={t} />
         ))}

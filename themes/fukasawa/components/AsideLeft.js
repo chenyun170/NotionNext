@@ -59,11 +59,14 @@ function AsideLeft(props) {
 
   useEffect(() => {
     setIsCollapse(localStorage.getItem('fukasawa-sidebar-collapse') === 'true')
-    const timer = setInterval(() => {
+    const updateRuntime = () => {
       const diff = Date.now() - new Date('2024-05-01').getTime()
       if (diff < 0) return
       setRuntime(`${Math.floor(diff / 86400000)}天 ${Math.floor((diff % 86400000) / 3600000)}时`)
-    }, 1000)
+    }
+    updateRuntime()
+    // 仅展示到小时，无需每秒触发整栏重渲染
+    const timer = setInterval(updateRuntime, 60 * 1000)
     return () => clearInterval(timer)
   }, [])
 

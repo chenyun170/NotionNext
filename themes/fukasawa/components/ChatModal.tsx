@@ -48,10 +48,11 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
     return () => window.removeEventListener('keydown', handler)
   }, [isOpen, onClose])
 
-  const handleSend = async () => {
-    if (!input.trim() || loading) return
+  const handleSend = async (overrideMsg?: string) => {
+    const rawMsg = typeof overrideMsg === 'string' ? overrideMsg : input
+    if (!rawMsg.trim() || loading) return
 
-    const userMsg = input.trim()
+    const userMsg = rawMsg.trim()
     // 超长输入保护：避免模型上下文异常导致回复中断
     if (userMsg.length > 6000) {
       setHistory(prev => [
@@ -83,7 +84,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
       })
 
       if (!response.ok) {
-        const errData = await response.json().catch(() => null)
+        const errData = (await response.json().catch(() => null)) as { error?: string } | null
         throw new Error(errData?.error || `HTTP ${response.status}`)
       }
       if (!response.body) throw new Error('Response body is null')
@@ -108,7 +109,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
             if (text === '[DONE]') { finished = true; break }
             if (!text) continue
             try {
-              const data = JSON.parse(text)
+              const data = JSON.parse(text) as { error?: string; content?: string }
               if (data.error) throw new Error(data.error)
               if (data.content) {
                 fullReply += data.content
@@ -166,23 +167,26 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
         aria-label="AI 参谋对话框"
       >
         {/* 顶部标题栏 */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-stone-100 dark:border-stone-800 bg-stone-50/80 dark:bg-stone-900/80 backdrop-blur-sm shrink-0">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-stone-200/80 dark:border-stone-800 bg-[#faf9f6]/90 dark:bg-stone-900/90 backdrop-blur-sm shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 flex items-center justify-center text-sm shadow-sm">
+            <div className="w-8 h-8 rounded-xl bg-[#e8f0ec] dark:bg-[#1c5a4a]/30 text-[#1c5a4a] dark:text-[#6bc4a6] flex items-center justify-center text-sm">
               <i className="fas fa-robot"></i>
             </div>
             <div>
-              <p className="text-sm font-bold text-stone-800 dark:text-stone-100 leading-tight">AI 参谋</p>
-              <p className="text-[10px] text-stone-400 leading-tight">外贸获客 · 邮件 · 数据查询</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-sm font-bold text-stone-900 dark:text-stone-100 leading-tight">AI 外贸参谋</p>
+                <span className="h-1.5 w-1.5 rounded-full bg-[#1c5a4a] dark:bg-[#6bc4a6]" />
+              </div>
+              <p className="text-[11px] text-stone-500 dark:text-stone-400 leading-tight">开发信润色 · 海关数据 · 市场研判</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {/* 清空历史 */}
             {history.length > 0 && (
               <button
                 onClick={() => setHistory([])}
                 title="清空对话"
-                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800"
+                className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800"
               >
                 <i className="fas fa-trash-alt text-xs"></i>
               </button>
@@ -198,20 +202,20 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
         </div>
 
         {/* 消息区域 */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 no-scrollbar break-words overflow-wrap-anywhere w-full min-w-0">
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3.5 no-scrollbar break-words overflow-wrap-anywhere w-full min-w-0">
           {history.length === 0 && !loading && !reply && (
-            <div className="flex flex-col items-center justify-center h-full text-center space-y-3 py-8">
-              <div className="w-12 h-12 rounded-2xl bg-stone-50 dark:bg-stone-900/30 flex items-center justify-center text-stone-500 text-xl shadow-sm">
-                <i className="fas fa-headset"></i>
+            <div className="flex flex-col items-center justify-center h-full text-center space-y-3.5 py-6">
+              <div className="w-12 h-12 rounded-2xl bg-[#e8f0ec] dark:bg-[#1c5a4a]/25 flex items-center justify-center text-[#1c5a4a] dark:text-[#6bc4a6] text-xl">
+                <i className="fas fa-compass"></i>
               </div>
               <div>
-                <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">您好，我是 AI 参谋</p>
-                <p className="text-xs text-stone-400 mt-1 leading-relaxed max-w-[240px]">
-                  可以帮您写外贸邮件、查询海关数据、找客户、分析市场
+                <p className="text-sm font-bold text-stone-900 dark:text-stone-100">您好，我是 AI 外贸参谋</p>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 leading-relaxed max-w-[260px]">
+                  可直接提问或点击下方快捷场景，立即生成开发信与采购商筛选思路
                 </p>
               </div>
               {/* 快捷提示 */}
-              <div className="flex flex-wrap gap-1.5 justify-center mt-1">
+              <div className="flex flex-wrap gap-2 justify-center mt-1 max-w-[320px]">
                 {[
                   '写一封开发信',
                   '查询 LED 进口商',
@@ -220,8 +224,10 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
                 ].map(hint => (
                   <button
                     key={hint}
-                    onClick={() => setInput(hint)}
-                    className="text-[10px] px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-800 dark:hover:text-stone-200 border border-transparent hover:border-stone-300 dark:hover:border-stone-600 transition-all"
+                    onClick={() => {
+                      void handleSend(hint)
+                    }}
+                    className="cursor-pointer text-xs font-medium px-3 py-1.5 rounded-full bg-[#faf9f6] dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200/80 dark:border-stone-700 hover:border-[#1c5a4a]/50 hover:bg-[#f4f8f6] hover:text-[#1c5a4a] dark:hover:border-[#6bc4a6]/50 dark:hover:bg-[#1c5a4a]/20 dark:hover:text-[#6bc4a6] transition-colors"
                   >
                     {hint}
                   </button>
@@ -233,10 +239,10 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
           {history.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
-                className={`w-full max-w-full rounded-2xl px-4 py-3 text-sm leading-relaxed break-words overflow-wrap-anywhere ${
+                className={`w-fit rounded-2xl text-sm leading-relaxed break-words overflow-wrap-anywhere ${
                   msg.role === 'user'
-                    ? 'bg-stone-950 text-white rounded-br-md'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 rounded-bl-md'
+                    ? 'max-w-[82%] bg-[#1c5a4a] text-white px-4 py-2.5 rounded-br-sm shadow-sm'
+                    : 'max-w-[90%] bg-[#f7f5f1] dark:bg-stone-800/90 border border-stone-200/70 dark:border-stone-700/70 text-stone-800 dark:text-stone-100 px-4 py-3 rounded-bl-sm'
                 }`}
               >
                 <ReactMarkdown
@@ -252,10 +258,10 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
                     ),
                     p: ({ node, ...p }) => <p className="mb-1 last:mb-0" {...p} />,
                     code: ({ node, ...p }) => (
-                      <code className={`text-[10px] px-1 py-0.5 rounded font-mono ${msg.role === 'user' ? 'bg-stone-600/30' : 'bg-stone-200 dark:bg-stone-700'}`} {...p} />
+                      <code className={`text-[11px] px-1.5 py-0.5 rounded font-mono ${msg.role === 'user' ? 'bg-white/20 text-white' : 'bg-stone-200/80 dark:bg-stone-700 text-stone-800 dark:text-stone-100'}`} {...p} />
                     ),
                     a: ({ node, ...p }) => (
-                      <a className="text-stone-800 dark:text-stone-200 underline underline-offset-2" target="_blank" rel="noopener noreferrer" {...p} />
+                      <a className={`${msg.role === 'user' ? 'text-white' : 'text-[#1c5a4a] dark:text-[#6bc4a6]'} underline underline-offset-2`} target="_blank" rel="noopener noreferrer" {...p} />
                     ),
                   }}
                 >
@@ -268,7 +274,7 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
           {/* 正在输入的流式回复 */}
           {reply && (
             <div className="flex justify-start">
-              <div className="w-full max-w-full rounded-2xl rounded-bl-md bg-stone-100 dark:bg-stone-800 px-4 py-3 text-sm leading-relaxed break-words overflow-wrap-anywhere text-stone-700 dark:text-stone-200">
+              <div className="w-fit max-w-[90%] rounded-2xl rounded-bl-sm bg-[#f7f5f1] dark:bg-stone-800/90 border border-stone-200/70 dark:border-stone-700/70 px-4 py-3 text-sm leading-relaxed break-words overflow-wrap-anywhere text-stone-800 dark:text-stone-100">
                 <ReactMarkdown
                   components={{
                     strong: ({ node, ...p }) => <span className="font-bold text-stone-900 dark:text-white" {...p} />,
@@ -278,16 +284,16 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
                 >
                   {reply}
                 </ReactMarkdown>
-                <span className="inline-block ml-1 animate-pulse text-stone-400">▊</span>
+                <span className="inline-block ml-1 animate-pulse text-[#1c5a4a] dark:text-[#6bc4a6]">▊</span>
               </div>
             </div>
           )}
 
           {loading && !reply && (
             <div className="flex justify-start">
-              <div className="bg-stone-100 dark:bg-stone-800 rounded-2xl rounded-bl-md px-4 py-3 text-xs text-stone-400 flex items-center gap-2">
-                <i className="fas fa-circle-notch fa-spin text-sm"></i>
-                <span>正在思考...</span>
+              <div className="bg-[#f7f5f1] dark:bg-stone-800/90 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl rounded-bl-sm px-4 py-3 text-xs text-stone-500 dark:text-stone-400 flex items-center gap-2">
+                <i className="fas fa-circle-notch fa-spin text-sm text-[#1c5a4a] dark:text-[#6bc4a6]"></i>
+                <span>正在整理外贸建议...</span>
               </div>
             </div>
           )}
@@ -296,26 +302,28 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
         </div>
 
         {/* 输入区 */}
-        <div className="shrink-0 px-4 py-3 border-t border-stone-100 dark:border-stone-800 bg-white/80 dark:bg-stone-900/80 backdrop-blur-sm">
+        <div className="shrink-0 px-4 py-3 border-t border-stone-200/80 dark:border-stone-800 bg-white/95 dark:bg-stone-900/95 backdrop-blur-sm">
           <div className="flex items-end gap-2">
             <textarea
               ref={inputRef}
-              className="flex-1 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl px-3 py-2 text-sm resize-none outline-none focus:border-stone-400 dark:focus:border-stone-500 transition-colors text-stone-800 dark:text-stone-100 placeholder:text-stone-400"
+              className="flex-1 bg-[#faf9f6] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl px-3.5 py-2 text-sm resize-none outline-none focus:border-[#1c5a4a] dark:focus:border-[#6bc4a6] transition-colors text-stone-800 dark:text-stone-100 placeholder:text-stone-400"
               rows={2}
-              placeholder="输入您的问题，回车发送..."
+              placeholder="输入您的问题，Enter 发送..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault()
-                  handleSend()
+                  void handleSend()
                 }
               }}
             />
             <button
-              onClick={handleSend}
+              onClick={() => {
+                void handleSend()
+              }}
               disabled={loading || !input.trim()}
-              className="shrink-0 w-9 h-9 rounded-xl bg-stone-950 hover:bg-stone-700 dark:bg-stone-200 dark:text-stone-950 dark:hover:bg-stone-100 active:scale-95 disabled:bg-stone-200 disabled:text-stone-400 text-white transition-all flex items-center justify-center shadow-sm"
+              className="shrink-0 w-10 h-10 rounded-xl bg-[#1c5a4a] hover:bg-[#154639] dark:bg-[#1c5a4a] dark:hover:bg-[#236f5b] active:scale-95 disabled:bg-stone-200 disabled:text-stone-400 dark:disabled:bg-stone-800 dark:disabled:text-stone-600 text-white transition-all flex items-center justify-center shadow-sm"
               aria-label="发送"
             >
               {loading ? (
@@ -325,8 +333,8 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
               )}
             </button>
           </div>
-          <p className="text-[9px] text-stone-300 dark:text-stone-600 mt-1.5 text-center">
-            AI 辅助决策，请勿直接用于重要商业决策
+          <p className="text-[10px] text-stone-400 dark:text-stone-500 mt-1.5 text-center">
+            AI 辅助决策，重要商业条款请结合实际业务核验
           </p>
         </div>
       </div>

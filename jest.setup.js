@@ -27,21 +27,20 @@ jest.mock('next/router', () => ({
 }))
 
 // Mock Next.js Image component
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props) => {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img {...props} />
-  },
-}))
+jest.mock('next/image', () => {
+  const mockReact = require('react')
+  return {
+    __esModule: true,
+    default: (props) => mockReact.createElement('img', props),
+  }
+})
 
 // Mock Next.js Head component
 jest.mock('next/head', () => {
+  const mockReact = require('react')
   return {
     __esModule: true,
-    default: ({ children }) => {
-      return <>{children}</>
-    },
+    default: ({ children }) => mockReact.createElement(mockReact.Fragment, null, children),
   }
 })
 

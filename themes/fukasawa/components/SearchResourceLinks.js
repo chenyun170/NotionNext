@@ -160,32 +160,39 @@ const SearchResourceLinks = ({ keyword }) => {
 
   return (
     <section
-      className='mb-6 overflow-hidden rounded-[8px] border border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900'
-      aria-label='搜索相关资源'>
-      <div className='border-b border-stone-200 px-5 py-4 dark:border-stone-800'>
-        <div className='mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
-          <i className='fas fa-compass' />
-          <span>相关资源</span>
+      className='mb-8 overflow-hidden rounded-2xl border border-stone-200/90 bg-white shadow-xs dark:border-stone-800 dark:bg-[#1c1a17]'
+      aria-label='搜索相关资源'
+    >
+      <div className='border-b border-stone-200/80 px-6 py-4 dark:border-stone-800'>
+        <div className='mb-1 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
+          <i className='fas fa-compass text-[10px]' />
+          <span>相关专题入口</span>
         </div>
-        <p className='text-sm leading-6 text-stone-500 dark:text-stone-400'>
-          搜索「{keyword}」时，也可以从这些精选入口继续查找可执行路径。
+        <p className='text-sm text-stone-500 dark:text-stone-400'>
+          搜索「{keyword}」时，也可以直接进入以下相关专题与实操指南：
         </p>
       </div>
-      <div className='grid gap-0 md:grid-cols-3'>
+      <div className='grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3'>
         {displayedResources.map(resource => (
           <a
             key={resource.href}
             href={resource.href}
-            className='group border-b border-stone-200 p-5 transition hover:bg-stone-50 dark:border-stone-800 dark:hover:bg-stone-900/50 md:border-b-0 md:border-r last:md:border-r-0'>
-            <span className='mb-4 flex h-9 w-9 items-center justify-center rounded-[8px] bg-stone-100 text-stone-600 transition group-hover:bg-stone-900 group-hover:text-white dark:bg-stone-900 dark:text-stone-300'>
-              <i className={`fas ${resource.icon}`} />
-            </span>
-            <h2 className='text-base font-black text-stone-900 group-hover:text-stone-800 dark:text-stone-50 dark:group-hover:text-stone-300'>
-              {resource.title}
-            </h2>
-            <p className='mt-2 text-sm leading-6 text-stone-500 dark:text-stone-400'>
-              {resource.description}
-            </p>
+            className='group flex flex-col justify-between rounded-xl border border-stone-200/80 bg-[#faf9f6] p-4 no-underline transition hover:-translate-y-0.5 hover:border-[#1c5a4a]/50 hover:bg-white hover:shadow-sm dark:border-stone-800 dark:bg-[#151412] dark:hover:border-[#3fa383]'
+          >
+            <div>
+              <span className='mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-[#e8f0ec] text-sm text-[#1c5a4a] transition-colors group-hover:bg-[#1c5a4a] group-hover:text-white dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+                <i className={`fas ${resource.icon}`} />
+              </span>
+              <h2 className='text-sm font-bold text-stone-900 transition-colors group-hover:text-[#1c5a4a] dark:text-stone-50 dark:group-hover:text-[#6bc4a6]'>
+                {resource.title}
+              </h2>
+              <p className='mt-1.5 text-xs leading-6 text-stone-500 dark:text-stone-400'>
+                {resource.description}
+              </p>
+            </div>
+            <div className='mt-3 text-[11px] font-semibold text-stone-400 group-hover:text-[#1c5a4a] dark:group-hover:text-[#6bc4a6]'>
+              查看详情 →
+            </div>
           </a>
         ))}
       </div>

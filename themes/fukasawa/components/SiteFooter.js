@@ -1,5 +1,6 @@
 import BLOG from '@/blog.config'
 import Link from 'next/link'
+import SocialButton from './SocialButton'
 
 const SECTIONS = [
   {
@@ -15,8 +16,8 @@ const SECTIONS = [
     title: '实用入口',
     links: [
       { label: '外贸工具导航', href: '/tools.html' },
-      { label: '开发信与触达', href: '/foreign-trade-lead-tools.html' },
-      { label: '全部文章', href: '/' },
+      { label: 'OraAgent 桌面端', href: '/oragent.html' },
+      { label: '开发信轻诊断', href: '/diagnose' },
       { label: '时间归档', href: '/archive' }
     ]
   },
@@ -36,36 +37,37 @@ const SiteFooter = () => {
   const year = new Date().getFullYear()
 
   return (
-    <footer className='mt-12 w-full border-t border-stone-200 dark:border-stone-900'>
-      <div className='mx-auto w-full max-w-5xl px-6 pb-28 pt-10 lg:pb-24'>
-        <div className='flex flex-col gap-8 md:flex-row md:items-start md:justify-between'>
+    <footer className='mt-16 w-full border-t border-stone-200/80 bg-[#f2efe9]/60 dark:border-stone-800/80 dark:bg-[#161412]'>
+      <div className='mx-auto w-full max-w-6xl px-4 pb-24 pt-12 sm:px-6 lg:pb-14'>
+        <div className='flex flex-col gap-10 md:flex-row md:items-start md:justify-between'>
           <div className='max-w-xs'>
             <Link
               href='/'
-              className='text-base font-black tracking-tight text-stone-900 no-underline dark:text-stone-100'
+              className='inline-flex items-center gap-2 text-base font-bold tracking-tight text-stone-900 no-underline dark:text-stone-100'
             >
+              <span className='h-2 w-2 rounded-full bg-[#1c5a4a]' />
               外贸获客情报局
             </Link>
-            <p className='mt-2 text-xs leading-6 text-stone-500 dark:text-stone-400'>
+            <p className='mt-3 text-xs leading-6 text-stone-500 dark:text-stone-400'>
               用海关数据、进口商记录和供应商关系，判断谁真的在采购，再把精力放在能成交的客户上。
             </p>
-            <p className='mt-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500'>
-              123170.xyz · Foreign Trade Intelligence
-            </p>
+            <div className='mt-4 flex justify-start'>
+              <SocialButton />
+            </div>
           </div>
 
           <div className='grid grid-cols-2 gap-x-10 gap-y-6 sm:grid-cols-3'>
             {SECTIONS.map(section => (
               <div key={section.title}>
-                <div className='mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-400 dark:text-stone-500'>
+                <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-400 dark:text-stone-500'>
                   {section.title}
                 </div>
-                <ul className='space-y-1.5'>
+                <ul className='space-y-2'>
                   {section.links.map(link => (
                     <li key={link.href}>
                       <a
                         href={link.href}
-                        className='block py-1 text-[12px] leading-5 text-stone-600 no-underline transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100'
+                        className='block text-[13px] leading-5 text-stone-600 no-underline transition-colors hover:text-[#1c5a4a] dark:text-stone-400 dark:hover:text-[#6bc4a6]'
                       >
                         {link.label}
                       </a>
@@ -77,13 +79,27 @@ const SiteFooter = () => {
           </div>
         </div>
 
-        <div className='mt-8 flex flex-col gap-2 border-t border-stone-200 pt-5 text-[11px] text-stone-400 dark:border-stone-900 dark:text-stone-500 sm:flex-row sm:items-center sm:justify-between'>
-          <span>© {since}–{year} 外贸获客情报局</span>
-          <div className='flex items-center gap-4'>
-            <a href='/rss/feed.xml' className='no-underline transition-colors hover:text-stone-700 dark:hover:text-stone-200'>
+        <div className='mt-10 flex flex-col gap-2 border-t border-stone-200/80 pt-6 text-xs text-stone-400 dark:border-stone-800 dark:text-stone-500 sm:flex-row sm:items-center sm:justify-between'>
+          <span>
+            © {since}–{year} 外贸获客情报局 · 123170.xyz
+          </span>
+          <div className='flex items-center gap-5'>
+            <a
+              href='/rss/feed.xml'
+              className='no-underline transition-colors hover:text-stone-700 dark:hover:text-stone-200'
+            >
               RSS 订阅
             </a>
-            <a href='/sitemap.xml' className='no-underline transition-colors hover:text-stone-700 dark:hover:text-stone-200'>
+            <a
+              href='/llms.txt'
+              className='no-underline transition-colors hover:text-stone-700 dark:hover:text-stone-200'
+            >
+              llms.txt
+            </a>
+            <a
+              href='/sitemap.xml'
+              className='no-underline transition-colors hover:text-stone-700 dark:hover:text-stone-200'
+            >
               站点地图
             </a>
           </div>

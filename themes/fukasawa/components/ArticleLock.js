@@ -3,10 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 
 /**
  * 加密文章校验组件
- * @param {password, validPassword} props
- * @param password 正确的密码
- * @param validPassword(bool) 回调函数，校验正确回调入参为true
- * @returns
  */
 const ArticleLock = props => {
   const { validPassword } = props
@@ -16,7 +12,6 @@ const ArticleLock = props => {
 
   const submitPassword = () => {
     setPasswordError('')
-
     if (!validPassword(passwordInputRef.current?.value)) {
       setPasswordError(locale.COMMON.PASSWORD_ERROR)
     }
@@ -26,41 +21,52 @@ const ArticleLock = props => {
     passwordInputRef.current?.focus()
   }, [])
 
-  return (<div id='container' className="flex justify-center">
-    <div className="shadow md:hover:shadow-2xl overflow-x-auto max-w-5xl  w-screen md:w-full  py-10 px-5 lg:pt-24 md:px-24 min-h-screen dark:border-stone-700 bg-white dark:bg-stone-800 duration-200 subpixel-antialiased">
-      <div className="w-full flex justify-center items-center h-96 ">
-        <div className="text-center space-y-3 dark:text-stone-300 text-black">
-          <div className='font-bold'>{locale.COMMON.ARTICLE_LOCK_TIPS}</div>
-          <div className="flex mx-4">
-            <input
-              id="password" type='password'
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  submitPassword()
-                }
-              }}
-              ref={passwordInputRef} // 绑定ref到passwordInputRef变量
-              className="outline-none w-full text-sm pl-5 rounded-l transition focus:shadow-lg  font-light leading-10 bg-stone-100 dark:bg-stone-500"
-            ></input>
-            <button
-              type='button'
-              onClick={submitPassword}
-              className="px-3 whitespace-nowrap cursor-pointer items-center justify-center py-2 bg-stone-700 hover:bg-stone-400 text-white rounded-r duration-300"
-            >
-              <i className={'duration-200 cursor-pointer fas fa-key'} >&nbsp;{locale.COMMON.SUBMIT}</i>
-            </button>
-          </div>
-          <div aria-live='polite'>
-            {passwordError && (
-              <div className='text-stone-700 dark:text-stone-200 animate__shakeX animate__animated'>
-                {passwordError}
-              </div>
-            )}
-          </div>
+  return (
+    <div id='container' className='flex min-h-[60vh] items-center justify-center py-10'>
+      <div className='w-full max-w-md rounded-2xl border border-stone-200/90 bg-white p-8 text-center shadow-sm dark:border-stone-800 dark:bg-[#1c1a17]'>
+        <div className='mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e8f0ec] text-lg text-[#1c5a4a] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+          <i className='fas fa-lock' />
+        </div>
+        <h2 className='text-base font-bold text-stone-900 dark:text-stone-100'>
+          {locale.COMMON.ARTICLE_LOCK_TIPS}
+        </h2>
+        <p className='mt-1.5 text-xs text-stone-500 dark:text-stone-400'>
+          本文为加密文章，输入访问密码后即可阅读完整内容
+        </p>
+
+        <div className='mt-5 flex gap-2'>
+          <input
+            id='password'
+            type='password'
+            placeholder='请输入阅读密码…'
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                submitPassword()
+              }
+            }}
+            ref={passwordInputRef}
+            className='h-10 flex-1 rounded-xl border border-stone-200 bg-[#faf9f6] px-3.5 text-sm text-stone-900 outline-none transition focus:border-[#1c5a4a] focus:bg-white dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100'
+          />
+          <button
+            type='button'
+            onClick={submitPassword}
+            className='inline-flex h-10 shrink-0 items-center gap-1.5 rounded-xl bg-[#1c5a4a] px-4 text-xs font-semibold text-white transition hover:bg-[#14453a]'
+          >
+            <i className='fas fa-key text-[11px]' />
+            <span>{locale.COMMON.SUBMIT}</span>
+          </button>
+        </div>
+
+        <div aria-live='polite' className='mt-3 min-h-[20px]'>
+          {passwordError && (
+            <div className='text-xs font-medium text-red-600 dark:text-red-400'>
+              {passwordError}
+            </div>
+          )}
         </div>
       </div>
     </div>
-  </div>)
+  )
 }
 
 export default ArticleLock

@@ -69,35 +69,20 @@ const flagshipTopics = [
   }
 ]
 
-const acquisitionSteps = [
-  {
-    label: '01 查进口商',
-    value: '谁在进口你的产品'
-  },
-  {
-    label: '02 验采购力',
-    value: '采购量 / 频率 / 供应商'
-  },
-  {
-    label: '03 做跟进',
-    value: '开发信 / 社媒 / 复盘'
-  }
-]
+const QUICK_PRODUCTS = ['LED 灯', '精密轴承', '太阳能板', '包装机械']
 
 const HomeIntro = ({ categoryOptions = [] }) => {
   const topics = buildTopics(categoryOptions)
   const homeDescription = buildHomeDescription()
 
+  const [productInput, setProductInput] = useState('')
   const [oppLoading, setOppLoading] = useState(false)
   const [oppError, setOppError] = useState('')
   const [oppResult, setOppResult] = useState(null)
   const [oppProduct, setOppProduct] = useState('')
 
-  async function handleOpportunity(e) {
-    e.preventDefault()
-    const form = e.currentTarget
-    const product = (form?.product?.value || '').trim()
-
+  async function runOpportunityCheck(rawProduct) {
+    const product = (rawProduct || '').trim()
     if (!product) {
       setOppError('请输入产品词，比如 LED 灯、轴承')
       setOppResult(null)
@@ -127,23 +112,41 @@ const HomeIntro = ({ categoryOptions = [] }) => {
     }
   }
 
-  return (
-    <section className='home-intro mx-auto mb-10 w-full max-w-[calc(100vw-2rem)] sm:max-w-full'>
-      <div className='px-4 py-2 sm:px-6 sm:py-4 sm:pb-8'>
-        <div className='mb-8 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500'>
-          <span className='h-px w-8 bg-stone-300 dark:bg-stone-700' />
-          <span>123170.xyz · Foreign Trade Intelligence</span>
-        </div>
+  const handleOpportunitySubmit = e => {
+    e.preventDefault()
+    trackSiteInteraction({
+      source: 'home_light_diagnosis_submit',
+      sourceGroup: 'home',
+      target: '/api/opportunity',
+      action: 'start_opportunity_ai'
+    })
+    void runOpportunityCheck(productInput)
+  }
 
-        <div className='grid gap-5 xl:grid-cols-[minmax(0,1fr)_240px] xl:items-center'>
-          <div className='min-w-0 max-w-[326px] sm:max-w-none'>
-            <h1 className='max-w-3xl text-[30px] font-bold leading-[1.15] tracking-[-0.02em] text-stone-950 [overflow-wrap:normal] [text-wrap:balance] dark:text-stone-50 sm:text-[2.5rem] sm:leading-[1.12] lg:text-[2.35rem] xl:text-[2.75rem]'>
-              外贸获客情报局：从找客户到收货款
+  return (
+    <section className='home-intro mb-8 w-full'>
+      {/* Hero 双栏区：左情报定位+商机快查 / 右真实进口商信号预览卡 */}
+      <div className='rounded-2xl border border-stone-200/90 bg-white p-6 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17] sm:p-8 lg:p-10'>
+        <div className='grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] lg:items-center'>
+          <div className='min-w-0'>
+            <div className='mb-4 inline-flex items-center gap-2 rounded-full border border-[#c3d6cd] bg-[#e8f0ec] px-3 py-1 text-[11px] font-bold tracking-[0.08em] text-[#1c5a4a] dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+              <span className='h-1.5 w-1.5 rounded-full bg-[#1c5a4a] dark:bg-[#6bc4a6]' />
+              <span>123170.XYZ · 海关数据与外贸获客实战情报站</span>
+            </div>
+
+            <h1 className='text-3xl font-extrabold leading-[1.18] tracking-tight text-stone-950 dark:text-stone-50 sm:text-4xl lg:text-[2.65rem]'>
+              外贸获客情报局：
+              <span className='text-[#1c5a4a] dark:text-[#6bc4a6]'>
+                从找客户到收货款
+              </span>
             </h1>
-            <p className='mt-5 max-w-2xl break-words text-[15px] font-normal leading-8 text-stone-500 dark:text-stone-400'>
+
+            <p className='mt-4 max-w-2xl text-[15px] leading-7 text-stone-600 dark:text-stone-300'>
               {homeDescription}
             </p>
-            <div className='mt-5 flex w-full min-w-0 flex-wrap gap-2'>
+
+            {/* 主行动按钮 */}
+            <div className='mt-6 flex flex-wrap items-center gap-3'>
               <a
                 href={CUSTOMS_DATA_SKILL.href}
                 onClick={() => {
@@ -155,11 +158,12 @@ const HomeIntro = ({ categoryOptions = [] }) => {
                     action: 'click_customs_data'
                   })
                 }}
-                className='brand-btn brand-btn-accent h-10 w-full max-w-full px-4 text-sm sm:w-auto'
+                className='inline-flex h-11 items-center gap-2 rounded-xl bg-[#1c5a4a] px-5 text-sm font-semibold text-white no-underline shadow-sm transition hover:bg-[#14453a]'
               >
-                <i className='fas fa-database mr-2 text-xs' />
-                免费查：谁在进口你的产品
+                <i className='fas fa-database text-xs' />
+                <span>免费查海关数据</span>
               </a>
+
               <SmartLink
                 href='/foreign-trade-tools.html'
                 onClick={() =>
@@ -170,90 +174,169 @@ const HomeIntro = ({ categoryOptions = [] }) => {
                     action: 'click_tool_workflow'
                   })
                 }
-                className='brand-btn brand-btn-secondary h-10 w-full max-w-full px-4 text-sm sm:w-auto'
+                className='inline-flex h-11 items-center gap-2 rounded-xl border border-stone-300 bg-white px-4 text-sm font-semibold text-stone-800 no-underline transition hover:border-stone-400 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:border-stone-600'
               >
-                <i className='fas fa-route mr-2 text-xs' />
-                图灵搜 + 顶易云 + 海关数据怎么用
+                <i className='fas fa-route text-xs text-[#1c5a4a] dark:text-[#6bc4a6]' />
+                <span>图灵搜 + 顶易云怎么配合</span>
+              </SmartLink>
+
+              <SmartLink
+                href='/diagnose'
+                className='inline-flex h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold text-stone-600 no-underline transition hover:bg-stone-100 hover:text-stone-950 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-white'
+              >
+                <i className='fas fa-stethoscope text-xs text-[#b97a52]' />
+                <span>AI 开发信诊断</span>
               </SmartLink>
             </div>
 
-            <form
-              onSubmit={e => {
-                trackSiteInteraction({
-                  source: 'home_light_diagnosis_submit',
-                  sourceGroup: 'home',
-                  target: '/api/opportunity',
-                  action: 'start_opportunity_ai'
-                })
-                void handleOpportunity(e)
-              }}
-              className='home-diagnosis mt-5 flex min-w-0 flex-col gap-3 border-b border-stone-200 pb-4 dark:border-stone-800 sm:flex-row sm:items-center'
-            >
-              <label className='min-w-0 flex-1 text-xs font-bold leading-5 text-stone-700 dark:text-stone-300'>
-                输入产品词，看这个品类还有没有商机
-                <input
-                  name='product'
-                  type='text'
-                  placeholder='比如 LED 灯、轴承、太阳能板'
-                  className='mt-2 h-10 w-full border-0 border-b border-stone-300 bg-transparent px-0 text-sm font-normal text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-stone-600 dark:border-stone-700 dark:text-stone-100 dark:placeholder:text-stone-500 dark:focus:border-stone-400'
-                />
-              </label>
-              <button
-                type='submit'
-                disabled={oppLoading}
-                className='brand-btn brand-btn-primary h-9 shrink-0 px-4 text-xs disabled:opacity-60'
+            {/* 5 秒看商机 AI 快查栏 */}
+            <div className='mt-7 rounded-xl border border-stone-200/90 bg-[#faf9f6] p-3.5 dark:border-stone-800 dark:bg-[#151412]'>
+              <form
+                onSubmit={handleOpportunitySubmit}
+                className='flex flex-col gap-2.5 sm:flex-row sm:items-center'
               >
-                {oppLoading ? 'AI 分析中…' : '5 秒看商机'}
-              </button>
-            </form>
+                <div className='relative flex-1'>
+                  <i className='fas fa-sparkles pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#b97a52]' />
+                  <input
+                    name='product'
+                    type='text'
+                    value={productInput}
+                    onChange={e => setProductInput(e.target.value)}
+                    placeholder='输入产品词（如 LED 灯、轴承），AI 5 秒判断外贸商机…'
+                    className='h-10 w-full rounded-lg border border-stone-200 bg-white pl-8 pr-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#1c5a4a] dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100'
+                  />
+                </div>
+                <button
+                  type='submit'
+                  disabled={oppLoading}
+                  className='inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-stone-900 px-4 text-xs font-semibold text-white transition hover:bg-stone-800 disabled:opacity-60 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white'
+                >
+                  {oppLoading ? 'AI 分析中…' : '5 秒看商机'}
+                </button>
+              </form>
 
-            {oppLoading && (
-              <div className='mt-3 flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400'>
-                <span className='inline-block h-3 w-3 animate-spin rounded-full border-2 border-stone-400 border-t-transparent' />
-                AI 正在分析「{oppProduct}」的商机，稍等几秒…
+              <div className='mt-2.5 flex flex-wrap items-center gap-1.5 text-[11px] text-stone-500 dark:text-stone-400'>
+                <span>试试：</span>
+                {QUICK_PRODUCTS.map(sample => (
+                  <button
+                    key={sample}
+                    type='button'
+                    onClick={() => {
+                      setProductInput(sample)
+                      void runOpportunityCheck(sample)
+                    }}
+                    className='rounded-md border border-stone-200 bg-white px-2 py-0.5 font-medium text-stone-600 transition hover:border-[#1c5a4a] hover:text-[#1c5a4a] dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 dark:hover:border-[#6bc4a6] dark:hover:text-[#6bc4a6]'
+                  >
+                    {sample}
+                  </button>
+                ))}
               </div>
-            )}
-            {oppError && (
-              <div className='mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs leading-6 text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300'>
-                {oppError}
-              </div>
-            )}
-            {oppResult && (
-              <div className='mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3 dark:border-emerald-900 dark:bg-emerald-950/40'>
-                <div className='mb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-600 dark:text-emerald-400'>
-                  商机判断 · {oppProduct}
+
+              {oppLoading && (
+                <div className='mt-3 flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400'>
+                  <span className='inline-block h-3 w-3 animate-spin rounded-full border-2 border-[#1c5a4a] border-t-transparent' />
+                  正在分析「{oppProduct}」的外贸进口与获客信号…
                 </div>
-                <div className='whitespace-pre-wrap break-words text-[13px] leading-6 text-stone-700 dark:text-stone-200'>
-                  {oppResult}
+              )}
+
+              {oppError && (
+                <div className='mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300'>
+                  {oppError}
                 </div>
-              </div>
-            )}
+              )}
+
+              {oppResult && (
+                <div className='mt-3 rounded-lg border border-[#c3d6cd] bg-[#e8f0ec]/70 px-3.5 py-3 dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/20'>
+                  <div className='mb-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
+                    AI 商机速判 · {oppProduct}
+                  </div>
+                  <div className='whitespace-pre-wrap break-words text-[13px] leading-6 text-stone-700 dark:text-stone-200'>
+                    {oppResult}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className='home-signal-panel min-w-0 max-w-[326px] border-l border-stone-200 pl-4 dark:border-stone-800 sm:max-w-none sm:pl-6'>
-            <div className='text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
-              获客主线
-            </div>
-            <div className='mt-3'>
-              <div className='break-words text-2xl font-black leading-tight text-stone-950 dark:text-stone-50'>
-                查客户 / 验采购 / 做跟进
+          {/* 右侧：真实海关提单信号卡片预览（替代纯文本小框） */}
+          <div className='rounded-2xl border border-stone-200/90 bg-[#faf9f6] p-5 dark:border-stone-800 dark:bg-[#151412]'>
+            <div className='mb-4 flex items-center justify-between border-b border-stone-200/80 pb-3 dark:border-stone-800'>
+              <div>
+                <div className='text-[10px] font-bold uppercase tracking-[0.16em] text-stone-400'>
+                  BUYER SIGNAL PREVIEW
+                </div>
+                <div className='mt-0.5 text-sm font-bold text-stone-900 dark:text-stone-100'>
+                  先查真实进口记录，再做开发
+                </div>
               </div>
-              <div className='text-xs font-medium text-stone-600 dark:text-stone-400'>
-                把精力先放在真正买过的人身上
-              </div>
+              <span className='rounded-full bg-[#e8f0ec] px-2.5 py-1 text-[10px] font-bold text-[#1c5a4a] dark:bg-[#1c5a4a]/30 dark:text-[#6bc4a6]'>
+                样本示意
+              </span>
             </div>
-            <div className='mt-4 grid gap-2 border-t border-dashed border-stone-300 pt-4 dark:border-stone-800'>
-              {acquisitionSteps.map(signal => (
-                <div
-                  key={signal.label}
-                  className='flex min-w-0 flex-col gap-1 text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-3'
+
+            <div className='rounded-xl border border-stone-200/80 bg-white p-4 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17]'>
+              <div className='flex items-start justify-between gap-2'>
+                <div>
+                  <div className='text-xs font-semibold text-stone-400'>
+                    美国进口商 · 照明器材
+                  </div>
+                  <div className='mt-0.5 font-mono text-sm font-bold text-stone-900 dark:text-stone-100'>
+                    APEX LIGHTING SUPPLY LLC
+                  </div>
+                </div>
+                <span className='shrink-0 rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'>
+                  活跃买家
+                </span>
+              </div>
+
+              <div className='mt-3.5 grid grid-cols-3 gap-2 border-y border-stone-100 py-3 text-center dark:border-stone-800'>
+                <div>
+                  <div className='text-[10px] text-stone-400'>HS 编码</div>
+                  <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-stone-800 dark:text-stone-200'>
+                    9405.42
+                  </div>
+                </div>
+                <div>
+                  <div className='text-[10px] text-stone-400'>近 12 月频次</div>
+                  <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-[#1c5a4a] dark:text-[#6bc4a6]'>
+                    24 票
+                  </div>
+                </div>
+                <div>
+                  <div className='text-[10px] text-stone-400'>采购连续性</div>
+                  <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-stone-800 dark:text-stone-200'>
+                    连续 8 月
+                  </div>
+                </div>
+              </div>
+
+              <div className='mt-3 flex items-center justify-between text-[11px] text-stone-500 dark:text-stone-400'>
+                <span>在合作供应商：宁波 / 深圳 2 家</span>
+                <a
+                  href='/customs-data-buyer-quality-example.html'
+                  className='font-semibold text-[#1c5a4a] no-underline hover:underline dark:text-[#6bc4a6]'
                 >
-                  <span className='font-medium text-stone-500 dark:text-stone-400'>
-                    {signal.label}
-                  </span>
-                  <span className='break-words font-bold text-stone-800 dark:text-stone-200 sm:text-right'>
-                    {signal.value}
-                  </span>
+                  看拆解报告 →
+                </a>
+              </div>
+            </div>
+
+            <div className='mt-4 grid grid-cols-3 gap-2 text-center'>
+              {[
+                { step: '01', label: '查进口商' },
+                { step: '02', label: '验采购力' },
+                { step: '03', label: '精准跟进' }
+              ].map(s => (
+                <div
+                  key={s.step}
+                  className='rounded-lg border border-stone-200/70 bg-white px-2 py-2 dark:border-stone-800 dark:bg-[#1c1a17]'
+                >
+                  <div className='font-mono text-[10px] font-bold text-[#b97a52]'>
+                    {s.step}
+                  </div>
+                  <div className='mt-0.5 text-xs font-semibold text-stone-800 dark:text-stone-200'>
+                    {s.label}
+                  </div>
                 </div>
               ))}
             </div>
@@ -261,31 +344,37 @@ const HomeIntro = ({ categoryOptions = [] }) => {
         </div>
       </div>
 
-      <div className='mt-10 grid gap-4 border-t border-stone-200 pt-6 dark:border-stone-800 sm:grid-cols-2 xl:grid-cols-4'>
+      {/* 4 列核心专题 Bento 入口 */}
+      <div className='mt-5 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4'>
         {topics.map(topic => {
           const TopicLink = topic.href?.endsWith('.html') ? 'a' : SmartLink
           return (
             <TopicLink
               key={topic.name}
               href={topic.href}
-              className='group block min-h-[112px] min-w-0 rounded-lg border border-stone-200 bg-white p-5 transition-colors hover:border-stone-300 dark:border-stone-800 dark:bg-stone-900/60 dark:hover:border-stone-700'
+              className='group flex flex-col justify-between rounded-2xl border border-stone-200/90 bg-white p-5 no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-[#1c5a4a]/45 hover:shadow-md dark:border-stone-800 dark:bg-[#1c1a17] dark:hover:border-[#3fa383]/50'
             >
-              <div className='mb-3 flex items-center justify-between'>
-                <span className='flex h-8 w-8 items-center justify-center text-sm text-stone-400 transition-colors group-hover:text-stone-800 dark:text-stone-500 dark:group-hover:text-stone-200'>
-                  <i className={`fas ${topic.icon}`} />
-                </span>
-                {topic.count && (
-                  <span className='text-xs font-semibold text-stone-500 dark:text-stone-400'>
-                    {topic.count} 篇
+              <div>
+                <div className='mb-3 flex items-center justify-between'>
+                  <span className='flex h-9 w-9 items-center justify-center rounded-xl bg-[#e8f0ec] text-sm text-[#1c5a4a] transition-colors group-hover:bg-[#1c5a4a] group-hover:text-white dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+                    <i className={`fas ${topic.icon}`} />
                   </span>
-                )}
+                  {topic.count && (
+                    <span className='rounded-full bg-stone-100 px-2.5 py-0.5 text-[11px] font-semibold tabular-nums text-stone-500 dark:bg-stone-800 dark:text-stone-400'>
+                      {topic.count} 篇
+                    </span>
+                  )}
+                </div>
+                <h2 className='text-[15px] font-bold text-stone-900 transition-colors group-hover:text-[#1c5a4a] dark:text-stone-100 dark:group-hover:text-[#6bc4a6]'>
+                  {topic.name}
+                </h2>
+                <p className='mt-1.5 text-xs leading-6 text-stone-500 dark:text-stone-400'>
+                  {topic.description}
+                </p>
               </div>
-              <h2 className='break-words text-[15px] font-semibold text-stone-900 [overflow-wrap:anywhere] transition-colors group-hover:text-stone-600 dark:text-stone-100 dark:group-hover:text-stone-300'>
-                {topic.name}
-              </h2>
-              <p className='mt-2 max-w-[calc(100vw-4rem)] break-all text-sm font-medium leading-6 text-stone-600 [overflow-wrap:anywhere] dark:text-stone-400 sm:max-w-none'>
-                {topic.description}
-              </p>
+              <div className='mt-3 text-xs font-semibold text-stone-400 transition-colors group-hover:text-[#1c5a4a] dark:group-hover:text-[#6bc4a6]'>
+                进入专题 →
+              </div>
             </TopicLink>
           )
         })}

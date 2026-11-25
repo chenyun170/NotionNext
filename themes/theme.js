@@ -3,6 +3,7 @@ import * as ThemeComponents from '@theme-components'
 import getConfig from 'next/config'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { getQueryParam, getQueryVariable, isBrowser } from '../lib/utils'
 
 // 在next.config.js中扫描所有主题
@@ -98,13 +99,15 @@ export const useLayoutByTheme = ({ layoutName, theme }) => {
   const themeQuery = getQueryParam(router?.asPath, 'theme') || theme
   const isDefaultTheme = !themeQuery || themeQuery === BLOG.THEME
 
+  useEffect(() => {
+    const timer = setTimeout(fixThemeDOM, isDefaultTheme ? 100 : 500)
+    return () => clearTimeout(timer)
+  }, [isDefaultTheme, themeQuery])
+
   // 加载非当前默认主题
   if (!isDefaultTheme) {
     const loadThemeComponents = componentsSource => {
-      const components =
-        componentsSource[layoutName] || componentsSource.LayoutSlug
-      setTimeout(fixThemeDOM, 500)
-      return components
+      return componentsSource[layoutName] || componentsSource.LayoutSlug
     }
     return dynamic(
       () => import(`@/themes/${themeQuery}`).then(m => loadThemeComponents(m)),
@@ -112,7 +115,6 @@ export const useLayoutByTheme = ({ layoutName, theme }) => {
     )
   }
 
-  setTimeout(fixThemeDOM, 100)
   return LayoutComponents
 }
 

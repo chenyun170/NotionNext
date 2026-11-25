@@ -109,6 +109,18 @@ export async function getStaticProps(context) {
 
 export default Index
 
+const STATIC_FALLBACK_COVERS = [
+  '/images/covers/customs-data-qualified-importers.webp',
+  '/images/covers/fob-cif-quotation-cost-checklist.webp',
+  '/images/covers/buyer-nominated-forwarder-charges.webp',
+  '/images/covers/lc-soft-clauses-amendment.webp',
+  '/images/covers/canton-fair-buyer-directory-140.webp',
+  '/images/covers/oa-payment-terms-cost.webp',
+  '/images/covers/factory-audit-preparation.webp',
+  '/images/covers/destination-abandoned-cargo-rescue.webp',
+  '/images/home.png'
+]
+
 function buildStaticHomePosts(limit = 12) {
   const { CORE_SEO_PAGES, UPDATED_AT } = require('@/lib/seo/geoPages')
 
@@ -131,7 +143,7 @@ function buildStaticHomePosts(limit = 12) {
         tagItems: tags.map(tag => ({ name: tag, color: 'blue' })),
         pageIcon: '📌',
         pageCover: '',
-        pageCoverThumbnail: index % 2 === 0 ? '/images/home.png' : '/logo.png',
+        pageCoverThumbnail: STATIC_FALLBACK_COVERS[index % STATIC_FALLBACK_COVERS.length],
         publishDay: UPDATED_AT,
         lastEditedDay: UPDATED_AT,
         publishDate: UPDATED_AT,

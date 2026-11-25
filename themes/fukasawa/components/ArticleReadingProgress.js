@@ -28,9 +28,9 @@ const ArticleReadingProgress = () => {
   }, [])
 
   return (
-    <div className='fixed left-0 top-0 z-[65] h-1 w-full bg-transparent print:hidden'>
+    <div className='fixed left-0 top-0 z-[70] h-[3px] w-full bg-transparent print:hidden'>
       <div
-        className='h-full bg-stone-950 transition-[width] duration-150 ease-out dark:bg-stone-300'
+        className='h-full bg-[#1c5a4a] transition-[width] duration-150 ease-out dark:bg-[#6bc4a6]'
         style={{ width: `${progress}%` }}
       />
     </div>

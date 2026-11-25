@@ -106,6 +106,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 - [顶易云线索如何用海关数据验证](https://www.123170.xyz/dingyiyun-customs-data-lead-validation.html) - 顶易云获客后，用海关数据验证真实采购、采购频率、供应商关系和产品匹配，把客户分层后再跟进。 Keywords: 顶易云 海关数据, 顶易云获客, 顶易云客户验证.
 - [顶易品牌相关外贸软件与海关数据怎么配合](https://www.123170.xyz/dingyi.html) - 从品牌相关软件、客户开发、海关数据验证和跟进流程角度理解顶易相关产品服务。 Keywords: 顶易, 顶易品牌, 顶易外贸软件.
 - [OraSkl 品牌入口](https://www.123170.xyz/oraskl.html) - OraSkl 海关数据 Skill、免费查询、进口商研究和供应商关系分析入口。 Keywords: OraSkl, OraSkl 海关数据.
+- [OraAgent 外贸桌面 AI 专家团](https://www.123170.xyz/oragent.html) - OraAgent 外贸桌面 AI 专家团介绍与免费下载，覆盖客户开发、海关数据验证、决策人挖掘与开发信撰写。 Keywords: OraAgent, OraAgent下载, 外贸AI工具.
 - [外贸获客常见问题](https://www.123170.xyz/faq.html) - 回答海关数据、免费查询、OraSkl、外贸工具、进口商研究和客户开发常见问题。 Keywords: 外贸获客 FAQ, 海关数据问题.
 - [关于外贸获客情报局](https://www.123170.xyz/about.html) - 说明本站定位、适合读者、内容边界和外贸获客实战方向。 Keywords: 外贸获客情报局, 关于本站.
 - [内容方法论与利益关系说明](https://www.123170.xyz/methodology.html) - 说明本站如何整理海关数据、第三方工具观察、更新机制和商业关系边界。 Keywords: 内容方法论, 利益关系说明.

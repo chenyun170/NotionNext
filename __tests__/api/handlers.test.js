@@ -5,6 +5,8 @@ import OpenAI from 'openai'
 import image from '@/pages/api/img'
 import chat from '@/pages/api/chat'
 import diagnose from '@/pages/api/diagnose'
+import models from '@/pages/api/models'
+import subscribe from '@/pages/api/subscribe'
 
 jest.mock('openai', () => ({ __esModule: true, default: jest.fn() }))
 
@@ -210,4 +212,41 @@ test('diagnosis still times out while reading the upstream body', async () => {
   expect(mockFetch.mock.calls[0][1].signal.aborted).toBe(true)
   expect(res.status).toHaveBeenCalledWith(504)
   expect(res.listenerCount('close')).toBe(0)
+})
+
+test('models endpoint requires bearer token when configured', async () => {
+  const prevEnv = process.env.NODE_ENV
+  const prevToken = process.env.MODELS_DIAG_TOKEN
+  process.env.NODE_ENV = 'production'
+  process.env.MODELS_DIAG_TOKEN = 'secret-diag-token'
+
+  try {
+    const unauthRes = response()
+    await models({ method: 'GET', headers: {}, query: {} }, unauthRes)
+    expect(unauthRes.status).toHaveBeenCalledWith(401)
+
+    const list = jest.fn(() => Promise.resolve({ data: [{ id: 'nvidia/nemotron-3.5-bolt-e4b' }] }))
+    OpenAI.mockImplementation(() => ({ models: { list } }))
+    const authRes = response()
+    await models(
+      { method: 'GET', headers: { authorization: 'Bearer secret-diag-token' }, query: {} },
+      authRes
+    )
+    expect(authRes.status).toHaveBeenCalledWith(200)
+    expect(authRes.json).toHaveBeenCalledWith({
+      count: 1,
+      models: ['nvidia/nemotron-3.5-bolt-e4b']
+    })
+  } finally {
+    process.env.NODE_ENV = prevEnv
+    if (prevToken === undefined) delete process.env.MODELS_DIAG_TOKEN
+    else process.env.MODELS_DIAG_TOKEN = prevToken
+  }
+})
+
+test('subscribe rejects invalid email without calling Mailchimp', async () => {
+  const res = response()
+  await subscribe({ method: 'POST', body: { email: 'not-an-email' } }, res)
+  expect(res.status).toHaveBeenCalledWith(400)
+  expect(mockFetch).not.toHaveBeenCalled()
 })

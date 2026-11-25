@@ -1,4 +1,3 @@
-/** @jest-environment jsdom */
 /** @jest-environment-options {"customExportConditions":["browser"]} */
 
 import { render, screen, waitFor } from '@testing-library/react'

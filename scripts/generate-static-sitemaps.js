@@ -55,7 +55,18 @@ async function main() {
     return
   }
 
-  const allPages = [...CORE_SEO_PAGES, ...dynamicPages]
+  // 首页没有独立文件，内容随最新文章变化，lastmod 取全站最新文章的日期；
+  // 静态页则使用页面自己标注的 updatedAt，绝不批量写同一个日期。
+  const latestDynamicLastmod = dynamicPages.reduce(
+    (latest, page) => (page.lastmod && page.lastmod > latest ? page.lastmod : latest),
+    ''
+  )
+  const corePages = CORE_SEO_PAGES.map(page =>
+    page.slug === '' && latestDynamicLastmod
+      ? { ...page, lastmod: latestDynamicLastmod }
+      : page
+  )
+  const allPages = [...corePages, ...dynamicPages]
   // 索引的 lastmod 取全站最新一页，否则新增文章后索引仍显示旧日期，
   // Google 会认为 sitemap 没变，降低重抓频率。
   const latestLastmod = allPages.reduce(
@@ -65,7 +76,7 @@ async function main() {
 
   assertStaticHtmlPagesExist(allPages)
   writeFile('sitemap.xml', buildUrlset(allPages, siteUrl))
-  writeFile('sitemap-core.xml', buildUrlset(CORE_SEO_PAGES, siteUrl))
+  writeFile('sitemap-core.xml', buildUrlset(corePages, siteUrl))
   // 索引只收录主表 sitemap.xml，避免 core 与 xml 内容重复导致 Google 判无法抓取
   writeFile('sitemap-index.xml', buildSitemapIndex(['sitemap.xml'], siteUrl, latestLastmod))
   writeFile('sitemap.txt', buildTextSitemap(allPages, siteUrl))
@@ -92,11 +103,13 @@ function buildUrlset(pages, siteUrl = SITE_URL) {
     return [
       '<url>',
       `<loc>${escapeXml(loc)}</loc>`,
-      `<lastmod>${page.lastmod || UPDATED_AT}</lastmod>`,
+      page.lastmod || page.updatedAt
+        ? `<lastmod>${page.lastmod || page.updatedAt}</lastmod>`
+        : null,
       `<changefreq>${page.changefreq || 'weekly'}</changefreq>`,
       `<priority>${page.priority || '0.7'}</priority>`,
       '</url>'
-    ].join('')
+    ].filter(Boolean).join('')
   })
 
   return [

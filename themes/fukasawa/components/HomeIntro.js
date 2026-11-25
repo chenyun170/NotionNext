@@ -138,7 +138,7 @@ const HomeIntro = ({ categoryOptions = [] }) => {
         <div className='grid gap-5 xl:grid-cols-[minmax(0,1fr)_240px] xl:items-center'>
           <div className='min-w-0 max-w-[326px] sm:max-w-none'>
             <h1 className='max-w-3xl text-[30px] font-bold leading-[1.15] tracking-[-0.02em] text-stone-950 [overflow-wrap:normal] [text-wrap:balance] dark:text-stone-50 sm:text-[2.5rem] sm:leading-[1.12] lg:text-[2.35rem] xl:text-[2.75rem]'>
-              外贸获客情报局：查谁在进口你的产品
+              外贸获客情报局：从找客户到收货款
             </h1>
             <p className='mt-5 max-w-2xl break-words text-[15px] font-normal leading-8 text-stone-500 dark:text-stone-400'>
               {homeDescription}
@@ -319,7 +319,7 @@ const buildTopics = categoryOptions => {
 }
 
 const buildHomeDescription = () =>
-  '海关数据 + 图灵搜 + 顶易云怎么配合：先用海关数据找到真的在进口你产品的公司，再看采购量和频率，最后决定谁值得优先跟进。'
+  '海关数据、客户开发、报价与单据、收款与风险——把外贸一线的问题拆成能直接照做的动作。先用数据找到真的在进口你产品的公司，再把单子跟到收款。'
 
 const buildTopicDescription = (name, fallbackDescription) => {
   if (/海关|数据|贸易/.test(name)) {

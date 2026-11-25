@@ -406,6 +406,12 @@ summary > .notion-h {
   @apply w-full;
   /* @apply border-b w-full; */
 }
+/* 老文章没有 h2 时会把 heading 2 上提为 h2（.notion-h1），
+   字号和上边距跟 .notion-h2 对齐，避免同一站内标题观感不一致。 */
+#notion-article .notion-h1 {
+  font-size: 1.45em;
+  margin-top: 1.1em;
+}
 .notion-h2 {
   @apply w-full;
 }

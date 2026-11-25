@@ -8,8 +8,6 @@ const ArticleInsightPanel = ({ post }) => {
   const tags = post?.tagItems || []
   const summary = buildSummary(post)
   const directAnswer = buildDirectAnswer(post, summary)
-  const audience = buildAudience(post)
-  const nextStep = buildNextStep(post)
 
   return (
     <section
@@ -29,18 +27,6 @@ const ArticleInsightPanel = ({ post }) => {
             {directAnswer}
           </p>
 
-          <div className='mt-4 grid gap-3 sm:grid-cols-2'>
-            <InsightItem
-              icon='fas fa-user-check'
-              label='适合读者'
-              value={audience}
-            />
-            <InsightItem
-              icon='fas fa-compass'
-              label='建议下一步'
-              value={nextStep}
-            />
-          </div>
         </div>
 
         <div className='hidden border-l border-stone-200 bg-stone-50 p-5 dark:border-stone-800 dark:bg-stone-950/60 xl:block'>
@@ -71,16 +57,6 @@ const ArticleInsightPanel = ({ post }) => {
   )
 }
 
-const InsightItem = ({ icon, label, value }) => (
-  <div className='rounded-[8px] border border-stone-200 bg-stone-50 p-3 dark:border-stone-800 dark:bg-stone-950/60'>
-    <div className='mb-1 flex items-center gap-2 text-xs font-bold text-stone-500 dark:text-stone-400'>
-      <i className={`${icon} text-stone-500`} />
-      <span>{label}</span>
-    </div>
-    <p className='text-sm leading-6 text-stone-700 dark:text-stone-200'>{value}</p>
-  </div>
-)
-
 const SignalItem = ({ label, value }) => (
   <div className='flex items-start justify-between gap-4 border-b border-dashed border-stone-200 pb-2 last:border-b-0 dark:border-stone-800'>
     <dt className='text-stone-400'>{label}</dt>
@@ -94,7 +70,7 @@ const buildSummary = post => {
   }
 
   const topic = post?.category || '外贸业务'
-  return `围绕「${post?.title || topic}」展开，帮助读者快速理解 ${topic} 场景下的关键判断、实操路径和后续延展方向。`
+  return `${post?.title || topic}：${topic} 场景下的判断依据和可执行做法。`
 }
 
 const buildDirectAnswer = (post, summary) => {
@@ -108,24 +84,6 @@ const buildDirectAnswer = (post, summary) => {
   const tag = post?.tagItems?.[0]?.name || tags[0]
   const tagText = tag ? `，并延展到「${tag}」相关问题` : ''
   return `${title}主要回答${topic}场景下应该怎么判断、怎么执行和下一步怎么跟进${tagText}。`
-}
-
-const buildAudience = post => {
-  const topic = post?.category || '外贸获客'
-  return `正在关注${topic}、客户开发、工具效率或外贸增长方法的读者。`
-}
-
-const buildNextStep = post => {
-  const tag = post?.tagItems?.[0]?.name
-  if (tag) {
-    return `读完后可以继续查看「${tag}」相关内容，形成连续的主题理解。`
-  }
-
-  if (post?.category) {
-    return `继续浏览「${post.category}」分类下的相关文章，补齐上下游知识。`
-  }
-
-  return '继续阅读站内最新文章，按工具、案例和方法论串联理解。'
 }
 
 const formatReadTime = post => {

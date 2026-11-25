@@ -108,6 +108,18 @@
     .aside-title { color: #1c1917; font-size: 12px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
     .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
     .tags span { border: 1px solid rgba(28, 25, 23, .12); border-radius: 999px; background: #fff; padding: 8px 12px; color: #1c1917; font-size: 13px; font-weight: 800; }
+    .article {
+      margin-top: 28px;
+      border: 1px solid rgba(28, 25, 23, .12);
+      border-radius: 20px;
+      background: #fff;
+      padding: 32px;
+    }
+    .article h2 { margin-top: 30px; font-size: 22px; line-height: 1.35; }
+    .article h2:first-child { margin-top: 0; }
+    .article p { margin-top: 12px; max-width: none; font-size: 16px; line-height: 1.85; color: #57534e; }
+    .article ul { margin: 12px 0 0 22px; color: #57534e; font-size: 16px; line-height: 1.9; }
+    .article li { margin-top: 6px; }
     .related-title { margin-top: 34px; color: #1c1917; font-size: 18px; font-weight: 900; }
     .related { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
     .related a {
@@ -161,6 +173,7 @@
             <a class="btn btn-secondary" href="https://oraskl.com/referrer/?i=BB54F6&utm_source=123170&utm_medium=brand_page&utm_campaign=customs_data_skill" target="_blank" rel="sponsored noopener noreferrer" data-skill-cta="oraskl_brand_outbound">立即免费使用 OraSkl</a>
             <a class="btn btn-secondary" href="/oragent.html" data-track="oraskl_oragent">看 OraAgent 介绍</a>
           </div>
+        <p class="affiliate-disclosure" style="margin-top:12px;color:#78716c;font-size:12px;line-height:1.7">推广链接：通过本页的工具入口注册或购买，本站可能获得佣金；这不影响页面里的判断标准。</p>
         </div>
         <aside class="aside">
           <div class="aside-title">Search Coverage</div>
@@ -175,6 +188,27 @@
         </aside>
       </div>
     </section>
+    <section class="wrap article" aria-label="OraSkl 使用说明">
+      <h2>OraSkl 到底能查什么</h2>
+      <p>OraSkl 是一个网页端的海关数据查询入口。按它的页面说明，主要可以查美国进口提单里的进口商、供应商、HS 编码、清关量、价格趋势和交易时间。对做出口的人来说，这些字段解决的是同一个问题：这个国家、这个产品，究竟是谁在买，买了多少，多久买一次，现在的供应商是谁。</p>
+      <p>它适合放在客户开发的验证环节，而不是替代客户开发本身。你可以先用它确认一家公司是不是真的进口过你的产品，再决定要不要花时间找联系人、写开发信。</p>
+
+      <h2>免费额度怎么用在刀刃上</h2>
+      <ul>
+        <li>先用产品的英文关键词和 HS 编码各查一次，确认两种查法结果是否一致，避免只用一个词漏掉客户。</li>
+        <li>看进口商的最近一次交易时间和交易次数。只有一两笔历史记录的公司，优先级要往后放。</li>
+        <li>点开供应商关系，看看它现在从谁那里采购。供应商集中、合作时间长的客户，替换成本更高，但也不是完全没有机会。</li>
+        <li>把值得跟进的公司先记进自己的表格，再去补官网、联系人和采购负责人，不要在海量列表里反复翻。</li>
+      </ul>
+
+      <h2>哪些结论不能直接从海关数据里得出</h2>
+      <p>海关数据反映的是申报和提单记录，不等于这家公司一定还在采购，也不等于它有更换供应商的意愿。常见的误判有三种：公司名存在拼写差异或子公司名称，导致同一家买家被拆成几条记录；货物经过中间商或转运，提单上的收货人不一定是最终用户；免费额度覆盖的时间范围有限，看不到更早的采购节奏。</p>
+      <p>所以单次记录只能当作线索，不能当作结论。真正决定要不要开发的，还是产品匹配、采购频率、供应商结构和沟通反馈这几件事。</p>
+
+      <h2>它和其他外贸工具怎么配合</h2>
+      <p>比较顺的顺序是：用图灵搜这类工具按地图、关键词或社媒找到企业和联系人，用海关数据确认对方是否真的进口相关产品，再把确认过的客户放进顶易云或自己的表格里做跟进。工具各自解决一段流程，任何一段都不能单独保证成交。</p>
+    </section>
+
     <section class="wrap related">
     <div class="related-title">继续学习</div>
     <div class="related">

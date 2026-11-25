@@ -4,7 +4,7 @@ import { toProxiedImageUrl, withNotionWidth } from '@/lib/utils/imageProxy'
 import { isBrowser, loadExternalResource } from '@/lib/utils'
 import 'katex/dist/katex.min.css'
 import dynamic from 'next/dynamic'
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { NotionRenderer } from 'react-notion-x'
 
 /**
@@ -19,6 +19,11 @@ const NotionPage = ({ post, className }) => {
   const POST_DISABLE_DATABASE_CLICK = siteConfig('POST_DISABLE_DATABASE_CLICK')
   const SPOILER_TEXT_TAG = siteConfig('SPOILER_TEXT_TAG')
 
+  // 老文章在 Notion 里用「标题 2 / 标题 3」当小标题，react-notion-x 会把它们
+  // 渲染成 h3 / h4，导致正文只有 h1、缺少 h2。这里把整页没有任何 h2（header）
+  // 的文章整体上提一级：sub_header → h2，sub_sub_header → h3。
+  // 只改渲染用的副本，不改 Notion 原始数据。
+  const blockMap = useMemo(() => normalizeHeadingLevels(post?.blockMap), [post?.blockMap])
   const zoomRef = useRef(null)
   const IMAGE_ZOOM_IN_WIDTH = siteConfig('IMAGE_ZOOM_IN_WIDTH', 1200)
   // 页面首次打开时执行的勾子
@@ -141,7 +146,7 @@ const NotionPage = ({ post, className }) => {
       id='notion-article'
       className={`mx-auto overflow-hidden ${className || ''}`}>
       <NotionRenderer
-        recordMap={post?.blockMap}
+        recordMap={blockMap}
         mapPageUrl={mapPageUrl}
         mapImageUrl={(url, block) =>
           toProxiedImageUrl(withNotionWidth(mapImgUrl(url, block), 1080))
@@ -166,6 +171,45 @@ const NotionPage = ({ post, className }) => {
 /**
  * 页面的数据库链接禁止跳转，只能查看
  */
+/**
+ * 当文章正文没有任何 h2（Notion 的 header 块）时，把 heading 2/3 上提一级，
+ * 让标题层级从 h1 平滑过渡到 h2 → h3，而不是直接跳到 h3。
+ */
+const normalizeHeadingLevels = blockMap => {
+  const blocks = blockMap?.block
+  if (!blocks) {
+    return blockMap
+  }
+
+  const types = Object.values(blocks).map(block => block?.value?.type)
+  // 已经有 h2 的文章不动；完全没有小标题的文章也无需处理。
+  if (types.includes('header')) {
+    return blockMap
+  }
+  const hasSubHeader = types.includes('sub_header')
+  if (!hasSubHeader && !types.includes('sub_sub_header')) {
+    return blockMap
+  }
+
+  // 有「标题 2」时整体上提一级；只有「标题 3」时直接提为 h2。
+  const nextType = type => {
+    if (type === 'sub_header') return 'header'
+    if (type === 'sub_sub_header') return hasSubHeader ? 'sub_header' : 'header'
+    return type
+  }
+
+  const normalizedBlocks = {}
+  Object.entries(blocks).forEach(([id, block]) => {
+    const type = block?.value?.type
+    normalizedBlocks[id] =
+      type === 'sub_header' || type === 'sub_sub_header'
+        ? { ...block, value: { ...block.value, type: nextType(type) } }
+        : block
+  })
+
+  return { ...blockMap, block: normalizedBlocks }
+}
+
 const processDisableDatabaseUrl = () => {
   if (isBrowser) {
     const links = document.querySelectorAll('.notion-table a')

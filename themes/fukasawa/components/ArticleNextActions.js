@@ -70,15 +70,70 @@ const resourceLinks = [
   }
 ]
 
+const getCategory = post =>
+  Array.isArray(post?.category) ? post.category[0] : post?.category
+
+const buildFocus = post => {
+  const text = `${getCategory(post) || ''} ${post?.title || ''}`
+
+  if (/海关|数据|进口|采购/.test(text)) {
+    return {
+      title: '下一步：把线索落到真实采购记录上',
+      intro: '先确认这家公司是否真的在进口相关产品，再决定开发顺序。',
+      showCustomsCta: true
+    }
+  }
+
+  if (/物流|货代|运费|账单|单据|信用证|收款|报关|清关|电放/.test(text)) {
+    return {
+      title: '下一步：把这篇的节点对到自己的单子上',
+      intro: '单据、费用和责任边界，最好在下一票货、下一笔款之前逐条核对。',
+      showCustomsCta: false
+    }
+  }
+
+  if (/政策|关税|合规|认证|反倾销/.test(text)) {
+    return {
+      title: '下一步：确认这条规则是否适用于你的产品',
+      intro: '政策变化先落到 HS 编码、目的国和生效时间三件事上。',
+      showCustomsCta: false
+    }
+  }
+
+  if (/开发信|邮件|跟进|客户|获客|询盘|报价|样品/.test(text)) {
+    return {
+      title: '下一步：挑一个客户，本周走完一遍',
+      intro: '选一个正在跟的客户，把文章里的做法套进去，看哪一步会卡住。',
+      showCustomsCta: true
+    }
+  }
+
+  return {
+    title: '下一步',
+    intro: '把文章里的判断标准对着自己的业务过一遍，留下能直接执行的部分。',
+    showCustomsCta: false
+  }
+}
+
+const rotateLinks = (post, limit = 8) => {
+  const seed = `${post?.slug || ''}${post?.title || ''}`
+  const offset = seed.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % resourceLinks.length
+  return Array.from({ length: Math.min(limit, resourceLinks.length) }, (_, index) =>
+    resourceLinks[(offset + index) % resourceLinks.length]
+  )
+}
+
 const ArticleNextActions = ({ post }) => {
   if (!post) {
     return null
   }
 
-  const categoryHref = post?.category
-    ? `/category/${encodeURIComponent(post.category)}`
+  const category = getCategory(post)
+  const categoryHref = category
+    ? `/category/${encodeURIComponent(category)}`
     : '/archive'
-  const visibleResourceLinks = resourceLinks.slice(0, 8)
+  const focus = buildFocus(post)
+  const visibleResourceLinks = rotateLinks(post)
 
   return (
     <section
@@ -94,50 +149,69 @@ const ArticleNextActions = ({ post }) => {
           <h2
             id='article-next-actions-title'
             className='text-2xl font-black leading-tight text-stone-950 dark:text-stone-50'>
-            把这篇文章转成可执行的获客动作
+            {focus.title}
           </h2>
           <p className='mt-3 max-w-3xl text-sm leading-7 text-stone-600 dark:text-stone-300'>
-            如果你正在判断产品、买家或供应商，可以先看海关数据专题，再用免费查询入口验证进口商、供应商和 HS 编码线索。
+            {focus.intro}
           </p>
         </div>
 
         <div className='grid gap-2'>
-          <a
-            href={CUSTOMS_DATA_SKILL.href}
-            onClick={() => trackCustomsDataSkillClick('article_skill_card')}
-            className='inline-flex flex-col rounded-[8px] border border-stone-200 bg-white px-4 py-3 text-left transition hover:border-stone-300 hover:bg-white dark:border-stone-800 dark:bg-stone-950/40 dark:hover:bg-stone-800/70'>
-            <span className='text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
-              海关数据工具入口
-            </span>
-            <span className='mt-1 text-sm font-black text-stone-950 dark:text-stone-50'>
-              海关数据免费查询 Skill
-            </span>
-          </a>
-          <a
-            href='/customs-data.html'
-            className='inline-flex h-10 items-center justify-center rounded-[8px] bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-stone-700 dark:bg-white dark:text-stone-950 dark:hover:bg-stone-300 sm:h-11 sm:px-4 sm:text-sm'>
-            <i className='fas fa-layer-group mr-2 text-xs' />
-            看海关数据专题
-          </a>
-          <a
-            href={CUSTOMS_DATA_SKILL.href}
-            onClick={() => trackCustomsDataSkillClick('article_next_actions')}
-            className='inline-flex h-10 items-center justify-center rounded-[8px] border bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-stone-700 dark:bg-stone-950 dark:hover:bg-stone-200 sm:h-11 sm:px-4 sm:text-sm'>
-            <i className='fas fa-database mr-2 text-xs' />
-            免费查海关数据
-          </a>
-          <SmartLink
-            href={categoryHref}
-            className='inline-flex h-10 items-center justify-center rounded-[8px] border border-stone-200 bg-white/70 px-3 text-[13px] font-bold text-stone-700 transition hover:border-stone-300 hover:text-stone-950 dark:border-stone-800 dark:bg-stone-950/30 dark:text-stone-200 dark:hover:text-white sm:h-11 sm:px-4 sm:text-sm'>
-            <i className='fas fa-compass mr-2 text-xs' />
-            继续看相关主题
-          </SmartLink>
+          {focus.showCustomsCta ? (
+            <>
+              <a
+                href={CUSTOMS_DATA_SKILL.href}
+                onClick={() => trackCustomsDataSkillClick('article_skill_card')}
+                className='inline-flex flex-col rounded-[8px] border border-stone-200 bg-white px-4 py-3 text-left transition hover:border-stone-300 hover:bg-white dark:border-stone-800 dark:bg-stone-950/40 dark:hover:bg-stone-800/70'>
+                <span className='text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
+                  海关数据工具入口
+                </span>
+                <span className='mt-1 text-sm font-black text-stone-950 dark:text-stone-50'>
+                  海关数据免费查询 Skill
+                </span>
+              </a>
+              <a
+                href='/customs-data.html'
+                className='inline-flex h-10 items-center justify-center rounded-[8px] bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-stone-700 dark:bg-white dark:text-stone-950 dark:hover:bg-stone-300 sm:h-11 sm:px-4 sm:text-sm'>
+                <i className='fas fa-layer-group mr-2 text-xs' />
+                看海关数据专题
+              </a>
+              <a
+                href={CUSTOMS_DATA_SKILL.href}
+                onClick={() => trackCustomsDataSkillClick('article_next_actions')}
+                className='inline-flex h-10 items-center justify-center rounded-[8px] border bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-stone-700 dark:bg-stone-950 dark:hover:bg-stone-200 sm:h-11 sm:px-4 sm:text-sm'>
+                <i className='fas fa-database mr-2 text-xs' />
+                免费查海关数据
+              </a>
+            </>
+          ) : (
+            <>
+              <SmartLink
+                href={categoryHref}
+                className='inline-flex h-10 items-center justify-center rounded-[8px] bg-stone-950 px-3 text-[13px] font-bold text-white transition hover:bg-stone-700 dark:bg-white dark:text-stone-950 dark:hover:bg-stone-300 sm:h-11 sm:px-4 sm:text-sm'>
+                <i className='fas fa-compass mr-2 text-xs' />
+                继续看{category || '这个'}主题
+              </SmartLink>
+              <SmartLink
+                href='/archive'
+                className='inline-flex h-10 items-center justify-center rounded-[8px] border border-stone-200 bg-white/70 px-3 text-[13px] font-bold text-stone-700 transition hover:border-stone-300 hover:text-stone-950 dark:border-stone-800 dark:bg-stone-950/30 dark:text-stone-200 dark:hover:text-white sm:h-11 sm:px-4 sm:text-sm'>
+                <i className='fas fa-list mr-2 text-xs' />
+                浏览全部文章
+              </SmartLink>
+            </>
+          )}
         </div>
       </div>
 
+      {focus.showCustomsCta && (
+        <p className='mt-3 text-[11px] leading-5 text-stone-400 dark:text-stone-500'>
+          推广说明：海关数据入口页含带推荐码的推广链接，通过它注册本站可能获得佣金，不影响文章里的判断标准。
+        </p>
+      )}
+
       <div className='mt-5 border-t border-stone-200 pt-4 dark:border-stone-800'>
         <div className='mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-400'>
-          继续阅读
+          相关专题
         </div>
         <div className='grid gap-2 sm:grid-cols-2'>
           {visibleResourceLinks.map(resource => (

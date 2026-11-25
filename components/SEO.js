@@ -85,6 +85,35 @@ const HOME_ENTRY_PAGES = [
  */
 // 社交分享兜底图：1200x630，避免回落到 Notion 自带的无关联封面
 const DEFAULT_OG_IMAGE = '/images/og-default.webp'
+// schema.org 的日期必须是 YYYY-MM-DD。页面展示用 formatDate 可能是 2025-4-11，
+// 这里统一补零，避免结构化数据校验失败。
+const toIsoDate = value => {
+  if (!value) return undefined
+  const matched = String(value).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)
+  if (matched) {
+    const [, year, month, day] = matched
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+  }
+  const parsed = new Date(value)
+  return Number.isNaN(parsed.getTime()) ? value : parsed.toISOString().slice(0, 10)
+}
+// 站点 logo 固定用本地品牌图：Notion 的 icon 多为 /image/attachment 代理链接，
+// 既不稳定，也可能只是 Notion 默认头像。
+const resolveSiteLogo = (icon, siteUrl) =>
+  icon && !/notion\.(so|site)/.test(icon)
+    ? toAbsoluteUrl(icon, siteUrl)
+    : toAbsoluteUrl('/logo.png', siteUrl)
+// 只替换 Notion 自带图库的默认封面；用户自己上传的封面保持原样。
+const resolveCoverImage = cover => {
+  if (!cover) return DEFAULT_OG_IMAGE
+  let decoded = cover
+  try {
+    decoded = decodeURIComponent(cover)
+  } catch {
+    decoded = cover
+  }
+  return /notion\.so\/images\/page-cover/.test(decoded) ? DEFAULT_OG_IMAGE : cover
+}
 // 文章封面是 3:2，OG 标准是 1.91:1，尺寸要按实际图给，否则抓取端会报不一致
 const coverSize = imagePath =>
   String(imagePath || '').includes('/images/covers/') ? [1200, 800] : [1200, 630]
@@ -498,7 +527,7 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
   const siteDescription = getBrandAwareDescription(
     siteInfo?.description || siteConfig('DESCRIPTION')
   )
-  const siteLogo = toAbsoluteUrl(siteInfo?.icon || '/logo.png', siteUrl)
+  const siteLogo = resolveSiteLogo(siteInfo?.icon, siteUrl)
   const publisherData = {
     '@type': 'Organization',
     '@id': publisherId,
@@ -538,7 +567,7 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
     '@id': authorId,
     name: author,
     url: siteUrl,
-    image: siteInfo?.icon
+    image: siteLogo
   }
   const webPage = {
     '@type': 'WebPage',
@@ -602,8 +631,8 @@ const generateStructuredData = (meta, siteInfo, url, image, author) => {
           image,
           url,
           inLanguage,
-          datePublished: meta.publishDay,
-          dateModified: meta.lastEditedDay || meta.publishDay,
+          datePublished: toIsoDate(meta.publishDay),
+          dateModified: toIsoDate(meta.lastEditedDay || meta.publishDay),
           author: {
             '@id': authorId
           },
@@ -775,7 +804,7 @@ const getSEOMeta = (props, router, locale) => {
         description: post?.summary,
         type: post?.type,
         slug: post?.slug,
-        image: post?.pageCoverThumbnail || DEFAULT_OG_IMAGE,
+        image: resolveCoverImage(post?.pageCoverThumbnail),
         category: Array.isArray(post?.category) ? post?.category?.[0] : post?.category,
         tags: post?.tags,
         // 文章发布时间必须传给 SEO：结构化数据缺 datePublished 时，

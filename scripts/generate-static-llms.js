@@ -19,7 +19,11 @@ const PUBLIC_DIR = path.join(process.cwd(), 'public')
 async function main() {
   const siteUrl = normalizeBaseUrl(BLOG.LINK || SITE_URL)
   const priorityPages = CORE_SEO_PAGES.filter(page => page.slug)
-  const articleLines = await buildArticleLines(siteUrl)
+  const { lines: articleLines, latest: latestArticleDate } = await buildArticleLines(siteUrl)
+  const latestUpdated = [latestArticleDate, ...CORE_SEO_PAGES.map(page => page.updatedAt)]
+    .filter(Boolean)
+    .sort()
+    .pop() || UPDATED_AT
 
   const body = [
     `# ${BLOG.TITLE || '外贸获客情报局'}`,
@@ -29,7 +33,7 @@ async function main() {
     `- Site: ${siteUrl}`,
     `- Author: ${BLOG.AUTHOR || '外贸获客情报局'}`,
     `- Language: ${BLOG.LANG || 'zh-CN'}`,
-    `- Updated: ${UPDATED_AT}`,
+    `- Updated: ${latestUpdated}`,
     `- Sitemap: ${buildUrl(siteUrl, 'sitemap.xml')}`,
     `- Core sitemap: ${buildUrl(siteUrl, 'sitemap-core.xml')}`,
     `- RSS: ${buildUrl(siteUrl, 'rss/feed.xml')}`,
@@ -103,8 +107,14 @@ async function main() {
 async function buildArticleLines(siteUrl) {
   try {
     const { posts } = await fetchNotionSitemapEntries()
-    return posts
-      .filter(post => post.title && post.path && post.path.startsWith('article/'))
+    const articles = posts.filter(
+      post => post.title && post.path && post.path.startsWith('article/')
+    )
+    const latest = articles.reduce((newest, post) => {
+      const date = post.lastmod || post.publishDate
+      return date && date > newest ? date : newest
+    }, '')
+    const lines = articles
       .sort((a, b) =>
         String(b.publishDate || b.lastmod || '').localeCompare(
           String(a.publishDate || a.lastmod || '')
@@ -115,12 +125,12 @@ async function buildArticleLines(siteUrl) {
         const link = buildUrl(siteUrl, post.path)
         return `- [${post.title}](${link})${summary ? ` — ${summary}` : ''}`
       })
+    return { lines, latest }
   } catch (error) {
     console.warn('[llms] 文章索引生成失败，仅输出核心页:', error.message)
-    return []
+    return { lines: [], latest: '' }
   }
 }
-
 function truncate(text, maxLength) {
   const normalized = `${text || ''}`.replace(/\s+/g, ' ').trim()
   const chars = Array.from(normalized)

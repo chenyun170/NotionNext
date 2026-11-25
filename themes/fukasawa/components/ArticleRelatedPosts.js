@@ -14,10 +14,10 @@ const ArticleRelatedPosts = ({ posts = [] }) => {
         <div>
           <div className='mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400'>
             <i className='fas fa-layer-group' />
-            <span>Related Reading</span>
+            <span>相关阅读</span>
           </div>
           <h2 className='text-2xl font-black text-stone-900 dark:text-stone-50'>
-            继续延展这个主题
+            相关文章
           </h2>
         </div>
         <SmartLink

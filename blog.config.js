@@ -17,11 +17,11 @@ const BLOG = {
   TITLE: process.env.NEXT_PUBLIC_TITLE || '外贸获客情报局｜海关数据·进口商查询·开发信实战', // 网站标题
   DESCRIPTION:
     process.env.NEXT_PUBLIC_DESCRIPTION ||
-    '外贸获客情报局专注海关数据与外贸获客：进口商查询、供应商关系分析、开发信模板、LinkedIn领英获客实战，用真实贸易记录帮你找到可开发的海外客户。', // 网站描述
+    '外贸获客情报局专注外贸实操：海关数据与进口商查询、客户开发与跟进、报价单据与收款风险。用真实贸易记录和一线经验，帮你把客户找到、把单子做下来。', // 网站描述
   AUTHOR: process.env.NEXT_PUBLIC_AUTHOR || '外贸获客情报局', // 您的昵称 例如 tangly1024
   BIO:
     process.env.NEXT_PUBLIC_BIO ||
-    '外贸获客情报局专注海关数据、进口商查询、供应商关系分析和 AI 外贸工具，帮助外贸人用真实贸易记录找到可开发客户。', // 作者简介
+    '外贸获客情报局记录外贸一线问题：海关数据、客户开发、单证物流、收款风险与 AI 工具，尽量给出能直接执行的判断和做法。', // 作者简介
   LINK: process.env.NEXT_PUBLIC_LINK || 'https://www.123170.xyz', // 网站地址
   KEYWORDS:
     process.env.NEXT_PUBLIC_KEYWORD ||

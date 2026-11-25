@@ -1,6 +1,6 @@
 import Collapse from '@/components/Collapse'
 import dynamic from 'next/dynamic'
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useGlobal } from '@/lib/global'
 import { getActiveToolPromotions } from '@/lib/promo/toolPromotions'
 import {
@@ -17,18 +17,16 @@ const SidebarTools = dynamic(() => import('./SidebarTools'), {
 })
 
 /**
- * 移动端顶部导航（含自动切换的活动/试用软推条 + 阅读进度条 + 折叠菜单与工具台）
+ * 移动端顶部导航（含自动切换的活动/试用软推条 + 折叠菜单与工具台）
  */
 const Header = props => {
   const { isDarkMode, toggleDarkMode } = useGlobal()
   const [isOpen, changeShow] = useState(false)
   const [showToolsInMenu, setShowToolsInMenu] = useState(false)
-  const [scrollProgress, setScrollProgress] = useState(0)
   const [promoData, setPromoData] = useState(() => getActiveToolPromotions())
   const [isSearchActive, setSearchActive] = useState(false)
   const collapseRef = useRef(null)
   const searchInputRef = useRef(null)
-  const throttleRef = useRef(null)
 
   useEffect(() => {
     const syncPromos = () => setPromoData(getActiveToolPromotions())
@@ -36,28 +34,6 @@ const Header = props => {
     const timer = setInterval(syncPromos, 60000)
     return () => clearInterval(timer)
   }, [])
-
-  const updateScrollProgress = useCallback(() => {
-    const currentScrollY = window.scrollY
-    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight
-    if (scrollHeight > 0) {
-      setScrollProgress(Math.min((currentScrollY / scrollHeight) * 100, 100))
-    }
-  }, [])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (throttleRef.current) return
-      throttleRef.current = true
-      updateScrollProgress()
-      setTimeout(() => {
-        throttleRef.current = false
-      }, 16)
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [updateScrollProgress])
 
   const toggleMenuOpen = () => {
     const nextOpen = !isOpen
@@ -157,15 +133,7 @@ const Header = props => {
           </div>
         </div>
 
-        {/* 3. 阅读进度条 */}
-        <div className='absolute bottom-0 left-0 h-[2px] w-full overflow-hidden bg-stone-200/60 dark:bg-stone-800'>
-          <div
-            className='h-full bg-[#1c5a4a] transition-all duration-150 ease-out dark:bg-[#6bc4a6]'
-            style={{ width: `${scrollProgress}%`, willChange: 'width' }}
-          />
-        </div>
-
-        {/* 4. 折叠菜单 */}
+        {/* 3. 折叠菜单 */}
         <Collapse type='vertical' isOpen={isOpen} collapseRef={collapseRef}>
           <div className='max-h-[76vh] overflow-y-auto border-b border-stone-200 bg-white px-4 pb-5 pt-3 shadow-xl dark:border-stone-800 dark:bg-[#1c1a17]'>
             <div className='mb-4 rounded-xl border border-stone-200 bg-stone-50 p-2 dark:border-stone-800 dark:bg-stone-900'>

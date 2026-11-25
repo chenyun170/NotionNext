@@ -124,29 +124,29 @@ const HomeIntro = ({ categoryOptions = [] }) => {
   }
 
   return (
-    <section className='home-intro mb-8 w-full'>
+    <section className='home-intro mb-6 w-full'>
       {/* Hero 双栏区：左情报定位+商机快查 / 右真实进口商信号预览卡 */}
-      <div className='rounded-2xl border border-stone-200/90 bg-white p-6 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17] sm:p-8 lg:p-10'>
-        <div className='grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] lg:items-center'>
+      <div className='rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17] sm:p-7 lg:p-8'>
+        <div className='grid gap-7 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] lg:items-center'>
           <div className='min-w-0'>
-            <div className='mb-4 inline-flex items-center gap-2 rounded-full border border-[#c3d6cd] bg-[#e8f0ec] px-3 py-1 text-[11px] font-bold tracking-[0.08em] text-[#1c5a4a] dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+            <div className='mb-3.5 inline-flex items-center gap-2 rounded-full border border-[#c3d6cd] bg-[#e8f0ec] px-3 py-1 text-[11px] font-bold tracking-[0.08em] text-[#1c5a4a] dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
               <span className='h-1.5 w-1.5 rounded-full bg-[#1c5a4a] dark:bg-[#6bc4a6]' />
               <span>123170.XYZ · 海关数据与外贸获客实战情报站</span>
             </div>
 
-            <h1 className='text-3xl font-extrabold leading-[1.18] tracking-tight text-stone-950 dark:text-stone-50 sm:text-4xl lg:text-[2.65rem]'>
+            <h1 className='text-3xl font-extrabold leading-[1.18] tracking-tight text-stone-950 dark:text-stone-50 sm:text-4xl lg:text-[2.5rem]'>
               外贸获客情报局：
               <span className='text-[#1c5a4a] dark:text-[#6bc4a6]'>
                 从找客户到收货款
               </span>
             </h1>
 
-            <p className='mt-4 max-w-2xl text-[15px] leading-7 text-stone-600 dark:text-stone-300'>
+            <p className='mt-3.5 max-w-2xl text-[15px] leading-7 text-stone-600 dark:text-stone-300'>
               {homeDescription}
             </p>
 
-            {/* 主行动按钮 */}
-            <div className='mt-6 flex flex-wrap items-center gap-3'>
+            {/* 主行动按钮（精简为主行动 + 工具工作流次入口，视觉重心更聚焦） */}
+            <div className='mt-5 flex flex-wrap items-center gap-3'>
               <a
                 href={CUSTOMS_DATA_SKILL.href}
                 onClick={() => {
@@ -179,24 +179,16 @@ const HomeIntro = ({ categoryOptions = [] }) => {
                 <i className='fas fa-route text-xs text-[#1c5a4a] dark:text-[#6bc4a6]' />
                 <span>图灵搜 + 顶易云怎么配合</span>
               </SmartLink>
-
-              <SmartLink
-                href='/diagnose'
-                className='inline-flex h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold text-stone-600 no-underline transition hover:bg-stone-100 hover:text-stone-950 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-white'
-              >
-                <i className='fas fa-stethoscope text-xs text-[#b97a52]' />
-                <span>AI 开发信诊断</span>
-              </SmartLink>
             </div>
 
             {/* 5 秒看商机 AI 快查栏 */}
-            <div className='mt-7 rounded-xl border border-stone-200/90 bg-[#faf9f6] p-3.5 dark:border-stone-800 dark:bg-[#151412]'>
+            <div className='mt-6 rounded-xl border border-stone-200/90 bg-[#faf9f6] p-3.5 dark:border-stone-800 dark:bg-[#151412]'>
               <form
                 onSubmit={handleOpportunitySubmit}
                 className='flex flex-col gap-2.5 sm:flex-row sm:items-center'
               >
                 <div className='relative flex-1'>
-                  <i className='fas fa-sparkles pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#b97a52]' />
+                  <i className='fas fa-bolt pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#b97a52]' />
                   <input
                     name='product'
                     type='text'
@@ -345,7 +337,7 @@ const HomeIntro = ({ categoryOptions = [] }) => {
       </div>
 
       {/* 4 列核心专题 Bento 入口 */}
-      <div className='mt-5 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4'>
+      <div className='mt-4 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4'>
         {topics.map(topic => {
           const TopicLink = topic.href?.endsWith('.html') ? 'a' : SmartLink
           return (

@@ -165,7 +165,7 @@ const urlChecks = [
     name: 'txt 站点地图',
     contains: ['https://www.123170.xyz', 'customs-data-find-buyers.html', 'foreign-trade-keyword-map.html']
   },
-  { path: '/llms.txt', name: 'LLMs 文件', contains: ['Search Summary Guidance', 'Core Q&A', 'Keyword Intent Map'] },
+  { path: '/llms.txt', name: 'LLMs 文件', contains: ['## Search Summary', 'Core Q&A', 'Keyword Intent Map'] },
   { path: '/rss/feed.xml', name: 'RSS 订阅文件', contains: ['<rss', '外贸获客情报局', 'article/'] },
   { path: '/google-submit-urls.txt', name: 'Google 提交 URL 清单', contains: ['sitemap.xml', 'foreign-trade-keyword-map.html', 'data-sources-limitations.html'] },
   {

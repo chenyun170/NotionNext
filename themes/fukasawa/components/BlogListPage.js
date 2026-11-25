@@ -49,21 +49,24 @@ const BlogListPage = ({
       </div>
 
       <div id='posts-wrapper' className='grid w-full gap-6 md:grid-cols-2 xl:grid-cols-3'>
-        {filterPosts.map((post, index) => (
-          <Fragment key={post.id}>
-            <div className='flex'>
-              <BlogCard index={index} post={post} siteInfo={siteInfo} />
-            </div>
-            {showInlineAd &&
-              Number(page) === 1 &&
-              index === 2 &&
-              siteConfig('AD_WWADS_ID') && (
-                <div className='col-span-full w-full'>
-                  <WWAds className='w-full' orientation='horizontal' />
-                </div>
-              )}
-          </Fragment>
-        ))}
+        {filterPosts.map((post, index) => {
+          const isFeatured = Number(page) === 1 && index === 0 && filterPosts.length > 3
+          return (
+            <Fragment key={post.id}>
+              <div className={`flex ${isFeatured ? 'md:col-span-2 xl:col-span-2' : ''}`}>
+                <BlogCard index={index} post={post} siteInfo={siteInfo} featured={isFeatured} />
+              </div>
+              {showInlineAd &&
+                Number(page) === 1 &&
+                index === 2 &&
+                siteConfig('AD_WWADS_ID') && (
+                  <div className='col-span-full w-full'>
+                    <WWAds className='w-full' orientation='horizontal' />
+                  </div>
+                )}
+            </Fragment>
+          )
+        })}
 
         {siteConfig('ADSENSE_GOOGLE_ID') && (
           <div className='col-span-full w-full p-2'>

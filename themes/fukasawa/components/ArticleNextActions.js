@@ -108,6 +108,14 @@ const buildFocus = post => {
     }
   }
 
+  if (/报价|账期|付款|结算|议价|谈判|涨价|折扣|模具|开模|MOQ|定金/.test(text)) {
+    return {
+      title: '下一步：把这笔生意的条件逐条写下来',
+      intro: '价格、账期、模具归属和交期，口头谈完就散了，落到报价单和合同才算数。',
+      showCustomsCta: false
+    }
+  }
+
   if (/开发信|邮件|跟进|客户|获客|询盘|报价|样品/.test(text)) {
     return {
       title: '下一步：挑一个客户，本周走完一遍',

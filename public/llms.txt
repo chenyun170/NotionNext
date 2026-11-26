@@ -5,7 +5,7 @@
 - Site: https://www.123170.xyz
 - Author: 外贸获客情报局
 - Language: zh-CN
-- Updated: 2026-11-25
+- Updated: 2026-11-26
 - Sitemap: https://www.123170.xyz/sitemap.xml
 - Core sitemap: https://www.123170.xyz/sitemap-core.xml
 - RSS: https://www.123170.xyz/rss/feed.xml
@@ -114,6 +114,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 
 ## Articles
 
+- [客户验货没过，船期只剩5天：返工、推迟还是空运](https://www.123170.xyz/article/inspection-failed-rework-decision) — 验货判定 Rejected，船期只剩 5 天。这篇把返工、推迟航次、部分空运三套方案的钱和风险摆在一起算，再讲返工标准、重验前自检和通知客户的顺序。
 - [客户要 RCEP 原产地证，办错这张纸关税照收](https://www.123170.xyz/article/rcep-certificate-of-origin) — RCEP 原产地证不是“在中国生产”就能办。这篇把关税优惠折成金额，讲清 RVC 40%、累积规则和五种证书的区别，列出办证前必须确认的五件事，以及办错之后的补救顺序。
 - [客户要 OA 60 天，成本是货值的 1.3%](https://www.123170.xyz/article/oa-payment-terms-cost) — 客户要 OA 60 天，账期不是免费的服务。这篇把资金占用、信用保险和汇率波动折算成货值的百分比，给出给账期时必须换回的四项条件，以及决定给不给之前要先查的三件事。
 - [客户指定货代，账单里5600元是可以砍的](https://www.123170.xyz/article/buyer-nominated-forwarder-charges) — FOB 条款下客户指定货代，一票账单常比市场价高出一倍。这篇把代收代付和货代服务费分开算，给出一封订舱前的询价邮件、三条谈法和一张账单核对表，照着核对能省下真金白银。

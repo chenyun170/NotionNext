@@ -1,4 +1,5 @@
 import { siteConfig } from '@/lib/config'
+import { useGlobal } from '@/lib/global'
 import { compressImage, mapImgUrl } from '@/lib/db/notion/mapImage'
 import { toProxiedImageUrl, withNotionWidth } from '@/lib/utils/imageProxy'
 import { isBrowser, loadExternalResource } from '@/lib/utils'
@@ -13,6 +14,7 @@ import { NotionRenderer } from 'react-notion-x'
  * @returns
  */
 const NotionPage = ({ post, className }) => {
+  const { isDarkMode } = useGlobal()
   // 是否关闭数据库和画册的点击跳转
   const POST_DISABLE_GALLERY_CLICK = siteConfig('POST_DISABLE_GALLERY_CLICK')
   const POST_DISABLE_DATABASE_CLICK = siteConfig('POST_DISABLE_DATABASE_CLICK')
@@ -146,6 +148,7 @@ const NotionPage = ({ post, className }) => {
       className={`mx-auto overflow-hidden ${className || ''}`}>
       <NotionRenderer
         recordMap={blockMap}
+        darkMode={isDarkMode}
         mapPageUrl={mapPageUrl}
         mapImageUrl={(url, block) =>
           toProxiedImageUrl(withNotionWidth(mapImgUrl(url, block), 1080))

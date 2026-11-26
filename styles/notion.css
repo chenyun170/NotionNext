@@ -67,6 +67,35 @@
   --notion-header-height: 45px;
 }
 
+.dark,
+.dark-mode {
+  --fg-color: rgba(245, 245, 244, 0.92) !important;
+  --fg-color-0: rgba(255, 255, 255, 0.1);
+  --fg-color-1: rgba(255, 255, 255, 0.16);
+  --fg-color-2: rgba(255, 255, 255, 0.45);
+  --fg-color-3: rgba(214, 211, 209, 0.78);
+  --fg-color-4: #f5f5f4;
+  --fg-color-5: rgba(255, 255, 255, 0.04);
+  --fg-color-6: rgba(245, 245, 244, 0.88);
+  --fg-color-icon: var(--fg-color);
+
+  --bg-color: #1c1a17;
+  --bg-color-0: rgba(255, 255, 255, 0.06);
+  --bg-color-1: #24211d;
+  --bg-color-2: rgba(255, 255, 255, 0.09);
+
+  --notion-red_background_co: rgba(224, 62, 62, 0.14);
+  --notion-pink_background_co: rgba(173, 26, 114, 0.14);
+  --notion-blue_background_co: rgba(28, 90, 74, 0.18);
+  --notion-purple_background_co: rgba(105, 64, 165, 0.15);
+  --notion-teal_background_co: rgba(28, 90, 74, 0.22);
+  --notion-yellow_background_co: rgba(217, 119, 6, 0.16);
+  --notion-orange_background_co: rgba(217, 115, 13, 0.16);
+  --notion-brown_background_co: rgba(168, 162, 158, 0.12);
+  --notion-gray_background_co: rgba(255, 255, 255, 0.06);
+  --notion-green_background_co: rgba(28, 90, 74, 0.2);
+}
+
 .notion {
   font-size: 16px;
   line-height: 1.5;

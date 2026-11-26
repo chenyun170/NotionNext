@@ -525,3 +525,141 @@ header { background: rgba(247, 245, 241, 0.92) !important; border-color: rgba(28
 .eyebrow { background: #e8f0ec !important; border-color: #c3d6cd !important; color: #1c5a4a !important; font-weight: 700 !important; }
 .tag { background: #e8f0ec !important; color: #1c5a4a !important; font-weight: 700 !important; }
 h1, .section-title, .card h3 { font-weight: 700 !important; }
+
+/* 黑夜模式：对齐 NotionNext fukasawa (#131210 深底 / #1c1a17 卡片 / #6bc4a6 墨绿) */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background: #131210 !important;
+  color: #e7e5e4 !important;
+}
+
+html.dark header {
+  background: rgba(19, 18, 16, 0.92) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .brand,
+html.dark h1,
+html.dark .section-title,
+html.dark .summary-panel h2,
+html.dark .card strong,
+html.dark .card h3,
+html.dark .step h3,
+html.dark .faq-list summary,
+html.dark .answer-box strong,
+html.dark .cta-inner h2 {
+  color: #f5f5f4 !important;
+}
+
+html.dark .lead,
+html.dark .section-copy,
+html.dark .summary-panel p,
+html.dark .summary-panel li,
+html.dark .answer-box p,
+html.dark .answer-box ul,
+html.dark .card p,
+html.dark .card ul,
+html.dark .step p,
+html.dark .faq-list p,
+html.dark .comparison-table td,
+html.dark .cta-inner p,
+html.dark footer {
+  color: #a8a29e !important;
+}
+
+html.dark .nav-links a,
+html.dark .back,
+html.dark .static-theme-toggle {
+  background: #1c1a17 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #d6d3d1 !important;
+}
+
+html.dark .nav-links a:hover,
+html.dark .back:hover,
+html.dark .static-theme-toggle:hover {
+  border-color: rgba(107, 196, 166, 0.5) !important;
+  color: #6bc4a6 !important;
+}
+
+html.dark .updated {
+  color: #a8a29e !important;
+}
+
+html.dark .updated span {
+  background: #1c1a17 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark .eyebrow,
+html.dark .tag {
+  background: rgba(28, 90, 74, 0.25) !important;
+  border-color: rgba(107, 196, 166, 0.35) !important;
+  color: #6bc4a6 !important;
+}
+
+html.dark .summary-panel,
+html.dark .card,
+html.dark .step,
+html.dark .link-list a,
+html.dark .faq-list details,
+html.dark .comparison-wrap {
+  background: #1c1a17 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+html.dark .notice {
+  background: #24211d !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #d6d3d1 !important;
+}
+
+html.dark .answer-box {
+  background: rgba(28, 90, 74, 0.16) !important;
+  border-color: rgba(107, 196, 166, 0.32) !important;
+  border-left-color: #6bc4a6 !important;
+}
+
+html.dark .step span,
+html.dark .link-list span {
+  color: #6bc4a6 !important;
+}
+
+html.dark .link-list a {
+  color: #e7e5e4 !important;
+}
+
+html.dark .link-list a:hover {
+  border-color: rgba(107, 196, 166, 0.45) !important;
+}
+
+html.dark .comparison-table th {
+  background: #24211d !important;
+  color: #f5f5f4 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .comparison-table td {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .cta-band {
+  background: #191714 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .btn-secondary {
+  background: #1c1a17 !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: #e7e5e4 !important;
+}
+
+html.dark .btn-secondary:hover {
+  background: #26231f !important;
+  border-color: rgba(107, 196, 166, 0.45) !important;
+  color: #6bc4a6 !important;
+}

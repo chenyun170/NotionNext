@@ -92,6 +92,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 - [供应商关系分析](https://www.123170.xyz/supplier-analysis.html) - 从供应商名称反查客户网络，把竞品合作关系转成可验证线索。 Keywords: 供应商关系分析, 竞品供应商.
 - [海关数据买家质量判断示例](https://www.123170.xyz/customs-data-buyer-quality-example.html) - 用匿名示例展示如何从交易时间、采购频率、供应商关系和产品匹配度判断进口商质量。 Keywords: 海关数据买家质量判断, 进口商质量分析, 海关数据示例报告.
 - [HS 编码查进口商示例报告](https://www.123170.xyz/hs-code-importer-case-study.html) - 用匿名示例说明如何把 HS 编码、产品关键词和进口描述结合起来筛选采购商。 Keywords: HS 编码查进口商, 海关数据案例, 进口商筛选示例.
+- [COOPER LIGHTING SOLUTIONS LLC 真实提单拆解](https://www.123170.xyz/cooper-lighting-solutions-customs-data.html) - 基于1462条美国进口提单记录，拆解 Cooper Lighting Solutions LLC 的采购节奏、HS 940511/940542/940599结构、中国与东南亚来源地及开发切入点。 Keywords: COOPER LIGHTING SOLUTIONS LLC, 美国LED照明进口商, 海关数据真实案例.
 - [外贸获客工具导航](https://www.123170.xyz/tools.html) - 把海关数据、LinkedIn、WhatsApp、AI 工具和客户开发流程放到同一个工具入口里。 Keywords: 外贸工具, 外贸获客工具.
 - [外贸获客工具怎么选](https://www.123170.xyz/foreign-trade-tools.html) - 按地图找企业、线索发现、采购验证、AI 决策人挖掘、触达跟进和复盘来选择外贸获客工具。 Keywords: 外贸获客工具, 外贸工具对比.
 - [外贸客户开发工具推荐](https://www.123170.xyz/foreign-trade-lead-tools.html) - 适合小团队的客户开发最小工具组合：线索、验证、联系人、触达、CRM 和复盘。 Keywords: 外贸客户开发工具推荐, 客户开发工具.

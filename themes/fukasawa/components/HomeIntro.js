@@ -250,7 +250,7 @@ const HomeIntro = ({ categoryOptions = [] }) => {
             </div>
           </div>
 
-          {/* 右侧：真实海关提单信号卡片预览（替代纯文本小框） */}
+          {/* 右侧：真实海关提单信号卡片预览 */}
           <div className='rounded-2xl border border-stone-200/90 bg-[#faf9f6] p-5 dark:border-stone-800 dark:bg-[#151412]'>
             <div className='mb-4 flex items-center justify-between border-b border-stone-200/80 pb-3 dark:border-stone-800'>
               <div>
@@ -262,18 +262,18 @@ const HomeIntro = ({ categoryOptions = [] }) => {
                 </div>
               </div>
               <span className='rounded-full bg-[#e8f0ec] px-2.5 py-1 text-[10px] font-bold text-[#1c5a4a] dark:bg-[#1c5a4a]/30 dark:text-[#6bc4a6]'>
-                样本示意
+                真实提单案例
               </span>
             </div>
 
             <div className='rounded-xl border border-stone-200/80 bg-white p-4 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17]'>
               <div className='flex items-start justify-between gap-2'>
-                <div>
+                <div className='min-w-0'>
                   <div className='text-xs font-semibold text-stone-400'>
-                    美国进口商 · 照明器材
+                    美国进口商 · 商业/工业 LED 照明
                   </div>
-                  <div className='mt-0.5 font-mono text-sm font-bold text-stone-900 dark:text-stone-100'>
-                    APEX LIGHTING SUPPLY LLC
+                  <div className='mt-0.5 truncate font-mono text-sm font-bold text-stone-900 dark:text-stone-100'>
+                    COOPER LIGHTING SOLUTIONS LLC
                   </div>
                 </div>
                 <span className='shrink-0 rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'>
@@ -283,32 +283,56 @@ const HomeIntro = ({ categoryOptions = [] }) => {
 
               <div className='mt-3.5 grid grid-cols-3 gap-2 border-y border-stone-100 py-3 text-center dark:border-stone-800'>
                 <div>
-                  <div className='text-[10px] text-stone-400'>HS 编码</div>
+                  <div className='text-[10px] text-stone-400'>主力 HS</div>
                   <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-stone-800 dark:text-stone-200'>
-                    9405.42
+                    9405.11
                   </div>
                 </div>
                 <div>
-                  <div className='text-[10px] text-stone-400'>近 12 月频次</div>
+                  <div className='text-[10px] text-stone-400'>近 1 年记录</div>
                   <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-[#1c5a4a] dark:text-[#6bc4a6]'>
-                    24 票
+                    1,462 条
                   </div>
                 </div>
                 <div>
-                  <div className='text-[10px] text-stone-400'>采购连续性</div>
+                  <div className='text-[10px] text-stone-400'>中国占比 · 1–10月</div>
                   <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-stone-800 dark:text-stone-200'>
-                    连续 8 月
+                    54.49%
                   </div>
                 </div>
               </div>
 
-              <div className='mt-3 flex items-center justify-between text-[11px] text-stone-500 dark:text-stone-400'>
-                <span>在合作供应商：宁波 / 深圳 2 家</span>
+              {/* 2025-11 至 2026-10 月度提单节奏微图（峰值 217 条） */}
+              <div className='mt-3'>
+                <div className='mb-1.5 flex items-center justify-between text-[10px] text-stone-400'>
+                  <span>2025-11 ~ 2026-10 月度提单</span>
+                  <span className='font-mono tabular-nums text-stone-500 dark:text-stone-300'>
+                    月均 ~122 条
+                  </span>
+                </div>
+                <div className='flex h-8 items-end gap-1' aria-hidden='true'>
+                  {[43, 217, 168, 118, 87, 124, 122, 119, 137, 145, 46, 136].map((val, idx) => (
+                    <div
+                      key={idx}
+                      title={`${val} 条`}
+                      className={`flex-1 rounded-t-xs transition-colors ${
+                        val >= 160
+                          ? 'bg-[#1c5a4a] dark:bg-[#6bc4a6]'
+                          : 'bg-[#1c5a4a]/35 dark:bg-[#6bc4a6]/35'
+                      }`}
+                      style={{ height: `${Math.max(18, Math.round((val / 217) * 100))}%` }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className='mt-3 flex items-center justify-between gap-2 border-t border-stone-100 pt-2.5 text-[11px] text-stone-500 dark:border-stone-800 dark:text-stone-400'>
+                <span className='truncate'>供货来源 16 国 · 含整灯与零部件</span>
                 <a
-                  href='/customs-data-buyer-quality-example.html'
-                  className='font-semibold text-[#1c5a4a] no-underline hover:underline dark:text-[#6bc4a6]'
+                  href='/cooper-lighting-solutions-customs-data.html'
+                  className='shrink-0 font-semibold text-[#1c5a4a] no-underline hover:underline dark:text-[#6bc4a6]'
                 >
-                  看拆解报告 →
+                  看完整拆解 →
                 </a>
               </div>
             </div>

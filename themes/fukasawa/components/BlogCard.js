@@ -6,7 +6,7 @@ import CONFIG from '../config'
 import TagItemMini from './TagItemMini'
 
 /**
- * Fukasawa 文章卡片 - 现代商业情报风（支持首篇精选横卡与无封面排版占位）
+ * Fukasawa 文章卡片 - 现代商业情报风（3:2 完整展示封面不裁切、无遮挡徽标）
  */
 const BlogCard = ({ post, showSummary, featured = false }) => {
   const { siteInfo } = useGlobal()
@@ -30,31 +30,21 @@ const BlogCard = ({ post, showSummary, featured = false }) => {
       {showPageCover ? (
         <SmartLink
           href={post?.href}
-          className={`relative block shrink-0 cursor-pointer overflow-hidden bg-stone-100 dark:bg-stone-800 ${
+          className={`relative flex shrink-0 cursor-pointer items-center justify-center overflow-hidden bg-[#f4f1ea] dark:bg-[#151412] ${
             featured
-              ? 'aspect-[16/10] w-full md:aspect-auto md:min-h-[260px] md:w-[52%]'
-              : 'aspect-[16/10] w-full'
+              ? 'w-full md:w-[55%] md:border-r md:border-stone-200/70 md:dark:border-stone-800'
+              : 'w-full border-b border-stone-200/60 dark:border-stone-800'
           }`}
         >
-          <LazyImage
-            src={pageCoverThumbnail}
-            alt={post?.title || siteConfig('TITLE')}
-            width={featured ? 800 : 640}
-            height={featured ? 500 : 400}
-            priority={featured}
-            className='absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]'
-          />
-          <div className='pointer-events-none absolute left-3 top-3 flex items-center gap-1.5'>
-            {featured && (
-              <span className='rounded-full bg-[#1c5a4a] px-2.5 py-0.5 text-[11px] font-bold text-white shadow-xs'>
-                精选导读
-              </span>
-            )}
-            {post.category && (
-              <span className='rounded-full bg-white/90 px-2.5 py-0.5 text-[11px] font-semibold text-stone-800 backdrop-blur-sm dark:bg-stone-900/85 dark:text-stone-200'>
-                {post.category}
-              </span>
-            )}
+          <div className='relative aspect-[3/2] w-full overflow-hidden'>
+            <LazyImage
+              src={pageCoverThumbnail}
+              alt={post?.title || siteConfig('TITLE')}
+              width={featured ? 900 : 600}
+              height={featured ? 600 : 400}
+              priority={featured}
+              className='absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.02]'
+            />
           </div>
         </SmartLink>
       ) : (
@@ -62,8 +52,8 @@ const BlogCard = ({ post, showSummary, featured = false }) => {
           href={post?.href}
           className={`relative flex shrink-0 cursor-pointer flex-col justify-between overflow-hidden border-b border-stone-200/70 bg-[#f4f1ea] p-5 dark:border-stone-800 dark:bg-[#171512] ${
             featured
-              ? 'aspect-[16/10] w-full md:aspect-auto md:min-h-[260px] md:w-[52%] md:border-b-0 md:border-r'
-              : 'aspect-[16/10] w-full'
+              ? 'aspect-[3/2] w-full md:aspect-auto md:w-[55%] md:border-b-0 md:border-r'
+              : 'aspect-[3/2] w-full'
           }`}
         >
           <div className='flex items-center justify-between gap-2'>
@@ -71,11 +61,6 @@ const BlogCard = ({ post, showSummary, featured = false }) => {
               <span className='h-1.5 w-1.5 rounded-full bg-[#1c5a4a] dark:bg-[#6bc4a6]' />
               {featured ? 'FEATURED BRIEF' : 'FIELD REPORT'}
             </span>
-            {post.category && (
-              <span className='rounded-full border border-stone-200 bg-white/85 px-2.5 py-0.5 text-[11px] font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200'>
-                {post.category}
-              </span>
-            )}
           </div>
           <div className='mt-auto border-l-2 border-[#1c5a4a]/60 pl-3 dark:border-[#6bc4a6]/60'>
             <p className='line-clamp-2 text-sm font-bold leading-snug text-stone-800 dark:text-stone-200'>
@@ -86,10 +71,21 @@ const BlogCard = ({ post, showSummary, featured = false }) => {
       )}
 
       <div className={`flex flex-1 flex-col ${featured ? 'p-6 lg:p-7' : 'p-5'}`}>
-        {featured && (
-          <div className='mb-2 hidden items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#1c5a4a] dark:text-[#6bc4a6] md:flex'>
-            <span>最新实战专题</span>
-            <span className='h-px flex-1 bg-stone-200/80 dark:bg-stone-800' />
+        {(featured || post.category) && (
+          <div className='mb-2.5 flex flex-wrap items-center gap-2'>
+            {featured && (
+              <span className='rounded-full bg-[#1c5a4a] px-2.5 py-0.5 text-[11px] font-bold text-white shadow-xs dark:bg-[#1c5a4a]'>
+                精选导读
+              </span>
+            )}
+            {post.category && (
+              <SmartLink
+                href={`/category/${encodeURIComponent(post.category)}`}
+                className='inline-flex items-center rounded-full bg-[#e8f0ec] px-2.5 py-0.5 text-[11px] font-semibold text-[#1c5a4a] no-underline transition hover:bg-[#1c5a4a] hover:text-white dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'
+              >
+                {post.category}
+              </SmartLink>
+            )}
           </div>
         )}
 

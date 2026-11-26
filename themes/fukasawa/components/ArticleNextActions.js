@@ -100,6 +100,14 @@ const buildFocus = post => {
     }
   }
 
+  if (/验货|质检|验厂|返工|不良|抽检|包装|唛头/.test(text)) {
+    return {
+      title: '下一步：把这批货的验收标准写进订单',
+      intro: 'AQL、抽检比例、重验由谁出钱，最好在下单前和客户确认清楚。',
+      showCustomsCta: false
+    }
+  }
+
   if (/开发信|邮件|跟进|客户|获客|询盘|报价|样品/.test(text)) {
     return {
       title: '下一步：挑一个客户，本周走完一遍',

@@ -30,7 +30,7 @@ const BlogCard = ({ post, showSummary, featured = false }) => {
       {showPageCover ? (
         <SmartLink
           href={post?.href}
-          className={`relative flex shrink-0 cursor-pointer items-center justify-center overflow-hidden bg-[#f4f1ea] dark:bg-[#151412] ${
+          className={`relative flex shrink-0 cursor-pointer items-start justify-center overflow-hidden bg-[#F7F5F0] dark:bg-[#151412] ${
             featured
               ? 'w-full md:w-[55%] md:border-r md:border-stone-200/70 md:dark:border-stone-800'
               : 'w-full border-b border-stone-200/60 dark:border-stone-800'

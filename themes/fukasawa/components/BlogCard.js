@@ -30,7 +30,7 @@ const BlogCard = ({ post, showSummary, featured = false }) => {
       {showPageCover ? (
         <SmartLink
           href={post?.href}
-          className={`relative flex shrink-0 cursor-pointer items-start justify-center overflow-hidden bg-[#F7F5F0] dark:bg-[#151412] ${
+          className={`relative flex shrink-0 cursor-pointer items-center justify-center overflow-hidden bg-[#F7F5F0] dark:bg-[#151412] ${
             featured
               ? 'w-full md:w-[55%] md:border-r md:border-stone-200/70 md:dark:border-stone-800'
               : 'w-full border-b border-stone-200/60 dark:border-stone-800'
@@ -70,7 +70,8 @@ const BlogCard = ({ post, showSummary, featured = false }) => {
         </SmartLink>
       )}
 
-      <div className={`flex flex-1 flex-col ${featured ? 'p-6 lg:p-7' : 'p-5'}`}>
+      <div
+        className={`flex flex-1 flex-col ${featured ? 'justify-center p-6 lg:p-7' : 'p-5'}`}>
         {(featured || post.category) && (
           <div className='mb-2.5 flex flex-wrap items-center gap-2'>
             {featured && (
@@ -113,7 +114,10 @@ const BlogCard = ({ post, showSummary, featured = false }) => {
           </p>
         )}
 
-        <div className='mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-stone-100 pt-3 dark:border-stone-800'>
+        <div
+          className={`flex flex-wrap items-center justify-between gap-2 border-t border-stone-100 pt-3 dark:border-stone-800 ${
+            featured ? 'mt-1' : 'mt-auto'
+          }`}>
           <span className='font-mono text-[11px] tabular-nums text-stone-400 dark:text-stone-500'>
             {post.publishDay || '实战笔记'}
           </span>

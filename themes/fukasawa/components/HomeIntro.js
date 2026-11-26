@@ -126,15 +126,15 @@ const HomeIntro = ({ categoryOptions = [] }) => {
   return (
     <section className='home-intro mb-6 w-full'>
       {/* Hero 双栏区：左情报定位+商机快查 / 右真实进口商信号预览卡 */}
-      <div className='rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17] sm:p-7 lg:p-8'>
-        <div className='grid gap-7 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] lg:items-center'>
+      <div className='overflow-hidden rounded-2xl border border-stone-200/90 bg-white p-4 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17] sm:p-7 lg:p-8'>
+        <div className='grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] lg:items-center lg:gap-7'>
           <div className='min-w-0'>
-            <div className='mb-3.5 inline-flex items-center gap-2 rounded-full border border-[#c3d6cd] bg-[#e8f0ec] px-3 py-1 text-[11px] font-bold tracking-[0.08em] text-[#1c5a4a] dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
-              <span className='h-1.5 w-1.5 rounded-full bg-[#1c5a4a] dark:bg-[#6bc4a6]' />
-              <span>123170.XYZ · 海关数据与外贸获客实战情报站</span>
+            <div className='mb-3.5 inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-[#c3d6cd] bg-[#e8f0ec] px-3 py-1 text-[11px] font-bold leading-snug tracking-[0.06em] text-[#1c5a4a] dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/25 dark:text-[#6bc4a6]'>
+              <span className='h-1.5 w-1.5 shrink-0 rounded-full bg-[#1c5a4a] dark:bg-[#6bc4a6]' />
+              <span className='min-w-0 break-words'>123170.XYZ · 海关数据与外贸获客实战情报站</span>
             </div>
 
-            <h1 className='text-3xl font-extrabold leading-[1.18] tracking-tight text-stone-950 dark:text-stone-50 sm:text-4xl lg:text-[2.5rem]'>
+            <h1 className='break-words text-[26px] font-extrabold leading-[1.22] tracking-tight text-stone-950 dark:text-stone-50 sm:text-4xl lg:text-[2.5rem]'>
               外贸获客情报局：
               <span className='text-[#1c5a4a] dark:text-[#6bc4a6]'>
                 从找客户到收货款
@@ -187,7 +187,7 @@ const HomeIntro = ({ categoryOptions = [] }) => {
                 onSubmit={handleOpportunitySubmit}
                 className='flex flex-col gap-2.5 sm:flex-row sm:items-center'
               >
-                <div className='relative flex-1'>
+                <div className='relative min-w-0 flex-1'>
                   <i className='fas fa-bolt pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#b97a52]' />
                   <input
                     name='product'
@@ -251,9 +251,9 @@ const HomeIntro = ({ categoryOptions = [] }) => {
           </div>
 
           {/* 右侧：真实海关提单信号卡片预览 */}
-          <div className='rounded-2xl border border-stone-200/90 bg-[#faf9f6] p-5 dark:border-stone-800 dark:bg-[#151412]'>
-            <div className='mb-4 flex items-center justify-between border-b border-stone-200/80 pb-3 dark:border-stone-800'>
-              <div>
+          <div className='min-w-0 w-full rounded-2xl border border-stone-200/90 bg-[#faf9f6] p-4 dark:border-stone-800 dark:bg-[#151412] sm:p-5'>
+            <div className='mb-4 flex items-center justify-between gap-2 border-b border-stone-200/80 pb-3 dark:border-stone-800'>
+              <div className='min-w-0'>
                 <div className='text-[10px] font-bold uppercase tracking-[0.16em] text-stone-400'>
                   BUYER SIGNAL PREVIEW
                 </div>
@@ -261,15 +261,15 @@ const HomeIntro = ({ categoryOptions = [] }) => {
                   先查真实进口记录，再做开发
                 </div>
               </div>
-              <span className='rounded-full bg-[#e8f0ec] px-2.5 py-1 text-[10px] font-bold text-[#1c5a4a] dark:bg-[#1c5a4a]/30 dark:text-[#6bc4a6]'>
+              <span className='shrink-0 rounded-full bg-[#e8f0ec] px-2.5 py-1 text-[10px] font-bold text-[#1c5a4a] dark:bg-[#1c5a4a]/30 dark:text-[#6bc4a6]'>
                 真实提单案例
               </span>
             </div>
 
-            <div className='rounded-xl border border-stone-200/80 bg-white p-4 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17]'>
+            <div className='min-w-0 overflow-hidden rounded-xl border border-stone-200/80 bg-white p-3.5 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17] sm:p-4'>
               <div className='flex items-start justify-between gap-2'>
-                <div className='min-w-0'>
-                  <div className='text-xs font-semibold text-stone-400'>
+                <div className='min-w-0 flex-1'>
+                  <div className='truncate text-xs font-semibold text-stone-400'>
                     美国进口商 · 商业/工业 LED 照明
                   </div>
                   <div className='mt-0.5 truncate font-mono text-sm font-bold text-stone-900 dark:text-stone-100'>
@@ -282,29 +282,34 @@ const HomeIntro = ({ categoryOptions = [] }) => {
               </div>
 
               <div className='mt-3.5 grid grid-cols-3 gap-2 border-y border-stone-100 py-3 text-center dark:border-stone-800'>
-                <div>
+                <div className='min-w-0'>
                   <div className='text-[10px] text-stone-400'>主力 HS</div>
                   <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-stone-800 dark:text-stone-200'>
                     9405.11
                   </div>
                 </div>
-                <div>
+                <div className='min-w-0'>
                   <div className='text-[10px] text-stone-400'>近 1 年记录</div>
                   <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-[#1c5a4a] dark:text-[#6bc4a6]'>
                     1,462 条
                   </div>
                 </div>
-                <div>
-                  <div className='text-[10px] text-stone-400'>中国占比 · 1–10月</div>
+                <div className='min-w-0'>
+                  <div className='text-[10px] text-stone-400'>中国占比</div>
                   <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-stone-800 dark:text-stone-200'>
                     54.49%
                   </div>
                 </div>
               </div>
 
+              {/* 口径说明：占比按 2026 年 1–10 月 1,202 条计，与上方全年 1,462 条不同期 */}
+              <p className='mt-1.5 text-[9px] leading-tight text-stone-400 dark:text-stone-500'>
+                中国占比按 2026 年 1–10 月 1,202 条计
+              </p>
+
               {/* 2025-11 至 2026-10 月度提单节奏微图（峰值 217 条） */}
               <div className='mt-3'>
-                <div className='mb-1.5 flex items-center justify-between text-[10px] text-stone-400'>
+                <div className='mb-1.5 flex flex-wrap items-center justify-between gap-1.5 text-[10px] text-stone-400'>
                   <span>2025-11 ~ 2026-10 月度提单</span>
                   <span className='font-mono tabular-nums text-stone-500 dark:text-stone-300'>
                     月均 ~122 条
@@ -327,7 +332,7 @@ const HomeIntro = ({ categoryOptions = [] }) => {
               </div>
 
               <div className='mt-3 flex items-center justify-between gap-2 border-t border-stone-100 pt-2.5 text-[11px] text-stone-500 dark:border-stone-800 dark:text-stone-400'>
-                <span className='truncate'>供货来源 16 国 · 含整灯与零部件</span>
+                <span className='min-w-0 truncate'>供货来源 16 国 · 含整灯与零部件</span>
                 <a
                   href='/cooper-lighting-solutions-customs-data.html'
                   className='shrink-0 font-semibold text-[#1c5a4a] no-underline hover:underline dark:text-[#6bc4a6]'
@@ -345,7 +350,7 @@ const HomeIntro = ({ categoryOptions = [] }) => {
               ].map(s => (
                 <div
                   key={s.step}
-                  className='rounded-lg border border-stone-200/70 bg-white px-2 py-2 dark:border-stone-800 dark:bg-[#1c1a17]'
+                  className='min-w-0 rounded-lg border border-stone-200/70 bg-white px-1.5 py-2 dark:border-stone-800 dark:bg-[#1c1a17] sm:px-2'
                 >
                   <div className='font-mono text-[10px] font-bold text-[#b97a52]'>
                     {s.step}

@@ -107,7 +107,7 @@ const LayoutBase = memo(({ children, headerSlot, floatSlot, ...props }) => {
     <ThemeGlobalFukasawa.Provider value={contextValue}>
       <div
         id='theme-fukasawa'
-        className={`${fontStyle} min-h-screen scroll-smooth antialiased dark:bg-[#131210]`}
+        className={`${fontStyle} min-h-screen overflow-x-clip scroll-smooth antialiased dark:bg-[#131210]`}
       >
         {onLoading && <LoadingCover />}
         <Style />

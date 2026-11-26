@@ -53,7 +53,7 @@ const BlogListPage = ({
           const isFeatured = Number(page) === 1 && index === 0 && filterPosts.length > 3
           return (
             <Fragment key={post.id}>
-              <div className={`flex ${isFeatured ? 'md:col-span-2 xl:col-span-2' : ''}`}>
+              <div className={`flex min-w-0 ${isFeatured ? 'md:col-span-2 xl:col-span-2' : ''}`}>
                 <BlogCard index={index} post={post} siteInfo={siteInfo} featured={isFeatured} />
               </div>
               {showInlineAd &&

@@ -32,7 +32,7 @@ const NAV_LINKS = [
   { label: '海关数据', href: '/customs-data.html' },
   { label: '工具导航', href: '/tools.html' },
   { label: 'OraAgent', href: '/oragent.html' },
-  { label: '轻诊断', href: '/diagnose' },
+  { label: '轻诊断', href: '/diagnose', hideOnTablet: true },
   { label: '归档', href: '/archive' }
 ]
 
@@ -208,7 +208,9 @@ const DesktopTopNav = props => {
                 <Comp
                   key={item.href}
                   href={item.href}
-                  className='whitespace-nowrap rounded-lg px-2 py-1.5 text-[13px] font-medium text-stone-600 no-underline transition-colors hover:bg-stone-200/60 hover:text-stone-950 dark:text-stone-300 dark:hover:bg-stone-800/70 dark:hover:text-stone-50 lg:px-3 lg:py-2 lg:text-[13.5px]'
+                  className={`${
+                    item.hideOnTablet ? 'hidden lg:inline-flex' : 'inline-flex'
+                  } items-center whitespace-nowrap rounded-lg px-2 py-1.5 text-[13px] font-medium text-stone-600 no-underline transition-colors hover:bg-stone-200/60 hover:text-stone-950 dark:text-stone-300 dark:hover:bg-stone-800/70 dark:hover:text-stone-50 lg:px-3 lg:py-2 lg:text-[13.5px]`}
                 >
                   {item.label}
                 </Comp>
@@ -254,7 +256,7 @@ const DesktopTopNav = props => {
                 }`}
               >
                 <i className='fas fa-calculator text-[11px]' />
-                <span className='hidden lg:inline'>外贸工具台</span>
+                <span className='hidden xl:inline'>外贸工具台</span>
               </button>
 
               {toolsOpen && (

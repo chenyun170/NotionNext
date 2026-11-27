@@ -5,7 +5,7 @@
 - Site: https://www.123170.xyz
 - Author: 外贸获客情报局
 - Language: zh-CN
-- Updated: 2026-11-26
+- Updated: 2026-11-27
 - Sitemap: https://www.123170.xyz/sitemap.xml
 - Core sitemap: https://www.123170.xyz/sitemap-core.xml
 - RSS: https://www.123170.xyz/rss/feed.xml
@@ -115,6 +115,7 @@ Source: https://www.123170.xyz/data-sources-limitations.html
 
 ## Articles
 
+- [一票货退税 9 万，卡在 4 月 30 日](https://www.123170.xyz/article/export-tax-rebate-2026-forex-deadline) — 2026 年起出口退税按新办法执行：次年 4 月 30 日是收汇期限，之后申报要多交收汇材料。网上说的“申报期限 36 个月”是误读。
 - [客户说模具费各出一半，我为什么没答应](https://www.123170.xyz/article/mold-cost-sharing-quotation) — “模具费各出一半、你那半摊进单价”听上去公平，实际是把订单不足的风险全转给供应商。这篇算清 6.5 万模具在不同订单量下的摊销，给出三种回法，并附一封可直接改用的英文邮件。
 - [客户验货没过，船期只剩5天：返工、推迟还是空运](https://www.123170.xyz/article/inspection-failed-rework-decision) — 验货判定 Rejected，船期只剩 5 天。这篇把返工、推迟航次、部分空运三套方案的钱和风险摆在一起算，再讲返工标准、重验前自检和通知客户的顺序。
 - [客户要 RCEP 原产地证，办错这张纸关税照收](https://www.123170.xyz/article/rcep-certificate-of-origin) — RCEP 原产地证不是“在中国生产”就能办。这篇把关税优惠折成金额，讲清 RVC 40%、累积规则和五种证书的区别，列出办证前必须确认的五件事，以及办错之后的补救顺序。

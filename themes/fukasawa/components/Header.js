@@ -50,7 +50,7 @@ const Header = props => {
   }
 
   return (
-    <div id='top-nav' className='sticky top-0 z-50 block lg:hidden'>
+    <div id='top-nav' className='sticky top-0 z-50 block md:hidden'>
       {/* 1. 顶部活动 / 软件试用软推条 */}
       {promoData?.bannerItems?.length > 0 && (
         <div className='border-b border-stone-200/80 bg-[#f2efe9] px-3 py-1.5 text-stone-700 dark:border-stone-800 dark:bg-[#1a1815] dark:text-stone-200'>

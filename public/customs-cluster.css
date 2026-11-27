@@ -387,7 +387,7 @@ h1 {
 
 .comparison-table {
   width: 100%;
-  min-width: 760px;
+  min-width: 640px;
   border-collapse: collapse;
 }
 
@@ -513,9 +513,32 @@ footer {
   }
 }
 
-/* 统一 NotionNext fukasawa 暖米 + 墨绿商业情报风格 */
-header { background: rgba(247, 245, 241, 0.92) !important; border-color: rgba(28, 25, 23, 0.08) !important; backdrop-filter: blur(10px); }
-.brand-icon { background: #1c5a4a !important; border-radius: 10px !important; }
+/* 统一 NotionNext fukasawa 暖米 + 墨绿商业情报风格与主站 64px 吸顶顶栏 */
+.container { width: min(1152px, calc(100% - 32px)); }
+header { position: sticky; top: 0; z-index: 40; background: rgba(247, 245, 241, 0.92) !important; border-bottom: 1px solid rgba(28, 25, 23, 0.08) !important; backdrop-filter: blur(12px); }
+.nav { min-height: 64px; padding: 10px 0 !important; flex-wrap: nowrap !important; }
+.brand { font-size: 16.5px !important; font-weight: 800 !important; letter-spacing: -0.01em; white-space: nowrap; flex-shrink: 0; }
+.brand-icon { width: 32px !important; height: 32px !important; background: #1c5a4a !important; border-radius: 9px !important; font-size: 14px !important; flex-shrink: 0; }
+.nav-links { align-items: center; gap: 4px !important; flex-wrap: nowrap !important; overflow-x: auto; min-width: 0; margin-left: auto; scrollbar-width: none; }
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a,
+.back {
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  padding: 7px 11px !important;
+  border-radius: 8px !important;
+  color: #57534e !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.18s ease, color 0.18s ease !important;
+}
+.nav-links a:hover,
+.back:hover {
+  background: rgba(231, 229, 228, 0.65) !important;
+  color: #1c1917 !important;
+}
 .cta-band { background: #f2efe9 !important; border-color: rgba(28, 25, 23, 0.08) !important; }
 .btn { border-radius: 10px !important; font-weight: 600 !important; }
 .btn-primary { background: #1c5a4a !important; border-color: #1c5a4a !important; box-shadow: 0 4px 14px rgba(28, 90, 74, 0.18) !important; }
@@ -571,7 +594,12 @@ html.dark footer {
 }
 
 html.dark .nav-links a,
-html.dark .back,
+html.dark .back {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #d6d3d1 !important;
+}
+
 html.dark .static-theme-toggle {
   background: #1c1a17 !important;
   border-color: rgba(255, 255, 255, 0.12) !important;
@@ -579,7 +607,11 @@ html.dark .static-theme-toggle {
 }
 
 html.dark .nav-links a:hover,
-html.dark .back:hover,
+html.dark .back:hover {
+  background: rgba(41, 37, 36, 0.75) !important;
+  color: #f5f5f4 !important;
+}
+
 html.dark .static-theme-toggle:hover {
   border-color: rgba(107, 196, 166, 0.5) !important;
   color: #6bc4a6 !important;

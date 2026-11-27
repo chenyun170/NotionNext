@@ -106,7 +106,7 @@ const BlogCard = ({ post, showSummary, featured = false }) => {
 
         {(!showPreview || showSummary) && post.summary && (
           <p
-            className={`mb-4 text-[13.5px] leading-6 text-stone-500 dark:text-stone-400 ${
+            className={`mb-4 text-[13.5px] leading-6 text-stone-500 dark:text-stone-300 ${
               featured ? 'line-clamp-3 lg:text-sm' : 'line-clamp-2'
             }`}
           >
@@ -118,7 +118,7 @@ const BlogCard = ({ post, showSummary, featured = false }) => {
           className={`flex flex-wrap items-center justify-between gap-2 border-t border-stone-100 pt-3 dark:border-stone-800 ${
             featured ? 'mt-1' : 'mt-auto'
           }`}>
-          <span className='font-mono text-[11px] tabular-nums text-stone-400 dark:text-stone-500'>
+          <span className='font-mono text-xs tabular-nums text-stone-500 dark:text-stone-400'>
             {post.publishDay || '实战笔记'}
           </span>
 

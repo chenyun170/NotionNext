@@ -127,7 +127,7 @@ const DesktopTopNav = props => {
   }
 
   return (
-    <header className='sticky top-0 z-[60] hidden w-full lg:block'>
+    <header className='sticky top-0 z-[60] hidden w-full md:block'>
       {/* 1. 顶部活动/试用软推通知条（自动随截止时间切换） */}
       {!bannerDismissed && promoData?.bannerItems?.length > 0 && (
         <div className='border-b border-stone-200/80 bg-[#f2efe9] text-xs text-stone-700 dark:border-stone-800 dark:bg-[#1a1815] dark:text-stone-300'>
@@ -195,12 +195,12 @@ const DesktopTopNav = props => {
 
       {/* 2. 主导航栏 */}
       <div className='border-b border-stone-200/80 bg-[#f7f5f1]/90 backdrop-blur-md dark:border-stone-800/80 dark:bg-[#131210]/90'>
-        <div className='mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6'>
+        <div className='mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 lg:gap-4 lg:px-6'>
           <div className='shrink-0'>
             <Logo {...props} />
           </div>
 
-          <nav aria-label='主导航' className='flex items-center gap-1'>
+          <nav aria-label='主导航' className='flex flex-nowrap items-center gap-0.5 lg:gap-1'>
             {NAV_LINKS.map(item => {
               const isHtml = item.href.endsWith('.html')
               const Comp = isHtml ? 'a' : Link
@@ -208,7 +208,7 @@ const DesktopTopNav = props => {
                 <Comp
                   key={item.href}
                   href={item.href}
-                  className='rounded-lg px-3 py-2 text-[13.5px] font-medium text-stone-600 no-underline transition-colors hover:bg-stone-200/60 hover:text-stone-950 dark:text-stone-300 dark:hover:bg-stone-800/70 dark:hover:text-stone-50'
+                  className='whitespace-nowrap rounded-lg px-2 py-1.5 text-[13px] font-medium text-stone-600 no-underline transition-colors hover:bg-stone-200/60 hover:text-stone-950 dark:text-stone-300 dark:hover:bg-stone-800/70 dark:hover:text-stone-50 lg:px-3 lg:py-2 lg:text-[13.5px]'
                 >
                   {item.label}
                 </Comp>
@@ -216,7 +216,7 @@ const DesktopTopNav = props => {
             })}
           </nav>
 
-          <div className='flex items-center gap-2'>
+          <div className='flex shrink-0 items-center gap-1.5 lg:gap-2'>
             {/* 搜索按钮 + 弹出搜索框 */}
             <div ref={searchBoxRef} className='relative'>
               <button
@@ -254,7 +254,7 @@ const DesktopTopNav = props => {
                 }`}
               >
                 <i className='fas fa-calculator text-[11px]' />
-                <span>外贸工具台</span>
+                <span className='hidden lg:inline'>外贸工具台</span>
               </button>
 
               {toolsOpen && (
@@ -291,10 +291,11 @@ const DesktopTopNav = props => {
             <SmartLink
               href={CUSTOMS_DATA_SKILL.href}
               onClick={() => trackCustomsDataSkillClick('desktop_top_nav_cta')}
-              className='inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#1c5a4a] px-3.5 text-xs font-semibold text-white no-underline shadow-xs transition hover:bg-[#14453a]'
+              className='inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-[#1c5a4a] px-2.5 text-xs font-semibold text-white no-underline shadow-xs transition hover:bg-[#14453a] lg:px-3.5'
             >
               <i className='fas fa-database text-[11px]' />
-              <span>免费查海关数据</span>
+              <span className='hidden lg:inline'>免费查海关数据</span>
+              <span className='lg:hidden'>查数据</span>
             </SmartLink>
           </div>
         </div>

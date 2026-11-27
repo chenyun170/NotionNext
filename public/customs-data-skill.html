@@ -694,6 +694,9 @@
         <div class="eyebrow">海关数据 Skill · 免费查询 · AI 分析</div>
         <h1>海关数据 Skill 免费查询平台</h1>
         <p class="lead">一键查询美国进口数据，快速洞察进口商、供应商、HS 编码、清关量和价格趋势，用真实贸易记录辅助外贸选品与客户开发。</p>
+        <p class="skill-product-hint" id="skill-product-hint" hidden style="margin:14px 0 0;padding:10px 12px;border-left:3px solid #1c5a4a;border-radius:8px;background:#e8f0ec;font-size:13px;line-height:1.65;color:#1c1917">
+          你刚查的是 <code id="skill-product-value" style="background:transparent;color:#1c5a4a;font-weight:700"></code>。到 OraSkl 用这个产品词搜，就能看到它的美国进口商和采购记录。
+        </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="https://oraskl.com/referrer/?i=BB54F6&utm_source=123170&utm_medium=skill_page&utm_campaign=customs_data_skill" target="_blank" rel="sponsored noopener noreferrer" data-skill-cta="customs_skill_hero">打开 OraSkl 免费查询</a>
           <a class="btn btn-secondary" href="/customs-data.html" data-skill-cta="customs_skill_topic_button">查看海关数据专题</a>
@@ -921,6 +924,14 @@
           event.stopPropagation();
           setScreenshotExpanded(!screenshotFrame.classList.contains('expanded'));
         });
+      }
+
+      var hint = document.getElementById('skill-product-hint');
+      var hintValue = document.getElementById('skill-product-value');
+      var productParam = new URLSearchParams(window.location.search).get('product');
+      if (hint && hintValue && productParam && productParam.trim()) {
+        hintValue.textContent = productParam.trim().slice(0, 60);
+        hint.hidden = false;
       }
 
       var eventName = 'customs_data_skill_click';

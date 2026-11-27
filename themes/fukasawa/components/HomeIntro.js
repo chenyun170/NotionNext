@@ -104,7 +104,10 @@ const HomeIntro = ({ categoryOptions = [] }) => {
       if (!res.ok || !data.ok) {
         throw new Error(data.error || '商机分析失败')
       }
-      setOppResult(data.analysis)
+      setOppResult({
+        analysis: data.analysis || '',
+        sections: Array.isArray(data.sections) ? data.sections : []
+      })
     } catch (err) {
       setOppError(err.message || '商机分析失败，请稍后再试')
     } finally {
@@ -122,6 +125,8 @@ const HomeIntro = ({ categoryOptions = [] }) => {
     })
     void runOpportunityCheck(productInput)
   }
+
+  const skillPageHref = `/customs-data-skill.html?product=${encodeURIComponent(oppProduct)}`
 
   return (
     <section className='home-intro mb-6 w-full'>
@@ -238,13 +243,50 @@ const HomeIntro = ({ categoryOptions = [] }) => {
               )}
 
               {oppResult && (
-                <div className='mt-3 rounded-lg border border-[#c3d6cd] bg-[#e8f0ec]/70 px-3.5 py-3 dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/20'>
-                  <div className='mb-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
-                    AI 商机速判 · {oppProduct}
+                <div className='mt-3 rounded-xl border border-[#c3d6cd] bg-[#f4f8f6] p-3.5 dark:border-[#2d6f5d] dark:bg-[#1c5a4a]/20'>
+                  <div className='mb-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-[#c3d6cd]/70 pb-2 dark:border-[#2d6f5d]/70'>
+                    <div className='text-[11px] font-bold uppercase tracking-[0.12em] text-[#1c5a4a] dark:text-[#6bc4a6]'>
+                      AI 商机速判 · {oppProduct}
+                    </div>
+                    <a
+                      href={skillPageHref}
+                      onClick={() =>
+                        trackSiteInteraction({
+                          source: 'home_opportunity_to_skill_page',
+                          sourceGroup: 'home',
+                          target: skillPageHref,
+                          action: 'open_skill_page_with_product'
+                        })
+                      }
+                      className='inline-flex min-w-0 max-w-full items-center gap-1 rounded-full bg-[#1c5a4a] px-2.5 py-0.5 text-[11px] font-semibold text-white no-underline transition hover:bg-[#14453a]'
+                      title={`去 OraSkl 查「${oppProduct}」进口商`}
+                    >
+                      <span className='truncate'>去 OraSkl 查「{oppProduct}」进口商</span>
+                      <span>→</span>
+                    </a>
                   </div>
-                  <div className='whitespace-pre-wrap break-words text-[13px] leading-6 text-stone-700 dark:text-stone-200'>
-                    {oppResult}
-                  </div>
+
+                  {oppResult.sections?.length > 0 ? (
+                    <div className='grid gap-2'>
+                      {oppResult.sections.map((sec, index) => (
+                        <div
+                          key={sec.label + index}
+                          className='rounded-lg border border-stone-200/70 bg-white/90 px-3 py-2 text-[13px] leading-6 dark:border-stone-800 dark:bg-[#1c1a17]/90'
+                        >
+                          <span className='mr-2 inline-block rounded bg-[#e8f0ec] px-1.5 py-0.5 text-[11px] font-bold text-[#1c5a4a] dark:bg-[#1c5a4a]/30 dark:text-[#6bc4a6]'>
+                            {sec.label}
+                          </span>
+                          <span className='text-stone-700 dark:text-stone-200'>
+                            {sec.content}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className='whitespace-pre-wrap break-words text-[13px] leading-6 text-stone-700 dark:text-stone-200'>
+                      {oppResult.analysis || ''}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -254,14 +296,14 @@ const HomeIntro = ({ categoryOptions = [] }) => {
           <div className='min-w-0 w-full rounded-2xl border border-stone-200/90 bg-[#faf9f6] p-4 dark:border-stone-800 dark:bg-[#151412] sm:p-5'>
             <div className='mb-4 flex items-center justify-between gap-2 border-b border-stone-200/80 pb-3 dark:border-stone-800'>
               <div className='min-w-0'>
-                <div className='text-[10px] font-bold uppercase tracking-[0.16em] text-stone-400'>
+                <div className='text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500 dark:text-stone-400'>
                   BUYER SIGNAL PREVIEW
                 </div>
                 <div className='mt-0.5 text-sm font-bold text-stone-900 dark:text-stone-100'>
                   先查真实进口记录，再做开发
                 </div>
               </div>
-              <span className='shrink-0 rounded-full bg-[#e8f0ec] px-2.5 py-1 text-[10px] font-bold text-[#1c5a4a] dark:bg-[#1c5a4a]/30 dark:text-[#6bc4a6]'>
+              <span className='shrink-0 rounded-full bg-[#e8f0ec] px-2.5 py-1 text-[11px] font-bold text-[#1c5a4a] dark:bg-[#1c5a4a]/30 dark:text-[#6bc4a6]'>
                 真实提单案例
               </span>
             </div>
@@ -269,33 +311,33 @@ const HomeIntro = ({ categoryOptions = [] }) => {
             <div className='min-w-0 overflow-hidden rounded-xl border border-stone-200/80 bg-white p-3.5 shadow-xs dark:border-stone-800 dark:bg-[#1c1a17] sm:p-4'>
               <div className='flex items-start justify-between gap-2'>
                 <div className='min-w-0 flex-1'>
-                  <div className='truncate text-xs font-semibold text-stone-400'>
+                  <div className='truncate text-xs font-semibold text-stone-500 dark:text-stone-400'>
                     美国进口商 · 商业/工业 LED 照明
                   </div>
                   <div className='mt-0.5 truncate font-mono text-sm font-bold text-stone-900 dark:text-stone-100'>
                     COOPER LIGHTING SOLUTIONS LLC
                   </div>
                 </div>
-                <span className='shrink-0 rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'>
+                <span className='shrink-0 rounded-md bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'>
                   活跃买家
                 </span>
               </div>
 
               <div className='mt-3.5 grid grid-cols-3 gap-2 border-y border-stone-100 py-3 text-center dark:border-stone-800'>
                 <div className='min-w-0'>
-                  <div className='text-[10px] text-stone-400'>主力 HS</div>
+                  <div className='text-[11px] text-stone-500 dark:text-stone-400'>主力 HS</div>
                   <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-stone-800 dark:text-stone-200'>
                     9405.11
                   </div>
                 </div>
                 <div className='min-w-0'>
-                  <div className='text-[10px] text-stone-400'>近 1 年记录</div>
+                  <div className='text-[11px] text-stone-500 dark:text-stone-400'>近 1 年记录</div>
                   <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-[#1c5a4a] dark:text-[#6bc4a6]'>
                     1,462 条
                   </div>
                 </div>
                 <div className='min-w-0'>
-                  <div className='text-[10px] text-stone-400'>中国占比</div>
+                  <div className='text-[11px] text-stone-500 dark:text-stone-400'>中国占比</div>
                   <div className='mt-0.5 font-mono text-xs font-bold tabular-nums text-stone-800 dark:text-stone-200'>
                     54.49%
                   </div>
@@ -303,15 +345,15 @@ const HomeIntro = ({ categoryOptions = [] }) => {
               </div>
 
               {/* 口径说明：占比按 2026 年 1–10 月 1,202 条计，与上方全年 1,462 条不同期 */}
-              <p className='mt-1.5 text-[9px] leading-tight text-stone-400 dark:text-stone-500'>
+              <p className='mt-1.5 text-[11px] leading-snug text-stone-500 dark:text-stone-400'>
                 中国占比按 2026 年 1–10 月 1,202 条计
               </p>
 
               {/* 2025-11 至 2026-10 月度提单节奏微图（峰值 217 条） */}
               <div className='mt-3'>
-                <div className='mb-1.5 flex flex-wrap items-center justify-between gap-1.5 text-[10px] text-stone-400'>
+                <div className='mb-1.5 flex flex-wrap items-center justify-between gap-1.5 text-[11px] text-stone-500 dark:text-stone-400'>
                   <span>2025-11 ~ 2026-10 月度提单</span>
-                  <span className='font-mono tabular-nums text-stone-500 dark:text-stone-300'>
+                  <span className='font-mono tabular-nums text-stone-600 dark:text-stone-300'>
                     月均 ~122 条
                   </span>
                 </div>

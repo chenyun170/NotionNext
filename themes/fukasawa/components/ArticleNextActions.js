@@ -92,6 +92,14 @@ const buildFocus = post => {
     }
   }
 
+  if (/托盘|木质包装|IPPC|ISPM/.test(text)) {
+    return {
+      title: '下一步：把包装要求写进订单和验货单',
+      intro: '材质、处理方式、标识由谁提供，提前写清楚，比到港再补便宜得多。',
+      showCustomsCta: false
+    }
+  }
+
   if (/政策|关税|合规|认证|反倾销/.test(text)) {
     return {
       title: '下一步：确认这条规则是否适用于你的产品',
